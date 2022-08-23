@@ -3,4 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.CompanyMemberMapper">
+    <select id="checkUserMemberOfCompany" resultType="_boolean">
+        select EXISTS(select * from companymember WHERE userNo = #{userNo} AND companyNo = #{companyNo})
+    </select>
 </mapper>
