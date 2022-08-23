@@ -5,7 +5,7 @@ import com.api.mail.MailBuilder;
 import com.api.mail.MailFooter;
 import com.api.mail.MailLogo;
 import com.api.mail.MailType;
-import com.model.User;
+import com.model.User2;
 import com.model.queue.ServerTokenType;
 import com.model.queue.Token;
 import com.response.DefaultRes;
@@ -16,7 +16,6 @@ import com.validator.test.Test;
 import com.validator.test.TestValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,9 +84,9 @@ public class TestRestController {
 
     @RequestMapping(value = "/oauth/callback", method = RequestMethod.GET)
     public ResponseEntity kakaoLoginCallBack(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        User user = loginAPI.apiLoginInit(request);
-        log.info("user result : {}", user);
-        if (user != null) {
+        User2 user2 = loginAPI.apiLoginInit(request);
+        log.info("user result : {}", user2);
+        if (user2 != null) {
             response.sendRedirect("/test/login");
         }
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK), HttpStatus.OK);

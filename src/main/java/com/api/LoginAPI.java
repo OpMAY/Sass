@@ -9,12 +9,11 @@ import com.api.sns.kakao.KakaoInfo;
 import com.api.sns.naver.NaverAPI;
 import com.api.sns.naver.NaverAccess;
 import com.api.sns.naver.NaverInfo;
-import com.model.User;
+import com.model.User2;
 import com.model.common.MFile;
 import com.util.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -43,8 +42,8 @@ public class LoginAPI {
      * Updated date : 2020-11-17 Naver Login 제거, Login Logic 추가
      * Version : 4
      */
-    public User apiLoginInit(HttpServletRequest req) {
-        User user = new User();
+    public User2 apiLoginInit(HttpServletRequest req) {
+        User2 user2 = new User2();
         MFile profile_img = new MFile();
         /** Kakao Naver Google Login Get Auth Code And Error Code = code in Common*/
         String code = req.getParameter("code");
@@ -67,15 +66,15 @@ public class LoginAPI {
                 return null;
             }
             /** Login Success*/
-            user.setEmail(naverInfo.getResponse().getEmail());
-            user.setId(naverInfo.getResponse().getId());
-            user.setName(naverInfo.getResponse().getNickname());
+            user2.setEmail(naverInfo.getResponse().getEmail());
+            user2.setId(naverInfo.getResponse().getId());
+            user2.setName(naverInfo.getResponse().getNickname());
             profile_img.setUrl(naverInfo.getResponse().getProfile_image() != null ? naverInfo.getResponse().getProfile_image() :  null);
             if (profile_img.getUrl() == null) {
                 profile_img.setUrl(DEFAULT_PROFILE_IMAGE_URL);
                 profile_img.setName(DEFAULT_PROFILE_IMAGE_NAME);
             }
-            user.setProfile_img(profile_img);
+            user2.setProfile_img(profile_img);
             /** Naver Logout*/
             /*NaverAccess logoutAccess = naverAPI.logout(naverAccess.getAccess_token());
             if (logoutAccess.getResult().equals("success")) {
@@ -83,7 +82,7 @@ public class LoginAPI {
             } else {
                 log.info("logout failed");
             }*/
-            return user;
+            return user2;
         }
 
         /** Kakao*/
@@ -105,22 +104,22 @@ public class LoginAPI {
             /** Login Success*/
 
             if (kakaoInfo.getKakao_account().getHas_email() != null && kakaoInfo.getKakao_account().getHas_email()) {
-                user.setEmail(kakaoInfo.getKakao_account().getEmail());
+                user2.setEmail(kakaoInfo.getKakao_account().getEmail());
             }
-            user.setId(Long.toString(kakaoInfo.getId()));
-            user.setName(
+            user2.setId(Long.toString(kakaoInfo.getId()));
+            user2.setName(
                     kakaoInfo.getKakao_account() != null ? kakaoInfo.getKakao_account().getProfile().getNickname() != null ?
                             kakaoInfo.getKakao_account().getProfile().getNickname() :
                             kakaoInfo.getProperties() != null ? kakaoInfo.getProperties().getNickname() : null : null);
-            if (user.getName() == null) {
-                user.setName("user" + TokenGenerator.RandomIntegerToken(4));
+            if (user2.getName() == null) {
+                user2.setName("user" + TokenGenerator.RandomIntegerToken(4));
             }
             profile_img.setUrl(kakaoInfo.getKakao_account() != null ? kakaoInfo.getKakao_account().getProfile().getProfile_image_url() : kakaoInfo.getProperties().getProfile_image() != null ? kakaoInfo.getProperties().getProfile_image() : null);
             if (profile_img.getUrl() == null) {
                 profile_img.setUrl(DEFAULT_PROFILE_IMAGE_URL);
                 profile_img.setName(DEFAULT_PROFILE_IMAGE_NAME);
             }
-            user.setProfile_img(profile_img);
+            user2.setProfile_img(profile_img);
             /** Kakao Logout*/
             /*String id = kakaoAPI.logout(kakaoAccess.getAccess_token());
             if (id.equals(user.getId())) {
@@ -129,7 +128,7 @@ public class LoginAPI {
                 log.info("logout failed");
             }*/
 
-            return user;
+            return user2;
         }
 
         /** Google*/
@@ -152,15 +151,15 @@ public class LoginAPI {
             }
             /** Login Success*/
             /**Google API는 NAME 못가져옵니다. 다른 방법을 사용해서 얻어야합니다.*/
-            user.setEmail(googleInfo.getEmail());
-            user.setId(googleInfo.getId());
-            user.setName(googleInfo.getName() == null ? "Empty User Name" : googleInfo.getName());
+            user2.setEmail(googleInfo.getEmail());
+            user2.setId(googleInfo.getId());
+            user2.setName(googleInfo.getName() == null ? "Empty User Name" : googleInfo.getName());
             profile_img.setUrl(googleInfo.getPicture() != null ? googleInfo.getPicture() : null);
             if (profile_img.getUrl() == null) {
                 profile_img.setUrl(DEFAULT_PROFILE_IMAGE_URL);
                 profile_img.setName(DEFAULT_PROFILE_IMAGE_NAME);
             }
-            user.setProfile_img(profile_img);
+            user2.setProfile_img(profile_img);
             /** Google Logout*/
             /*String result = googleAPI.logout(googleAccess.getAccess_token());
             if (result != null) {
@@ -168,7 +167,7 @@ public class LoginAPI {
             } else {
                 log.info("logout failed");
             }*/
-            return user;
+            return user2;
         } else {
             if (error != null) {
                 /**Kakao Login Error
