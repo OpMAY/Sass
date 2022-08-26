@@ -10,6 +10,10 @@ public class Line {
     private String from;
     private String from_row;
 
+    public Line() {
+
+    }
+
     public Line(String to, String to_row, String from, String from_row) {
         this.to = to;
         this.to_row = to_row;
