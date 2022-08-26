@@ -37,8 +37,8 @@ public class TestController {
 
     public static void main(String[] args) {
         try {
-            System.out.println(new EncryptionService().encryptAES("smtp.naver.com", false));
-            System.out.println(new EncryptionService().encryptAES("587", false));
+            System.out.println(new EncryptionService().decryptAES("FL/PqnsIIQ24F/wLxroa7Qhn+DgaoqsbvZ9en0a4uYxxrBd1IatIf+09+Cqpp5lj2ms0NEdZ4acyJ0RnrCfSOZAxdmYeO4wDH1essHeDhcVo89zWQG3pXXJlHYDN+ovmt6/QrEnkTV3O+yvGeF9s2Q=="));
+            System.out.println(new EncryptionService().encryptAES("jdbc:mysql://127.0.0.1:3306/avouch?serverTimezone=Asia/Seoul&allowMultiQueries=true&autoReconnect=true",false));
         } catch (Exception e) {
             e.printStackTrace();
         }

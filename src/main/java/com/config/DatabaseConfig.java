@@ -50,7 +50,8 @@ public class DatabaseConfig {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource());
         factoryBean.setConfigLocation(applicationContext.getResource("classpath:/mybatis-config.xml"));
-        factoryBean.setMapperLocations(applicationContext.getResources("classpath:/sqls/*.xml"));
+        factoryBean.setMapperLocations(applicationContext.getResources("classpath:/sqls/**/*.xml"));
+        factoryBean.setTypeAliasesPackage("com/model");
         log.info("SqlSessionFactory Initialized");
         return factoryBean.getObject();
     }
