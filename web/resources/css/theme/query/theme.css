@@ -1,0 +1,20 @@
+/*변수 지정*/
+:root {
+    /* Sample Theme Color */
+    --brand-orange: #F08705;
+    --brand-orange-opacity: #ffcfab;
+    --layout-background: #F8F8F8;
+    --layout-border: 10px;
+}
+
+/* Color Class */
+/* Suffix c- */
+.c-brand-orange {
+    color: var(--brand-orange);
+}
+
+/* Background Color Class */
+/* Suffix bg- */
+.bg-brand-orange {
+    background-color: var(--brand-orange);
+}

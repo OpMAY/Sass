@@ -1,0 +1,323 @@
+input.form-control.form-general.outline-gray-high-medium {
+    border: var(--border-1px) var(--gray-high-medium);
+}
+
+._search input.form-general {
+    padding: 12px;
+    font-size: var(--font-12);
+    font-weight: 400;
+    line-height: var(--line-16);
+    border-radius: var(--input-radius);
+}
+
+._search input.form-general::placeholder {
+    color: var(--gray-light);
+}
+
+._search .form-group.inner-append input.form-general {
+    padding-right: 40px;
+}
+
+._right-menu ._side-button-container {
+    display: flex;
+    position: absolute;
+    right: calc(-100% - 20px);
+    top: 28px;
+    z-index: 1;
+}
+
+._right-menu ._side-button-container > div {
+    margin-top: auto;
+    margin-bottom: auto;
+    cursor: pointer;
+}
+
+._right-menu ._side-button-container > div._side-add > div {
+    border-radius: 32px;
+    padding: 6px 18px;
+}
+
+._right-menu ._side-button-container > div:not(:last-child) {
+    margin-right: 16px;
+}
+
+._right-menu ._scroll-container {
+    overflow: auto;
+    overflow-x: hidden;
+    height: 100%;
+    max-height: calc(100% - 136px);
+    padding-bottom: 36px;
+}
+
+._right-menu ._info-container {
+    border-bottom: var(--border-1px) var(--gray-high-medium);
+}
+
+._right-option {
+    position: fixed;
+    top: 80px;
+    right: 80px;
+    z-index: 9997;
+    cursor: pointer;
+}
+
+._right-option._create-sql > div {
+    padding: 6px 12px;
+    border-radius: 32px;
+}
+
+._right-option._share {
+    top: 80px;
+    right: 30px;
+}
+
+._right-option._scale-up {
+    top: 80px;
+    right: 30px;
+}
+
+._right-option._scale-down {
+    top: calc(80px + 24px + 32px);
+    right: 30px;
+}
+
+.callout {
+    border: var(--border-1px) var(--gray-high-medium);
+    border-radius: var(--input-radius);
+}
+
+.divider {
+    width: 100%;
+    height: 2px;
+    background-color: var(--gray-high-medium);
+}
+
+button.btn.btn-brand {
+    background-color: var(--brand-orange);
+    color: var(--basic-white);
+}
+
+button.btn.btn-outline-gray-high-medium {
+    border: var(--border-1px) var(--gray-high-medium);
+    background-color: var(--basic-white);
+    color: var(--gray-dark-low);
+}
+
+.workspace-container button.btn {
+    padding: 8px 16px;
+    font-size: var(--font-20);
+    font-weight: bold;
+    line-height: var(--line-24);
+}
+
+.create-button-container {
+    text-align: right;
+}
+
+.create-button-container button.btn {
+    padding: 16px 24px;
+    font-size: var(--font-20);
+    font-weight: bold;
+    line-height: var(--line-24);
+}
+
+.create-button-container button:not(:last-child) {
+    margin-right: 24px;
+}
+
+.workspace-item-container .workspace {
+    padding: 16px 48px 16px 20px;
+    background-color: var(--basic-white);
+    border: var(--border-1px) var(--gray-high-medium);
+    border-radius: var(--input-radius);
+    display: flex;
+    cursor: pointer;
+}
+
+.workspace ._sub-info ._users {
+    height: 27px;
+    display: flex;
+    position: relative;
+    right: -28px;
+    padding-top: 4px;
+}
+
+.workspace ._sub-info ._users > img {
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    width: 24px;
+    height: 24px;
+}
+
+.workspace ._sub-info ._users > img:nth-child(1) {
+    left: 0;
+    z-index: 1;
+}
+
+.workspace ._sub-info ._users > img:nth-child(2) {
+    left: -10px;
+    z-index: 2;
+}
+
+.workspace ._sub-info ._users > img:nth-child(3) {
+    left: -22px;
+    z-index: 3;
+}
+
+.workspace ._sub-info ._users > img:nth-child(4) {
+    left: -34px;
+    z-index: 4;
+}
+
+.workspace ._sub-info ._users > img:nth-child(5) {
+    left: -46px;
+    z-index: 5;
+}
+
+.workspace ._options {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+}
+
+.workspace ._options .dropdown-menu {
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    left: 24px !important;
+    top: 0 !important;
+    transform: none !important;
+}
+
+.workspace ._options .dropright {
+    width: 24px;
+    height: 24px;
+}
+
+.workspace ._options .dropright svg {
+    margin: auto;
+}
+
+.workspace ._options .dropdown-menu .table-option-list {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: var(--border-1px) var(--gray-high-medium);
+    background-color: var(--basic-white);
+    border-radius: 0;
+}
+
+.workspace ._options .dropdown-menu .table-option-list .list-group-item {
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: var(--font-12);
+    font-weight: 500;
+    line-height: var(--line-16);
+    color: var(--gray-dark-low);
+    padding: 7px 20px;
+    border: none;
+}
+
+.database-type-item {
+    cursor: pointer;
+    display: flex;
+    padding: 20px 48px;
+    background-color: var(--basic-white);
+    border: var(--border-1px) var(--gray-high-medium);
+    border-radius: var(--button-radius);
+}
+
+.database-type-item ._image {
+    width: 44px;
+    height: 44px;
+}
+
+.database-type-item ._name {
+    margin-left: 8px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.database-editor-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.database-editor-container ._option {
+    position: absolute;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.database-editor-container ._option._close {
+    top: 28px;
+    left: 25px;
+}
+
+.database-editor-container ._option._copy {
+    top: 24px;
+    right: 168px;
+}
+
+.database-editor-container ._option._save {
+    top: 24px;
+    right: 25px;
+}
+
+.database-editor-container ._option._save button.btn.btn-brand {
+    color: var(--basic-white);
+    background-color: var(--brand-orange);
+    font-weight: 500;
+    font-size: var(--font-14);
+    line-height: var(--line-20);
+    padding: 8px 16px;
+    border-radius: 50px;
+}
+
+.database-editor-container ._option._copy button.btn.btn-outline-gray-high-medium {
+    color: var(--brand-orange);
+    font-weight: 500;
+    font-size: var(--font-14);
+    line-height: var(--line-20);
+    padding: 8px 16px;
+    border-radius: 50px;
+}
+
+.database-editor {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 84px 25px 42px 25px;
+}
+
+.database-editor ._option._search {
+    top: calc(84px + 24px);
+    right: calc(25px + 80px);
+}
+
+.database-editor ._option._update {
+    top: calc(84px + 24px);
+    right: calc(25px + 30px);
+}
+
+.database-editor ._option._update-check {
+    top: calc(84px + 24px);
+    right: calc(25px + 30px);
+}
+
+.database-editor ._editor {
+    border: var(--border-1px) var(--gray-high-medium);
+    border-radius: var(--layout-border);
+    width: 100%;
+    height: 100%;
+    background-color: var(--basic-white);
+    padding: 30px;
+    outline: none;
+    max-height: 100%;
+    overflow: auto;
+}
+
+.database-editor ._editor:focus {
+    border: var(--border-1px) var(--gray-high-medium);
+}

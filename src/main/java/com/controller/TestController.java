@@ -83,4 +83,9 @@ public class TestController {
             e.printStackTrace();
         }
     }
+
+    @RequestMapping(value = "/query/database/detail.do")
+    public ModelAndView databaseDetail(){
+        return new ModelAndView("query/database-detail");
+    }
 }

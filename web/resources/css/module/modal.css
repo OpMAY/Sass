@@ -1,0 +1,20 @@
+.modal .modal-content {
+    border-radius: 10px;
+}
+
+.modal .modal-header {
+    border-bottom: none;
+}
+
+.modal .modal-body {
+    padding: 32px 48px 48px;
+}
+
+.modal .close {
+    opacity: 1;
+}
+
+.modal .close:not(:disabled):not(.disabled):focus,
+.modal .close:not(:disabled):not(.disabled):hover {
+    opacity: 1;
+}

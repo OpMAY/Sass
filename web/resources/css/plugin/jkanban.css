@@ -1,0 +1,364 @@
+.kanban-container {
+    position: relative;
+    box-sizing: border-box;
+    width: auto;
+}
+
+.kanban-container * {
+    box-sizing: border-box;
+}
+
+.kanban-container:after {
+    clear: both;
+    display: block;
+    content: '';
+}
+
+.kanban-container .kanban-board:not(:last-child) {
+    border-right: 1px solid black;
+}
+
+.kanban-board {
+    width: 100%;
+    overflow: auto;
+    overflow-y: hidden;
+    height: auto;
+    position: relative;
+    float: left;
+    background: #e2e4e6;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.kanban-board.disabled-board {
+    opacity: 0.3;
+}
+
+.kanban-board.is-moving.gu-mirror {
+}
+
+.kanban-board.is-moving.gu-mirror .kanban-drag {
+    overflow: hidden;
+}
+
+.kanban-board header {
+    font-size: 16px;
+    padding: 15px 0;
+    display: flex;
+}
+
+.kanban-board header > div {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.kanban-board header .kanban-title-board {
+    width: calc(100% - 62px);
+}
+
+.kanban-board header .kanban-title-board input {
+    width: 100%;
+}
+
+.kanban-board header .kanban-title-board svg {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 8px;
+}
+
+.kanban-board header .kanban-title-board svg,
+.kanban-board header .kanban-title-board svg > * {
+    stroke: black;
+    cursor: pointer;
+}
+
+.kanban-board header .kanban-percent {
+    width: fit-content;
+}
+
+.kanban-board header .kanban-percent._percent {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.kanban-board header .kanban-title-board,
+.kanban-board header .kanban-percent {
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.kanban-board header .kanban-board-option {
+    width: fit-content;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+.kanban-board header .kanban-board-option [data-toggle="dropdown"] {
+    padding-left: 8px;
+    padding-right: 8px;
+    cursor: pointer;
+    width: 20px;
+}
+
+.kanban-board header .kanban-board-option .dropdown-menu {
+    width: auto;
+}
+
+.kanban-board header .kanban-title-button {
+    float: right;
+}
+
+.kanban-board .kanban-drag {
+    padding-left: 0;
+    padding-right: 0;
+    height: auto;
+}
+
+.kanban-board:after {
+    clear: both;
+    display: block;
+    content: "";
+}
+
+.kanban-board > footer {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.kanban-item {
+    margin-bottom: 15px;
+
+    display: block;
+    cursor: pointer !important;
+    position: relative;
+    word-wrap: break-word;
+    word-break: keep-all;
+    padding: 12px;
+    background-clip: border-box;
+    background-color: white;
+    border: 1px solid white;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.kanban-item:hover {
+    border: 1px solid black;
+}
+
+.kanban-item .checkbox:hover, .kanban-item .checkbox.active {
+    background-color: black;
+}
+
+.kanban-item .kanban-item-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 160px;
+}
+
+.kanban-item .kanban-item-title + .kanban-item .kanban-item-text {
+    margin-top: 8px;
+}
+
+.kanban-item .kanban-item-title .title {
+    font-size: 14px;
+    display: inline-block;
+    font-weight: 500;
+    color: black;
+    margin-bottom: 16px;
+    word-break: break-all;
+}
+
+.kanban-item .checkbox {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+}
+
+.kanban-item-task-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.kanban-item-task-info .left {
+    margin-bottom: auto;
+    display: flex;
+}
+
+.kanban-item-task-info .left > img {
+    width: 30px;
+    height: 30px;
+    margin-right: 8px;
+    border-radius: 16px;
+}
+
+.kanban-item-task-info .left > div {
+    display: flex;
+    width: 30px;
+    height: 30px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    margin-right: 8px;
+}
+
+.kanban-item-task-info .left div span {
+    margin: auto;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    color: black;
+}
+
+.kanban-item-task-info .time {
+    margin-top: auto;
+    font-size: 10px;
+    font-weight: 500;
+    color: black;
+    white-space: nowrap;
+    margin-left: auto;
+    display: inline-block;
+}
+
+@keyframes append-animate {
+    from {
+        transform: translateY(-20px);
+    }
+    to {
+        transform: translateY(0px);
+    }
+}
+
+.kanban-item:hover {
+    cursor: move;
+}
+
+.kanban-item:last-child {
+    margin: 0;
+}
+
+.kanban-item.is-moving.gu-mirror {
+    height: auto !important;
+}
+
+.kanban-add-task {
+    font-size: 12px;
+    font-weight: bold;
+
+    opacity: 1;
+
+    background-color: black;
+    color: #fff;
+
+    border: 1px solid transparent;
+    border-radius: 0;
+
+    padding-top: 0.675rem;
+    padding-bottom: 0.675rem;
+}
+
+.kanban-add-task:hover {
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+}
+
+.kanban-add-task:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.kanban-item .checkbox {
+    cursor: pointer;
+    border-radius: 20px;
+    background-color: #e6e6e6;
+    font-size: 12px;
+    padding: 2px 5px;
+}
+
+.kanban-item .checkbox i {
+    color: white;
+}
+
+.kanban-item .checkbox:hover, .kanban-item .checkbox.active {
+    background-color: black;
+}
+
+.kanban-item .checkbox.active {
+    background-color: black;
+    color: white;
+}
+
+.kanban-item .checkbox {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+}
+
+/* Dragula CSS  */
+.gu-mirror {
+    position: fixed !important;
+    margin: 0 !important;
+    z-index: 9999 !important;
+}
+
+.gu-hide {
+    display: none !important;
+}
+
+.gu-unselectable {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+
+.gu-transit {
+    opacity: 0.2 !important;
+}
+
+.drag_handler {
+    background: #fff;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    position: relative;
+    float: left;
+    top: -3px;
+    margin-right: 4px;
+}
+
+.drag_handler:hover {
+    cursor: move;
+}
+
+.drag_handler_icon {
+    position: relative;
+    display: block;
+    background: #000;
+    width: 24px;
+    height: 2px;
+    top: 12px;
+    transition: .5s ease-in-out;
+}
+
+.drag_handler_icon:before,
+.drag_handler_icon:after {
+    background: #000;
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transition: .5s ease-in-out;
+}
+
+.drag_handler_icon:before {
+    top: 6px;
+}
+
+.drag_handler_icon:after {
+    bottom: 6px;
+}

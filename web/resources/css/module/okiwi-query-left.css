@@ -1,0 +1,145 @@
+#list-tables .table-list-component:first-child {
+    border-top: none;
+}
+
+.table-list-component {
+    border: var(--border-1px) var(--gray-high-medium);
+    border-left: none;
+    border-right: none;
+}
+
+.table-list-component .card-header {
+    background-color: white;
+}
+
+.table-list-component ._header {
+    font-size: var(--font-16);
+    padding: 12px 16px;
+}
+
+.table-list-component ._header ._title {
+    font-size: var(--font-14);
+    line-height: var(--line-20);
+    font-weight: bold;
+    width: 100%;
+}
+
+.table-list-component ._header ._title > input {
+    border: var(--border-1px) var(--gray-high-medium);
+    border-left: none;
+    border-top: none;
+    border-right: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.table-list-component ._header ._title > input:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.table-list-component ._header ._option {
+    width: fit-content;
+    cursor: pointer;
+    display: flex;
+    min-width: 20px;
+}
+
+.table-list-component ._header ._option._create svg * {
+    fill: var(--brand-orange);
+}
+
+.table-list-component ._header ._option > * {
+    margin: auto;
+}
+
+.table-list-component ._header ._option._dropdown[aria-expanded="true"] svg {
+    transform: rotate(-180deg);
+    transition: transform .25s;
+}
+
+.table-list-component ._header ._option._dropdown[aria-expanded="false"] svg {
+    transition: transform .25s;
+}
+
+.table-list-component .card-body .list-group {
+    padding-bottom: 20px;
+}
+
+.table-list-component .card-body .list-group li[data-table-row] {
+    display: flex;
+    border: none;
+    padding: 8px 16px;
+}
+
+.table-list-component .card-body .list-group li[data-table-row] ._name {
+    width: calc(100% - 18px);
+    font-size: var(--font-12);
+    font-weight: 500;
+    line-height: var(--line-16);
+}
+
+.table-list-component .card-body .list-group li[data-table-row]:hover ._delete {
+    display: flex;
+}
+
+.table-list-component .card-body .list-group li[data-table-row] ._delete {
+    display: none;
+    width: auto;
+    cursor: pointer;
+    min-width: 20px;
+}
+
+.table-list-component .card-body .list-group li[data-table-row] ._delete > svg {
+    width: fit-content;
+    margin: auto;
+}
+
+.table-list-component .card-body .list-group li[data-table-row] > ._check {
+    display: flex;
+    width: auto;
+    padding: 8px;
+    margin-left: 8px;
+    cursor: pointer;
+    position: relative;
+    left: 8px;
+}
+
+.table-list-component .card-body .list-group li[data-table-row] > ._check > svg {
+    width: fit-content;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.table-list-component .card-body .list-group li[data-table-row] > input {
+    margin-top: auto;
+    margin-bottom: auto;
+    width: 100%;
+    border: 1px solid var(--gray-high-medium);
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    outline: none;
+    box-shadow: none;
+    font-size: var(--font-12);
+    line-height: var(--line-16);
+    font-weight: 500;
+    padding: 4px;
+}
+
+.table-list-component .card-body .list-group li[data-table-row] > input:focus {
+    border: 1px solid var(--gray-dark-low);
+    outline: none;
+    box-shadow: none;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+}
+
+._right-menu ._right-menu-option._create {
+    cursor: pointer;
+    width: fit-content;
+    margin-left: auto;
+    margin-top: 20px;
+    margin-right: 20px;
+}

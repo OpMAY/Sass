@@ -1,0 +1,283 @@
+.table-container {
+    background-color: var(--layout-background);
+    user-select: none;
+    position: relative;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    min-width: 100vw;
+}
+
+.table-container .component {
+    outline: 2px solid transparent;
+    transition: outline .2s;
+}
+
+.component * {
+    user-select: none;
+}
+
+.component ._table {
+    margin-bottom: 0;
+    background-color: var(--basic-white);
+}
+
+.component ._table tbody tr[data-table-id][data-table-row] {
+    outline: 2px solid transparent;
+    transition: outline .5s;
+}
+
+.component ._table > tbody > tr.is-selected {
+    background-color: var(--brand-orange);
+}
+
+.component ._table > tbody > tr.is-selected input {
+    background-color: var(--brand-orange);
+}
+
+.component ._table tbody tr[data-table-id][data-table-row].is-selected > td._pk svg,
+.component ._table tbody tr[data-table-id][data-table-row].is-selected > td._ai svg,
+.component ._table tbody tr[data-table-id][data-table-row].is-selected > td._null svg,
+.component ._table tbody tr[data-table-id][data-table-row].is-selected > td._sort svg {
+    stroke: var(--brand-orange);
+}
+
+.component ._table tbody tr[data-table-id][data-table-row].is-selected > td._pk.is-checked svg,
+.component ._table tbody tr[data-table-id][data-table-row].is-selected > td._ai.is-checked svg,
+.component ._table tbody tr[data-table-id][data-table-row].is-selected > td._null.is-checked svg {
+    stroke: white;
+}
+
+.component ._table tbody tr[data-table-id][data-table-row].is-selected > td._sort.is-checked svg {
+    stroke: white;
+}
+
+.component ._table tbody tr.is-selected td input,
+.component ._table tbody tr.is-selected td input:focus,
+.component ._table tbody tr.is-selected td input:active,
+.component ._table tbody tr.is-selected td input:focus-visible {
+    background-color: var(--brand-orange);
+    border: none;
+    color: white;
+    outline: none;
+}
+
+svg.leader-line {
+    pointer-events: auto !important;
+}
+
+#context-menu {
+    border-radius: 0 !important;
+    position: absolute;
+    z-index: 9997;
+}
+
+#context-menu li {
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+#context-menu li .dropdown-menu {
+    border-radius: 0 !important;
+    width: fit-content;
+    width: -moz-fit-content;
+    margin-left: 0;
+}
+
+.component ._table {
+    text-align: center !important;
+}
+
+.component ._table ._table-header th[colspan] {
+    text-align: left !important;
+    font-size: var(--font-14);
+    font-weight: bold;
+    color: var(--gray-dark-low);
+    line-height: var(--line-24);
+}
+
+.component ._table tr td, .component ._table tr th {
+    white-space: nowrap;
+}
+
+.component ._table tbody tr td input::placeholder {
+    color: #FFFFFF69;
+}
+
+.component ._table thead tr._table-header th._name svg {
+    stroke: var(--gray-dark-low);
+    cursor: pointer;
+}
+
+.component ._table thead tr._table-header th input,
+.component ._table tbody tr td input,
+.component ._table tbody tr td input:focus,
+.component ._table tbody tr td input:active,
+.component ._table tbody tr td input:focus-visible {
+    background-color: var(--basic-white);
+    border: none;
+    color: var(--gray-dark-low);
+    outline: none;
+    font-size: var(--font-12);
+    line-height: var(--line-20);
+    font-weight: 500;
+}
+
+.component ._table thead tr._table-header th input {
+    width: calc(100% - 36px);
+    font-weight: bold;
+    padding-left: 0;
+    padding-right: 0;
+    margin-right: 12px;
+    font-size: var(--font-14);
+    line-height: var(--line-20);
+}
+
+.component ._table thead tr._table-columns > th {
+    font-size: var(--font-12);
+    font-weight: bold;
+    color: var(--gray-dark-low);
+    line-height: var(--line-20);
+    min-width: 42px;
+    border-bottom-color: var(--gray-dark-low);
+}
+
+.component ._table thead tr._table-columns > th._sort {
+    border-bottom-color: var(--gray-high-medium);
+}
+
+.component ._table tbody tr td {
+    min-width: 42px;
+}
+
+.component ._table tbody tr > th._delete,
+.component ._table thead tr._table-header > th._option,
+.component ._table thead tr._table-header > th._sort,
+.component ._table thead tr._table-columns > th._create,
+.component ._table thead tr._table-columns > th._sort,
+.component ._table tbody tr[data-table-id][data-table-row] > td._pk,
+.component ._table tbody tr[data-table-id][data-table-row] > td._fk,
+.component ._table tbody tr[data-table-id][data-table-row] > td._ai,
+.component ._table tbody tr[data-table-id][data-table-row] > td._null,
+.component ._table tbody tr[data-table-id][data-table-row] > td._sort {
+    cursor: pointer;
+}
+
+.component ._table tbody tr[data-table-id][data-table-row] > td {
+    position: relative;
+}
+
+.component ._table tbody tr[data-table-id][data-table-row] > td svg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.component ._table tbody tr[data-table-id][data-table-row] > td._pk svg,
+.component ._table tbody tr[data-table-id][data-table-row] > td._ai svg,
+.component ._table tbody tr[data-table-id][data-table-row] > td._null svg {
+    stroke: var(--basic-white);
+}
+
+.component ._table tbody tr[data-table-id][data-table-row] > td._pk.is-checked svg,
+.component ._table tbody tr[data-table-id][data-table-row] > td._ai.is-checked svg,
+.component ._table tbody tr[data-table-id][data-table-row] > td._null.is-checked svg,
+.component ._table tbody tr[data-table-id][data-table-row] > td._sort.is-checked svg {
+    stroke: var(--basic-black);
+}
+
+.component ._table tbody tr[data-table-id][data-table-row] > td._sort {
+
+}
+
+.component ._table tbody tr[data-table-id][data-table-row] > td._sort svg {
+    stroke: var(--basic-white);
+}
+
+.component ._table tbody tr[data-table-id][data-table-row] > td._sort.is-checked svg {
+    stroke: var(--brand-orange);
+}
+
+.component .table thead th:first-child {
+    border-left: 1px solid var(--gray-high-medium);
+}
+
+.component .table tbody th:first-child {
+    border-left: 1px solid var(--gray-high-medium);
+}
+
+.component ._table thead > tr > th._name {
+    border-right: none;
+}
+
+.component ._table thead > tr > th {
+    border-top: 1px solid var(--gray-high-medium);
+}
+
+.component .table thead th,
+.component .table tbody th,
+.component .table tbody td {
+    border-bottom: 1px solid var(--gray-high-medium);
+}
+
+.component .table td, .table th {
+    border-top: 1px solid transparent;
+}
+
+.component ._table thead > tr > th,
+.component ._table tbody > tr > th,
+.component ._table tbody > tr > td {
+    border-right: 1px solid var(--gray-high-medium);
+}
+
+.component ._table thead > tr > th:last-child {
+    background-color: var(--brand-orange);
+}
+
+.component ._table thead > tr.is-selected > th:last-child,
+.component ._table tbody > tr.is-selected > td:last-child {
+    background-color: var(--brand-orange);
+}
+
+.component ._table tbody tr[data-table-id][data-table-row].is-selected > th._delete svg *,
+.component ._table tbody tr[data-table-id][data-table-row].is-selected > td._fk svg * {
+    fill: white;
+}
+
+.component ._table tbody tr[data-table-id][data-table-row] > td._type {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.component ._table tbody tr[data-table-id][data-table-row] > td._type .__autocomplete {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.component ._table thead tr td,
+.component ._table tbody tr td,
+.component ._table thead tr th,
+.component ._table tbody tr th {
+    padding: 8px 10px;
+}
+
+.table-option-list {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: var(--basic-white);
+    border: var(--border-1px) var(--gray-high-medium);
+    border-radius: 0;
+}
+
+.table-option-list li.list-group-item {
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: var(--font-12);
+    font-weight: 500;
+    line-height: var(--line-16);
+    color: var(--gray-dark-low);
+    padding: 5px 16px;
+    border: none;
+}
