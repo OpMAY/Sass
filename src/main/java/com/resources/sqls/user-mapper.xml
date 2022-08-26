@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.UserMapper">
+    <select id="checkUserExists" resultType="_boolean">
+        select EXISTS(select * from user WHERE email = #{email} OR phone = #{phone})
+    </select>
+    <insert id="registerUser" keyProperty="no" useGeneratedKeys="true">
+        insert into user(name, email, phone, password, agreeData, marketingAgree, marketingAgreeDate, profileImg,
+                         pluginAlarm, serviceAlarm, createDate, lastLoginDate)
+        VALUES (#{name}, #{email}, #{phone}, hex(aes_encrypt(#{password}, 'okiwi')),
+                #{agreeData, typeHandler=com.middleware.JsonObjectTypeHandler}, #{marketingAgree},
+                IF(#{marketingAgree} = false, null, NOW()), #{profileImg}, #{pluginAlarm}, #{serviceAlarm}, NOW(),
+                NOW())
+    </insert>
+    <select id="loginUser" resultType="User" resultMap="User">
+        select *
+        from user
+        WHERE email = #{email}
+          AND aes_decrypt(unhex(password), 'okiwi') = #{password}
+    </select>
+    <select id="findUserEmail" resultType="string">
+        select email
+        from user
+        WHERE phone = #{phone}
+    </select>
+    <select id="checkUserEmailExists" resultType="_boolean">
+        select EXISTS(select * from user WHERE email = #{email})
+    </select>
+    <update id="changeUserPassword">
+        update user
+        SET password = hex(aes_encrypt(#{password}, 'okiwi'))
+        WHERE email = #{email}
+    </update>
+    <update id="changeUserName">
+        update user
+        SET name = #{name}
+        WHERE no = #{userNo}
+    </update>
+    <update id="changeUserPhone">
+        update user
+        SET phone = #{phone}
+        WHERE no = #{userNo}
+    </update>
+    <update id="changeUserMarketingAgree">
+        update user
+        SET marketingAgree = #{marketingAgree},
+            IF(#{marketingAgree} = false, null, NOW())
+        WHERE no = #{userNo}
+    </update>
+</mapper>
