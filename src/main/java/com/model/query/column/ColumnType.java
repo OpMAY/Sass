@@ -48,7 +48,6 @@ public enum ColumnType {
     // JSON Type
     JSON(false, null, true, JSON_TYPE);
 
-
     ColumnType(boolean hasSizeParameter, Integer sizeParameterMax, boolean defaultAvailable, DataTypeCategory dataTypeCategory) {
         /** TODO 체크사항
          * 1. 크기에 대한 파라미터가 있는지?

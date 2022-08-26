@@ -59,4 +59,9 @@ public class TokenGenerator {
             return null;
         }
     }
+
+    public static Integer RandomInteger(int range) {
+        Random random = new Random();
+        return random.nextInt(range);
+    }
 }
