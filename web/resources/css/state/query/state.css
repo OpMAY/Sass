@@ -1,0 +1,67 @@
+#right-sidebar ._right-menu ._scroll-container::-webkit-scrollbar {
+    width: 5px;
+    background-color: var(--brand-orange-opacity); /* 또는 트랙에 추가한다 */
+}
+
+#right-sidebar ._right-menu ._scroll-container::-webkit-scrollbar-thumb {
+    background-color: var(--brand-orange);
+}
+
+.database-editor ._editor::-webkit-scrollbar {
+    width: 5px;
+    background-color: var(--brand-orange-opacity); /* 또는 트랙에 추가한다 */
+}
+
+.database-editor ._editor::-webkit-scrollbar-thumb {
+    background-color: var(--brand-orange);
+}
+
+.form-group.inner-append > p:hover > svg * {
+    fill: var(--gray-dark-low);
+}
+
+#right-sidebar ._right-menu.is-close {
+    left: -100%;
+    transition: left 0.5s;
+}
+
+#right-sidebar ._right-menu.is-close ._side-toggle {
+    right: -34px;
+    transform: rotate(-180deg);
+    transition: all 0.5s;
+}
+
+#right-sidebar ._right-menu.is-open {
+    left: 0;
+    transition: left 0.5s;
+}
+
+#right-sidebar ._right-menu.is-open ._side-toggle {
+    right: -16px;
+    transform: rotate(0);
+    transition: all 0.5s;
+}
+
+#right-sidebar ._right-menu.is-open ._side-button-container {
+    right: calc(-100% - 20px);
+    transition: right 0.5s;
+}
+
+#right-sidebar ._right-menu.is-close ._side-button-container {
+    right: calc(-100% - 60px);
+    transition: right 0.5s;
+}
+
+.database-type-item:hover,
+.database-type-item.is-active {
+    border-color: var(--brand-orange);
+}
+
+.database-type-item:hover ._name,
+.database-type-item.is-active ._name {
+    color: var(--brand-orange);
+}
+
+#database-editor-container.is-open {
+    display: block;
+}

@@ -1,11 +1,46 @@
-.card-main.is-active {
-    border: var(--border-1px) var(--impact-primary);
+/*Tabs*/
+ul.tabs .nav-link.active {
+    color: var(--gray-dark-low);
+    font-weight: 500;
+    line-height: var(--line-24);
+    font-size: var(--font-16);
 }
 
-.card-main.is-hover:hover {
-    border: var(--border-1px) var(--impact-primary);
+/*Input*/
+input.form-general:focus,
+input.form-general.is-focus {
+    border: var(--border-2px) var(--gray-dark-low);
+    border-radius: var(--input-radius);
 }
 
-.card-main.is-focus:focus {
-    border: var(--border-1px) var(--impact-primary);
+input.form-general:disabled,
+input.form-general.is-disabled {
+    background-color: var(--gray-high-light);
+    border: var(--border-2px) var(--gray-high-light);
+}
+
+.form-group.inner-append.is-append > p {
+    display: inline-block;
+}
+
+/*Button*/
+button.btn.btn-transparent:hover {
+    color: var(--gray-dark-low);
+}
+
+button.btn.btn-transparent.c-brand-purple:hover {
+    color: var(--brand-purple);
+}
+
+button.btn.btn-gray-high-light.active-type.is-active {
+    background-color: var(--gray-high-light);
+    color: var(--gray-dark-low);
+}
+
+#plugin-left-sidebar ._left-plugin:hover {
+    background-color: var(--gray-high-light);
+}
+
+#plugin-left-sidebar ._option:hover {
+    background-color: var(--gray-high-light);
 }
