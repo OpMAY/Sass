@@ -34,8 +34,8 @@ public class QueryPlugRestController {
      * .then(result => console.log(result))
      * .catch(error => console.log('error', error));
      */
-    @RequestMapping(value = "/get/{user_no}/{database_no}/tables", method = RequestMethod.GET)
-    public ResponseEntity<String> getTables(@PathVariable("user_no") int user_no, @PathVariable("database_no") int database_no) {
+    @RequestMapping(value = "/get/{database_no}/tables", method = RequestMethod.GET)
+    public ResponseEntity<String> getTables(@PathVariable("database_no") int database_no) {
         Message message = new Message();
 
         ArrayList<Table> tables = new ArrayList<>();
