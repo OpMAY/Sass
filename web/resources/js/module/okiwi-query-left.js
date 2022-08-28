@@ -9,52 +9,50 @@
  * @param {Object[]} draggable_tables 전역 테이블들
  * */
 const initializeTableList = (selector, draggable_tables) => {
-  const list_container = document.querySelector(selector);
+    const list_container = document.querySelector(selector);
 
-  // ListContainer Click Event Initialize
-  $(list_container).on('click', function(event) {
-    const event_target = event.target;
-    if (event_target.closest('._delete')?.classList.contains('_delete')) {
-      const delete_target = event_target.closest('li');
-      const table_id = delete_target.closest('.table-list-component').dataset.tableId;
-      const table_row_id = delete_target.dataset.tableRow;
-      delete_target.remove();
+    // ListContainer Click Event Initialize
+    $(list_container).on('click', function (event) {
+        const event_target = event.target;
+        if (event_target.closest('._delete')?.classList.contains('_delete')) {
+            const delete_target = event_target.closest('li');
+            const table_id = delete_target.closest('.table-list-component').dataset.tableId;
+            const table_row_id = delete_target.dataset.tableRow;
+            delete_target.remove();
 
-      // okiwi-query.js
-      deleteTableRowConnectable(table_id, table_row_id);
-    } else if (event_target.closest('._name')?.classList.contains('_name')) {
-      const delete_target = event_target.closest('li');
-      const table_id = delete_target.closest('.table-list-component').dataset.tableId;
-      const table_row_id = delete_target.dataset.tableRow;
-      tableRowMoveScroll(table_id, table_row_id);
-    } else if (event_target.closest('._title')?.classList.contains('_title')) {
-      const table_id = event_target.closest('.table-list-component').dataset.tableId;
-      tableMoveScroll(table_id);
-    }
-  });
+            // okiwi-query.js
+            deleteTableRowConnectable(table_id, table_row_id);
+        } else if (event_target.closest('._name')?.classList.contains('_name')) {
+            const delete_target = event_target.closest('li');
+            const table_id = delete_target.closest('.table-list-component').dataset.tableId;
+            const table_row_id = delete_target.dataset.tableRow;
+            tableRowMoveScroll(table_id, table_row_id);
+        } else if (event_target.closest('._title')?.classList.contains('_title')) {
+            const table_id = event_target.closest('.table-list-component').dataset.tableId;
+            tableMoveScroll(table_id);
+        }
+    });
 
-  // ListContainer Accordion Event
-  $(`${selector}`).on('hide.bs.collapse', function(e) {
-    // do something...
-    console.log('this', this, e.target);
-    const table_list_component = e.target.closest('.table-list-component');
-    const create = table_list_component.querySelector('._option._create');
-    const btn_dropdown = table_list_component.querySelector('._option._dropdown');
-    $(create).hide();
-    $(btn_dropdown).show();
-  });
-  $(`${selector}`).on('show.bs.collapse', function(e) {
-    // do something...
-    console.log('this', this, e.target);
-    const table_list_component = e.target.closest('.table-list-component');
-    const create = table_list_component.querySelector('._option._create');
-    const btn_dropdown = table_list_component.querySelector('._option._dropdown');
-    $(create).show();
-    $(btn_dropdown).hide();
-  });
-  draggable_tables.forEach(function(table, index) {
-    $(list_container).append(createTableListElement(index, selector, table));
-  });
+    // ListContainer Accordion Event
+    $(`${selector}`).on('hide.bs.collapse', function (e) {
+        // do something...
+        const table_list_component = e.target.closest('.table-list-component');
+        const create = table_list_component.querySelector('._option._create');
+        const btn_dropdown = table_list_component.querySelector('._option._dropdown');
+        $(create).hide();
+        $(btn_dropdown).show();
+    });
+    $(`${selector}`).on('show.bs.collapse', function (e) {
+        // do something...
+        const table_list_component = e.target.closest('.table-list-component');
+        const create = table_list_component.querySelector('._option._create');
+        const btn_dropdown = table_list_component.querySelector('._option._dropdown');
+        $(create).show();
+        $(btn_dropdown).hide();
+    });
+    draggable_tables.forEach(function (table, index) {
+        $(list_container).append(createTableListElement(index, selector, table));
+    });
 };
 
 /**
@@ -69,86 +67,86 @@ const initializeTableList = (selector, draggable_tables) => {
  * @return {HTMLElement} 리스트 테이블의 엘리먼트
  * */
 const createTableListElement = (index, root_selector, table, writable = undefined) => {
-  const card = document.createElement('div');
-  card.classList.add('card', 'table-list-component');
-  card.setAttribute('data-table-id', table.id);
-  card.style.borderRadius = 0;
+    const card = document.createElement('div');
+    card.classList.add('card', 'table-list-component');
+    card.setAttribute('data-table-id', table.id);
+    card.style.borderRadius = 0;
 
-  const card_header = document.createElement('div');
-  card_header.classList.add('card-header');
-  card_header.setAttribute('id', table.id);
-  card_header.style.padding = 0;
+    const card_header = document.createElement('div');
+    card_header.classList.add('card-header');
+    card_header.setAttribute('id', table.id);
+    card_header.style.padding = 0;
 
-  const h2 = document.createElement('div');
-  h2.classList.add('mb-0');
-  const button = document.createElement('div');
-  button.classList.add('_header', 'd-block', 'text-left', 'd-flex');
-  button.style.borderRadius = 0;
-  if (writable) {
-    button.innerHTML = createTableListButtonHeaderWritableElement(table.id, table.name);
-  } else {
-    button.innerHTML = createTableListButtonHeaderElement(table.name);
-  }
-  const button_dropdown = button.querySelector('._option._dropdown');
-  ['type', 'data-toggle', 'data-target', 'aria-expanded', 'aria-controls'].forEach(function(attr) {
-    switch (attr) {
-      case 'type':
-        button_dropdown.setAttribute(attr, 'button');
-        break;
-      case 'data-toggle':
-        button_dropdown.setAttribute(attr, 'collapse');
-        break;
-      case 'data-target':
-        button_dropdown.setAttribute(attr, `#collapse-${table.id}`);
-        break;
-      case 'aria-expanded':
-        button_dropdown.setAttribute(attr, `${index === 0 ? 'false' : 'false'}`);
-        break;
-      case 'aria-controls':
-        button_dropdown.setAttribute(attr, `${table.id}`);
-        break;
+    const h2 = document.createElement('div');
+    h2.classList.add('mb-0');
+    const button = document.createElement('div');
+    button.classList.add('_header', 'd-block', 'text-left', 'd-flex');
+    button.style.borderRadius = 0;
+    if (writable) {
+        button.innerHTML = createTableListButtonHeaderWritableElement(table.id, table.name);
+    } else {
+        button.innerHTML = createTableListButtonHeaderElement(table.name);
     }
-  });
-  h2.appendChild(button);
-  card_header.appendChild(h2);
-  card.appendChild(card_header);
+    const button_dropdown = button.querySelector('._option._dropdown');
+    ['type', 'data-toggle', 'data-target', 'aria-expanded', 'aria-controls'].forEach(function (attr) {
+        switch (attr) {
+            case 'type':
+                button_dropdown.setAttribute(attr, 'button');
+                break;
+            case 'data-toggle':
+                button_dropdown.setAttribute(attr, 'collapse');
+                break;
+            case 'data-target':
+                button_dropdown.setAttribute(attr, `#collapse-${table.id}`);
+                break;
+            case 'aria-expanded':
+                button_dropdown.setAttribute(attr, `${index === 0 ? 'false' : 'false'}`);
+                break;
+            case 'aria-controls':
+                button_dropdown.setAttribute(attr, `${table.id}`);
+                break;
+        }
+    });
+    h2.appendChild(button);
+    card_header.appendChild(h2);
+    card.appendChild(card_header);
 
-  const collapse = document.createElement('div');
-  collapse.classList.add('collapse');
-  /* if (index === 0) {
-        collapse.classList.add('show');
-    }*/
+    const collapse = document.createElement('div');
+    collapse.classList.add('collapse');
+    /* if (index === 0) {
+          collapse.classList.add('show');
+      }*/
 
-  ['id', 'aria-labelledby', 'data-parent'].forEach(function(attr) {
-    switch (attr) {
-      case 'id':
-        collapse.setAttribute(attr, `collapse-${table.id}`);
-        break;
-      case 'aria-labelledby':
-        collapse.setAttribute(attr, `${table.id}`);
-        break;
-      case 'data-parent':
-        collapse.setAttribute(attr, `${root_selector}`);
-        break;
-    }
-  });
+    ['id', 'aria-labelledby', 'data-parent'].forEach(function (attr) {
+        switch (attr) {
+            case 'id':
+                collapse.setAttribute(attr, `collapse-${table.id}`);
+                break;
+            case 'aria-labelledby':
+                collapse.setAttribute(attr, `${table.id}`);
+                break;
+            case 'data-parent':
+                collapse.setAttribute(attr, `${root_selector}`);
+                break;
+        }
+    });
 
-  const card_body = document.createElement('div');
-  card_body.classList.add('card-body');
-  card_body.style.padding = 0;
+    const card_body = document.createElement('div');
+    card_body.classList.add('card-body');
+    card_body.style.padding = 0;
 
-  const column_list = document.createElement('ul');
-  column_list.classList.add('list-group', 'list-group-flush');
+    const column_list = document.createElement('ul');
+    column_list.classList.add('list-group', 'list-group-flush');
 
-  table.columns.forEach(function(column) {
-    column_list.appendChild(createTableListColumnElement(column));
-  });
+    table.columns.forEach(function (column) {
+        column_list.appendChild(createTableListColumnElement(column));
+    });
 
-  card_body.appendChild(column_list);
-  collapse.appendChild(card_body);
-  card.appendChild(collapse);
+    card_body.appendChild(column_list);
+    collapse.appendChild(card_body);
+    card.appendChild(collapse);
 
-  return card;
+    return card;
 };
 
 /**
@@ -158,10 +156,10 @@ const createTableListElement = (index, root_selector, table, writable = undefine
  * @param {Object} column 처음인지 아닌지 구분하는 변수
  * */
 const createTableListColumnElement = (column) => {
-  const li = document.createElement('li');
-  li.setAttribute('data-table-row', column.id);
-  li.classList.add('list-group-item');
-  li.innerHTML = `<div class="_name">${column.name}</div>
+    const li = document.createElement('li');
+    li.setAttribute('data-table-row', column.id);
+    li.classList.add('list-group-item');
+    li.innerHTML = `<div class="_name">${column.name}</div>
                     <div class="_delete">
                       <svg width="10"
                            height="10"
@@ -172,7 +170,7 @@ const createTableListColumnElement = (column) => {
                               fill="black"/>
                       </svg>
                     </div>`;
-  return li;
+    return li;
 };
 
 /**
@@ -183,10 +181,10 @@ const createTableListColumnElement = (column) => {
  * @param {Object} column 컬럼에 관한 정보를 담고있는 오브젝트
  * */
 const createTableListWritableColumnElement = (table_id, column) => {
-  const li = document.createElement('li');
-  li.setAttribute('data-table-row', column.id);
-  li.classList.add('list-group-item');
-  li.innerHTML = `<input type="text"
+    const li = document.createElement('li');
+    li.setAttribute('data-table-row', column.id);
+    li.classList.add('list-group-item');
+    li.innerHTML = `<input type="text"
                            data-table-id="${table_id}"
                            value="${column.name}">
                     <div class="_check">
@@ -202,7 +200,7 @@ const createTableListWritableColumnElement = (table_id, column) => {
                               stroke-linejoin="round"></path>
                       </svg>
                     </div>`;
-  return li;
+    return li;
 };
 
 /**
@@ -214,7 +212,7 @@ const createTableListWritableColumnElement = (table_id, column) => {
  * @return {string}
  * */
 const createTableListButtonHeaderElement = (name) => {
-  return `<div class="_title">${name}</div>
+    return `<div class="_title">${name}</div>
             <div class="_option _create" style="display: none;" onclick="createTableListColumn(this);">
               <svg width="20"
                    height="20"
@@ -252,7 +250,7 @@ const createTableListButtonHeaderElement = (name) => {
  * @return {string}
  * */
 const createTableListButtonHeaderWritableElement = (table_id, name) => {
-  return `<div class="_title">
+    return `<div class="_title">
               <input type="text"
                      data-table-id="${table_id}"
                      value="${name}">
@@ -305,18 +303,19 @@ const createTableListButtonHeaderWritableElement = (table_id, name) => {
  * @param {HTMLElement} option 테이블의 고유 아이디
  * */
 function updateTableName(option) {
-  const list_table = option.closest('.table-list-component');
-  const input_element = list_table.querySelector('._title > input');
-  const title_element = list_table.querySelector('._title');
-  const btn_create = list_table.querySelector('._option._create');
-  const btn_dropdown = list_table.querySelector('._option._dropdown');
-  // $(btn_create).show();
-  $(btn_dropdown).show();
-  // okiwi-query.js
-  updateTableNameConnectable(draggable_tables, list_table.dataset.tableId, input_element.value);
+    const list_table = option.closest('.table-list-component');
+    const input_element = list_table.querySelector('._title > input');
+    const title_element = list_table.querySelector('._title');
+    const btn_create = list_table.querySelector('._option._create');
+    const btn_dropdown = list_table.querySelector('._option._dropdown');
+    // $(btn_create).show();
+    $(btn_dropdown).show();
+    let updated_value = input_element.value;
+    // okiwi-query.js
+    updateTableNameConnectable(draggable_tables, list_table.dataset.tableId, updated_value);
 
-  title_element.innerHTML = `${input_element.value}`;
-  option.remove();
+    title_element.innerHTML = `${updated_value}`;
+    option.remove();
 }
 
 /**
@@ -327,18 +326,18 @@ function updateTableName(option) {
  * @param {HTMLElement} option 테이블의 고유 아이디
  * */
 function createTableListColumn(option) {
-  const list_table = option.closest('.table-list-component');
-  const list_container = list_table.querySelector('.card-body .list-group');
-  const token = tokenGenerator(10);
-  const column = {
-    id: token,
-    name: token,
-  };
-  const writable_column = createTableListWritableColumnElement(list_table.dataset.tableId, column);
-  writable_column.querySelector('._check').addEventListener('click', function(event) {
-    const li = this.closest('li');
-    const input = li.querySelector('input');
-    li.innerHTML = `<div class="_name">${input.value}</div>
+    const list_table = option.closest('.table-list-component');
+    const list_container = list_table.querySelector('.card-body .list-group');
+    const row_id = apiCreateNextId(0, 'ROW');
+    const column = {
+        id: row_id,
+        name: row_id,
+    };
+    const writable_column = createTableListWritableColumnElement(list_table.dataset.tableId, column);
+    writable_column.querySelector('._check').addEventListener('click', function (event) {
+        const li = this.closest('li');
+        const input = li.querySelector('input');
+        li.innerHTML = `<div class="_name">${input.value}</div>
                         <div class="_delete">
                           <svg width="10"
                                height="10"
@@ -349,13 +348,13 @@ function createTableListColumn(option) {
                                   fill="black"/>
                           </svg>
                         </div>`;
-    // okiwi-query.js
-    updateTableRowNameConnectable(li.closest('.table-list-component').dataset.tableId, li.dataset.tableRow, input.value);
-  });
-  list_container.append(writable_column);
+        // okiwi-query.js
+        updateTableRowNameConnectable(li.closest('.table-list-component').dataset.tableId, li.dataset.tableRow, input.value);
+    });
+    list_container.append(writable_column);
 
-  // okiwi-query.js
-  createTableRowConnectable(list_table.dataset.tableId, token);
+    // okiwi-query.js
+    createTableRowConnectable(list_table.dataset.tableId, row_id);
 }
 
 /**
@@ -367,24 +366,25 @@ function createTableListColumn(option) {
  * @param {string} writable 테이블의 이름을 수정할 수 있는 엘리먼트를 생성할지 구분하는 변수
  * */
 const createTableList = (selector, writable = undefined) => {
-  const list_container = document.querySelector(selector);
-  const token = tokenGenerator(10);
-  const table = {
-    id: token,
-    name: token,
-    columns: [{
-      id: tokenGenerator(10),
-      name: 'no',
-      type: 'int',
-      comment: '',
-      pk: false,
-      nullable: false,
-      auto_increment: false,
-    }],
-  };
-  $(list_container).append(createTableListElement(999, '#list-tables', table, writable));
-  // okiwi-query.js
-  createTableConnectable('.table-container', draggable_tables, table);
+    const list_container = document.querySelector(selector);
+    let table_id = apiCreateNextId(0, 'TABLE');
+    let row_id = apiCreateNextId(0, 'ROW');
+    const table = {
+        id: table_id,
+        name: table_id,
+        columns: [{
+            id: row_id,
+            name: 'no',
+            type: 'int',
+            comment: '',
+            pk: false,
+            nullable: false,
+            auto_increment: false,
+        }],
+    };
+    $(list_container).append(createTableListElement(999, '#list-tables', table, writable));
+    // okiwi-query.js
+    createTableConnectable('.table-container', draggable_tables, table);
 };
 
 /**
@@ -396,13 +396,13 @@ const createTableList = (selector, writable = undefined) => {
  * @param {Object} draggable_table 화면에서 생성한 테이블의 정보를 담고있는 변수
  * */
 const createTableListConnectable = (selector, draggable_table) => {
-  const list_container = document.querySelector(selector);
-  const table = {
-    id: draggable_table.id,
-    name: draggable_table.name,
-    columns: draggable_table.columns,
-  };
-  $(list_container).append(createTableListElement(999, undefined, table, undefined));
+    const list_container = document.querySelector(selector);
+    const table = {
+        id: draggable_table.id,
+        name: draggable_table.name,
+        columns: draggable_table.columns,
+    };
+    $(list_container).append(createTableListElement(999, undefined, table, undefined));
 };
 
 /**
@@ -413,9 +413,9 @@ const createTableListConnectable = (selector, draggable_table) => {
  * @param {string} changed_name 변경할 테이블 이름
  * */
 const updateTableListName = (table_id, changed_name) => {
-  const list_table = document.querySelector(`.table-list-component[data-table-id="${table_id}"]`);
-  const title_element = list_table.querySelector('._header ._title');
-  title_element.innerHTML = `${changed_name}`;
+    const list_table = document.querySelector(`.table-list-component[data-table-id="${table_id}"]`);
+    const title_element = list_table.querySelector('._header ._title');
+    title_element.innerHTML = `${changed_name}`;
 };
 
 /**
@@ -426,13 +426,13 @@ const updateTableListName = (table_id, changed_name) => {
  * @param {Node | HTMLElement} row 화면에서 생성된 행 엘리먼트 또는 노드
  * */
 const createTableListRowConnectable = (draggable_table, row) => {
-  const list_table = document.querySelector(`.table-list-component[data-table-id="${draggable_table.id}"]`);
-  const column = {
-    id: row.dataset.tableRow,
-    name: row.querySelector('td._column-name > input').value,
-  };
-  const column_list = list_table.querySelector('.card-body .list-group');
-  column_list.append(createTableListColumnElement(column));
+    const list_table = document.querySelector(`.table-list-component[data-table-id="${draggable_table.id}"]`);
+    const column = {
+        id: row.dataset.tableRow,
+        name: row.querySelector('td._column-name > input').value,
+    };
+    const column_list = list_table.querySelector('.card-body .list-group');
+    column_list.append(createTableListColumnElement(column));
 };
 
 /**
@@ -442,15 +442,15 @@ const createTableListRowConnectable = (draggable_table, row) => {
  * @param {HTMLInputElement | Node} input 삭제옵션이 담긴 엘리먼트, 자기자신(this)
  * */
 function inputTableListChangeConnectable(input) {
-  const table_row_element = input.closest('[data-table-id][data-table-row]');
-  const list_table = document.querySelector(`.table-list-component[data-table-id="${table_row_element.dataset.tableId}"]`);
-  const list_table_column_name = list_table.querySelector(`.card-body .list-group .list-group-item[data-table-row="${table_row_element.dataset.tableRow}"] ._name`);
-  list_table_column_name.innerHTML = `${input.value}`;
-  const table_row = findTableRowById(table_row_element.dataset.tableId, table_row_element.dataset.tableRow);
-  if (input.value.trim() === table_row.name) {
-    return;
-  }
-  table_row.name = input.value;
+    const table_row_element = input.closest('[data-table-id][data-table-row]');
+    const list_table = document.querySelector(`.table-list-component[data-table-id="${table_row_element.dataset.tableId}"]`);
+    const list_table_column_name = list_table.querySelector(`.card-body .list-group .list-group-item[data-table-row="${table_row_element.dataset.tableRow}"] ._name`);
+    list_table_column_name.innerHTML = `${input.value}`;
+    const table_row = findTableRowById(table_row_element.dataset.tableId, table_row_element.dataset.tableRow);
+    if (input.value.trim() === table_row.name) {
+        return;
+    }
+    table_row.name = input.value;
 }
 
 /**
@@ -461,9 +461,9 @@ function inputTableListChangeConnectable(input) {
  * @param {string} row_id 삭제할 행의 고유 아이디
  * */
 function deleteTableListRowConnectable(table_id, row_id) {
-  const list_table = document.querySelector(`.table-list-component[data-table-id="${table_id}"]`);
-  const list_table_column = list_table.querySelector(`.card-body .list-group .list-group-item[data-table-row="${row_id}"]`);
-  if (list_table_column) {
-    list_table_column.querySelector('._delete').click();
-  }
+    const list_table = document.querySelector(`.table-list-component[data-table-id="${table_id}"]`);
+    const list_table_column = list_table.querySelector(`.card-body .list-group .list-group-item[data-table-row="${row_id}"]`);
+    if (list_table_column) {
+        list_table_column.querySelector('._delete').click();
+    }
 }

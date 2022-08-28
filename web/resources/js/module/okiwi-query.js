@@ -1,25 +1,20 @@
 'use strict';
-
+// Minimum Position
+let MINIMUM_POSITION = {
+    left: 400,
+    top: 150
+}
 // Auto Complete Entries Variable
-const entries =
-    [
-        'bit(n)', 'bool', 'boolean', 'tinyint(n)', 'smallint(n)', 'mediumint(n)', 'int(n)', 'integer(n)', 'bigint(n)', 'decimal(m,d)', 'float(n)', 'double(n)',
-        'date', 'datetime', 'timestamp', 'year',
-        'char(n)', 'vachar(n)', 'binary(n)', 'varbinary(n)', 'tinyblob', 'tinytext', 'text(n)', 'blob(n)', 'mediumtext', 'longtext', 'longblob',
-        'enum(\'val1\', \'val2\')', 'set(\'val1\', \'val2\')',
-    ];
+const entries = ['bit(n)', 'bool', 'boolean', 'tinyint(n)', 'smallint(n)', 'mediumint(n)', 'int(n)', 'integer(n)', 'bigint(n)', 'decimal(m,d)', 'float(n)', 'double(n)', 'date', 'datetime', 'timestamp', 'year', 'char(n)', 'vachar(n)', 'binary(n)', 'varbinary(n)', 'tinyblob', 'tinytext', 'text(n)', 'blob(n)', 'mediumtext', 'longtext', 'longblob', 'enum(\'val1\', \'val2\')', 'set(\'val1\', \'val2\')',];
 
 // Event Status Variable
 const status = {
-    touchStart: false,
-    touchEnd: false,
-    click: false,
+    touchStart: false, touchEnd: false, click: false,
 };
 
 // Auto Sorting GuideLine Variable
 const guide_line = {
-    x_lines: [],
-    y_lines: [],
+    x_lines: [], y_lines: [],
 };
 
 
@@ -109,36 +104,32 @@ const tableAutoSorting = (draggable_tables, leader_lines) => {
       * */
     const tables = document.querySelectorAll('.table-container .component');
     const scale = parseFloat(document.querySelector('._right-option._scale-up').dataset.scale);
-    let base_top = 150 * scale;
-    const base_left = 400 * scale;
+    let base_top = MINIMUM_POSITION.top * scale;
+    const base_left = MINIMUM_POSITION.left * scale;
     let next_left = base_left;
     let base_draggable_table_objects = new Array();
     for (let i = 0; i < tables.length; i++) {
         const draggable_table_object = findTableById(draggable_tables, tables[i].id);
         if (i === 0) {
             updateContainerFix(draggable_table_object.draggable_table, {
-                left: base_left,
-                top: base_top,
+                left: base_left, top: base_top,
             });
             draggable_table_object.draggable_table.element.style.transform = `translate(${base_left}px, ${base_top}px) scale(${scale})`;
             draggable_table_object.draggable_table.position();
             updatePosition(draggable_tables, draggable_table_object.draggable_table.element, {
-                left: base_left,
-                top: base_top,
+                left: base_left, top: base_top,
             });
             next_left = base_left + (draggable_table_object.draggable_table.element.offsetWidth * scale) + (100 * scale);
             base_draggable_table_objects.push(draggable_table_object);
             continue;
         }
         updateContainerFix(draggable_table_object.draggable_table, {
-            left: next_left,
-            top: base_top,
+            left: next_left, top: base_top,
         });
         draggable_table_object.draggable_table.element.style.transform = `translate(${next_left}px, ${base_top}px) scale(${scale})`;
         draggable_table_object.draggable_table.position();
         updatePosition(draggable_tables, draggable_table_object.draggable_table.element, {
-            left: next_left,
-            top: base_top,
+            left: next_left, top: base_top,
         });
         next_left = next_left + (draggable_table_object.draggable_table.element.offsetWidth * scale) + (100 * scale);
 
@@ -286,9 +277,7 @@ const initializeTableOptions = (selector) => {
             const styles = window.getComputedStyle(name_element);
             const height = 'auto';
             name_element.innerHTML = createTableModifyElement({
-                tableId: option.dataset.tableId,
-                height: height,
-                value: value,
+                tableId: option.dataset.tableId, height: height, value: value,
             });
             name_element.querySelector('svg').addEventListener('click', function (event) {
                 const name_element = this.closest('._name');
@@ -298,6 +287,10 @@ const initializeTableOptions = (selector) => {
                 updateTableListName(name_element.querySelector('input').dataset.tableId, update_value);
                 name_element.innerHTML = `${update_value}`;
                 table.name = `${update_value}`;
+                // apis.js
+                apiUpdateTable(0, table.id, {name: `${update_value}`}, () => {
+                }, () => {
+                });
             });
         } else if (this.classList.contains('_duplicate')) {
             // TODO Duplicate
@@ -448,11 +441,9 @@ const createTable = ($container, draggable_tables, table, zIndex, connectable = 
     const scrollHeight = $container[0].getBoundingClientRect().top;
 
     const table_position = {
-        id: table.id,
-        position: {
+        id: table.id, position: {
             // 100은 만들어질 Component 초기 Height
-            top: (window.innerHeight / 2) + Math.abs(scrollHeight) - 130,
-            // 200은 만들어질 Component 초기 Width
+            top: (window.innerHeight / 2) + Math.abs(scrollHeight) - 130, // 200은 만들어질 Component 초기 Width
             left: (window.innerWidth / 2) + Math.abs(scrollWidth) - 200,
         },
     };
@@ -493,6 +484,10 @@ const createTable = ($container, draggable_tables, table, zIndex, connectable = 
     } else {
         detailTableView(table.draggable_table.element);
     }
+    // apis.js
+    apiCreateTable(0, table, () => {
+    }, () => {
+    });
 };
 
 /**
@@ -545,9 +540,7 @@ const initializeDraggableTables = (draggable_tables, $tables, origin_tables) => 
  * */
 const initializeLines = (lines) => {
     const options = {
-        path: 'fluid',
-        color: '#969696',
-        dash: {len: 5, gap: 2},
+        path: 'fluid', color: '#969696', dash: {len: 5, gap: 2},
     };
 
     const initializedLines = new Array();
@@ -556,12 +549,7 @@ const initializeLines = (lines) => {
         const from_row = document.querySelector(`[data-table-id="${line.from}"][data-table-row="${line.from_row}"]`);
 
         const leader_line_obj = {
-            leader_line: new LeaderLine(
-                to_row,
-                from_row,
-                options,
-            ),
-            info_line: line,
+            leader_line: new LeaderLine(to_row, from_row, options,), info_line: line,
         };
         to_row.querySelector('._fk').innerHTML = `<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                               <g clip-path="url(#clip0_6_4459)">
@@ -623,16 +611,15 @@ const moveLeaderLine = (container, leader_line) => {
  * @param {Object} position 드래그하고 있는 위치 좌표에 대한 정보
  * */
 function onDragEventListener(position) {
-    console.log('onDragEventListener');
     const draggable_table = this;
     const table = draggable_table.element;
     const container = draggable_table.containment;
     const table_id = draggable_table._id;
-    if (position.top < 150) {
-        position.top = 150;
+    if (position.top < MINIMUM_POSITION.top) {
+        position.top = MINIMUM_POSITION.top;
     }
-    if (position.left < 400) {
-        position.left = 400;
+    if (position.left < MINIMUM_POSITION.left) {
+        position.left = MINIMUM_POSITION.left;
     }
     updateContainer(draggable_table, position);
 }
@@ -645,13 +632,12 @@ function onDragEventListener(position) {
  * @param {Object} position 드래그시작 위치 좌표에 대한 정보
  * */
 function onDragStartEventListener(position) {
-    console.info('onDragStartEventListener');
     const draggable_table = this;
     const table = draggable_table.element;
     const container = draggable_table.containment;
     const table_id = draggable_table._id;
     updateZIndex(container, draggable_table);
-    updatePosition(draggable_tables, table, position);
+    //updatePosition(draggable_tables, table, position);
 }
 
 /**
@@ -662,7 +648,6 @@ function onDragStartEventListener(position) {
  * @param {Object} position 드래그가 끝난 위치 좌표에 대한 정보
  * */
 function onDragEndEventListener(position) {
-    console.info('onDragEndEventListener');
     const draggable_table = this;
     const table = draggable_table.element;
     const container = draggable_table.containment;
@@ -679,7 +664,6 @@ function onDragEndEventListener(position) {
  * @param {Object} position 이동이 시작된 위치 좌표에 대한 정보
  * */
 function onMoveStartEventListener(position) {
-    console.info('onMoveStartEventListener');
     const draggable_table = this;
     const table = draggable_table.element;
     if (table.classList.contains('plain-draggable-dragging')) {
@@ -689,7 +673,7 @@ function onMoveStartEventListener(position) {
     }
     const container = draggable_table.containment;
     const table_id = draggable_table._id;
-    updatePosition(draggable_tables, table, position);
+    //updatePosition(draggable_tables, table, position);
     updateContainer(draggable_table, position);
 }
 
@@ -706,7 +690,7 @@ function onMoveEventListener(position) {
     const container = draggable_table.containment;
     const table_id = draggable_table._id;
     updateLines(leader_lines);
-    updatePosition(draggable_tables, table, position);
+    //updatePosition(draggable_tables, table, position);
 }
 
 /**
@@ -725,6 +709,10 @@ const updatePosition = (draggable_tables, table, position) => {
     });
     draggable_table.position.top = position.top;
     draggable_table.position.left = position.left;
+    // api.js
+    apiUpdateTablePosition(0, draggable_table.id, position, () => {
+    }, () => {
+    });
 };
 
 /**
@@ -765,15 +753,14 @@ const updateLine = (line) => {
  * */
 const createLine = (leader_lines, to_row, from_row, options, line) => {
     const leader_line_obj = {
-        leader_line: new LeaderLine(
-            to_row,
-            from_row,
-            options,
-        ),
-        info_line: line,
+        leader_line: new LeaderLine(to_row, from_row, options,), info_line: line,
     };
     leader_lines.push(leader_line_obj);
     moveLeaderLine($('.table-container'), leader_line_obj);
+    // api.js
+    apiConnectLine(0, leader_line_obj.info_line, () => {
+    }, () => {
+    });
     return leader_line_obj;
 };
 
@@ -810,20 +797,14 @@ const updateLineDirection = (leader_line_obj) => {
             //          [ start ]
             // [end]
             leader_line_obj.leader_line.setOptions({
-                startSocket: 'left',
-                endSocket: 'right',
-                startSocketGravity: [-100, 0],
-                endSocketGravity: [100, 0],
+                startSocket: 'left', endSocket: 'right', startSocketGravity: [-100, 0], endSocketGravity: [100, 0],
             });
         } else if (distance < from_table_width) {
             // 중앙값 간의 거리를 비교헀을때 거리가 Table의 Width를 넘지않았을 때
             // [  start  ]
             // [ end ]
             leader_line_obj.leader_line.setOptions({
-                startSocket: 'left',
-                endSocket: 'left',
-                startSocketGravity: [-100, 0],
-                endSocketGravity: [-100, 0],
+                startSocket: 'left', endSocket: 'left', startSocketGravity: [-100, 0], endSocketGravity: [-100, 0],
             });
         }
     } else {
@@ -833,20 +814,14 @@ const updateLineDirection = (leader_line_obj) => {
             //          [ start ]
             //                      [end]
             leader_line_obj.leader_line.setOptions({
-                startSocket: 'right',
-                endSocket: 'left',
-                startSocketGravity: [100, 0],
-                endSocketGravity: [-100, 0],
+                startSocket: 'right', endSocket: 'left', startSocketGravity: [100, 0], endSocketGravity: [-100, 0],
             });
         } else if (distance < from_table_width) {
             // 중앙값 간의 거리를 비교헀을때 거리가 Table의 Width를 넘지않았을 때
             // [  start  ]
             //       [ end ]
             leader_line_obj.leader_line.setOptions({
-                startSocket: 'right',
-                endSocket: 'right',
-                startSocketGravity: [100, 0],
-                endSocketGravity: [100, 0],
+                startSocket: 'right', endSocket: 'right', startSocketGravity: [100, 0], endSocketGravity: [100, 0],
             });
         }
     }
@@ -869,7 +844,7 @@ const updateZIndex = (container, draggable_table) => {
  * GetMaxZIndex,
  * 테이블들 중 가장 큰 Z Index 반환하는 함수
  *
- * @param {NodeList} tables javascript에 등록된 테이블들
+ * @param {NodeList | HTMLElement[]} tables javascript에 등록된 테이블들
  * @return {number} 가장 큰 Z Index에서 +1을 한 값
  * */
 const getMaxZIndex = (tables) => {
@@ -1086,16 +1061,9 @@ const createTableRowElement = (table, index, is_simple = false) => {
  * @param {number} index 테이블에 행에 관련된 인덱스
  * @return {string} html code
  * */
-const createTableRowElementDynamic = ({table_id, table_name},
-                                      {
-                                          column_id,
-                                          column_pk,
-                                          column_auto_increment,
-                                          column_nullable,
-                                          column_type,
-                                          column_comment,
-                                          column_name,
-                                      }, index) => {
+const createTableRowElementDynamic = ({table_id, table_name}, {
+    column_id, column_pk, column_auto_increment, column_nullable, column_type, column_comment, column_name,
+}, index) => {
     return `<tr data-table-id="${table_id}"
                 data-table-row="${column_id}"
                 data-table-index="${index}">
@@ -1206,17 +1174,13 @@ const initializeTableRowSelect = (table_rows) => {
 const initializeTableRowDrag = (table_rows) => {
     // Drag Row Event Listener로 대체 요구
     $(table_rows).draggable({
-        opacity: 0.6, helper: 'clone', cancel: '.not-draggable',
-        start: function (e, ui) {
-            console.log('start', e, ui);
-            console.log('ui.helper', ui.helper);
+        opacity: 0.6, helper: 'clone', cancel: '.not-draggable', start: function (e, ui) {
             ui.position.left = 0;
             ui.position.top = 0;
             ui.helper.addClass('is-selected');
             const dragged_item = e.target;
             return true;
-        },
-        drag: function (e, ui) {
+        }, drag: function (e, ui) {
             const scale = parseFloat(document.querySelector('._right-option._scale-up').dataset.scale);
             // console.log('drag', e, ui);
             const changeLeft = ui.position.left - ui.originalPosition.left; // find change in left
@@ -1227,14 +1191,11 @@ const initializeTableRowDrag = (table_rows) => {
 
             ui.position.left = newLeft;
             ui.position.top = newTop;
-        },
-        stop: function (e, ui) {
-            console.log('stop', e, ui);
+        }, stop: function (e, ui) {
         },
     });
     $(table_rows).droppable({
         drop: function (event, ui) {
-            console.log('drop', event, ui.draggable, this);
             const dropped_item = this;
             const dragged_item = ui.draggable;
 
@@ -1251,9 +1212,7 @@ const initializeTableRowDrag = (table_rows) => {
             const to_row = dragged_item[0];
             const from_row = dropped_item;
             const options = {
-                path: 'fluid',
-                color: '#969696',
-                dash: {len: 5, gap: 2},
+                path: 'fluid', color: '#969696', dash: {len: 5, gap: 2},
             };
             const info_line = {
                 to: `${dragged_item[0].dataset.tableId}`,
@@ -1287,15 +1246,11 @@ const initializeTableRowDrag = (table_rows) => {
                                        </defs>
                                    </svg>`;
             }
-        },
-        over: function () {
-            console.log('over', this);
+        }, over: function () {
             if (!this.classList.contains('is-selected')) {
                 this.classList.add('is-selected');
             }
-        },
-        out: function () {
-            console.log('out', this);
+        }, out: function () {
             if (this.classList.contains('is-selected')) {
                 this.classList.remove('is-selected');
             }
@@ -1308,7 +1263,6 @@ const initializeTableRowDrag = (table_rows) => {
  * 테이블의 행을 드래그 & 드랍 했을때에 이벤트 콜백함수
  * */
 function effectHighlightCallback() {
-    console.log('effectHighlightCallback', this);
     const target = this;
     setTimeout(function () {
         $(target).removeAttr('style').hide().fadeIn();
@@ -1323,7 +1277,6 @@ function effectHighlightCallback() {
  * @param {TouchEvent} event
  * */
 function tableRowTouchStartEventListener(event) {
-    console.log('tableRowTouchStartEventListener');
     status.touchStart = true;
     event.preventDefault();
     event.stopPropagation();
@@ -1337,7 +1290,6 @@ function tableRowTouchStartEventListener(event) {
  * @param {TouchEvent} event
  * */
 function tableRowTouchEndEventListener(event) {
-    console.log('tableRowTouchEndEventListener');
     status.touchStart = false;
     status.touchEnd = true;
 }
@@ -1352,12 +1304,10 @@ function tableRowTouchEndEventListener(event) {
  * @param {MouseEvent} event
  * */
 function tableRowSelectEventListener(event) {
-    console.log('tableRowSelectEventListener');
     if (status.touchEnd || status.touchStart) {
         const target = this;
         const event_target = event.target;
         if (event_target.closest('._fk')?.classList.contains('_fk')) {
-            console.log(event_target.closest('._fk'));
             if (event_target.closest(`._fk[data-status="close"]`)?.classList.contains('_fk')) {
                 const button_fk = event_target.closest(`._fk[data-status="close"]`);
                 if (button_fk !== undefined && button_fk !== null) {
@@ -1525,6 +1475,10 @@ const tableRowDelete = (draggable_tables, $table_row) => {
 
     // okiwi-query-left.js
     deleteTableListRowConnectable(table_id, table_row_id);
+    // api.js
+    apiDeleteTableRow(0, table_id, table_row_id, () => {
+    }, () => {
+    });
 };
 
 /**
@@ -1547,15 +1501,20 @@ function tableDeleteClickEventListener(e) {
  * @param {HTMLElement} table 삭제할 테이블 엘리먼트
  * */
 const deleteTable = (table) => {
+    const table_id = table.id;
     const $table = $(table);
     const table_rows = $table.find('table._table > tbody > tr');
     table_rows.each(function (index, table_row) {
         deleteLine($(table_row));
     });
     draggable_tables = draggable_tables.filter(function (table) {
-        return table.id === $table.attr('id') ? false : true;
+        return table.id === table_id ? false : true;
     });
     $table.remove();
+    // api.js
+    apiDeleteTable(0, table_id, () => {
+    }, () => {
+    });
 };
 
 /**
@@ -1631,15 +1590,24 @@ const deleteLine = ($table_row) => {
  * */
 const deleteLineRowByTo = ($table_row) => {
     const leader_line_objects = findLineRowByTo(leader_lines, $table_row);
+    let deleting_lines = new Array();
     leader_line_objects.forEach(function (line) {
         $(`.table-container .leader-line[data-line-id="${line.leader_line._id}"]`).remove();
         leader_lines = leader_lines.filter(function (leader_line) {
             if (line.leader_line._id === leader_line.leader_line._id) {
+                deleting_lines.push(leader_line);
                 return false;
             } else {
                 return true;
             }
         });
+    });
+    let lines = new Array();
+    deleting_lines.forEach(function (line) {
+        lines.push(line.info_line);
+    });
+    apiDisconnectLine(0, lines, () => {
+    }, () => {
     });
 };
 
@@ -1821,6 +1789,18 @@ function tableRowDownEventListener(event) {
             }
         });
         updateLines(leader_lines);
+        const table_rows = component.querySelectorAll('table._table > tbody > tr');
+        // api.js
+        let table_row_objs = new Array();
+        table_rows.forEach(function (table_row_element, index) {
+            table_row_objs.push({
+                id: table_row_element.dataset.tableRow,
+                order: index + 1
+            });
+        });
+        apiUpdateTableRowsOrder(table_rows, component.id, table_row_objs, () => {
+        }, () => {
+        });
     }
 }
 
@@ -1832,7 +1812,6 @@ function tableRowDownEventListener(event) {
  * */
 function tableRowUpEventListener(event) {
     const component = this.closest('.component');
-    const table_rows = component.querySelectorAll('table._table > tbody > tr');
     let selected_table_rows = component.querySelectorAll('table._table > tbody > tr > td._sort.is-checked');
     if (selected_table_rows.length !== 0) {
         selected_table_rows = [...selected_table_rows];
@@ -1844,6 +1823,18 @@ function tableRowUpEventListener(event) {
             }
         });
         updateLines(leader_lines);
+        const table_rows = component.querySelectorAll('table._table > tbody > tr');
+        // api.js
+        let table_row_objs = new Array();
+        table_rows.forEach(function (table_row_element, index) {
+            table_row_objs.push({
+                id: table_row_element.dataset.tableRow,
+                order: index + 1
+            });
+        });
+        apiUpdateTableRowsOrder(table_rows, component.id, table_row_objs, () => {
+        }, () => {
+        });
     }
 }
 
@@ -1856,7 +1847,6 @@ function tableRowUpEventListener(event) {
 function tableRowCreateEventListener(event) {
     const component = this.closest('.component');
     const table_rows = component.querySelectorAll('table._table > tbody > tr');
-    console.log('tableRowCreateEventListener');
     const type = document.querySelector('#right-sidebar ._right-menu ._side-button-container ._side-simple').dataset.type;
     createTableRow(component, table_rows, undefined, type);
 }
@@ -1875,7 +1865,7 @@ function tableRowCreateEventListener(event) {
 const createTableRow = (component, table_rows, col_id = undefined, view) => {
     const table = findTableById(draggable_tables, component.id);
     const row_container = component.querySelector('table._table > tbody');
-    const column_id = col_id ? col_id : tokenGenerator(10);
+    const column_id = col_id ? col_id : apiCreateNextId(0, 'ROW');
     const column = {
         column_id: column_id,
         column_pk: false,
@@ -1885,9 +1875,15 @@ const createTableRow = (component, table_rows, col_id = undefined, view) => {
         column_type: 'int',
         column_comment: '',
     };
+    column.id = column.column_id;
+    column.pk = column.column_pk;
+    column.auto_increment = column.column_auto_increment;
+    column.nullable = column.column_nullable;
+    column.name = column.column_name;
+    column.type = column.column_type;
+    column.comment = column.column_comment;
     $(row_container).append(createTableRowElementDynamic({
-        table_id: component.id,
-        table_name: table.name,
+        table_id: component.id, table_name: table.name,
     }, column, table_rows.length + 1));
 
     const origin_table = draggable_tables.find(function (draggable_table) {
@@ -1919,6 +1915,10 @@ const createTableRow = (component, table_rows, col_id = undefined, view) => {
     } else {
         detailTableView(origin_table.draggable_table.element);
     }
+    // api.js
+    apiCreateTableRow(0, origin_table.id, row, () => {
+    }, () => {
+    });
 };
 
 /**
@@ -2140,6 +2140,12 @@ const updateTableRowNameConnectable = (table_id, row_id, name) => {
     const component = document.querySelector(`.table-container .component[id="${table_id}"]`);
     const component_row = component.querySelector(`tbody > tr[data-table-id="${table_id}"][data-table-row="${row_id}"]`);
     component_row.querySelector('td._column-name input').value = name;
+    let table_row = findTableRowById(table_id, row_id);
+    table_row.name = name;
+    // api.js
+    apiUpdateTableRow(0, table_id, table_row, () => {
+    }, () => {
+    });
 };
 
 /**
@@ -2156,6 +2162,10 @@ const updateTableNameConnectable = (draggable_tables, table_id, update_value) =>
     table.name = `${update_value}`;
     const component = document.querySelector(`.table-container .component[id="${table_id}"]`);
     component.querySelector('._table-header th._name').innerHTML = `${update_value}`;
+    // api.js
+    apiUpdateTable(0, table.id, table, () => {
+    }, () => {
+    });
 };
 
 /**
@@ -2168,8 +2178,7 @@ const updateTableNameConnectable = (draggable_tables, table_id, update_value) =>
  * @param {Object} table 테이블의 정보가 담긴 오브젝트
  * */
 const createTableConnectable = (selector, draggable_tables, table) => {
-    createTable($(selector), draggable_tables, table,
-        getMaxZIndex(document.querySelectorAll(selector + ' .component[data-table-id]')), 'connectable');
+    createTable($(selector), draggable_tables, table, getMaxZIndex(document.querySelectorAll(selector + ' .component[data-table-id]')), 'connectable');
 };
 
 
@@ -2219,8 +2228,7 @@ const simpleTableView = (table) => {
     ths.forEach(function (th) {
         $(th).hide();
     });
-    const tds =
-        table.querySelectorAll('._table tbody tr[data-table-id][data-table-row] td:not(._column-name):not(._fk):not(._sort)');
+    const tds = table.querySelectorAll('._table tbody tr[data-table-id][data-table-row] td:not(._column-name):not(._fk):not(._sort)');
     tds.forEach(function (td) {
         $(td).hide();
     });
@@ -2239,8 +2247,7 @@ const detailTableView = (table) => {
     ths.forEach(function (th) {
         $(th).show();
     });
-    const tds =
-        table.querySelectorAll('._table tbody tr[data-table-id][data-table-row] td:not(._column-name):not(._fk):not(._sort)');
+    const tds = table.querySelectorAll('._table tbody tr[data-table-id][data-table-row] td:not(._column-name):not(._fk):not(._sort)');
     tds.forEach(function (td) {
         $(td).show();
     });
@@ -2270,9 +2277,7 @@ const tableMoveScroll = (table_id) => {
     }
 
     window.scroll({
-        left: position.left - 400,
-        top: position.top - 150,
-        behavior: 'smooth',
+        left: position.left - MINIMUM_POSITION.left, top: position.top - MINIMUM_POSITION.top, behavior: 'smooth',
     });
     setTimeout(function () {
         table.style.outline = '2px solid #F08705';
@@ -2305,9 +2310,7 @@ const tableRowMoveScroll = (table_id, table_row_id) => {
     }
 
     window.scroll({
-        left: position.left - 400,
-        top: position.top - 150,
-        behavior: 'smooth',
+        left: position.left - MINIMUM_POSITION.left, top: position.top - MINIMUM_POSITION.top, behavior: 'smooth',
     });
     setTimeout(function () {
         table_row.style.outline = '2px solid #F08705';
