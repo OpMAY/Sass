@@ -4,6 +4,7 @@ import com.model.query.*;
 import com.model.query.column.Column;
 import com.model.query.column.Line;
 import com.model.query.column.Position;
+import com.model.queue.Token;
 import com.response.DefaultRes;
 import com.response.Message;
 import com.service.query.QueryPlugService;
@@ -379,8 +380,8 @@ public class QueryPlugRestController {
      * .then(result => console.log(result))
      * .catch(error => console.log('error', error));
      */
-    @RequestMapping(value = "/create/{database_no}/table/{table_id}/line", method = RequestMethod.POST)
-    public ResponseEntity<String> connectLine(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id, @RequestBody Line line) {
+    @RequestMapping(value = "/create/{database_no}/line", method = RequestMethod.POST)
+    public ResponseEntity<String> connectLine(@PathVariable("database_no") int database_no, @RequestBody Line line) {
         Message message = new Message();
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
@@ -416,10 +417,23 @@ public class QueryPlugRestController {
      * .then(result => console.log(result))
      * .catch(error => console.log('error', error));
      */
-    @RequestMapping(value = "/delete/{database_no}/table/{table_id}/lines", method = RequestMethod.POST)
-    public ResponseEntity<String> disconnectLine(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id, @RequestBody ArrayList<Line> lines) {
+    @RequestMapping(value = "/delete/{database_no}/lines", method = RequestMethod.POST)
+    public ResponseEntity<String> disconnectLine(@PathVariable("database_no") int database_no, @RequestBody ArrayList<Line> lines) {
         log.info(lines.toString());
         Message message = new Message();
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/create/{database_no}/{type}/next/id", method = RequestMethod.POST)
+    public ResponseEntity<String> createNextId(@PathVariable("database_no") int database_no, @PathVariable("type") String type) {
+        String token = null;
+        if (type.equals("table")) {
+            token = TokenGenerator.RandomToken(8);
+        } else if (type.equals("row")) {
+            token = TokenGenerator.RandomToken(6);
+        }
+        Message message = new Message();
+        message.put("id", token);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 }

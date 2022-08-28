@@ -87,7 +87,7 @@
     </div>
 </div>
 <!-- Right Sidebar -->
-<div id="right-sidebar">
+<div id="right-sidebar" class="is-open">
     <div class="_right-menu is-open">
         <div class="_side-button-container">
             <div class="_side-toggle">
@@ -816,6 +816,7 @@
         initializeScale(scale_size, 1);
         initializeTableOptions('#table-option-list');
         initializeGuideLines(guide_line, 600, 600, 20);
+        // apis.js
         let get_tables = apiGetTables(10);
         let tables = get_tables.tables;
         let lines = get_tables.lines;
@@ -836,12 +837,24 @@
         /** Global Event Listener (Right Sidebar) */
         document.querySelector('#right-sidebar ._right-menu ._side-button-container ._side-toggle').addEventListener('click', function () {
             let sidebar = this.closest('._right-menu');
+            let sidebar_parent = sidebar.closest('#right-sidebar');
             if (sidebar.classList.contains('is-open')) {
                 sidebar.classList.remove('is-open');
                 sidebar.classList.add('is-close');
+                if (sidebar_parent.classList.contains('is-open')) {
+                    sidebar_parent.classList.remove('is-open');
+                    sidebar_parent.classList.add('is-close');
+                }
+                MINIMUM_POSITION.left = MINIMUM_POSITION.left - 260;
             } else {
                 sidebar.classList.add('is-open');
                 sidebar.classList.remove('is-close');
+                if (sidebar_parent.classList.contains('is-close')) {
+                    sidebar_parent.classList.remove('is-close');
+                    sidebar_parent.classList.add('is-open');
+                }
+                MINIMUM_POSITION.left = MINIMUM_POSITION.left + 260;
+                tableAutoSorting(draggable_tables, leader_lines);
             }
         });
         document.querySelector('#right-sidebar ._right-menu ._side-button-container ._side-sort').addEventListener('click', function (event) {
@@ -852,13 +865,14 @@
             draggable_tables.forEach(function (table) {
                 table_elems.push(table.draggable_table.element);
             });
-            /** 서버에서 라스트 테이블에 관련된 PK+1값을 가져온다.*/
+            let table_id = apiCreateNextId(0, 'TABLE');
+            let row_id = apiCreateNextId(0, 'ROW');
             let table = {
-                id: getNextTableId(),
-                name: tokenGenerator(10),
+                id: table_id,
+                name: table_id,
                 columns: [{
-                    id: tokenGenerator(10),
-                    name: 'no', type: 'int', comment: 'comment test no', pk: false,
+                    id: row_id,
+                    name: 'no', type: 'int', comment: '', pk: false,
                     auto_increment: false, nullable: false
                 }]
             }

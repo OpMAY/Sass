@@ -41,7 +41,7 @@
 }
 
 #right-sidebar {
-    background-color: var(--basic-white);
+    background-color: var(--layout-background);
     position: fixed;
     top: 51px;
     left: 92px;
