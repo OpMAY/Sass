@@ -4,6 +4,7 @@ import com.model.query.*;
 import com.model.query.column.Column;
 import com.model.query.column.Line;
 import com.model.query.column.Position;
+import com.model.query.column.Relation;
 import com.model.queue.Token;
 import com.response.DefaultRes;
 import com.response.Message;
@@ -16,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -39,24 +42,34 @@ public class QueryPlugRestController {
     public ResponseEntity<String> getTables(@PathVariable("database_no") int database_no) {
         Message message = new Message();
 
-        ArrayList<Table> tables = new ArrayList<>();
-        //sample
-        for (int i = 0; i < 10; i++) {
-            tables.add(new Table().sampleTable());
-        }
+        DataBase dataBase = queryPlugService.getDataBase(database_no);
+
+        List<Table> tables = dataBase.getTables();
+//        //sample
+//        for (int i = 0; i < 10; i++) {
+//            tables.add(new Table().sampleTable());
+//        }
         message.put("tables", tables);
 
         ArrayList<Line> lines = new ArrayList<>();
-        //sample
-        for (int i = 0; i < 10; i++) {
-            int random_index = TokenGenerator.RandomInteger(9);
-            int random_index1 = TokenGenerator.RandomInteger(9);
-            int random_index2 = TokenGenerator.RandomInteger(9);
-            int random_index3 = TokenGenerator.RandomInteger(9);
-            lines.add(new Line(tables.get(random_index).getId(),
-                    tables.get(random_index).getColumns().get(random_index1).getId(),
-                    tables.get(random_index2).getId(),
-                    tables.get(random_index2).getColumns().get(random_index3).getId()));
+//        //sample
+//        for (int i = 0; i < 10; i++) {
+//            int random_index = TokenGenerator.RandomInteger(9);
+//            int random_index1 = TokenGenerator.RandomInteger(9);
+//            int random_index2 = TokenGenerator.RandomInteger(9);
+//            int random_index3 = TokenGenerator.RandomInteger(9);
+//            lines.add(new Line(tables.get(random_index).getId(),
+//                    tables.get(random_index).getColumns().get(random_index1).getId(),
+//                    tables.get(random_index2).getId(),
+//                    tables.get(random_index2).getColumns().get(random_index3).getId()));
+//        }
+        if (Objects.nonNull(dataBase.getRelations()) && !dataBase.getRelations().isEmpty()) {
+            for (Relation relation : dataBase.getRelations()) {
+                lines.add(new Line(relation.getMain_table(),
+                        relation.getMain_column(),
+                        relation.getTarget_table(),
+                        relation.getTarget_column()));
+            }
         }
         message.put("lines", lines);
 
