@@ -442,15 +442,27 @@ const createTableListRowConnectable = (draggable_table, row) => {
  * @param {HTMLInputElement | Node} input 삭제옵션이 담긴 엘리먼트, 자기자신(this)
  * */
 function inputTableListChangeConnectable(input) {
-  const table_row_element = input.closest('[data-table-id][data-table-row]');
-  const list_table = document.querySelector(`.table-list-component[data-table-id="${table_row_element.dataset.tableId}"]`);
-  const list_table_column_name = list_table.querySelector(`.card-body .list-group .list-group-item[data-table-row="${table_row_element.dataset.tableRow}"] ._name`);
-  list_table_column_name.innerHTML = `${input.value}`;
-  const table_row = findTableRowById(table_row_element.dataset.tableId, table_row_element.dataset.tableRow);
-  if (input.value.trim() === table_row.name) {
-    return;
-  }
-  table_row.name = input.value;
+    const table_row_element = input.closest('[data-table-id][data-table-row]');
+    const list_table = document.querySelector(`.table-list-component[data-table-id="${table_row_element.dataset.tableId}"]`);
+    const list_table_column_name = list_table.querySelector(`.card-body .list-group .list-group-item[data-table-row="${table_row_element.dataset.tableRow}"] ._name`);
+    list_table_column_name.innerHTML = `${input.value}`;
+    const table_row = findTableRowById(table_row_element.dataset.tableId, table_row_element.dataset.tableRow);
+    if (column_name_input_timer) {
+        clearTimeout(column_name_input_timer);
+        if (input.value.trim() === table_row.name) {
+            return;
+        }
+    } else {
+        if (input.value.trim() === table_row.name) {
+            return;
+        }
+    }
+    table_row.name = input.value;
+    column_name_input_timer = setTimeout(function () {
+        apiUpdateTableRow(0, table_row_element.dataset.tableId, table_row, () => {
+        }, () => {
+        });
+    }, 500);
 }
 
 /**

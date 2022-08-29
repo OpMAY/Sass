@@ -2,7 +2,10 @@
 let host = 'http://localhost:8080';
 
 function apiGetTables(database_no) {
-    let result;
+    let result = {
+        tables: [],
+        lines: []
+    };
     $.ajax({
         type: 'GET', //요청 메소드 타입
         url: `${host}/query/get/${database_no}/tables`, //요청 경로

@@ -1,4 +1,19 @@
 'use strict';
+let comment_type_input_timer;
+let column_name_input_timer;
+
+Array.prototype.addAll = function (others) {
+    let thisArray = this;
+    others.forEach(function (e) {
+        thisArray.push(e);//from w  w  w. j av  a 2s. c  o m
+    });
+};
+
+// Minimum Position
+let MINIMUM_POSITION = {
+    left: 400,
+    top: 150
+}
 
 // Auto Complete Entries Variable
 const entries =
@@ -1037,13 +1052,13 @@ const createTableRowElement = (table, index, is_simple = false) => {
                       </defs>
                   </svg>
               </th>
-              <td class="_pk not-draggable ${column.pk === true ? 'is-checked' : ''}" ${is_simple ? 'style="display: none;"' : void (0)}>${column.pk === true ? createTableCheckboxElement() : createTableCheckboxElement()}</td>
-              <td class="_ai not-draggable ${column.auto_increment === true ? 'is-checked' : ''}" ${is_simple ? 'style="display: none;"' : void (0)}>${column.auto_increment === true ? createTableCheckboxElement() : createTableCheckboxElement()}</td>
-              <td class="_null not-draggable ${column.nullable === true ? 'is-checked' : ''}" ${is_simple ? 'style="display: none;"' : void (0)}>${column.nullable === true ? createTableCheckboxElement() : createTableCheckboxElement()}</td>
+              <td class="_pk not-draggable ${column.pk === true ? 'is-checked' : ''}" ${is_simple ? 'style="display: none;"' : ''}>${column.pk === true ? createTableCheckboxElement() : createTableCheckboxElement()}</td>
+              <td class="_ai not-draggable ${column.auto_increment === true ? 'is-checked' : ''}" ${is_simple ? 'style="display: none;"' : ''}>${column.auto_increment === true ? createTableCheckboxElement() : createTableCheckboxElement()}</td>
+              <td class="_null not-draggable ${column.nullable === true ? 'is-checked' : ''}" ${is_simple ? 'style="display: none;"' : ''}>${column.nullable === true ? createTableCheckboxElement() : createTableCheckboxElement()}</td>
               <td class="_column-name not-draggable">
                   <input oninput="inputTableListChangeConnectable(this)" type="text" name="${table.id}__${table.name}__name" value="${column.name}"/>
               </td>
-              <td class="_type not-draggable" ${is_simple ? 'style="display: none;"' : void (0)}>
+              <td class="_type not-draggable" ${is_simple ? 'style="display: none;"' : ''}>
                 <div class="autocomplete">
                   <input oninput="inputChangeEventListener(this)" type="text" class="__autocomplete"
                          name="${table.id}__${table.name}__type"
@@ -1052,7 +1067,7 @@ const createTableRowElement = (table, index, is_simple = false) => {
                          placeholder="Write your type">
                 </div>
               </td>
-              <td class="_comment not-draggable" ${is_simple ? 'style="display: none;"' : void (0)}>
+              <td class="_comment not-draggable" ${is_simple ? 'style="display: none;"' : ''}>
                   <input oninput="inputChangeEventListener(this)" type="text" name="${table.id}__${table.name}__comment" data-type="comment" value="${column.comment}"/>
               </td>
               <td class="_fk fk-draggable" data-status="open">
@@ -1352,126 +1367,136 @@ function tableRowTouchEndEventListener(event) {
  * @param {MouseEvent} event
  * */
 function tableRowSelectEventListener(event) {
-  console.log('tableRowSelectEventListener');
-  if (status.touchEnd || status.touchStart) {
-    const target = this;
-    const event_target = event.target;
-    if (event_target.closest('._fk')?.classList.contains('_fk')) {
-      console.log(event_target.closest('._fk'));
-      if (event_target.closest(`._fk[data-status="close"]`)?.classList.contains('_fk')) {
-        const button_fk = event_target.closest(`._fk[data-status="close"]`);
-        if (button_fk !== undefined && button_fk !== null) {
-          const target_row = button_fk.closest('[data-table-id][data-table-row]');
-          deleteLineRowByTo($(target_row));
-          button_fk.setAttribute('data-status', 'open');
-          button_fk.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    if (status.touchEnd || status.touchStart) {
+        const target = this;
+        const event_target = event.target;
+        if (event_target.closest('._fk')?.classList.contains('_fk')) {
+            if (event_target.closest(`._fk[data-status="close"]`)?.classList.contains('_fk')) {
+                const button_fk = event_target.closest(`._fk[data-status="close"]`);
+                if (button_fk !== undefined && button_fk !== null) {
+                    const target_row = button_fk.closest('[data-table-id][data-table-row]');
+                    deleteLineRowByTo($(target_row));
+                    button_fk.setAttribute('data-status', 'open');
+                    button_fk.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                            <path d="M11.9997 7.33337H8.66634V4.00004H10.6663L7.99967 1.33337L5.33301 4.00004H7.33301V7.33337H3.99967V5.33337L1.33301 8.00004L3.99967 10.6667V8.66671H7.33301V12H5.33301L7.99967 14.6667L10.6663 12H8.66634V8.66671H11.9997V10.6667L14.6663 8.00004L11.9997 5.33337V7.33337Z"
                                                  fill="#CCCCCC"/>
                                        </svg>`;
-        }
-      } else {
-        if (target.classList.contains('is-selected')) {
-          target.classList.remove('is-selected');
+                }
+            } else {
+                if (target.classList.contains('is-selected')) {
+                    target.classList.remove('is-selected');
 
-          // TODO Change Line Origin Color
-          const find_leader_lines = findLine(leader_lines, $(target));
-          find_leader_lines.forEach(function(line) {
-            if (line.info_line.to_row === target.dataset.tableRow) {
-              line.leader_line.color = '#969696';
+                    // TODO Change Line Origin Color
+                    const find_leader_lines = findLine(leader_lines, $(target));
+                    find_leader_lines.forEach(function (line) {
+                        if (line.info_line.to_row === target.dataset.tableRow) {
+                            line.leader_line.color = '#969696';
+                        }
+                    });
+                } else {
+                    const selected_rows = $('.component table._table > tbody > tr.is-selected');
+                    selected_rows.each(function (index, selected_row) {
+                        selected_row.classList.remove('is-selected');
+                        // TODO Change Line Origin Color
+                        const find_leader_lines = findLine(leader_lines, $(selected_row));
+                        find_leader_lines.forEach(function (line) {
+                            line.leader_line.color = '#969696';
+                        });
+                    });
+                    target.classList.add('is-selected');
+
+                    // TODO Change Line Color
+                    const find_leader_lines = findLine(leader_lines, $(target));
+                    find_leader_lines.forEach(function (line) {
+                        if (line.info_line.to_row === target.dataset.tableRow) {
+                            line.leader_line.color = '#F08705';
+                        }
+                    });
+                }
             }
-          });
         } else {
-          const selected_rows = $('.component table._table > tbody > tr.is-selected');
-          selected_rows.each(function(index, selected_row) {
-            selected_row.classList.remove('is-selected');
-            // TODO Change Line Origin Color
-            const find_leader_lines = findLine(leader_lines, $(selected_row));
-            find_leader_lines.forEach(function(line) {
-              line.leader_line.color = '#969696';
+            // input
+            const write_target = event_target.closest('.not-draggable');
+            const table_row_element = write_target.closest('[data-table-id][data-table-row]');
+            const table_row = findTableRowById(table_row_element.dataset.tableId, table_row_element.dataset.tableRow);
+            // TODO Bugfix ncaught TypeError: Cannot read properties of null (reading 'classList')
+            write_target.classList.forEach(function (class_name) {
+                switch (class_name) {
+                    case '_delete':
+                        // delete(button click event)
+                        // overriding onclick event
+                        break;
+                    case '_pk':
+                        // _pk setting(checkbox)
+                        if (write_target.classList.contains('is-checked')) {
+                            write_target.classList.remove('is-checked');
+                            table_row.column_pk = false;
+                        } else {
+                            write_target.classList.add('is-checked');
+                            table_row.column_pk = true;
+                        }
+                        table_row.pk = table_row.column_pk;
+                        apiUpdateTableRow(0, table_row_element.dataset.tableId, table_row, () => {
+                        }, () => {
+                        });
+                        break;
+                    case '_ai':
+                        // auto increment setting(checkbox)
+                        if (write_target.classList.contains('is-checked')) {
+                            write_target.classList.remove('is-checked');
+                            table_row.column_auto_increment = false;
+                        } else {
+                            write_target.classList.add('is-checked');
+                            table_row.column_auto_increment = true;
+                        }
+                        table_row.auto_increment = table_row.column_auto_increment;
+                        apiUpdateTableRow(0, table_row_element.dataset.tableId, table_row, () => {
+                        }, () => {
+                        });
+                        break;
+                    case '_null':
+                        // nullable setting(checkbox)
+                        if (write_target.classList.contains('is-checked')) {
+                            write_target.classList.remove('is-checked');
+                            table_row.column_nullable = false;
+                        } else {
+                            write_target.classList.add('is-checked');
+                            table_row.column_nullable = true;
+                        }
+                        table_row.nullable = table_row.column_nullable;
+                        apiUpdateTableRow(0, table_row_element.dataset.tableId, table_row, () => {
+                        }, () => {
+                        });
+                        break;
+                    case '_column-name':
+                        // column name setting
+                        focusInputLastCarret({id: undefined, selector: 'input', root: write_target});
+                        break;
+                    case '_type':
+                        // type setting(select or dropdown)
+                        focusInputLastCarret({id: undefined, selector: 'input', root: write_target});
+                        break;
+                    case '_comment':
+                        // comment setting
+                        focusInputLastCarret({id: undefined, selector: 'input', root: write_target});
+                        break;
+                    case '_sort':
+                        // Sort Up and Down
+                        if (write_target.classList.contains('is-checked')) {
+                            write_target.classList.remove('is-checked');
+                        } else {
+                            write_target.classList.add('is-checked');
+                        }
+                        break;
+                    default:
+                        // default
+                        break;
+                }
             });
-          });
-          target.classList.add('is-selected');
-
-          // TODO Change Line Color
-          const find_leader_lines = findLine(leader_lines, $(target));
-          find_leader_lines.forEach(function(line) {
-            if (line.info_line.to_row === target.dataset.tableRow) {
-              line.leader_line.color = '#F08705';
-            }
-          });
         }
-      }
-    } else {
-      // input
-      const write_target = event_target.closest('.not-draggable');
-      const table_row_element = write_target.closest('[data-table-id][data-table-row]');
-      const table_row = findTableRowById(table_row_element.dataset.tableId, table_row_element.dataset.tableRow);
-      // TODO Bugfix ncaught TypeError: Cannot read properties of null (reading 'classList')
-      write_target.classList.forEach(function(class_name) {
-        switch (class_name) {
-          case '_delete':
-            // delete(button click event)
-            // overriding onclick event
-            break;
-          case '_pk':
-            // _pk setting(checkbox)
-            if (write_target.classList.contains('is-checked')) {
-              write_target.classList.remove('is-checked');
-              table_row.column_pk = false;
-            } else {
-              write_target.classList.add('is-checked');
-              table_row.column_pk = true;
-            }
-            break;
-          case '_ai':
-            // auto increment setting(checkbox)
-            if (write_target.classList.contains('is-checked')) {
-              write_target.classList.remove('is-checked');
-              table_row.column_auto_increment = false;
-            } else {
-              write_target.classList.add('is-checked');
-              table_row.column_auto_increment = true;
-            }
-            break;
-          case '_null':
-            // nullable setting(checkbox)
-            if (write_target.classList.contains('is-checked')) {
-              write_target.classList.remove('is-checked');
-              table_row.column_nullable = false;
-            } else {
-              write_target.classList.add('is-checked');
-              table_row.column_nullable = true;
-            }
-            break;
-          case '_column-name':
-            // column name setting
-            focusInputLastCarret({id: undefined, selector: 'input', root: write_target});
-            break;
-          case '_type':
-            // type setting(select or dropdown)
-            focusInputLastCarret({id: undefined, selector: 'input', root: write_target});
-            break;
-          case '_comment':
-            // comment setting
-            focusInputLastCarret({id: undefined, selector: 'input', root: write_target});
-            break;
-          case '_sort':
-            // Sort Up and Down
-            if (write_target.classList.contains('is-checked')) {
-              write_target.classList.remove('is-checked');
-            } else {
-              write_target.classList.add('is-checked');
-            }
-            break;
-          default:
-            // default
-            break;
-        }
-      });
     }
-  }
-  status.touchEnd = false;
-  status.touchStart = false;
+    status.touchEnd = false;
+    status.touchStart = false;
 }
 
 /**
@@ -1508,23 +1533,32 @@ const tableRowContextMenuInitialize = () => {
  * @param {jQuery} table_row 삭제할 테이블의 행 엘리먼트
  * */
 const tableRowDelete = (draggable_tables, $table_row) => {
-  const table_id = $table_row.data('tableId');
-  const table_row_id = $table_row.data('tableRow');
-  // 연결된 라인 해제
-  deleteLine($table_row);
-  // 연결된 라인 해제
-  const table = findTableById(draggable_tables, table_id);
-  table.columns = table.columns.filter(function(column) {
-    if (column.id === table_row_id) {
-      return false;
-    }
-    return true;
-  });
-  $table_row.remove();
-  updateLines(leader_lines);
+    const table_id = $table_row.data('tableId');
+    const table_row_id = $table_row.data('tableRow');
+    // 연결된 라인 해제
+    let deleted_lines = deleteLine($table_row);
+    // 연결된 라인 해제
+    const table = findTableById(draggable_tables, table_id);
+    table.columns = table.columns.filter(function (column) {
+        if (column.id === table_row_id) {
+            return false;
+        }
+        return true;
+    });
+    $table_row.remove();
+    updateLines(leader_lines);
 
-  // okiwi-query-left.js
-  deleteTableListRowConnectable(table_id, table_row_id);
+    // okiwi-query-left.js
+    deleteTableListRowConnectable(table_id, table_row_id);
+    // api.js
+    if (deleted_lines.length !== 0) {
+        apiDisconnectLine(0, deleted_lines, () => {
+        }, () => {
+        });
+    }
+    apiDeleteTableRow(0, table_id, table_row_id, () => {
+    }, () => {
+    });
 };
 
 /**
@@ -1547,15 +1581,30 @@ function tableDeleteClickEventListener(e) {
  * @param {HTMLElement} table 삭제할 테이블 엘리먼트
  * */
 const deleteTable = (table) => {
-  const $table = $(table);
-  const table_rows = $table.find('table._table > tbody > tr');
-  table_rows.each(function(index, table_row) {
-    deleteLine($(table_row));
-  });
-  draggable_tables = draggable_tables.filter(function(table) {
-    return table.id === $table.attr('id') ? false : true;
-  });
-  $table.remove();
+    const table_id = table.id;
+    const $table = $(table);
+    const table_rows = $table.find('table._table > tbody > tr');
+    let deleted_lines = new Array();
+    table_rows.each(function (index, table_row) {
+        if (index === 0) {
+            deleted_lines = deleteLine($(table_row));
+        } else {
+            deleted_lines.addAll(deleteLine($(table_row)));
+        }
+    });
+    draggable_tables = draggable_tables.filter(function (table) {
+        return table.id === table_id ? false : true;
+    });
+    $table.remove();
+    // api.js
+    if (deleted_lines.length !== 0) {
+        apiDisconnectLine(0, deleted_lines, () => {
+        }, () => {
+        });
+    }
+    apiDeleteTable(0, table_id, () => {
+    }, () => {
+    });
 };
 
 /**
@@ -1609,17 +1658,20 @@ function tableMouseHoverEventListener(e) {
  * @param {jQuery} $table_row 연결선을 삭제할 테이블 행 엘리먼트
  * */
 const deleteLine = ($table_row) => {
-  const leader_line_objects = findLine(leader_lines, $table_row);
-  leader_line_objects.forEach(function(line) {
-    $(`.table-container .leader-line[data-line-id="${line.leader_line._id}"]`).remove();
-    leader_lines = leader_lines.filter(function(leader_line) {
-      if (line.leader_line._id === leader_line.leader_line._id) {
-        return false;
-      } else {
-        return true;
-      }
+    const leader_line_objects = findLine(leader_lines, $table_row);
+    let deleted_lines = new Array();
+    leader_line_objects.forEach(function (line) {
+        $(`.table-container .leader-line[data-line-id="${line.leader_line._id}"]`).remove();
+        leader_lines = leader_lines.filter(function (leader_line) {
+            if (line.leader_line._id === leader_line.leader_line._id) {
+                deleted_lines.push(line.info_line);
+                return false;
+            } else {
+                return true;
+            }
+        });
     });
-  });
+    return deleted_lines;
 };
 
 /**
@@ -1630,17 +1682,25 @@ const deleteLine = ($table_row) => {
  * @param {jQuery} $table_row 연결선을 삭제할 테이블 행 엘리먼트
  * */
 const deleteLineRowByTo = ($table_row) => {
-  const leader_line_objects = findLineRowByTo(leader_lines, $table_row);
-  leader_line_objects.forEach(function(line) {
-    $(`.table-container .leader-line[data-line-id="${line.leader_line._id}"]`).remove();
-    leader_lines = leader_lines.filter(function(leader_line) {
-      if (line.leader_line._id === leader_line.leader_line._id) {
-        return false;
-      } else {
-        return true;
-      }
+    const leader_line_objects = findLineRowByTo(leader_lines, $table_row);
+    let deleting_lines = new Array();
+    leader_line_objects.forEach(function (line) {
+        $(`.table-container .leader-line[data-line-id="${line.leader_line._id}"]`).remove();
+        leader_lines = leader_lines.filter(function (leader_line) {
+            if (line.leader_line._id === leader_line.leader_line._id) {
+                deleting_lines.push(leader_line.info_line);
+                return false;
+            } else {
+                return true;
+            }
+        });
     });
-  });
+    // api.js
+    if (deleting_lines.length !== 0) {
+        apiDisconnectLine(0, deleting_lines, () => {
+        }, () => {
+        });
+    }
 };
 
 /**
@@ -2197,13 +2257,21 @@ const findTableRowById = (table_id, row_id) => {
  * @param {HTMLInputElement} input
  * */
 function inputChangeEventListener(input) {
-  const table_row_element = input.closest('[data-table-id][data-table-row]');
-  const table_row = findTableRowById(table_row_element.dataset.tableId, table_row_element.dataset.tableRow);
-  if (input.dataset.type === 'comment') {
-    table_row.comment = input.value;
-  } else if (input.dataset.type === 'type') {
-    table_row.type = input.value;
-  }
+    const table_row_element = input.closest('[data-table-id][data-table-row]');
+    const table_row = findTableRowById(table_row_element.dataset.tableId, table_row_element.dataset.tableRow);
+    if (comment_type_input_timer) {
+        clearTimeout(comment_type_input_timer);
+    }
+    if (input.dataset.type === 'comment') {
+        table_row.comment = input.value;
+    } else if (input.dataset.type === 'type') {
+        table_row.type = input.value;
+    }
+    comment_type_input_timer = setTimeout(function () {
+        apiUpdateTableRow(0, table_row_element.dataset.tableId, table_row, () => {
+        }, () => {
+        });
+    }, 500);
 }
 
 /**
@@ -2338,3 +2406,4 @@ function reInitializeTableScale(tables, lines, scale) {
   });
   updateLines(lines);
 }
+

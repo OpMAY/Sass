@@ -846,6 +846,9 @@
                     sidebar_parent.classList.add('is-close');
                 }
                 MINIMUM_POSITION.left = MINIMUM_POSITION.left - 260;
+                setTimeout(function () {
+                    tableAutoSorting(draggable_tables, leader_lines);
+                }, 500);
             } else {
                 sidebar.classList.add('is-open');
                 sidebar.classList.remove('is-close');
