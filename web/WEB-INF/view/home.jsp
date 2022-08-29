@@ -43,12 +43,15 @@
     <!-- Element -->
     <link rel="stylesheet"
           href="../../resources/css/base/element.css">
-    <title>Home</title>
+    <link rel="stylesheet"
+          href="../../resources/css/module/modal.css">
+    <title>aVouch - Home</title>
 </head>
 <body>
 <header id="l-header">
     <img src="../../resources/assets/images/icon/black-theme-logo-80x40.svg"/>
     <div class="_option ml-auto my-auto">
+        <div class="bold-h5 c-basic-white" data-toggle="modal" data-target="#setting-modal">내 정보</div>
         <div class="bold-h5 c-basic-white" data-toggle="modal" data-target="#login-modal">로그인</div>
         <div class="bold-h5 c-basic-white" data-target="#register-modal" data-toggle="modal">회원가입</div>
     </div>
@@ -117,35 +120,15 @@
              aria-labelledby="plugin-tab">
             <div id="plugin-left-sidebar">
                 <div class="_plugin-container">
-                    <div class="_left-plugin">
+                    <div class="_left-plugin" data-href="/query/workspace">
                         <img width="36"
                              height="36"
-                             src="../../resources/assets/images/sample/plugin-sample-1.png"/>
+                             src="../../resources/assets/images/icon/query/query-plug-logo.png"/>
                     </div>
-                    <div class="_left-plugin">
+                    <div class="_left-plugin" onclick="alert('crm Plug 예정')">
                         <img width="36"
                              height="36"
-                             src="../../resources/assets/images/sample/plugin-sample-2.png"/>
-                    </div>
-                    <div class="_left-plugin">
-                        <img width="36"
-                             height="36"
-                             src="../../resources/assets/images/sample/plugin-sample-3.png"/>
-                    </div>
-                    <div class="_left-plugin">
-                        <img width="36"
-                             height="36"
-                             src="../../resources/assets/images/sample/plugin-sample-1.png"/>
-                    </div>
-                    <div class="_left-plugin">
-                        <img width="36"
-                             height="36"
-                             src="../../resources/assets/images/sample/plugin-sample-2.png"/>
-                    </div>
-                    <div class="_left-plugin">
-                        <img width="36"
-                             height="36"
-                             src="../../resources/assets/images/sample/plugin-sample-3.png"/>
+                             src="../../resources/assets/images/icon/crm-plug-logo.png"/>
                     </div>
                 </div>
                 <div class="mt-auto w-100">
@@ -196,9 +179,9 @@
                         </div>
                         <div class="_inner">
                             <div class="media plugin-item p-16">
-                                <img src="../../resources/assets/images/sample/plugin-sample-1.png" alt
+                                <img src="../../resources/assets/images/sample/plugin-sample-1.png" alt data-href="/desc/query"
                                      class="align-self-start mr-20">
-                                <div class="media-body">
+                                <div class="media-body" data-href="/desc/query">
                                     <h5 class="bold-h5 mb-8">QeuryPlug - 데이터베이스 ERD 및 SQL 자동 생성</h5>
                                     <p class="_desc light-h5 c-gray-medium">
                                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium aperiam
@@ -221,7 +204,7 @@
                                             <span class="c-gray-dark-medium">65</span>
                                         </div>
                                     </div>
-                                    <button type="button"
+                                    <button type="button" onclick="alert('어디로?')"
                                             class="btn btn-sm btn-gray-dark-low">설치하기
                                     </button>
                                 </div>
@@ -995,7 +978,8 @@
                                 </div>
                                 <div class="_profile col-6">
                                     <h5 class="regular-h6 c-gray-medium mb-12">프로필 이미지</h5>
-                                    <img id="profileImg" src="../../resources/assets/images/sample/user_basic_profile.png" alt>
+                                    <img id="profileImg"
+                                         src="../../resources/assets/images/sample/user_basic_profile.png" alt>
                                     <img class="_pencil"
                                          src="../../resources/assets/images/sample/profile_edit_pencil.png" alt>
                                     <input type="file" id="profileInput" class="d-none" accept="image/*">
@@ -2228,6 +2212,354 @@
     $(document).ready(function () {
         console.log('Static JS is ready');
     });
+
+    /**
+     * email find modal input listener
+     * **/
+    $('#phone-number-input').on('input', function (e) {
+        let $button = $(this).parent().next().find(':first-child');
+        // TODO add Phone number validation function
+        if ($(this).val().length > 5) {
+            if ($button.hasClass('is-disabled')) {
+                $button.removeClass('is-disabled').removeAttr('disabled');
+            }
+        } else {
+            if (!$button.hasClass('is-disabled')) {
+                $button.addClass('is-disabled').attr('disabled', true);
+            }
+        }
+    });
+
+    /**
+     * Password find modal input listener
+     * **/
+    $('#email-input').on('input', function (e) {
+        let $button = $(this).parent().next().find(':first-child');
+        // TODO add email validation function
+        if ($(this).val().length > 5) {
+            if ($button.hasClass('is-disabled')) {
+                $button.removeClass('is-disabled').removeAttr('disabled');
+            }
+        } else {
+            if (!$button.hasClass('is-disabled')) {
+                $button.addClass('is-disabled').attr('disabled', true);
+            }
+        }
+    });
+
+
+    /**
+     * Password validation modal timer function
+     * **/
+    let x;
+
+    $('#password-validate-modal').on('show.bs.modal', function () {
+        timer(359);
+    });
+
+    $('#password-validate-modal').on('hide.bs.modal', function () {
+        let $element = $('#time-decrease');
+        $element.html('06:00');
+        clearInterval(x);
+    });
+
+    function timer(time) {
+        let $element = $('#time-decrease');
+        let min = '';
+        let sec = '';
+        x = setInterval(function () {
+            min = parseInt(time / 60);
+            sec = time % 60;
+            if (sec <= 9) {
+                sec = '0' + sec;
+            }
+            $element.html('0' + min + ':' + sec);
+            time--;
+            if (time < 0) {
+                clearInterval(x);
+            }
+        }, 1000);
+    }
+
+
+    /**
+     * Password change modal input listener
+     * **/
+    $('#new-password').on('input', function () {
+        let $validInput = $('#new-password-valid');
+        let $button = $(this).parent().next().find(':first-child');
+        // TODO add password validation function
+        if ($(this).val().trim().length >= 8 && $validInput.val() === $(this).val()) {
+            if ($button.hasClass('is-disabled')) {
+                $button.removeClass('is-disabled').removeAttr('disabled');
+            }
+        } else {
+            if (!$button.hasClass('is-disabled')) {
+                $button.addClass('is-disabled').attr('disabled');
+            }
+        }
+    });
+
+    $('#new-password-valid').on('input', function () {
+        let $newInput = $('#new-password');
+        let $button = $(this).parent().next().find(':first-child');
+        // TODO add password validation function
+        if ($newInput.val().trim().length >= 8 && $(this).val() === $newInput.val()) {
+            if ($button.hasClass('is-disabled')) {
+                $button.removeClass('is-disabled').removeAttr('disabled');
+            }
+        } else {
+            if (!$button.hasClass('is-disabled')) {
+                $button.addClass('is-disabled').attr('disabled');
+            }
+        }
+    });
+
+    /**
+     * corporation create modal listener
+     * **/
+    $('#corporation-create-name').on('input', function () {
+        let $restInput = $('#corporation-create-code');
+        let $button = $(this).parent().next().find(':first-child');
+        if ($(this).val().trim().length > 8 && $restInput.val().trim().length > 8) {
+            if ($button.hasClass('is-disabled')) {
+                $button.removeClass('is-disabled').removeAttr('disabled');
+            }
+        } else {
+            if (!$button.hasClass('is-disabled')) {
+                $button.addClass('is-disabled').attr('disabled', true);
+            }
+        }
+    });
+
+    $('#corporation-create-code').on('input', function () {
+        let $restInput = $('#corporation-create-name');
+        let $button = $(this).parent().next().find(':first-child');
+        if ($(this).val().trim().length > 8 && $restInput.val().trim().length > 8) {
+            if ($button.hasClass('is-disabled')) {
+                $button.removeClass('is-disabled').removeAttr('disabled');
+            }
+        } else {
+            if (!$button.hasClass('is-disabled')) {
+                $button.addClass('is-disabled').attr('disabled', true);
+            }
+        }
+    });
+
+    /**
+     * corporation create modal listener
+     * **/
+    $('#corporation-find-input').on('input', function () {
+        let $button = $(this).parent().next().find(':first-child');
+        if ($(this).val().trim().length >= 6) {
+            if ($button.hasClass('is-disabled')) {
+                $button.removeClass('is-disabled').removeAttr('disabled');
+            }
+        } else {
+            if (!$button.hasClass('is-disabled')) {
+                $button.addClass('is-disabled').attr('disabled', true);
+            }
+        }
+    });
+
+
+    /**
+     * Setting modal myInfo Listener
+     * **/
+    $('#agree-checkbox').on('change', function () {
+        let $disagreeCheckbox = $('#disagree-checkbox');
+        // Change other checkbox
+        if ($disagreeCheckbox.is(':checked')) {
+            console.log('checked');
+            $disagreeCheckbox.prop('checked', false);
+        }
+
+        // Block checked remove on toggle twice
+        if (!$(this).is(':checked')) {
+            $(this).prop('checked', true);
+        }
+        // TODO status change fetch
+    });
+
+    $('#disagree-checkbox').on('change', function () {
+        let $agreeCheckbox = $('#agree-checkbox');
+        // Change other checkbox
+        if ($agreeCheckbox.is(':checked')) {
+            console.log('checked');
+            $agreeCheckbox.prop('checked', false);
+        }
+
+        // Block checked remove on toggle twice
+        if (!$(this).is(':checked')) {
+            $(this).prop('checked', true);
+        }
+        // TODO status change fetch
+    });
+
+    $('._pencil').on('click', function () {
+        $('#profileInput').click();
+    })
+
+    $('._profile-change').on('click', function () {
+        let type = $(this).data().type;
+        // TODO type 별 모달 띄우기
+        $('#' + type + '-change-modal').css('z-index', '1100').modal('show');
+        $('.modal-backdrop:last-child').css('z-index', '1090');
+    })
+
+    $('#profileInput').on('change', function () {
+        const reader = new FileReader();
+        console.log($(this)[0].files);
+        if($(this)[0].files && $(this)[0].files[0]) {
+            reader.onload = (e) => {
+                $('#profileImg').attr('src', e.target.result);
+            }
+            reader.readAsDataURL($(this)[0].files[0]);
+        }
+    })
+
+    $('#name-change-input').on('input', function () {
+        // TODO input validation & fetch
+        let $button = $(this).parent().next().find('button:first-child');
+        if ($(this).val().length > 3) {
+            console.log('over');
+            $button.removeClass('is-disabled').removeAttr('disabled');
+        } else {
+            $button.addClass('is-disabled').attr('disabled', 'disabled');
+        }
+    })
+
+    $('#email-change-input').on('input', function () {
+        // TODO input validation & fetch
+        let $button = $(this).parent().next().find('button:first-child');
+        if ($(this).val().length > 3) {
+            console.log('over');
+            $button.removeClass('is-disabled').removeAttr('disabled');
+        } else {
+            $button.addClass('is-disabled').attr('disabled', 'disabled');
+        }
+    })
+
+    $('#phone-change-input').on('input', function () {
+        // TODO input validation & fetch
+        let $button = $(this).parent().next().find('button:first-child');
+        if ($(this).val().length > 3) {
+            console.log('over');
+            $button.removeClass('is-disabled').removeAttr('disabled');
+        } else {
+            $button.addClass('is-disabled').attr('disabled', 'disabled');
+        }
+    })
+
+    /**
+     * Setting modal teammate info check button
+     * **/
+    $('.nav-item ._check').on('click', function () {
+        // TODO FETCH status change
+        console.log('target : ', $(this).data().type);
+        let type = $(this).data().type;
+        if ($(this).hasClass('on')) {
+            $(this).removeClass('on');
+            $(this).addClass('off');
+            alert('OFF : ' + type);
+        } else {
+            $(this).removeClass('off');
+            $(this).addClass('on');
+            alert('ON : ' + type);
+        }
+
+    });
+
+    $('.nav-item._remove span').on('click', function () {
+        // TODO FETCH remove teammate
+        alert('삭제 버튼');
+    });
+
+
+    $('._plugin-manage-button').on('click', function (e) {
+        console.log('arrow clicked');
+        // TODO CLOSED -> hidden  로 변경
+        if (!$(this).hasClass('closed') && $(this).parent().next().hasClass('show') && !$(this).hasClass('blocked')) {
+            $(this).addClass('closed');
+            $(this).parent().removeClass('open');
+            $(this).parent().next().collapse('hide');
+            e.stopPropagation();
+        }
+    });
+
+    $('._plugin-list ._plugin-manage-container').on('click', function () {
+        if (!$(this).hasClass('open') && $(this).next().hasClass('collapse')) {
+            $(this).addClass('open');
+            let $button = $(this).find('._plugin-manage-button');
+            if ($button.hasClass('hidden')) {
+                $button.removeClass('hidden');
+            } else if ($button.hasClass('closed')) {
+                $button.removeClass('closed');
+            }
+            $(this).next().collapse('show');
+            console.log('container clicked');
+        }
+    });
+
+    $('._control-panel ._setting').on('click', function () {
+        alert('환경설정으로 이동');
+    })
+
+    $('._control-panel ._add-new').on('click', function () {
+        let thisTab = $(this).parent().parent().parent();
+        let listDiv = $('._plugin-list');
+        let containerList = listDiv.find('._plugin-list-container');
+        console.log('thisTab : ', thisTab);
+        containerList.each((idx, item) => {
+            if (item === thisTab[0]) {
+                console.log('match index : ', idx);
+                $(item).find('._plugin-manage-button').addClass('blocked');
+            } else {
+                $(item).addClass('d-none');
+            }
+        })
+        $(this).parent().addClass('d-none');
+        $('._plugin-teammate-add-button').removeClass('d-none').fadeIn('slow');
+
+        thisTab.find('._plugin-manage-child').addClass('d-none');
+        thisTab.find('._plugin-add-member-container').removeClass('d-none');
+
+        // TODO 해당 버튼에 data 요소 추가
+        console.log(containerList);
+    })
+
+    $('._plugin-teammate-add-button').find('.btn-gray-dark-low').on('click', function () {
+        // TODO 팀원 추가 AJAX
+        let listDiv = $('._plugin-list');
+        let containerList = listDiv.find('._plugin-list-container');
+        $(this).parent().parent().addClass('d-none');
+        containerList.each((idx, item) => {
+            if ($(item).hasClass('d-none')) {
+                $(item).removeClass('d-none');
+            } else {
+                $(item).find('._control-panel').removeClass('d-none');
+                $(item).find('._plugin-manage-child').removeClass('d-none');
+                $(item).find('._plugin-add-member-container').addClass('d-none');
+            }
+        })
+    })
+
+    $('._plugin-teammate-add-button').find('.c-brand-purple').on('click', function () {
+        let listDiv = $('._plugin-list');
+        let containerList = listDiv.find('._plugin-list-container');
+        $(this).parent().parent().addClass('d-none');
+        containerList.each((idx, item) => {
+            console.log('item : ', item, ', index : ', idx);
+            if ($(item).hasClass('d-none')) {
+                $(item).removeClass('d-none');
+            } else {
+                $(item).find('._control-panel').removeClass('d-none');
+                $(item).find('._plugin-manage-child').removeClass('d-none');
+                $(item).find('._plugin-add-member-container').addClass('d-none');
+                $(item).find('._plugin-manage-button').removeClass('blocked');
+            }
+        })
+    })
 </script>
 </body>
 </html>
