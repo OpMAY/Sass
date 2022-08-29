@@ -57,10 +57,7 @@ public class TestController {
         return VIEW;
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView home() {
-        return new ModelAndView("sample");
-    }
+
 
     /**
      * <a href="/test/download.do?file_name=test.mp4"
@@ -84,8 +81,10 @@ public class TestController {
         }
     }
 
-    @RequestMapping(value = "/query/database/detail.do")
-    public ModelAndView databaseDetail(){
-        return new ModelAndView("query/database-detail");
+    @RequestMapping(value = "/test/elements", method = RequestMethod.GET)
+    public ModelAndView ElementPage() {
+        return new ModelAndView("element");
     }
+
+
 }

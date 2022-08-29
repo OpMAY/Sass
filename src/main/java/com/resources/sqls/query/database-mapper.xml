@@ -3,4 +3,19 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.query.DataBaseMapper">
+    <select id="getDataBase" resultType="DataBase">
+        select *
+        from `DataBase`
+        WHERE no = #{database_no}
+    </select>
+    <insert id="createDataBase" keyProperty="no" useGeneratedKeys="true">
+        insert into `DataBase`(company_no, name, description, database_type, create_date, update_date)
+        VALUES (null, #{name}, #{description}, #{database_type}, NOW(), NOW())
+    </insert>
+    <select id="checkDataBaseExists" resultType="_boolean">
+        select EXISTS(select * from `DataBase` WHERE no = #{database_no})
+    </select>
+    <select id="checkDataBaseNameExistsOnSameCompany" resultType="_boolean">
+        select EXISTS(select * from `DataBase` WHERE company_no = #{company_no} AND name = #{name})
+    </select>
 </mapper>

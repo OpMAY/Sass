@@ -3,4 +3,25 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.query.ColumnMapper">
+    <select id="getColumns" resultType="Column">
+        select *
+        from `column`
+        WHERE table_id = #{table_id}
+    </select>
+    <insert id="insertColumn">
+        insert into `column` (id, table_id, `order`, name, comment, pk, auto_increment, isUnique, nullable, type,
+                              defaultValue, size)
+        values (#{id}, #{table_id}, #{order}, #{name}, #{comment}, #{pk}, #{auto_increment}, #{is_unique}, #{nullable},
+                #{type}, #{default_value}, #{size});
+    </insert>
+    <insert id="insertColumns">
+        insert into `column` (id, table_id, `order`, name, comment, pk, auto_increment, isUnique, nullable, type,
+        defaultValue, size)
+        values
+        <foreach collection="list" item="item" separator=" , ">
+            (#{item.id}, #{item.table_id}, #{item.order}, #{item.name}, #{item.comment}, #{item.pk},
+            #{item.auto_increment}, #{item.is_unique}, #{item.nullable},
+            #{item.type}, #{item.default_value}, #{item.size})
+        </foreach>
+    </insert>
 </mapper>

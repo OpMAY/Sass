@@ -7,11 +7,13 @@ import java.util.List;
 
 @Data
 public class DataBase {
-    private String no;
-    private int queryPlugNo;
-    private DataBaseType databaseType;
+    private int no;
+    private int company_no;
+    private DataBaseType database_type;
     private String name;
-    private List<Table> tableList;
-    private List<Relation> relationList;
-    private String lastUpdateDate;
+    private List<Table> tables;
+    private List<Relation> relations;
+    private String description;
+    private String create_date;
+    private String update_date;
 }

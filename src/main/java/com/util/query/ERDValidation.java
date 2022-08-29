@@ -44,18 +44,18 @@ public class ERDValidation {
         log.info("database -> {}", dataBase);
 
         // SET ALL COLUMNS with Valid Check
-        for (Table table : this.dataBase.getTableList()) {
-            for (Column column : table.getColumnList()) {
+        for (Table table : this.dataBase.getTables()) {
+            for (Column column : table.getColumns()) {
                 if (!checkColumnValid(column)) {
                     log.info("One of the Column is not valid, check log -> {}", column);
                     return false;
                 }
-                allColumnMap.put(column.getNo(), column);
+                allColumnMap.put(column.getId(), column);
             }
         }
 
         // FK Check
-        for (Relation relation : this.dataBase.getRelationList()) {
+        for (Relation relation : this.dataBase.getRelations()) {
             if (!checkRelationValid(relation)) {
                 log.info("One of the Relation is not valid, check log");
                 return false;
@@ -98,7 +98,7 @@ public class ERDValidation {
          *
          * **/
         // PK Validation
-        boolean a = (!column.isPrimaryKey() || checkPrimaryKeyValid(column));
+        boolean a = (!column.isPk() || checkPrimaryKeyValid(column));
         // name Validation
         // TODO column 외에 Table 등 name check 필요
         boolean b = checkNameValid(column.getName());
@@ -112,7 +112,7 @@ public class ERDValidation {
     }
 
     private boolean autoIncrementRuleCheck(Column column) {
-        return !column.isAutoIncrement() || (column.isAutoIncrement() && column.getType().getDataTypeCategory().equals(DataTypeCategory.NUMBER));
+        return !column.isAuto_increment() || (column.isAuto_increment() && column.getType().getDataTypeCategory().equals(DataTypeCategory.NUMBER));
     }
 
     private boolean checkRelationValid(Relation relation) {
@@ -126,42 +126,42 @@ public class ERDValidation {
          *   단, 한 컬럼이 다수의 컬럼의 FK 대상이 될 수는 있음
          * 5. TODO 순환 참조 검사 => Front 단에서 검사 (연산처리 최적화)
          * **/
-        Column targetColumn = allColumnMap.get(relation.getTargetColumn());
-        Column mainColumn = allColumnMap.get(relation.getMainColumn());
-        log.info("checking relation valid : {} => {} ...", mainColumn.getNo(), targetColumn.getNo());
-        columnRelationMap.put(mainColumn.getNo(), targetColumn.getNo());
-        if(columnRelationTableMap.containsKey(relation.getMainTable())) {
-            List<String> list = columnRelationTableMap.get(relation.getMainTable());
-            list.add(relation.getTargetTable());
-            columnRelationTableMap.replace(relation.getMainTable(), list);
+        Column targetColumn = allColumnMap.get(relation.getTarget_column());
+        Column mainColumn = allColumnMap.get(relation.getMain_column());
+        log.info("checking relation valid : {} => {} ...", mainColumn.getId(), targetColumn.getId());
+        columnRelationMap.put(mainColumn.getId(), targetColumn.getId());
+        if(columnRelationTableMap.containsKey(relation.getMain_table())) {
+            List<String> list = columnRelationTableMap.get(relation.getMain_table());
+            list.add(relation.getTarget_table());
+            columnRelationTableMap.replace(relation.getMain_table(), list);
         } else {
             List<String> list = new ArrayList<>();
-            list.add(relation.getTargetTable());
-            columnRelationTableMap.put(relation.getMainTable(), list);
+            list.add(relation.getTarget_table());
+            columnRelationTableMap.put(relation.getMain_table(), list);
         }
         // 1
         if (targetColumn.getType() != mainColumn.getType() && !Objects.equals(targetColumn.getSize(), mainColumn.getSize())) {
-            log.info("FK 참조를 하려는 컬럼 간의 타입이 맞지 않습니다.\n{} : {}({}) => {} : {}({})", mainColumn.getNo(), mainColumn.getType(), mainColumn.getSize(), targetColumn.getNo(), targetColumn.getType(), targetColumn.getSize());
+            log.info("FK 참조를 하려는 컬럼 간의 타입이 맞지 않습니다.\n{} : {}({}) => {} : {}({})", mainColumn.getId(), mainColumn.getType(), mainColumn.getSize(), targetColumn.getId(), targetColumn.getType(), targetColumn.getSize());
             return false;
         }
 
         // 2, 3
-        if ((!Objects.equals(mainColumn.getNo(), targetColumn.getNo())) && Objects.equals(columnRelationMap.get(targetColumn.getNo()), columnRelationMap.get(mainColumn.getNo()))) {
+        if ((!Objects.equals(mainColumn.getId(), targetColumn.getId())) && Objects.equals(columnRelationMap.get(targetColumn.getId()), columnRelationMap.get(mainColumn.getId()))) {
             /**
              * 1. 자기참조 검사 X
              * 2. targetColumn이 이미 mainColumn을 FK 걸어놨을 때
              * **/
-            log.info("서로 참조는 불가능합니다. {}, {}", mainColumn.getNo(), targetColumn.getNo());
+            log.info("서로 참조는 불가능합니다. {}, {}", mainColumn.getId(), targetColumn.getId());
             return false;
         }
 
         // 4
-        if (!targetColumn.isUnique()) {
+        if (!targetColumn.is_unique()) {
             /**
              * Unique 컬럼에만 FK 참조 가능
              *  PrimaryKey는 checkPrimaryKeyValid() 함수를 통해 Unique 검증을 하므로 따로 조건 X
              * **/
-            log.info("Unique 속성이 있는 컬럼에만 FK 참조가 가능합니다. target : {} => unique : {}", targetColumn.getNo(), targetColumn.isUnique());
+            log.info("Unique 속성이 있는 컬럼에만 FK 참조가 가능합니다. target : {} => unique : {}", targetColumn.getId(), targetColumn.is_unique());
             return false;
         }
 
@@ -171,7 +171,7 @@ public class ERDValidation {
     }
 
     private boolean checkPrimaryKeyValid(Column column) {
-        return column.isUnique()
+        return column.is_unique()
                 && !column.isNullable()
                 && primaryAvailableTypes.contains(column.getType());
     }
@@ -220,7 +220,7 @@ public class ERDValidation {
     }
 
     private boolean checkColumnDefaultValue(Column column) {
-        if (Objects.nonNull(column.getDefaultValue()) && !column.getDefaultValue().trim().isEmpty()) {
+        if (Objects.nonNull(column.getDefault_value()) && !column.getDefault_value().trim().isEmpty()) {
             // Default Value 가 설정되어있을 때
             if (!column.getType().isDefaultAvailable()) {
                 // 기본값 설정 불가능한 타입
@@ -231,14 +231,14 @@ public class ERDValidation {
                 switch (column.getType().getDataTypeCategory()) {
                     case NUMBER:
                         try {
-                            double a = Double.parseDouble(column.getDefaultValue());
+                            double a = Double.parseDouble(column.getDefault_value());
                             long bit = Double.doubleToLongBits(a);
                             /**
                              *  1. BOOL / BOOLEAN => value = 0 or 1 or 'true' or 'false'
                              *  2. 사이즈 지정되어있으면, 사이즈보다 크면 안됨
                              *  3. 사이즈 지정 안되어있으면 기본 Type의 MAX 보다 크면 안됨
                              * **/
-                            return ((Objects.equals(column.getType(), ColumnType.BOOL) || Objects.equals(column.getType(), ColumnType.BOOLEAN)) && (a == 0 || a == 1 || column.getDefaultValue().equals("true") || column.getDefaultValue().equals("false"))) // 1
+                            return ((Objects.equals(column.getType(), ColumnType.BOOL) || Objects.equals(column.getType(), ColumnType.BOOLEAN)) && (a == 0 || a == 1 || column.getDefault_value().equals("true") || column.getDefault_value().equals("false"))) // 1
                                     || (column.getSize() == null && bit <= column.getType().getSizeParameterMax()) // 2
                                     || (column.getSize() != null && bit <= column.getSize()); // 3
                         } catch (NumberFormatException e) {
@@ -250,8 +250,8 @@ public class ERDValidation {
                          * 2. 사이즈 지정되어있으면, 사이즈보다 크면 안됨
                          * 3. 사이즈 지정 안되어있으면 기본 Type의 MAX 보다 크면 안됨
                          * **/
-                        return ((column.getSize() == null && column.getDefaultValue().length() <= column.getType().getSizeParameterMax()) // 2
-                                || (column.getSize() != null && column.getDefaultValue().length() <= column.getSize()));
+                        return ((column.getSize() == null && column.getDefault_value().length() <= column.getType().getSizeParameterMax()) // 2
+                                || (column.getSize() != null && column.getDefault_value().length() <= column.getSize()));
                     case TIME_TYPE:
                         /**
                          * 시간 계열의 Default value 는 함수 사용이 대부분
@@ -260,25 +260,25 @@ public class ERDValidation {
                          * -> 함수라면 특정 함수만 지정하여 사용할 수 있게 제작
                          * **/
                         // 시간 유형은 시간 형태면 됨
-                        if (checkDefaultValueIsExpression(column.getDefaultValue())) {
+                        if (checkDefaultValueIsExpression(column.getDefault_value())) {
                             return true;
                         } else {
                             switch (column.getType()) {
                                 case DATE:
-                                    return checkTimeTypeDefaultValueValid("yyyy-MM-dd", column.getDefaultValue());
+                                    return checkTimeTypeDefaultValueValid("yyyy-MM-dd", column.getDefault_value());
                                 case TIME:
-                                    return checkTimeTypeDefaultValueValid("hh:mm:ss.SSSSSS", column.getDefaultValue());
+                                    return checkTimeTypeDefaultValueValid("hh:mm:ss.SSSSSS", column.getDefault_value());
                                 case DATETIME:
                                 case TIMESTAMP:
-                                    return checkTimeTypeDefaultValueValid("yyyy-MM-dd hh:mm:ss.SSSSSS", column.getDefaultValue());
+                                    return checkTimeTypeDefaultValueValid("yyyy-MM-dd hh:mm:ss.SSSSSS", column.getDefault_value());
                                 case YEAR:
-                                    return checkTimeTypeDefaultValueValid("yyyy", column.getDefaultValue());
+                                    return checkTimeTypeDefaultValueValid("yyyy", column.getDefault_value());
                                 default:
                                     return false;
                             }
                         }
                     case JSON_TYPE:
-                        return checkJsonDefaultValueValid(column.getDefaultValue());
+                        return checkJsonDefaultValueValid(column.getDefault_value());
                     case SPATIAL: // ProtoType : 공간 Type 지원 X
                     default:
                         return false;

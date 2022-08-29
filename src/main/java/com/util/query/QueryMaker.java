@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 @Slf4j
@@ -70,9 +69,9 @@ public class QueryMaker {
 
         allReset();
 
-        for (Table table : dataBase.getTableList()) {
-            tableList.add(table.getNo());
-            log.info("adding table -> {} - {}", table.getName(), table.getNo());
+        for (Table table : dataBase.getTables()) {
+            tableList.add(table.getId());
+            log.info("adding table -> {} - {}", table.getName(), table.getId());
         }
 
         log.info("QueryMaker init => {}", tableList);
@@ -169,8 +168,8 @@ public class QueryMaker {
         StringBuilder builder = new StringBuilder();
         Table nTable = null;
 
-        for (Table table : dataBase.getTableList()) {
-            if (Objects.equals(table.getNo(), targetTableUUID)) {
+        for (Table table : dataBase.getTables()) {
+            if (Objects.equals(table.getId(), targetTableUUID)) {
                 nTable = table;
                 break;
             }
@@ -181,7 +180,7 @@ public class QueryMaker {
         }
         String tableName = nTable.getName();
         builder.append("-- '").append(tableName).append("' 테이블 생성 쿼리\n");
-        List<Column> columnList = nTable.getColumnList();
+        List<Column> columnList = nTable.getColumns();
         makeTableQuery(tableMap, builder, nTable, tableName, columnList);
 
         return builder.toString();
@@ -192,24 +191,24 @@ public class QueryMaker {
         for (Column column : columnList) {
             builder.append("\t").append(column.getName()).append(" ").append(column.getType());
             builder.append(column.getSize() != null && column.getSize() != 0 ? "(" + column.getSize() + ")" : "");
-            builder.append(column.getDefaultValue() != null ? (ERDValidation.checkDefaultValueIsExpression(column.getDefaultValue()) ? " DEFAULT (" + column.getDefaultValue() + ")" : " DEFAULT '" + column.getDefaultValue() + "'") : "");
+            builder.append(column.getDefault_value() != null ? (ERDValidation.checkDefaultValueIsExpression(column.getDefault_value()) ? " DEFAULT (" + column.getDefault_value() + ")" : " DEFAULT '" + column.getDefault_value() + "'") : "");
             builder.append(column.isNullable() ? " NULL" : " NOT NULL");
-            builder.append(column.isAutoIncrement() ? " AUTO_INCREMENT" : "");
+            builder.append(column.isAuto_increment() ? " AUTO_INCREMENT" : "");
             builder.append(column.getComment() != null ? " COMMENT '" + column.getComment() + "'" : "");
-            builder.append(column.isPrimaryKey() ? " PRIMARY KEY" : "");
+            builder.append(column.isPk() ? " PRIMARY KEY" : "");
             if (!column.equals(columnList.get(columnList.size() - 1))) {
                 builder.append(",\n");
             } else {
-                if (nTable.isHasForeignKey()) {
-                    List<Relation> relationList = dataBase.getRelationList();
+                if (nTable.isHas_foreign_key()) {
+                    List<Relation> relationList = dataBase.getRelations();
                     // 해당 테이블에서 Relation 찾기
                     for (Relation relation : relationList) {
-                        if (relation.getMainTable().equals(nTable.getNo())) {
+                        if (relation.getMain_table().equals(nTable.getId())) {
                             // TODO SQL로 변경
-                            String nowColumnName = allColumnMap.get(relation.getMainColumn()).getName();
-                            Table targetTable = tableMap.get(relation.getTargetTable());
+                            String nowColumnName = allColumnMap.get(relation.getMain_column()).getName();
+                            Table targetTable = tableMap.get(relation.getTarget_table());
                             String targetTableName = targetTable.getName();
-                            String targetColumnName = allColumnMap.get(relation.getTargetColumn()).getName();
+                            String targetColumnName = allColumnMap.get(relation.getTarget_column()).getName();
 
                             builder.append(",\n");
                             builder.append("\tCONSTRAINT FK_" + tableName + "_" + nowColumnName + "_" + targetTableName + "_" + targetColumnName + "\n");
@@ -225,12 +224,12 @@ public class QueryMaker {
 
     private Map<String, Table> configTableMap(List<String> tableFormattedList) {
         Map<String, Table> tableMap = new LinkedHashMap<>();
-        List<Table> tables = dataBase.getTableList();
+        List<Table> tables = dataBase.getTables();
 
         for (String tableId : tableFormattedList) {
             for (Table table : tables) {
-                log.info("tableId : {}, table.getId : {}", tableId, table.getNo());
-                if (table.getNo().equals(tableId)) {
+                log.info("tableId : {}, table.getId : {}", tableId, table.getId());
+                if (table.getId().equals(tableId)) {
                     tableMap.put(tableId, table);
                 }
             }
@@ -250,7 +249,7 @@ public class QueryMaker {
         for (Map.Entry<String, Table> entry : tableMap.entrySet()) {
             Table table = entry.getValue();
             String nowTableName = table.getName();
-            List<Column> columnList = table.getColumnList();
+            List<Column> columnList = table.getColumns();
             builder.append("\n-- Table ").append(nowTableName).append(" create Start\n");
             makeTableQuery(tableMap, builder, table, nowTableName, columnList);
         }
