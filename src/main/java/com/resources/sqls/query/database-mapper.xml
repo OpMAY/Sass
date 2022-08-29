@@ -18,4 +18,12 @@
     <select id="checkDataBaseNameExistsOnSameCompany" resultType="_boolean">
         select EXISTS(select * from `DataBase` WHERE company_no = #{company_no} AND name = #{name})
     </select>
+    <select id="checkTokenValid" resultType="_boolean">
+        select NOT EXISTS(select *
+                      from `DataBase`
+                               left join `table` t on `DataBase`.no = t.database_no
+                               left join `column` c on t.id = c.table_id
+                      WHERE no = #{database_no}
+                        AND (t.id = #{token} OR c.id = #{token}))
+    </select>
 </mapper>

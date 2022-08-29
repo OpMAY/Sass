@@ -328,7 +328,7 @@ function updateTableName(option) {
 function createTableListColumn(option) {
     const list_table = option.closest('.table-list-component');
     const list_container = list_table.querySelector('.card-body .list-group');
-    const row_id = apiCreateNextId(0, 'ROW');
+    const row_id = apiCreateNextId(getParameter('no'), 'ROW');
     const column = {
         id: row_id,
         name: row_id,
@@ -367,15 +367,15 @@ function createTableListColumn(option) {
  * */
 const createTableList = (selector, writable = undefined) => {
     const list_container = document.querySelector(selector);
-    let table_id = apiCreateNextId(0, 'TABLE');
-    let row_id = apiCreateNextId(0, 'ROW');
+    let table_id = apiCreateNextId(getParameter('no'), 'TABLE');
+    let row_id = apiCreateNextId(getParameter('no'), 'ROW');
     const table = {
         id: table_id,
         name: table_id,
         columns: [{
             id: row_id,
             name: 'no',
-            type: 'int',
+            type: 'INT',
             comment: '',
             pk: false,
             nullable: false,
@@ -459,7 +459,7 @@ function inputTableListChangeConnectable(input) {
     }
     table_row.name = input.value;
     column_name_input_timer = setTimeout(function () {
-        apiUpdateTableRow(0, table_row_element.dataset.tableId, table_row, () => {
+        apiUpdateTableRow(getParameter('no'), table_row_element.dataset.tableId, table_row, () => {
         }, () => {
         });
     }, 500);
