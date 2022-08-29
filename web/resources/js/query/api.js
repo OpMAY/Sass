@@ -24,12 +24,11 @@ function apiGetTables(database_no) {
             throw new Error(`Error :: status : ${status}, error : ${error}`);
         }
     });
-    console.log(result);
     return result;
-}
+};
 
 function apiCreateTable(database_no, table, success, failed) {
-    var myHeaders = new Headers();
+    let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     let raw = JSON.stringify({
@@ -109,10 +108,6 @@ function apiUpdateTable(database_no, table_id, table, success, failed) {
 
     let raw = JSON.stringify({
         "name": "update_name",
-        "position": {
-            "left": 1400,
-            "top": 200
-        }
     });
 
     let requestOptions = {
@@ -249,22 +244,18 @@ function apiUpdateTableRowsOrder(database_no, table_id, table_rows, success, fai
     let raw = JSON.stringify([
         {
             "id": "randomString",
-            "name": "randomString",
             "order": 1
         },
         {
             "id": "randomString",
-            "name": "randomString",
             "order": 2
         },
         {
             "id": "randomString",
-            "name": "randomString",
             "order": 3
         },
         {
             "id": "randomString",
-            "name": "randomString",
             "order": 4
         }
     ]);
@@ -329,7 +320,7 @@ function apiDeleteTableRow(database_no, table_id, row_id, success, failed) {
         });
 }
 
-function apiConnectLine(database_no, table_id, line, success, failed) {
+function apiConnectLine(database_no, line, success, failed) {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -346,7 +337,7 @@ function apiConnectLine(database_no, table_id, line, success, failed) {
         body: raw,
     };
 
-    fetch(`${host}/query/create/${database_no}/table/${table_id}/line`, requestOptions)
+    fetch(`${host}/query/create/${database_no}/line`, requestOptions)
         .then(response => response.json())
         .then((result) => {
             console.log(result);
@@ -358,7 +349,7 @@ function apiConnectLine(database_no, table_id, line, success, failed) {
         });
 }
 
-function apiDisconnectLine(database_no, table_id, lines, success, failed) {
+function apiDisconnectLine(database_no, lines, success, failed) {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -383,7 +374,7 @@ function apiDisconnectLine(database_no, table_id, lines, success, failed) {
         body: raw,
     };
 
-    fetch(`${host}/query/delete/${database_no}/table/${table_id}/lines`, requestOptions)
+    fetch(`${host}/query/delete/${database_no}/lines`, requestOptions)
         .then(response => response.json())
         .then((result) => {
             console.log(result);
@@ -399,7 +390,7 @@ function apiCreateNextId(database_no, type) {
     let result;
     type = type.toLowerCase();
     $.ajax({
-        type: 'GET', //요청 메소드 타입
+        type: 'POST', //요청 메소드 타입
         //type = table or row
         url: `${host}/query/create/${database_no}/${type}/next/id`, //요청 경로
         async: false, //비동기 여부
