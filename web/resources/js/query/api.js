@@ -23,7 +23,7 @@ function apiGetTables(database_no) {
     });
     console.log(result);
     return result;
-};
+}
 
 function apiCreateTable(database_no, table, success, failed) {
     var myHeaders = new Headers();

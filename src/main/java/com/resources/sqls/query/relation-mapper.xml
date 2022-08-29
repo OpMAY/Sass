@@ -3,4 +3,18 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.query.RelationMapper">
+    <insert id="insertRelation">
+        insert into relation(database_no, main_table, main_column, target_table, target_column, on_delete, on_update)
+        VALUES (#{item.database_no}, #{item.main_table}, #{item.main_column}, #{item.target_table},
+                #{item.target_column},
+                #{item.on_delete}, #{item.on_update})
+    </insert>
+    <insert id="insertRelations">
+        insert into relation(database_no, main_table, main_column, target_table, target_column, on_delete, on_update)
+        VALUES
+        <foreach collection="list" item="item" separator=" , ">
+            (#{item.database_no}, #{item.main_table}, #{item.main_column}, #{item.target_table}, #{item.target_column},
+            #{item.on_delete}, #{item.on_update})
+        </foreach>
+    </insert>
 </mapper>

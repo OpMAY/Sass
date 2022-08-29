@@ -3,4 +3,23 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.query.TableMapper">
+    <resultMap id="Table" type="com.model.query.Table">
+        <result column="position" property="position" typeHandler="com.middleware.JsonObjectTypeHandler"/>
+    </resultMap>
+    <select id="getTables" resultType="Table" resultMap="Table">
+        select *, JSON_OBJECT('top', top, 'left', `left`) as position
+        from `table`
+        WHERE database_no = #{database_no}
+    </select>
+    <insert id="insertTable">
+        insert into `table`(id, database_no, name, has_primary_key, has_foreign_key, top, `left`) VALUE
+            (#{id}, #{database_no}, #{name}, #{has_primary_key}, #{has_foreign_key}, #{position.top}, #{position.left})
+    </insert>
+    <insert id="insertTables">
+        insert into `table`(id, database_no, name, has_primary_key, has_foreign_key, top, `left`) VALUES
+        <foreach collection="list" item="item" separator=" , ">
+            (#{item.id}, #{item.database_no}, #{item.name}, #{item.has_primary_key}, #{item.has_foreign_key},
+            #{item.position.top}, #{item.position.left})
+        </foreach>
+    </insert>
 </mapper>

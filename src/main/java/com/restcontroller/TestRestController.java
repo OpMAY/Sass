@@ -6,11 +6,14 @@ import com.api.mail.MailFooter;
 import com.api.mail.MailLogo;
 import com.api.mail.MailType;
 import com.model.User2;
+import com.model.query.DataBase;
+import com.model.query.DataBaseType;
 import com.model.queue.ServerTokenType;
 import com.model.queue.Token;
 import com.response.DefaultRes;
 import com.response.Message;
 import com.service.ServerTokenService;
+import com.service.query.QueryPlugService;
 import com.util.TokenGenerator;
 import com.validator.test.Test;
 import com.validator.test.TestValidator;
@@ -34,6 +37,7 @@ import java.time.LocalDateTime;
 public class TestRestController {
     private final LoginAPI loginAPI;
     private final MailBuilder mailBuilder;
+    private final QueryPlugService queryPlugService;
 
     @RequestMapping("test/loginterceptor")
     public ResponseEntity<String> logInterceptor() {
@@ -105,6 +109,16 @@ public class TestRestController {
             log.info("Error Accrued -> {}", result.toString());
             return new ResponseEntity(DefaultRes.res(HttpStatus.OK), HttpStatus.OK);
         }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/test/query", method = RequestMethod.GET)
+    public ResponseEntity queryTest() {
+        DataBase dataBase = new DataBase();
+        dataBase.setName("Sample 1");
+        dataBase.setCompany_no(0);
+        dataBase.setDatabase_type(DataBaseType.MYSQL);
+        queryPlugService.createDataBase(dataBase);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK), HttpStatus.OK);
     }
 }

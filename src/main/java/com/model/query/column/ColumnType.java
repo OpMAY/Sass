@@ -2,6 +2,7 @@ package com.model.query.column;
 
 import static com.model.query.column.DataTypeCategory.*;
 
+// TODO DataBase Type 별 ColumnType -> 완료 목록 : MySQL
 public enum ColumnType {
     // 숫자 계열
     BIT(true, 64, true, NUMBER),
