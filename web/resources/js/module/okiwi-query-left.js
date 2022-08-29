@@ -447,10 +447,22 @@ function inputTableListChangeConnectable(input) {
     const list_table_column_name = list_table.querySelector(`.card-body .list-group .list-group-item[data-table-row="${table_row_element.dataset.tableRow}"] ._name`);
     list_table_column_name.innerHTML = `${input.value}`;
     const table_row = findTableRowById(table_row_element.dataset.tableId, table_row_element.dataset.tableRow);
-    if (input.value.trim() === table_row.name) {
-        return;
+    if (column_name_input_timer) {
+        clearTimeout(column_name_input_timer);
+        if (input.value.trim() === table_row.name) {
+            return;
+        }
+    } else {
+        if (input.value.trim() === table_row.name) {
+            return;
+        }
     }
     table_row.name = input.value;
+    column_name_input_timer = setTimeout(function () {
+        apiUpdateTableRow(0, table_row_element.dataset.tableId, table_row, () => {
+        }, () => {
+        });
+    }, 500);
 }
 
 /**
