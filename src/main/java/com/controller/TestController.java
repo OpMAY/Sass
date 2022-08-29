@@ -59,7 +59,7 @@ public class TestController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView home() {
-        return new ModelAndView("sample");
+        return new ModelAndView("home");
     }
 
     /**
@@ -82,6 +82,11 @@ public class TestController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @RequestMapping(value = "/test/elements", method = RequestMethod.GET)
+    public ModelAndView ElementPage() {
+        return new ModelAndView("element");
     }
 
     @RequestMapping(value = "/query/database/detail.do")

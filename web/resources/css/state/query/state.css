@@ -20,16 +20,6 @@
     fill: var(--gray-dark-low);
 }
 
-#right-sidebar.is-close {
-    height: 0;
-    transition: height 0s .5s;
-}
-
-#right-sidebar.is-open {
-    height: calc(100vh - 52px);
-    transition: height 0s 0s;
-}
-
 #right-sidebar ._right-menu.is-close {
     left: -100%;
     transition: left 0.5s;
