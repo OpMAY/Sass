@@ -297,7 +297,7 @@ const initializeTableOptions = (selector) => {
                 name_element.innerHTML = `${update_value}`;
                 table.name = `${update_value}`;
                 // apis.js
-                apiUpdateTable(0, table.id, {name: `${update_value}`}, () => {
+                apiUpdateTable(getParameter('no'), table.id, {name: `${update_value}`}, () => {
                 }, () => {
                 });
             });
@@ -494,7 +494,7 @@ const createTable = ($container, draggable_tables, table, zIndex, connectable = 
         detailTableView(table.draggable_table.element);
     }
     // apis.js
-    apiCreateTable(0, table, () => {
+    apiCreateTable(getParameter('no'), table, () => {
     }, () => {
     });
 };
@@ -537,7 +537,7 @@ const initializeDraggableTables = (draggable_tables, $tables, origin_tables) => 
         tableRowAutoCompletes(origin_table);
         draggable_tables.push(origin_table);
     });
-    tableAutoSorting(draggable_tables, leader_lines);
+    // tableAutoSorting(draggable_tables, leader_lines);
 };
 
 /**
@@ -719,7 +719,7 @@ const updatePosition = (draggable_tables, table, position) => {
     draggable_table.position.top = position.top;
     draggable_table.position.left = position.left;
     // api.js
-    apiUpdateTablePosition(0, draggable_table.id, position, () => {
+    apiUpdateTablePosition(getParameter('no'), draggable_table.id, position, () => {
     }, () => {
     });
 };
@@ -767,7 +767,7 @@ const createLine = (leader_lines, to_row, from_row, options, line) => {
     leader_lines.push(leader_line_obj);
     moveLeaderLine($('.table-container'), leader_line_obj);
     // api.js
-    apiConnectLine(0, leader_line_obj.info_line, () => {
+    apiConnectLine(getParameter('no'), leader_line_obj.info_line, () => {
     }, () => {
     });
     return leader_line_obj;
@@ -1383,7 +1383,7 @@ function tableRowSelectEventListener(event) {
                             table_row.column_pk = true;
                         }
                         table_row.pk = table_row.column_pk;
-                        apiUpdateTableRow(0, table_row_element.dataset.tableId, table_row, () => {
+                        apiUpdateTableRow(getParameter('no'), table_row_element.dataset.tableId, table_row, () => {
                         }, () => {
                         });
                         break;
@@ -1397,7 +1397,7 @@ function tableRowSelectEventListener(event) {
                             table_row.column_auto_increment = true;
                         }
                         table_row.auto_increment = table_row.column_auto_increment;
-                        apiUpdateTableRow(0, table_row_element.dataset.tableId, table_row, () => {
+                        apiUpdateTableRow(getParameter('no'), table_row_element.dataset.tableId, table_row, () => {
                         }, () => {
                         });
                         break;
@@ -1411,7 +1411,7 @@ function tableRowSelectEventListener(event) {
                             table_row.column_nullable = true;
                         }
                         table_row.nullable = table_row.column_nullable;
-                        apiUpdateTableRow(0, table_row_element.dataset.tableId, table_row, () => {
+                        apiUpdateTableRow(getParameter('no'), table_row_element.dataset.tableId, table_row, () => {
                         }, () => {
                         });
                         break;
@@ -1499,11 +1499,11 @@ const tableRowDelete = (draggable_tables, $table_row) => {
     deleteTableListRowConnectable(table_id, table_row_id);
     // api.js
     if (deleted_lines.length !== 0) {
-        apiDisconnectLine(0, deleted_lines, () => {
+        apiDisconnectLine(getParameter('no'), deleted_lines, () => {
         }, () => {
         });
     }
-    apiDeleteTableRow(0, table_id, table_row_id, () => {
+    apiDeleteTableRow(getParameter('no'), table_id, table_row_id, () => {
     }, () => {
     });
 };
@@ -1545,11 +1545,11 @@ const deleteTable = (table) => {
     $table.remove();
     // api.js
     if (deleted_lines.length !== 0) {
-        apiDisconnectLine(0, deleted_lines, () => {
+        apiDisconnectLine(getParameter('no'), deleted_lines, () => {
         }, () => {
         });
     }
-    apiDeleteTable(0, table_id, () => {
+    apiDeleteTable(getParameter('no'), table_id, () => {
     }, () => {
     });
 };
@@ -1644,7 +1644,7 @@ const deleteLineRowByTo = ($table_row) => {
     });
     // api.js
     if (deleting_lines.length !== 0) {
-        apiDisconnectLine(0, deleting_lines, () => {
+        apiDisconnectLine(getParameter('no'), deleting_lines, () => {
         }, () => {
         });
     }
@@ -1837,7 +1837,7 @@ function tableRowDownEventListener(event) {
                 order: index + 1
             });
         });
-        apiUpdateTableRowsOrder(table_rows, component.id, table_row_objs, () => {
+        apiUpdateTableRowsOrder(getParameter('no'), component.id, table_row_objs, () => {
         }, () => {
         });
     }
@@ -1871,7 +1871,7 @@ function tableRowUpEventListener(event) {
                 order: index + 1
             });
         });
-        apiUpdateTableRowsOrder(table_rows, component.id, table_row_objs, () => {
+        apiUpdateTableRowsOrder(getParameter('no'), component.id, table_row_objs, () => {
         }, () => {
         });
     }
@@ -1904,14 +1904,14 @@ function tableRowCreateEventListener(event) {
 const createTableRow = (component, table_rows, col_id = undefined, view) => {
     const table = findTableById(draggable_tables, component.id);
     const row_container = component.querySelector('table._table > tbody');
-    const column_id = col_id ? col_id : apiCreateNextId(0, 'ROW');
-    const column = {
+    const column_id = col_id ? col_id : apiCreateNextId(getParameter('no'), 'ROW');
+    let column = {
         column_id: column_id,
         column_pk: false,
         column_auto_increment: false,
         column_nullable: false,
         column_name: column_id,
-        column_type: 'int',
+        column_type: 'INT',
         column_comment: '',
     };
     column.id = column.column_id;
@@ -1955,7 +1955,7 @@ const createTableRow = (component, table_rows, col_id = undefined, view) => {
         detailTableView(origin_table.draggable_table.element);
     }
     // api.js
-    apiCreateTableRow(0, origin_table.id, row, () => {
+    apiCreateTableRow(getParameter('no'), origin_table.id, column, () => {
     }, () => {
     });
 };
@@ -2182,7 +2182,7 @@ const updateTableRowNameConnectable = (table_id, row_id, name) => {
     let table_row = findTableRowById(table_id, row_id);
     table_row.name = name;
     // api.js
-    apiUpdateTableRow(0, table_id, table_row, () => {
+    apiUpdateTableRow(getParameter('no'), table_id, table_row, () => {
     }, () => {
     });
 };
@@ -2202,7 +2202,7 @@ const updateTableNameConnectable = (draggable_tables, table_id, update_value) =>
     const component = document.querySelector(`.table-container .component[id="${table_id}"]`);
     component.querySelector('._table-header th._name').innerHTML = `${update_value}`;
     // api.js
-    apiUpdateTable(0, table.id, table, () => {
+    apiUpdateTable(getParameter('no'), table.id, table, () => {
     }, () => {
     });
 };
@@ -2256,7 +2256,7 @@ function inputChangeEventListener(input) {
         table_row.type = input.value;
     }
     comment_type_input_timer = setTimeout(function () {
-        apiUpdateTableRow(0, table_row_element.dataset.tableId, table_row, () => {
+        apiUpdateTableRow(getParameter('no'), table_row_element.dataset.tableId, table_row, () => {
         }, () => {
         });
     }, 500);

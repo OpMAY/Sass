@@ -5,9 +5,9 @@
 <mapper namespace="com.mapper.query.RelationMapper">
     <insert id="insertRelation">
         insert into relation(database_no, main_table, main_column, target_table, target_column, on_delete, on_update)
-        VALUES (#{item.database_no}, #{item.main_table}, #{item.main_column}, #{item.target_table},
-                #{item.target_column},
-                #{item.on_delete}, #{item.on_update})
+        VALUES (#{database_no}, #{main_table}, #{main_column}, #{target_table},
+                #{target_column},
+                #{on_delete}, #{on_update})
     </insert>
     <insert id="insertRelations">
         insert into relation(database_no, main_table, main_column, target_table, target_column, on_delete, on_update)
@@ -17,4 +17,27 @@
             #{item.on_delete}, #{item.on_update})
         </foreach>
     </insert>
+    <select id="getRelations" resultType="Relation">
+        select *
+        from relation
+        WHERE database_no = #{database_no}
+    </select>
+    <select id="checkRelationAlreadyExists" resultType="_boolean">
+        select EXISTS(select *
+                      from relation
+                      WHERE database_no = #{database_no}
+                        AND main_table = #{main_table}
+                        AND main_column = #{main_column}
+                        AND target_table = #{target_table}
+                        AND target_column = #{target_column})
+    </select>
+    <delete id="disconnectLine">
+        delete
+        from relation
+        WHERE database_no = #{database_no}
+          AND main_table = #{main_table}
+          AND main_column = #{main_column}
+          AND target_table = #{target_table}
+          AND target_column = #{target_column}
+    </delete>
 </mapper>

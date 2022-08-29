@@ -27,4 +27,16 @@ public class ColumnDao {
     public void insertColumns(ArrayList<Column> columns) {
         mapper.insertColumns(columns);
     }
+
+    public void updateTableRow(Column column) {
+        mapper.updateTableRow(column);
+    }
+
+    public void updateTableRowsOrder(ArrayList<Column> columns) {
+        mapper.updateTableRowsOrder(columns);
+    }
+
+    public void deleteTableRow(String table_id, String row_id) {
+        mapper.deleteTableRow(table_id, row_id);
+    }
 }

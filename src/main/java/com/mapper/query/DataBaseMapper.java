@@ -11,4 +11,6 @@ public interface DataBaseMapper {
     boolean checkDataBaseExists(@Param("database_no") int database_no);
 
     boolean checkDataBaseNameExistsOnSameCompany(@Param("company_no") int company_no, @Param("name") String name);
+
+    boolean checkTokenValid(@Param("database_no") int database_no, @Param("token") String token);
 }

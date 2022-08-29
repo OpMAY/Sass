@@ -6,7 +6,9 @@ import com.dao.query.RelationDao;
 import com.dao.query.TableDao;
 import com.model.query.DataBase;
 import com.model.query.Table;
+import com.model.query.column.Column;
 import com.model.query.column.Line;
+import com.model.query.column.Position;
 import com.model.query.column.Relation;
 import com.util.TokenGenerator;
 import com.util.query.ERDValidation;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,28 +45,13 @@ public class QueryPlugService {
                 table.setColumns(columnDao.getColumns(table.getId()));
             }
         }
+        dataBase.setRelations(relationDao.getRelations(database_no));
         return dataBase;
     }
 
     @Transactional
     public void createDataBase(DataBase dataBase) {
-        // Sample code
         List<Table> tables = new ArrayList<>();
-//        List<Relation> relationList = new ArrayList<>();
-//
-//        for (int i = 0; i < 5; i++) {
-//            int random_index = TokenGenerator.RandomInteger(9);
-//            int random_index1 = TokenGenerator.RandomInteger(9);
-//            int random_index2 = TokenGenerator.RandomInteger(9);
-//            int random_index3 = TokenGenerator.RandomInteger(9);
-//            relationList.add(new Relation(dataBase.getNo(),
-//                    tables.get(random_index).getId(),
-//                    tables.get(random_index).getColumns().get(random_index1).getId(),
-//                    tables.get(random_index2).getId(),
-//                    tables.get(random_index2).getColumns().get(random_index3).getId()));
-//        }
-//        dataBase.setRelations(relationList);
-        // logic
         if (dataBaseDao.checkDataBaseNameExistsOnSameCompany(dataBase.getCompany_no(), dataBase.getName())) {
             log.info("database name Exists");
         } else {
@@ -78,7 +66,77 @@ public class QueryPlugService {
                 relationDao.insertRelations(dataBase.getRelations());
             }
         }
+    }
 
+    public boolean checkTokenValid(int database_no, String token) {
+        return dataBaseDao.checkTokenValid(database_no, token);
+    }
+
+    @Transactional
+    public void createTable(int database_no, Table table) {
+        table.setDatabase_no(database_no);
+        tableDao.insertTable(table);
+        for(Column column : table.getColumns()) {
+            column.setTable_id(table.getId());
+        }
+        columnDao.insertColumns(table.getColumns());
+    }
+
+    @Transactional
+    public void createTableRow(int database_no, String table_id, Column column) {
+        column.setTable_id(table_id);
+        columnDao.insertColumn(column);
+    }
+
+    @Transactional
+    public void updateTableName(int database_no, String table_id, Table table) {
+        table.setDatabase_no(database_no);
+        table.setId(table_id);
+        tableDao.updateTableName(table);
+    }
+
+    @Transactional
+    public void updateTableRow(int database_no, String table_id, Column column) {
+        column.setTable_id(table_id);
+        columnDao.updateTableRow(column);
+    }
+
+    @Transactional
+    public void updateTablePosition(int database_no, String table_id, Position position) {
+        tableDao.updateTablePosition(database_no, table_id, position);
+    }
+
+    @Transactional
+    public void updateTableRowsOrder(int database_no, String table_id, ArrayList<Column> columns) {
+        for (Column column : columns) {
+            column.setTable_id(table_id);
+        }
+        columnDao.updateTableRowsOrder(columns);
+    }
+
+    @Transactional
+    public void deleteTable(int database_no, String table_id) {
+        tableDao.deleteTable(database_no, table_id);
+    }
+
+    @Transactional
+    public void deleteTableRow(int database_no, String table_id, String row_id) {
+        columnDao.deleteTableRow(table_id, row_id);
+    }
+
+    @Transactional
+    public void connectLine(int database_no, Line line) {
+        Relation relation = new Relation(database_no, line.getTo(), line.getTo_row(), line.getFrom(), line.getFrom_row());
+        if (!relationDao.checkRelationAlreadyExists(relation)) {
+            relationDao.insertRelation(relation);
+        }
+    }
+
+    @Transactional
+    public void disconnectLine(int database_no, ArrayList<Line> lines) {
+        for(Line line : lines) {
+            relationDao.disconnectLine(new Relation(database_no, line.getTo(), line.getTo_row(), line.getFrom(), line.getFrom_row()));
+        }
     }
 
     /**
@@ -98,4 +156,7 @@ public class QueryPlugService {
     public String createAllTableQueryFile(DataBase dataBase) {
         return new QueryMaker(dataBase, filePath).makeAllTableQueryFile();
     }
+
+
+
 }

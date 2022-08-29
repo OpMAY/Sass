@@ -30,26 +30,7 @@ function apiGetTables(database_no) {
 function apiCreateTable(database_no, table, success, failed) {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-
-    let raw = JSON.stringify({
-        "id": "randomString",
-        "name": "randomString",
-        "position": {
-            "left": 400,
-            "top": 150
-        },
-        "columns": [
-            {
-                "id": "randomString",
-                "name": "randomString",
-                "type": "INT",
-                "pk": false,
-                "comment": null,
-                "auto_increment": false,
-                "nullable": false
-            }
-        ]
-    });
+    let raw = JSON.stringify(table);
 
     let requestOptions = {
         method: 'POST',
@@ -73,15 +54,7 @@ function apiCreateTableRow(database_no, table_id, table_row, success, failed) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    let raw = JSON.stringify({
-        "id": "randomString",
-        "name": "randomString",
-        "type": "INT",
-        "pk": false,
-        "auto_increment": false,
-        "nullable": false,
-        "comment": null
-    });
+    let raw = JSON.stringify(table_row);
 
     let requestOptions = {
         method: 'POST',
@@ -106,9 +79,7 @@ function apiUpdateTable(database_no, table_id, table, success, failed) {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    let raw = JSON.stringify({
-        "name": "update_name",
-    });
+    let raw = JSON.stringify(table);
 
     let requestOptions = {
         method: 'POST',
@@ -133,15 +104,7 @@ function apiUpdateTableRow(database_no, table_id, table_row, success, failed) {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    let raw = JSON.stringify({
-        "id": "randomString",
-        "name": "randomString",
-        "type": "INT",
-        "pk": false,
-        "auto_increment": false,
-        "nullable": false,
-        "comment": "comment test"
-    });
+    let raw = JSON.stringify(table_row);
 
     let requestOptions = {
         method: 'POST',
@@ -165,12 +128,7 @@ function apiUpdateTablePosition(database_no, table_id, position, success, failed
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    let raw = JSON.stringify({
-        "position": {
-            "left": 400,
-            "top": 600
-        }
-    });
+    let raw = JSON.stringify(position);
 
     let requestOptions = {
         method: 'POST',
@@ -241,24 +199,7 @@ function apiUpdateTableRowsOrder(database_no, table_id, table_rows, success, fai
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    let raw = JSON.stringify([
-        {
-            "id": "randomString",
-            "order": 1
-        },
-        {
-            "id": "randomString",
-            "order": 2
-        },
-        {
-            "id": "randomString",
-            "order": 3
-        },
-        {
-            "id": "randomString",
-            "order": 4
-        }
-    ]);
+    let raw = JSON.stringify(table_rows);
 
     let requestOptions = {
         method: 'POST',
@@ -266,7 +207,7 @@ function apiUpdateTableRowsOrder(database_no, table_id, table_rows, success, fai
         body: raw,
     };
 
-    fetch(`${host}/query/update/10/table/${table_id}/rows`, requestOptions)
+    fetch(`${host}/query/update/${database_no}/table/${table_id}/rows`, requestOptions)
         .then(response => response.json())
         .then((result) => {
             console.log(result);
@@ -324,12 +265,7 @@ function apiConnectLine(database_no, line, success, failed) {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    let raw = JSON.stringify({
-        "to": "n2o6n9gv",
-        "to_row": "292kcffs",
-        "from": "723x330e",
-        "from_row": "8tff3pup"
-    });
+    let raw = JSON.stringify(line);
 
     let requestOptions = {
         method: 'POST',
@@ -353,20 +289,7 @@ function apiDisconnectLine(database_no, lines, success, failed) {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    let raw = JSON.stringify([
-        {
-            "to": "n2o6n9gv",
-            "to_row": "292kcffs",
-            "from": "723x330e",
-            "from_row": "8tff3pup"
-        },
-        {
-            "to": "n2o6n9gv",
-            "to_row": "292kcffs",
-            "from": "723x330e",
-            "from_row": "8tff3pup"
-        }
-    ]);
+    let raw = JSON.stringify(lines);
 
     let requestOptions = {
         method: 'POST',

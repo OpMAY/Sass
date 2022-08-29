@@ -817,7 +817,7 @@
         initializeTableOptions('#table-option-list');
         initializeGuideLines(guide_line, 600, 600, 20);
         // apis.js
-        let get_tables = apiGetTables(10);
+        let get_tables = apiGetTables(getParameter('no'));
         let tables = get_tables.tables;
         let lines = get_tables.lines;
         /**
@@ -868,14 +868,14 @@
             draggable_tables.forEach(function (table) {
                 table_elems.push(table.draggable_table.element);
             });
-            let table_id = apiCreateNextId(0, 'TABLE');
-            let row_id = apiCreateNextId(0, 'ROW');
+            let table_id = apiCreateNextId(getParameter('no'), 'TABLE');
+            let row_id = apiCreateNextId(getParameter('no'), 'ROW');
             let table = {
                 id: table_id,
                 name: table_id,
                 columns: [{
                     id: row_id,
-                    name: 'no', type: 'int', comment: '', pk: false,
+                    name: 'no', type: 'INT', comment: '', pk: false,
                     auto_increment: false, nullable: false
                 }]
             }

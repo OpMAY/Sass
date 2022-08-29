@@ -16,7 +16,24 @@ public class RelationDao {
         this.mapper = sqlSession.getMapper(RelationMapper.class);
     }
 
+    public void insertRelation(Relation relation) {
+        mapper.insertRelation(relation);
+    }
+
     public void insertRelations(List<Relation> relations) {
         mapper.insertRelations(relations);
+    }
+
+    public List<Relation> getRelations(int database_no) {
+        return mapper.getRelations(database_no);
+    }
+
+
+    public boolean checkRelationAlreadyExists(Relation relation) {
+        return mapper.checkRelationAlreadyExists(relation);
+    }
+
+    public void disconnectLine(Relation relation) {
+        mapper.disconnectLine(relation);
     }
 }

@@ -22,4 +22,23 @@
             #{item.position.top}, #{item.position.left})
         </foreach>
     </insert>
+    <update id="updateTableName">
+        update `table`
+        SET name = #{name}
+        WHERE id = #{id}
+          AND database_no = #{database_no}
+    </update>
+    <update id="updateTablePosition">
+        update `table`
+        SET top    = #{position.top},
+            `left` = #{position.left}
+        WHERE id = #{table_id}
+          AND database_no = #{database_no}
+    </update>
+    <delete id="deleteTable">
+        delete
+        from `table`
+        WHERE database_no = #{database_no}
+          AND id = #{table_id}
+    </delete>
 </mapper>

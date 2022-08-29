@@ -43,26 +43,10 @@ public class QueryPlugRestController {
         Message message = new Message();
 
         DataBase dataBase = queryPlugService.getDataBase(database_no);
-
         List<Table> tables = dataBase.getTables();
-//        //sample
-//        for (int i = 0; i < 10; i++) {
-//            tables.add(new Table().sampleTable());
-//        }
         message.put("tables", tables);
 
         ArrayList<Line> lines = new ArrayList<>();
-//        //sample
-//        for (int i = 0; i < 10; i++) {
-//            int random_index = TokenGenerator.RandomInteger(9);
-//            int random_index1 = TokenGenerator.RandomInteger(9);
-//            int random_index2 = TokenGenerator.RandomInteger(9);
-//            int random_index3 = TokenGenerator.RandomInteger(9);
-//            lines.add(new Line(tables.get(random_index).getId(),
-//                    tables.get(random_index).getColumns().get(random_index1).getId(),
-//                    tables.get(random_index2).getId(),
-//                    tables.get(random_index2).getColumns().get(random_index3).getId()));
-//        }
         if (Objects.nonNull(dataBase.getRelations()) && !dataBase.getRelations().isEmpty()) {
             for (Relation relation : dataBase.getRelations()) {
                 lines.add(new Line(relation.getMain_table(),
@@ -114,6 +98,7 @@ public class QueryPlugRestController {
     @RequestMapping(value = "/create/{database_no}/table", method = RequestMethod.POST)
     public ResponseEntity<String> createTable(@PathVariable("database_no") int database_no, @RequestBody Table table) {
         Message message = new Message();
+        queryPlugService.createTable(database_no, table);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
@@ -146,6 +131,7 @@ public class QueryPlugRestController {
     public ResponseEntity<String> createTableRow(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id, @RequestBody Column column) {
         log.info(column.toString());
         Message message = new Message();
+        queryPlugService.createTableRow(database_no, table_id, column);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
@@ -175,6 +161,7 @@ public class QueryPlugRestController {
     @RequestMapping(value = "/update/{database_no}/table/{table_id}", method = RequestMethod.POST)
     public ResponseEntity<String> updateTableName(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id, @RequestBody Table table) {
         Message message = new Message();
+        queryPlugService.updateTableName(database_no, table_id, table);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
@@ -207,6 +194,7 @@ public class QueryPlugRestController {
     public ResponseEntity<String> updateTableRow(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id, @RequestBody Column column) {
         log.info(column.toString());
         Message message = new Message();
+        queryPlugService.updateTableRow(database_no, table_id, column);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
@@ -236,6 +224,7 @@ public class QueryPlugRestController {
     public ResponseEntity<String> updateTablePosition(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id, @RequestBody Position position) {
         log.info(position.toString());
         Message message = new Message();
+        queryPlugService.updateTablePosition(database_no, table_id, position);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
@@ -327,6 +316,7 @@ public class QueryPlugRestController {
     public ResponseEntity<String> updateTableRowsOrder(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id, @RequestBody ArrayList<Column> columns) {
         log.info(columns.toString());
         Message message = new Message();
+        queryPlugService.updateTableRowsOrder(database_no, table_id, columns);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
@@ -347,6 +337,7 @@ public class QueryPlugRestController {
     @RequestMapping(value = "/delete/{database_no}/table/{table_id}", method = RequestMethod.POST)
     public ResponseEntity<String> deleteTable(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id) {
         Message message = new Message();
+        queryPlugService.deleteTable(database_no, table_id);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
@@ -367,6 +358,7 @@ public class QueryPlugRestController {
     @RequestMapping(value = "/delete/{database_no}/table/{table_id}/row/{row_id}", method = RequestMethod.POST)
     public ResponseEntity<String> deleteTableRow(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id, @PathVariable("row_id") String row_id) {
         Message message = new Message();
+        queryPlugService.deleteTableRow(database_no, table_id, row_id);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
@@ -396,6 +388,7 @@ public class QueryPlugRestController {
     @RequestMapping(value = "/create/{database_no}/line", method = RequestMethod.POST)
     public ResponseEntity<String> connectLine(@PathVariable("database_no") int database_no, @RequestBody Line line) {
         Message message = new Message();
+        queryPlugService.connectLine(database_no, line);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
@@ -434,17 +427,20 @@ public class QueryPlugRestController {
     public ResponseEntity<String> disconnectLine(@PathVariable("database_no") int database_no, @RequestBody ArrayList<Line> lines) {
         log.info(lines.toString());
         Message message = new Message();
+        queryPlugService.disconnectLine(database_no, lines);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/create/{database_no}/{type}/next/id", method = RequestMethod.POST)
     public ResponseEntity<String> createNextId(@PathVariable("database_no") int database_no, @PathVariable("type") String type) {
         String token = null;
-        if (type.equals("table")) {
-            token = TokenGenerator.RandomToken(8);
-        } else if (type.equals("row")) {
-            token = TokenGenerator.RandomToken(6);
-        }
+        do {
+            if (type.equals("table")) {
+                token = TokenGenerator.RandomToken(8);
+            } else if (type.equals("row")) {
+                token = TokenGenerator.RandomToken(6);
+            }
+        } while (!queryPlugService.checkTokenValid(database_no, token));
         Message message = new Message();
         message.put("id", token);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);

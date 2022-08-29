@@ -2,6 +2,7 @@ package com.dao.query;
 
 import com.mapper.query.TableMapper;
 import com.model.query.Table;
+import com.model.query.column.Position;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
@@ -26,5 +27,17 @@ public class TableDao {
 
     public void insertTables(List<Table> tables) {
         mapper.insertTables(tables);
+    }
+
+    public void updateTableName(Table table) {
+        mapper.updateTableName(table);
+    }
+
+    public void updateTablePosition(int database_no, String table_id, Position position) {
+        mapper.updateTablePosition(database_no, table_id, position);
+    }
+
+    public void deleteTable(int database_no, String table_id) {
+        mapper.deleteTable(database_no, table_id);
     }
 }
