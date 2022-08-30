@@ -39,7 +39,7 @@ public class FileUploadUtility {
      * LocalFileUploadStrategy or awsFileUploadStrategy 중 선택
      */
     @Autowired
-    public FileUploadUtility(@Qualifier("AWSFileUploadStrategy") FileUploadStrategy fileUploadStrategy,
+    public FileUploadUtility(@Qualifier("LocalFileUploadStrategy") FileUploadStrategy fileUploadStrategy,
                              ConfigurableWebApplicationContext ctx) {
         // Property Config 에서 무조건 걸어주기 떄문에 properties 세팅만 잘 되어있다면 오류 발생 X
         upload_path = (String) ctx.getEnvironment().getPropertySources().get("path_props").getProperty("UPLOAD_PATH");
@@ -52,6 +52,7 @@ public class FileUploadUtility {
             if (file == null || file.getSize() == 0) {
                 return null;
             }
+            log.info(upload_path);
             Folder.mkdirs(upload_path);
             String saved_name = UUID.randomUUID() + "_" + file.getOriginalFilename();
             File target = new File(upload_path, saved_name);

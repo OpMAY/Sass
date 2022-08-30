@@ -50,16 +50,19 @@ public class LogInterceptor extends HandlerInterceptorAdapter implements Logging
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         log.debug("Log Interceptor afterCompletion");
-        ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
-        if (Constant.LogSetting.HEADER_LOG)
-            log.info("request header: {}", getHeaders(requestWrapper));
+        try {
+            ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
+            if (Constant.LogSetting.HEADER_LOG)
+                log.info("request header: {}", getHeaders(requestWrapper));
 
-        if (Constant.LogSetting.PARAMETER_LOG)
-            log.info("request parameter: {}", getParameterMap(requestWrapper.getParameterMap()));
+            if (Constant.LogSetting.PARAMETER_LOG)
+                log.info("request parameter: {}", getParameterMap(requestWrapper.getParameterMap()));
 
-        if (Constant.LogSetting.REQUEST_BODY_LOG)
-            log.info("request body: {}", getRequestBody(requestWrapper));
-
+            if (Constant.LogSetting.REQUEST_BODY_LOG)
+                log.info("request body: {}", getRequestBody(requestWrapper));
+        } catch (Exception e) {
+            log.info("request body is multipart file type, so do not support log");
+        }
         super.afterCompletion(request, response, handler, ex);
     }
 
