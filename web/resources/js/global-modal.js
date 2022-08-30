@@ -164,6 +164,12 @@ $('#agree-checkbox').on('change', function () {
         $(this).prop('checked', true);
     }
     // TODO status change fetch
+    apiChangeMarketingAgree().then((result) => {
+        console.log(result.status, result.data);
+        if (result.status === 'OK') {
+        } else {
+        }
+    });
 });
 
 $('#disagree-checkbox').on('change', function () {
@@ -179,6 +185,12 @@ $('#disagree-checkbox').on('change', function () {
         $(this).prop('checked', true);
     }
     // TODO status change fetch
+    apiChangeMarketingAgree().then((result) => {
+        console.log(result.status, result.data);
+        if (result.status === 'OK') {
+        } else {
+        }
+    });
 });
 
 $('._pencil').on('click', function () {
@@ -198,6 +210,15 @@ $('#profileInput').on('change', function () {
     if ($(this)[0].files && $(this)[0].files[0]) {
         reader.onload = (e) => {
             $('#profileImg').attr('src', e.target.result);
+        }
+        reader.onloadend = (e) => {
+            apiChangeProfile($(this)[0].files[0]).then((result) => {
+                console.log(result.status, result.data);
+                if (result.status === 'OK') {
+                    $('#setting-modal #profileImg').attr('src', result.data.file.url);
+                } else {
+                }
+            });
         }
         reader.readAsDataURL($(this)[0].files[0]);
     }
@@ -241,23 +262,80 @@ $('#phone-change-input').on('input', function () {
  * **/
 $('.nav-item ._check').on('click', function () {
     // TODO FETCH status change
-    console.log('target : ', $(this).data().type);
-    let type = $(this).data().type;
     if ($(this).hasClass('on')) {
         $(this).removeClass('on');
         $(this).addClass('off');
-        alert('OFF : ' + type);
     } else {
         $(this).removeClass('off');
         $(this).addClass('on');
-        alert('ON : ' + type);
     }
-
+    let info = this.closest('._items').dataset;
+    let type = this.dataset.type;
+    let is_checked = this.classList.contains('on');
+    console.log(info, type, is_checked);
+    if (info.type === 'TEAM') {
+        console.log('update team', info);
+        const grant = {
+            user_no: info.userNo,
+            role: info.userRole,
+            type,
+            auth: is_checked
+        }
+        apiChangeTeamGrant(grant).then((result) => {
+            console.log(result.status, result.data);
+            if (result.status === 'OK') {
+            } else {
+            }
+        });
+    } else {
+        console.log('update plug', info);
+        const grant = {
+            plugin: info.plugin,
+            user_no: info.userNo,
+            role: info.userRole,
+            type,
+            auth: is_checked
+        }
+        apiChangePlugGrant(grant).then((result) => {
+            console.log(result.status, result.data);
+            if (result.status === 'OK') {
+            } else {
+            }
+        });
+    }
 });
 
 $('.nav-item._remove span').on('click', function () {
     // TODO FETCH remove teammate
-    alert('삭제 버튼');
+    let info = this.closest('._items').dataset;
+    if (info.type === 'TEAM') {
+        console.log('delete team', info);
+        const grant = {
+            user_no: info.userNo,
+            role: info.userRole,
+        }
+        apiDeleteTeamGrant(grant).then((result) => {
+            console.log(result.status, result.data);
+            if (result.status === 'OK') {
+                this.closest('._items').remove();
+            } else {
+            }
+        });
+    } else {
+        console.log('delete plug', info);
+        const grant = {
+            plugin: info.plugin,
+            user_no: info.userNo,
+            role: info.userRole,
+        }
+        apiDeletePlugGrant(grant).then((result) => {
+            console.log(result.status, result.data);
+            if (result.status === 'OK') {
+                this.closest('._items').remove();
+            } else {
+            }
+        });
+    }
 });
 
 
@@ -313,23 +391,69 @@ $('._control-panel ._add-new').on('click', function () {
     console.log(containerList);
 })
 
-$('._plugin-teammate-add-button').find('.btn-gray-dark-low').on('click', function () {
+$('[data-action="create-plug"]').on('click', function () {
     // TODO 팀원 추가 AJAX
-    let listDiv = $('._plugin-list');
-    let containerList = listDiv.find('._plugin-list-container');
+    let listDiv = this.closest('._plugin-list');
+    let containerList = listDiv.querySelectorAll('._plugin-list-container');
     $(this).parent().parent().addClass('d-none');
-    containerList.each((idx, item) => {
-        if ($(item).hasClass('d-none')) {
-            $(item).removeClass('d-none');
-        } else {
-            $(item).find('._control-panel').removeClass('d-none');
-            $(item).find('._plugin-manage-child').removeClass('d-none');
-            $(item).find('._plugin-add-member-container').addClass('d-none');
+    let selected_container;
+    containerList.forEach((container) => {
+        if (!container.querySelector('._plugin-add-member-container').classList.contains('d-none')) {
+            selected_container = container.querySelector('._plugin-add-member-container');
         }
-    })
-})
+        if (container.classList.contains('d-none')) {
+            container.classList.remove('d-none');
+        } else {
+            container.querySelector('._control-panel').classList.remove('d-none');
+            container.querySelector('._plugin-manage-child').classList.remove('d-none');
+            container.querySelector('._plugin-add-member-container').classList.add('d-none');
+        }
+    });
+    let member_elements = selected_container.querySelectorAll('._item-group ._items');
+    member_elements.forEach((member_element) => {
+        if (member_element.querySelector('._select ._check.on')) {
+            console.log(member_element);
+            let info = member_element.dataset;
+            const grant = {
+                plugin: info.plugin,
+                user_no: info.userNo,
+                role: info.userRole,
+            }
+            console.log(info);
+            apiAddPlugGrant(grant).then((result) => {
+                console.log(result.status, result.data);
+                if (result.status === 'OK') {
+                    member_element.remove();
+                    let append_container = selected_container.closest('._plugin-list-container').querySelector('._plugin-manage-child ._item-group');
+                    console.log(append_container);
+                    $(append_container).append(`<ul class="nav nav-tabs _items" role="tablist" data-plugin="QUERY" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
+                                                    <li class="nav-item light-h6 _name" role="presentation">
+                                                        유병준
+                                                    </li>
+                                                    <li class="nav-item light-h6 _email" role="menuitem">
+                                                        <span title="asszxc@naver.com">asszxc@naver.com</span>
+                                                    </li>
+                                                    <li class="nav-item light-h6 _role" role="presentation">
+                                                        팀원
+                                                    </li>
+                                                    <li class="nav-item light-h6 _read" role="presentation">
+                                                        <span class="_check on" data-type="READ"></span>
+                                                    </li>
+                                                    <li class="nav-item light-h6 _edit" role="presentation">
+                                                        <span class="_check off" data-type="EDIT"></span>
+                                                    </li>
+                                                    <li class="nav-item medium-h4 _remove" role="presentation">
+                                                        <span>×</span>
+                                                    </li>
+                                                </ul>`);
+                } else {
+                }
+            });
+        }
+    });
+});
 
-$('._plugin-teammate-add-button').find('.c-brand-purple').on('click', function () {
+$('[data-action="cancel-plug"]').on('click', function () {
     let listDiv = $('._plugin-list');
     let containerList = listDiv.find('._plugin-list-container');
     $(this).parent().parent().addClass('d-none');
@@ -411,6 +535,51 @@ $(document).ready(function () {
             console.log(result.status, result.data);
             if (result.status === 'OK') {
                 $('#login-modal').modal('show');
+            } else {
+            }
+        });
+    });
+    $('[data-action="change-name"]').on('click', function () {
+        apiChangeName().then((result) => {
+            console.log(result.status, result.data);
+            if (result.status === 'OK') {
+                let $change_name_modal = $('#name-change-modal');
+                let $change_name_element = $('[data-update="name"]');
+                $change_name_element.html(`${result.data.name}`);
+                $change_name_modal.modal('hide');
+            } else {
+            }
+        });
+    });
+
+    $('[data-action="change-email"]').on('click', function () {
+        apiChangeEmail().then((result) => {
+            console.log(result.status, result.data);
+            if (result.status === 'OK') {
+                let $change_email_modal = $('#email-change-modal');
+                let $change_email_element = $('[data-update="email"]');
+                $change_email_element.html(`${result.data.email}`);
+                $change_email_modal.modal('hide');
+            } else {
+            }
+        });
+    });
+    $('[data-action="change-phone"]').on('click', function () {
+        apiChangePhone().then((result) => {
+            console.log(result.status, result.data);
+            if (result.status === 'OK') {
+                let $change_phone_modal = $('#phone-change-modal');
+                let $change_phone_element = $('[data-update="phone"]');
+                $change_phone_element.html(`${result.data.phone}`);
+                $change_phone_modal.modal('hide');
+            } else {
+            }
+        });
+    });
+    $('[data-action="withdrawal"]').on('click', function () {
+        apiChangeWithdrawal().then((result) => {
+            console.log(result.status, result.data);
+            if (result.status === 'OK') {
             } else {
             }
         });

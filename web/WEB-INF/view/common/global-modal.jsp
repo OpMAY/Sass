@@ -689,7 +689,7 @@
                             <div class="row mb-44">
                                 <div class="_name col-6">
                                     <h5 class="regular-h6 c-gray-medium mb-12">이름</h5>
-                                    <h5 class="medium-h3 c-gray-dark-low mb-1">유병준</h5>
+                                    <h5 class="medium-h3 c-gray-dark-low mb-1" data-update="name">유병준</h5>
                                     <h5 class="regular-h6 c-brand-purple _profile-change" data-type="name">변경</h5>
                                 </div>
                                 <div class="_profile col-6">
@@ -704,14 +704,14 @@
                             <div class="row mb-44">
                                 <div class="_email col-6">
                                     <h5 class="regular-h6 c-gray-medium mb-12">이메일</h5>
-                                    <h5 class="medium-h3 c-gray-dark-low mb-1">asszxc@naver.com</h5>
+                                    <h5 class="medium-h3 c-gray-dark-low mb-1" data-update="email">asszxc@naver.com</h5>
                                     <h5 class="regular-h6 c-brand-purple _profile-change" data-type="email">변경</h5>
                                 </div>
                             </div>
                             <div class="row mb-44">
                                 <div class="_phone col-6">
                                     <h5 class="regular-h6 c-gray-medium mb-12">연락처</h5>
-                                    <h5 class="medium-h3 c-gray-dark-low mb-1">010-9431-1977</h5>
+                                    <h5 class="medium-h3 c-gray-dark-low mb-1" data-update="phone">010-9431-1977</h5>
                                     <h5 class="regular-h6 c-brand-purple _profile-change" data-type="phone">변경</h5>
                                 </div>
                             </div>
@@ -752,7 +752,7 @@
                                         </div>
                                         <div class="col-3">
                                             <button type="button"
-                                                    class="btn btn-block btn-gray-dark-low">회원 탈퇴
+                                                    class="btn btn-block btn-gray-dark-low" data-action="withdrawal">회원 탈퇴
                                             </button>
                                         </div>
                                     </div>
@@ -777,7 +777,7 @@
                                     <h5 class="regular-h6 c-gray-medium">기업 ID</h5>
                                 </div>
                                 <div class="_item col-10">
-                                    <h5 class="medium-h3 c-brand-purple">2Y23dy</h5>
+                                    <h5 class="medium-h3 c-brand-purple" data-company-id="2Y23dy">2Y23dy</h5>
                                 </div>
                             </div>
                             <div class="_corp-info row mb-40">
@@ -785,7 +785,7 @@
                                     <h5 class="regular-h6 c-gray-medium">관리자</h5>
                                 </div>
                                 <div class="_item col-10">
-                                    <h5 class="regular-h6 c-gray-dark-low">유병준(asszxc@naver.com)</h5>
+                                    <h5 class="regular-h6 c-gray-dark-low" data-company-owner="유병준" data-compnay-owner-email="asszxc@naver.com">유병준(asszxc@naver.com)</h5>
                                 </div>
                             </div>
                             <div class="_authorization">
@@ -820,7 +820,7 @@
                                 <div class="_cover-line _bottom"></div>
                                 <div class="_item-group">
                                     <ul class="nav nav-tabs _items"
-                                        role="tablist">
+                                        role="tablist" data-type="TEAM" data-user-no="1" data-user-role="OWNER" data-user-email="asszxc@naver.com">
                                         <li class="nav-item light-h6 _name"
                                             role="presentation">
                                             유병준
@@ -835,18 +835,18 @@
                                         </li>
                                         <li class="nav-item light-h6 _read"
                                             role="presentation">
-                                            <span class="_check on" data-type="read"></span>
+                                            <span class="_check on" data-type="READ"></span>
                                         </li>
                                         <li class="nav-item light-h6 _edit"
                                             role="presentation">
-                                            <span class="_check on" data-type="edit"></span>
+                                            <span class="_check on" data-type="EDIT"></span>
                                         </li>
                                         <li class="nav-item medium-h4 _remove"
                                             role="presentation">
 
                                         </li>
                                     </ul>
-                                    <ul class="nav nav-tabs _items"
+                                    <ul class="nav nav-tabs _items" data-type="TEAM" data-user-no="2" data-user-role="PERSONAL" data-user-email="zlzldntlr@naver.com"
                                         role="tablist">
                                         <li class="nav-item light-h6 _name"
                                             role="presentation">
@@ -862,18 +862,18 @@
                                         </li>
                                         <li class="nav-item light-h6 _read"
                                             role="presentation">
-                                            <span class="_check on" data-type="read"></span>
+                                            <span class="_check on" data-type="READ"></span>
                                         </li>
                                         <li class="nav-item light-h6 _edit"
                                             role="presentation">
-                                            <span class="_check on" data-type="edit"></span>
+                                            <span class="_check on" data-type="EDIT"></span>
                                         </li>
                                         <li class="nav-item medium-h4 _remove"
                                             role="presentation">
                                             <span>&times;</span>
                                         </li>
                                     </ul>
-                                    <ul class="nav nav-tabs _items"
+                                    <ul class="nav nav-tabs _items" data-type="TEAM" data-user-no="3" data-user-role="PERSONAL" data-user-email="kevin8622@naver.com"
                                         role="tablist">
                                         <li class="nav-item light-h6 _name"
                                             role="presentation">
@@ -889,227 +889,11 @@
                                         </li>
                                         <li class="nav-item light-h6 _read"
                                             role="presentation">
-                                            <span class="_check on" data-type="read"></span>
+                                            <span class="_check on" data-type="READ"></span>
                                         </li>
                                         <li class="nav-item light-h6 _edit"
                                             role="presentation">
-                                            <span class="_check off" data-type="edit"></span>
-                                        </li>
-                                        <li class="nav-item medium-h4 _remove"
-                                            role="presentation">
-                                            <span>&times;</span>
-                                        </li>
-                                    </ul>
-                                    <ul class="nav nav-tabs _items"
-                                        role="tablist">
-                                        <li class="nav-item light-h6 _name"
-                                            role="presentation">
-                                            홍길동
-                                        </li>
-                                        <li class="nav-item light-h6 _email"
-                                            role="menuitem">
-                                            <span title="kevin8622@naver.com">kevin8622@naver.com</span>
-                                        </li>
-                                        <li class="nav-item light-h6 _role"
-                                            role="presentation">
-                                            요청
-                                        </li>
-                                        <li class="nav-item light-h6 _read"
-                                            role="presentation">
-                                            <span class="_check off" data-type="read"></span>
-                                        </li>
-                                        <li class="nav-item light-h6 _edit"
-                                            role="presentation">
-                                            <span class="_check off" data-type="edit"></span>
-                                        </li>
-                                        <li class="nav-item medium-h4 _remove"
-                                            role="presentation">
-                                            <span>&times;</span>
-                                        </li>
-                                    </ul>
-                                    <ul class="nav nav-tabs _items"
-                                        role="tablist">
-                                        <li class="nav-item light-h6 _name"
-                                            role="presentation">
-                                            홍길동
-                                        </li>
-                                        <li class="nav-item light-h6 _email"
-                                            role="menuitem">
-                                            <span title="kevin8622@naver.com">kevin8622@naver.com</span>
-                                        </li>
-                                        <li class="nav-item light-h6 _role"
-                                            role="presentation">
-                                            요청
-                                        </li>
-                                        <li class="nav-item light-h6 _read"
-                                            role="presentation">
-                                            <span class="_check off" data-type="read"></span>
-                                        </li>
-                                        <li class="nav-item light-h6 _edit"
-                                            role="presentation">
-                                            <span class="_check off" data-type="edit"></span>
-                                        </li>
-                                        <li class="nav-item medium-h4 _remove"
-                                            role="presentation">
-                                            <span>&times;</span>
-                                        </li>
-                                    </ul>
-                                    <ul class="nav nav-tabs _items"
-                                        role="tablist">
-                                        <li class="nav-item light-h6 _name"
-                                            role="presentation">
-                                            홍길동
-                                        </li>
-                                        <li class="nav-item light-h6 _email"
-                                            role="menuitem">
-                                            <span title="kevin8622@naver.com">kevin8622@naver.com</span>
-                                        </li>
-                                        <li class="nav-item light-h6 _role"
-                                            role="presentation">
-                                            요청
-                                        </li>
-                                        <li class="nav-item light-h6 _read"
-                                            role="presentation">
-                                            <span class="_check off" data-type="read"></span>
-                                        </li>
-                                        <li class="nav-item light-h6 _edit"
-                                            role="presentation">
-                                            <span class="_check off" data-type="edit"></span>
-                                        </li>
-                                        <li class="nav-item medium-h4 _remove"
-                                            role="presentation">
-                                            <span>&times;</span>
-                                        </li>
-                                    </ul>
-                                    <ul class="nav nav-tabs _items"
-                                        role="tablist">
-                                        <li class="nav-item light-h6 _name"
-                                            role="presentation">
-                                            홍길동
-                                        </li>
-                                        <li class="nav-item light-h6 _email"
-                                            role="menuitem">
-                                            <span title="kevin8622@naver.com">kevin8622@naver.com</span>
-                                        </li>
-                                        <li class="nav-item light-h6 _role"
-                                            role="presentation">
-                                            요청
-                                        </li>
-                                        <li class="nav-item light-h6 _read"
-                                            role="presentation">
-                                            <span class="_check off" data-type="read"></span>
-                                        </li>
-                                        <li class="nav-item light-h6 _edit"
-                                            role="presentation">
-                                            <span class="_check off" data-type="edit"></span>
-                                        </li>
-                                        <li class="nav-item medium-h4 _remove"
-                                            role="presentation">
-                                            <span>&times;</span>
-                                        </li>
-                                    </ul>
-                                    <ul class="nav nav-tabs _items"
-                                        role="tablist">
-                                        <li class="nav-item light-h6 _name"
-                                            role="presentation">
-                                            홍길동
-                                        </li>
-                                        <li class="nav-item light-h6 _email"
-                                            role="menuitem">
-                                            <span title="kevin8622@naver.com">kevin8622@naver.com</span>
-                                        </li>
-                                        <li class="nav-item light-h6 _role"
-                                            role="presentation">
-                                            요청
-                                        </li>
-                                        <li class="nav-item light-h6 _read"
-                                            role="presentation">
-                                            <span class="_check off" data-type="read"></span>
-                                        </li>
-                                        <li class="nav-item light-h6 _edit"
-                                            role="presentation">
-                                            <span class="_check off" data-type="edit"></span>
-                                        </li>
-                                        <li class="nav-item medium-h4 _remove"
-                                            role="presentation">
-                                            <span>&times;</span>
-                                        </li>
-                                    </ul>
-                                    <ul class="nav nav-tabs _items"
-                                        role="tablist">
-                                        <li class="nav-item light-h6 _name"
-                                            role="presentation">
-                                            홍길동
-                                        </li>
-                                        <li class="nav-item light-h6 _email"
-                                            role="menuitem">
-                                            <span title="kevin8622@naver.com">kevin8622@naver.com</span>
-                                        </li>
-                                        <li class="nav-item light-h6 _role"
-                                            role="presentation">
-                                            요청
-                                        </li>
-                                        <li class="nav-item light-h6 _read"
-                                            role="presentation">
-                                            <span class="_check off" data-type="read"></span>
-                                        </li>
-                                        <li class="nav-item light-h6 _edit"
-                                            role="presentation">
-                                            <span class="_check off" data-type="edit"></span>
-                                        </li>
-                                        <li class="nav-item medium-h4 _remove"
-                                            role="presentation">
-                                            <span>&times;</span>
-                                        </li>
-                                    </ul>
-                                    <ul class="nav nav-tabs _items"
-                                        role="tablist">
-                                        <li class="nav-item light-h6 _name"
-                                            role="presentation">
-                                            홍길동
-                                        </li>
-                                        <li class="nav-item light-h6 _email"
-                                            role="menuitem">
-                                            <span title="kevin8622@naver.com">kevin8622@naver.com</span>
-                                        </li>
-                                        <li class="nav-item light-h6 _role"
-                                            role="presentation">
-                                            요청
-                                        </li>
-                                        <li class="nav-item light-h6 _read"
-                                            role="presentation">
-                                            <span class="_check off" data-type="read"></span>
-                                        </li>
-                                        <li class="nav-item light-h6 _edit"
-                                            role="presentation">
-                                            <span class="_check off" data-type="edit"></span>
-                                        </li>
-                                        <li class="nav-item medium-h4 _remove"
-                                            role="presentation">
-                                            <span>&times;</span>
-                                        </li>
-                                    </ul>
-                                    <ul class="nav nav-tabs _items"
-                                        role="tablist">
-                                        <li class="nav-item light-h6 _name"
-                                            role="presentation">
-                                            홍길동
-                                        </li>
-                                        <li class="nav-item light-h6 _email"
-                                            role="menuitem">
-                                            <span title="kevin8622@naver.com">kevin8622@naver.com</span>
-                                        </li>
-                                        <li class="nav-item light-h6 _role"
-                                            role="presentation">
-                                            요청
-                                        </li>
-                                        <li class="nav-item light-h6 _read"
-                                            role="presentation">
-                                            <span class="_check off" data-type="read"></span>
-                                        </li>
-                                        <li class="nav-item light-h6 _edit"
-                                            role="presentation">
-                                            <span class="_check off" data-type="edit"></span>
+                                            <span class="_check off" data-type="EDIT"></span>
                                         </li>
                                         <li class="nav-item medium-h4 _remove"
                                             role="presentation">
@@ -1179,7 +963,7 @@
                                         <div class="_cover-line _bottom"></div>
                                         <div class="_item-group">
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist">
+                                                role="tablist" data-plugin="QUERY" data-type="PLUG" data-user-no="1" data-user-role="OWNER" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     유병준
@@ -1194,19 +978,18 @@
                                                 </li>
                                                 <li class="nav-item light-h6 _read"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="read"></span>
+                                                    <span class="_check on" data-type="READ"></span>
                                                 </li>
                                                 <li class="nav-item light-h6 _edit"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="edit"></span>
+                                                    <span class="_check on" data-type="EDIT"></span>
                                                 </li>
                                                 <li class="nav-item medium-h4 _remove"
                                                     role="presentation">
-
                                                 </li>
                                             </ul>
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist">
+                                                role="tablist" data-plugin="QUERY" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     유병준
@@ -1221,11 +1004,11 @@
                                                 </li>
                                                 <li class="nav-item light-h6 _read"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="read"></span>
+                                                    <span class="_check on" data-type="READ"></span>
                                                 </li>
                                                 <li class="nav-item light-h6 _edit"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="edit"></span>
+                                                    <span class="_check on" data-type="EDIT"></span>
                                                 </li>
                                                 <li class="nav-item medium-h4 _remove"
                                                     role="presentation">
@@ -1233,7 +1016,7 @@
                                                 </li>
                                             </ul>
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist">
+                                                role="tablist" data-plugin="QUERY" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     유병준
@@ -1248,11 +1031,11 @@
                                                 </li>
                                                 <li class="nav-item light-h6 _read"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="read"></span>
+                                                    <span class="_check on" data-type="READ"></span>
                                                 </li>
                                                 <li class="nav-item light-h6 _edit"
                                                     role="presentation">
-                                                    <span class="_check off" data-type="edit"></span>
+                                                    <span class="_check off" data-type="EDIT"></span>
                                                 </li>
                                                 <li class="nav-item medium-h4 _remove"
                                                     role="presentation">
@@ -1296,34 +1079,7 @@
                                         <div class="_cover-line _bottom"></div>
                                         <div class="_item-group">
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist">
-                                                <li class="nav-item light-h6 _name"
-                                                    role="presentation">
-                                                    김우식
-                                                </li>
-                                                <li class="nav-item light-h6 _email"
-                                                    role="menuitem">
-                                                    <span title="asszxc@naver.com">asszxc@naver.com</span>
-                                                </li>
-                                                <li class="nav-item light-h6 _role"
-                                                    role="presentation">
-                                                    관리자
-                                                </li>
-                                                <li class="nav-item light-h6 _read"
-                                                    role="presentation">
-                                                    <span class="_check on" data-type="read"></span>
-                                                </li>
-                                                <li class="nav-item light-h6 _edit"
-                                                    role="presentation">
-                                                    <span class="_check on" data-type="edit"></span>
-                                                </li>
-                                                <li class="nav-item medium-h4 _select"
-                                                    role="presentation">
-                                                    <span class="_check off" data-type="select"></span>
-                                                </li>
-                                            </ul>
-                                            <ul class="nav nav-tabs _items"
-                                                role="tablist">
+                                                role="tablist" data-plugin="QUERY" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     한지우
@@ -1338,15 +1094,15 @@
                                                 </li>
                                                 <li class="nav-item light-h6 _read"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="read"></span>
+                                                    <span class="_check on" data-type="EDIT"></span>
                                                 </li>
                                                 <li class="nav-item light-h6 _edit"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="edit"></span>
+                                                    <span class="_check on" data-type="EDIT"></span>
                                                 </li>
                                                 <li class="nav-item medium-h4 _select"
                                                     role="presentation">
-                                                    <span class="_check off" data-type="select"></span>
+                                                    <span class="_check off" data-type="READY"></span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -1400,7 +1156,7 @@
                                         <div class="_cover-line _bottom"></div>
                                         <div class="_item-group">
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist">
+                                                role="tablist" data-plugin="CRM" data-type="PLUG" data-user-no="1" data-user-role="OWNER" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     유병준
@@ -1415,19 +1171,18 @@
                                                 </li>
                                                 <li class="nav-item light-h6 _read"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="read"></span>
+                                                    <span class="_check on" data-type="READ"></span>
                                                 </li>
                                                 <li class="nav-item light-h6 _edit"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="edit"></span>
+                                                    <span class="_check on" data-type="EDIT"></span>
                                                 </li>
                                                 <li class="nav-item medium-h4 _remove"
                                                     role="presentation">
-
                                                 </li>
                                             </ul>
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist">
+                                                role="tablist" data-plugin="CRM" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     유병준
@@ -1442,38 +1197,11 @@
                                                 </li>
                                                 <li class="nav-item light-h6 _read"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="read"></span>
+                                                    <span class="_check on" data-type="READ"></span>
                                                 </li>
                                                 <li class="nav-item light-h6 _edit"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="edit"></span>
-                                                </li>
-                                                <li class="nav-item medium-h4 _remove"
-                                                    role="presentation">
-                                                    <span>&times;</span>
-                                                </li>
-                                            </ul>
-                                            <ul class="nav nav-tabs _items"
-                                                role="tablist">
-                                                <li class="nav-item light-h6 _name"
-                                                    role="presentation">
-                                                    유병준
-                                                </li>
-                                                <li class="nav-item light-h6 _email"
-                                                    role="menuitem">
-                                                    <span title="asszxc@naver.com">asszxc@naver.com</span>
-                                                </li>
-                                                <li class="nav-item light-h6 _role"
-                                                    role="presentation">
-                                                    팀원
-                                                </li>
-                                                <li class="nav-item light-h6 _read"
-                                                    role="presentation">
-                                                    <span class="_check on" data-type="read"></span>
-                                                </li>
-                                                <li class="nav-item light-h6 _edit"
-                                                    role="presentation">
-                                                    <span class="_check off" data-type="edit"></span>
+                                                    <span class="_check on" data-type="EDIT"></span>
                                                 </li>
                                                 <li class="nav-item medium-h4 _remove"
                                                     role="presentation">
@@ -1517,34 +1245,7 @@
                                         <div class="_cover-line _bottom"></div>
                                         <div class="_item-group">
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist">
-                                                <li class="nav-item light-h6 _name"
-                                                    role="presentation">
-                                                    김우식
-                                                </li>
-                                                <li class="nav-item light-h6 _email"
-                                                    role="menuitem">
-                                                    <span title="asszxc@naver.com">asszxc@naver.com</span>
-                                                </li>
-                                                <li class="nav-item light-h6 _role"
-                                                    role="presentation">
-                                                    관리자
-                                                </li>
-                                                <li class="nav-item light-h6 _read"
-                                                    role="presentation">
-                                                    <span class="_check on" data-type="read"></span>
-                                                </li>
-                                                <li class="nav-item light-h6 _edit"
-                                                    role="presentation">
-                                                    <span class="_check on" data-type="edit"></span>
-                                                </li>
-                                                <li class="nav-item medium-h4 _select"
-                                                    role="presentation">
-                                                    <span class="_check off" data-type="select"></span>
-                                                </li>
-                                            </ul>
-                                            <ul class="nav nav-tabs _items"
-                                                role="tablist">
+                                                role="tablist" data-plugin="CRM" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     한지우
@@ -1559,15 +1260,15 @@
                                                 </li>
                                                 <li class="nav-item light-h6 _read"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="read"></span>
+                                                    <span class="_check on" data-type="READ"></span>
                                                 </li>
                                                 <li class="nav-item light-h6 _edit"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="edit"></span>
+                                                    <span class="_check on" data-type="EDIT"></span>
                                                 </li>
                                                 <li class="nav-item medium-h4 _select"
                                                     role="presentation">
-                                                    <span class="_check off" data-type="select"></span>
+                                                    <span class="_check off" data-type="READY"></span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -1621,7 +1322,7 @@
                                         <div class="_cover-line _bottom"></div>
                                         <div class="_item-group">
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist">
+                                                role="tablist" data-plugin="CHAT" data-type="PLUG" data-user-no="1" data-user-role="OWNER" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     유병준
@@ -1636,15 +1337,68 @@
                                                 </li>
                                                 <li class="nav-item light-h6 _read"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="read"></span>
+                                                    <span class="_check on" data-type="READ"></span>
                                                 </li>
                                                 <li class="nav-item light-h6 _edit"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="edit"></span>
+                                                    <span class="_check on" data-type="EDIT"></span>
                                                 </li>
                                                 <li class="nav-item medium-h4 _remove"
                                                     role="presentation">
-
+                                                </li>
+                                            </ul>
+                                            <ul class="nav nav-tabs _items"
+                                                role="tablist" data-plugin="CHAT" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
+                                                <li class="nav-item light-h6 _name"
+                                                    role="presentation">
+                                                    유병준
+                                                </li>
+                                                <li class="nav-item light-h6 _email"
+                                                    role="menuitem">
+                                                    <span title="asszxc@naver.com">asszxc@naver.com</span>
+                                                </li>
+                                                <li class="nav-item light-h6 _role"
+                                                    role="presentation">
+                                                    팀원
+                                                </li>
+                                                <li class="nav-item light-h6 _read"
+                                                    role="presentation">
+                                                    <span class="_check on" data-type="READ"></span>
+                                                </li>
+                                                <li class="nav-item light-h6 _edit"
+                                                    role="presentation">
+                                                    <span class="_check on" data-type="EDIT"></span>
+                                                </li>
+                                                <li class="nav-item medium-h4 _remove"
+                                                    role="presentation">
+                                                    <span>&times;</span>
+                                                </li>
+                                            </ul>
+                                            <ul class="nav nav-tabs _items"
+                                                role="tablist" data-plugin="CHAT" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
+                                                <li class="nav-item light-h6 _name"
+                                                    role="presentation">
+                                                    유병준
+                                                </li>
+                                                <li class="nav-item light-h6 _email"
+                                                    role="menuitem">
+                                                    <span title="asszxc@naver.com">asszxc@naver.com</span>
+                                                </li>
+                                                <li class="nav-item light-h6 _role"
+                                                    role="presentation">
+                                                    팀원
+                                                </li>
+                                                <li class="nav-item light-h6 _read"
+                                                    role="presentation">
+                                                    <span class="_check on" data-type="READ"></span>
+                                                </li>
+                                                <li class="nav-item light-h6 _edit"
+                                                    role="presentation">
+                                                    <span class="_check off" data-type="EDIT"></span>
+                                                </li>
+                                                <li class="nav-item medium-h4 _remove"
+                                                    role="presentation">
+                                                    <span>&times;</span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -1684,34 +1438,7 @@
                                         <div class="_cover-line _bottom"></div>
                                         <div class="_item-group">
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist">
-                                                <li class="nav-item light-h6 _name"
-                                                    role="presentation">
-                                                    김우식
-                                                </li>
-                                                <li class="nav-item light-h6 _email"
-                                                    role="menuitem">
-                                                    <span title="asszxc@naver.com">asszxc@naver.com</span>
-                                                </li>
-                                                <li class="nav-item light-h6 _role"
-                                                    role="presentation">
-                                                    관리자
-                                                </li>
-                                                <li class="nav-item light-h6 _read"
-                                                    role="presentation">
-                                                    <span class="_check on" data-type="read"></span>
-                                                </li>
-                                                <li class="nav-item light-h6 _edit"
-                                                    role="presentation">
-                                                    <span class="_check on" data-type="edit"></span>
-                                                </li>
-                                                <li class="nav-item medium-h4 _select"
-                                                    role="presentation">
-                                                    <span class="_check off" data-type="select"></span>
-                                                </li>
-                                            </ul>
-                                            <ul class="nav nav-tabs _items"
-                                                role="tablist">
+                                                role="tablist" data-plugin="CHAT" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     한지우
@@ -1726,15 +1453,15 @@
                                                 </li>
                                                 <li class="nav-item light-h6 _read"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="read"></span>
+                                                    <span class="_check on" data-type="READ"></span>
                                                 </li>
                                                 <li class="nav-item light-h6 _edit"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="edit"></span>
+                                                    <span class="_check on" data-type="EDIT"></span>
                                                 </li>
                                                 <li class="nav-item medium-h4 _select"
                                                     role="presentation">
-                                                    <span class="_check off" data-type="select"></span>
+                                                    <span class="_check off" data-type="READY"></span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -1743,9 +1470,9 @@
                                 <div class="_plugin-teammate-add-button d-none row mx-0">
                                     <div class="col-12 px-5">
                                         <button type="button"
-                                                class="btn btn-block btn-gray-dark-low">추가하기
+                                                class="btn btn-block btn-gray-dark-low" data-action="create-plug">추가하기
                                         </button>
-                                        <button type="button" class="btn btn-block btn-transparent c-brand-purple">취소
+                                        <button type="button" class="btn btn-block btn-transparent c-brand-purple" data-action="cancel-plug">취소
                                         </button>
                                     </div>
                                 </div>
@@ -1790,7 +1517,7 @@
                            class="form-control form-general regular-h5 p-16 mb-20">
                 </div>
                 <div class="_buttons">
-                    <button type="button" class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>수정 완료
+                    <button type="button" data-action="change-name" class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>수정 완료
                     </button>
                     <button type="button" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
                     </button>
@@ -1832,7 +1559,7 @@
                            class="form-control form-general regular-h5 p-16 mb-20">
                 </div>
                 <div class="_buttons">
-                    <button type="button" class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>수정 완료
+                    <button type="button" data-action="change-email" class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>수정 완료
                     </button>
                     <button type="button" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
                     </button>
@@ -1874,7 +1601,7 @@
                            class="form-control form-general regular-h5 p-16 mb-20">
                 </div>
                 <div class="_buttons">
-                    <button type="button" class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>수정 완료
+                    <button type="button" data-action="change-phone" class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>수정 완료
                     </button>
                     <button type="button" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
                     </button>

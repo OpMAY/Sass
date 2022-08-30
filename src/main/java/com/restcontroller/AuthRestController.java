@@ -1,6 +1,10 @@
 package com.restcontroller;
 
+import com.aws.file.FileUploadUtility;
+import com.model.grant.PlugGrant;
+import com.model.grant.TeamGrant;
 import com.model.User;
+import com.model.common.MFile;
 import com.response.DefaultRes;
 import com.response.Message;
 import com.util.TokenGenerator;
@@ -9,9 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @Slf4j
@@ -19,6 +23,8 @@ import java.util.Map;
 @AllArgsConstructor
 @RequestMapping("/auth")
 public class AuthRestController {
+    private final FileUploadUtility uploadUtility;
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<String> login(@RequestBody User user) {
         Message message = new Message();
@@ -60,6 +66,87 @@ public class AuthRestController {
     public ResponseEntity<String> confirmCode(@RequestBody Map<String, Object> map) {
         Message message = new Message();
         message.put("code", map.get("code").toString());
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/change/name", method = RequestMethod.POST)
+    public ResponseEntity<String> changeName(HttpServletRequest request, @RequestBody Map<String, Object> map) {
+        Message message = new Message();
+        message.put("name", map.get("name").toString());
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/change/profile", method = RequestMethod.POST)
+    public ResponseEntity<String> changeProfile(HttpServletRequest request, @RequestBody MultipartFile file) {
+        Message message = new Message();
+        if (file.getSize() > 0) {
+            log.info("{},{},{},{}", file.getName(), file.getSize(), file.getOriginalFilename(), file.getContentType());
+            MFile mFile = uploadUtility.uploadFile(file, null);
+            message.put("file", mFile);
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/change/email", method = RequestMethod.POST)
+    public ResponseEntity<String> changeEmail(HttpServletRequest request, @RequestBody Map<String, Object> map) {
+        Message message = new Message();
+        message.put("email", map.get("email").toString());
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/change/phone", method = RequestMethod.POST)
+    public ResponseEntity<String> changePhone(HttpServletRequest request, @RequestBody Map<String, Object> map) {
+        Message message = new Message();
+        message.put("phone", map.get("phone").toString());
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/change/agree", method = RequestMethod.POST)
+    public ResponseEntity<String> changeMarketingAgree(HttpServletRequest request, @RequestBody Map<String, Object> map) {
+        Message message = new Message();
+        message.put("agree", Boolean.valueOf(map.get("agree").toString()).booleanValue());
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/withdrawal", method = RequestMethod.POST)
+    public ResponseEntity<String> changeWithdrawal(HttpServletRequest request, @RequestBody Map<String, Object> map) {
+        Message message = new Message();
+        message.put("password", map.get("password").toString());
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/change/team/grant", method = RequestMethod.POST)
+    public ResponseEntity<String> changeTeamGrant(HttpServletRequest request, @RequestBody TeamGrant grant) {
+        log.info(grant.toString());
+        Message message = new Message();
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/delete/team/grant", method = RequestMethod.POST)
+    public ResponseEntity<String> deleteTeamGrant(HttpServletRequest request, @RequestBody TeamGrant grant) {
+        log.info(grant.toString());
+        Message message = new Message();
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/change/plug/grant", method = RequestMethod.POST)
+    public ResponseEntity<String> changePlugGrant(HttpServletRequest request, @RequestBody PlugGrant grant) {
+        log.info(grant.toString());
+        Message message = new Message();
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/delete/plug/grant", method = RequestMethod.POST)
+    public ResponseEntity<String> deletePlugGrant(HttpServletRequest request, @RequestBody PlugGrant grant) {
+        log.info(grant.toString());
+        Message message = new Message();
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/add/plug/grant", method = RequestMethod.POST)
+    public ResponseEntity<String> addPlugGrant(HttpServletRequest request, @RequestBody PlugGrant grant) {
+        log.info(grant.toString());
+        Message message = new Message();
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 }
