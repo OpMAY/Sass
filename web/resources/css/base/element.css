@@ -13,7 +13,7 @@ ul.tabs.modal-tabs {
 
 .tab-content > .tab-pane ._body {
     margin-left: auto;
-    width: calc(100% - 92px);
+    width: calc(100% - 55px);
     overflow: auto;
     overflow-x: hidden;
     min-height: calc(100vh - 115px);
@@ -35,12 +35,14 @@ ul.tabs .nav-link {
 }
 
 #plugin-left-sidebar ._plugin-container > ._left-plugin {
-    padding: 16px 24px;
+    padding: 12px;
     cursor: pointer;
     display: flex;
 }
 
 #plugin-left-sidebar ._plugin-container > ._left-plugin > img {
+    width: 30px;
+    height: 30px;
     margin: auto;
 }
 
