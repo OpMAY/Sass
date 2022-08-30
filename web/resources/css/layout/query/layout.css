@@ -24,10 +24,10 @@
 }
 
 #l-content-wrapper {
-    width: calc(100% - 92px);
+    width: calc(100% - 55px);
     height: calc(100vh - 52px);
 
-    margin-left: 92px;
+    margin-left: 55px;
     margin-top: 52px;
     background-color: var(--layout-background);
 }
@@ -44,7 +44,7 @@
     background-color: var(--layout-background);
     position: fixed;
     top: 51px;
-    left: 92px;
+    left: 55px;
     height: calc(100vh - 52px);
     display: flex;
     flex-wrap: wrap;

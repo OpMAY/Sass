@@ -114,7 +114,7 @@ const tableAutoSorting = (draggable_tables, leader_lines) => {
     const tables = document.querySelectorAll('.table-container .component');
     const scale = parseFloat(document.querySelector('._right-option._scale-up').dataset.scale);
     let base_top = MINIMUM_POSITION.top * scale;
-    const base_left = MINIMUM_POSITION.left * scale;
+    let base_left = MINIMUM_POSITION.left * scale;
     let next_left = base_left;
     let base_draggable_table_objects = new Array();
     for (let i = 0; i < tables.length; i++) {
@@ -126,7 +126,8 @@ const tableAutoSorting = (draggable_tables, leader_lines) => {
             draggable_table_object.draggable_table.element.style.transform = `translate(${base_left}px, ${base_top}px) scale(${scale})`;
             draggable_table_object.draggable_table.position();
             updatePosition(draggable_tables, draggable_table_object.draggable_table.element, {
-                left: base_left, top: base_top,
+                left: draggable_table_object.draggable_table.rect.left,
+                top: draggable_table_object.draggable_table.rect.top,
             });
             next_left = base_left + (draggable_table_object.draggable_table.element.offsetWidth * scale) + (100 * scale);
             base_draggable_table_objects.push(draggable_table_object);
@@ -138,7 +139,8 @@ const tableAutoSorting = (draggable_tables, leader_lines) => {
         draggable_table_object.draggable_table.element.style.transform = `translate(${next_left}px, ${base_top}px) scale(${scale})`;
         draggable_table_object.draggable_table.position();
         updatePosition(draggable_tables, draggable_table_object.draggable_table.element, {
-            left: next_left, top: base_top,
+            left: draggable_table_object.draggable_table.rect.left,
+            top: draggable_table_object.draggable_table.rect.top,
         });
         next_left = next_left + (draggable_table_object.draggable_table.element.offsetWidth * scale) + (100 * scale);
 
@@ -1567,6 +1569,7 @@ function tableOptionClickEventListener(e) {
     const table = this.closest('.component');
     const draggable = findTableById(draggable_tables, table.id);
     options.setAttribute('data-table-id', table.id);
+    console.log(draggable.draggable_table);
     options.style.left = draggable.position.left + ($(table).outerWidth() * scale) + 'px';
     options.style.top = draggable.position.top + 'px';
     if (options.style.display.length === 4) {
