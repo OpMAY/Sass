@@ -4,21 +4,21 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.CompanyMapper">
     <insert id="registerCompany" useGeneratedKeys="true" keyProperty="no">
-        insert into Company(companyID, businessCode, name, createDate)
+        insert into company(company_id, business_code, name, reg_datetime)
         VALUES (#{companyID}, #{businessCode}, #{name}, NOW())
     </insert>
     <select id="checkCompanyNameExists" resultType="_boolean">
-        select EXISTS(select * from Company WHERE name = #{name})
+        select EXISTS(select * from company WHERE name = #{name})
     </select>
     <select id="checkCompanyBusinessCodeExists" resultType="_boolean">
-        select EXISTS(select * from Company WHERE businessCode = #{code})
+        select EXISTS(select * from company WHERE business_code = #{code})
     </select>
     <select id="getCompanyByCompanyID" resultType="Company">
         select *
-        from Company
-        WHERE companyID = #{companyID}
+        from company
+        WHERE company_id = #{companyID}
     </select>
     <select id="checkCompanyIdValid" resultType="_boolean">
-        select !EXISTS(select * from Company WHERE companyID = #{companyId})
+        select !EXISTS(select * from company WHERE company_id = #{companyId})
     </select>
 </mapper>

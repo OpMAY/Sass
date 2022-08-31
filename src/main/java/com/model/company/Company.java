@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class Company {
     private int no;
-    private String companyID;
-    private String businessCode;
+    private String company_id;
+    private String business_code;
     private String name;
-    private String createDate;
+    private String reg_datetime;
 }

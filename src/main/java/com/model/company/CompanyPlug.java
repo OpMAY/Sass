@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class CompanyPlug extends Time {
-    private int companyNo;
-    private int plugNo;
+    private int company_no;
+    private int plug_no;
     private LocalDateTime revise_date;
 }

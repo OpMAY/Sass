@@ -10,14 +10,14 @@ public class User {
     private String email;
     private String phone;
     private String password;
-    private UserAgreeData agreeData;
-    private boolean marketingAgree;
-    private String marketingAgreeDate;
-    private MFile profileImg;
-    private boolean pluginAlarm;
-    private boolean serviceAlarm;
-    private String createDate;
-    private String lastLoginDate;
+    private UserAgreeData agree_data;
+    private boolean marketing_agree;
+    private String marketing_agree_date;
+    private MFile profile_img;
+    private boolean plugin_alarm;
+    private boolean service_alarm;
+    private String reg_datetime;
+    private String last_login_date;
 
     // For Login Validation
     private int login_status;

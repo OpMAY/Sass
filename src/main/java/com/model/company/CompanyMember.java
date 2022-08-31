@@ -4,12 +4,12 @@ import lombok.Data;
 
 @Data
 public class CompanyMember {
-    private int userNo;
-    private int companyNo;
+    private int user_no;
+    private int company_no;
     private CompanyRole role;
-    private boolean editAuth;
-    private boolean readAuth;
-    private String requestDate;
-    private String createDate;
-    private String reviseDate;
+    private boolean edit_auth;
+    private boolean read_auth;
+    private String request_date;
+    private String reg_datetime;
+    private String revise_date;
 }
