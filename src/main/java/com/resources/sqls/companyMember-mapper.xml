@@ -34,7 +34,7 @@
         WHERE user_no = #{userNo}
           AND company_no = #{companyNo}
     </update>
-    <select id="getUserRoleOfCompany" resultType="CompanyRole">
+    <select id="getUserRoleOfCompany" resultType="ROLE">
         select role
         from company_member
         WHERE user_no = #{userNo}

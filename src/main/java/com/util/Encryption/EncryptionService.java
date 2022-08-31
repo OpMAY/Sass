@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.exception.TokenInvalidException;
+import com.google.gson.Gson;
 import com.model.jwt.RootUser;
 import com.util.Constant;
 import com.util.Time;
@@ -44,11 +45,8 @@ public class EncryptionService implements Encrypt {
         hashMap.put(JWTEnum.EMAIL.name(), email);
         String signature = jwt.getClaim(JWTEnum.SIGNATURE.name()).asString();
         hashMap.put(JWTEnum.SIGNATURE.name(), signature);
-        String grant = jwt.getClaim(JWTEnum.GRANT.name()).asString();
-        hashMap.put(JWTEnum.GRANT.name(), grant);
         String version = jwt.getClaim(JWTEnum.VERSION.name()).asString();
         hashMap.put(JWTEnum.VERSION.name(), version);
-
         if (jwt.getClaim(JWTEnum.TOKEN.name()) != null) {
             hashMap.put(JWTEnum.TOKEN.name(), jwt.getClaim(JWTEnum.TOKEN.name()).asString());
         }
@@ -56,9 +54,6 @@ public class EncryptionService implements Encrypt {
             hashMap.put(JWTEnum.NO.name(), jwt.getClaim(JWTEnum.NO.name()).asInt());
         }
 
-        if (jwt.getClaim(JWTEnum.ID.name()) != null) {
-            hashMap.put(JWTEnum.ID.name(), jwt.getClaim(JWTEnum.ID.name()).asString());
-        }
         return hashMap;
     }
 
@@ -69,10 +64,8 @@ public class EncryptionService implements Encrypt {
             return JWT.create()
                     .withExpiresAt(Time.LongTimeStamp())
                     .withClaim(JWTEnum.VERSION.name(), Constant.VERSION)
-                    .withClaim(JWTEnum.GRANT.name(), user.getGrant())
                     .withClaim(JWTEnum.TOKEN.name(), user.getAccess_token())
                     .withClaim(JWTEnum.EMAIL.name(), user.getEmail())
-                    .withClaim(JWTEnum.ID.name(), user.getId())
                     .withClaim(JWTEnum.NO.name(), user.getNo())
                     .withClaim(JWTEnum.SIGNATURE.name(), encryptSHA256("secret"))
                     .withIssuer("auth0")
