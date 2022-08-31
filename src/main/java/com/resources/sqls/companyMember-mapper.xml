@@ -4,58 +4,58 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.CompanyMemberMapper">
     <select id="checkUserMemberOfCompany" resultType="_boolean">
-        select EXISTS(select * from CompanyMember WHERE userNo = #{userNo} AND companyNo = #{companyNo})
+        select EXISTS(select * from company_member WHERE user_no = #{userNo} AND company_no = #{companyNo})
     </select>
     <insert id="requestCompanyJoin">
-        insert into CompanyMember(userNo, companyNo, role, editAuth, readAuth, requestDate, createDate, reviseDate)
+        insert into company_member(user_no, company_no, role, edit_auth, read_auth, request_date, reg_datetime, revise_date)
         VALUES (#{userNo}, #{companyNo}, 'PRE_MEMBER', false, false, now(), now(), now())
     </insert>
     <select id="checkUserReadAuth" resultType="_boolean">
-        select readAuth
-        from CompanyMember
-        WHERE userNo = #{userNo}
-          AND companyNo = #{companyNo}
+        select read_auth
+        from company_member
+        WHERE user_no = #{userNo}
+          AND company_no = #{companyNo}
     </select>
     <select id="checkUserEditAuth" resultType="_boolean">
-        select editAuth
-        from CompanyMember
-        WHERE userNo = #{userNo}
-          AND companyNo = #{companyNo}
+        select edit_auth
+        from company_member
+        WHERE user_no = #{userNo}
+          AND company_no = #{companyNo}
     </select>
     <update id="updateUserReadAuth">
-        update CompanyMember
-        SET readAuth = !readAuth
-        WHERE userNo = #{userNo}
-          AND companyNo = #{companyNo}
+        update company_member
+        SET read_auth = !read_auth
+        WHERE user_no = #{userNo}
+          AND company_no = #{companyNo}
     </update>
     <update id="updateUserEditAuth">
-        update CompanyMember
-        SET editAuth = !editAuth
-        WHERE userNo = #{userNo}
-          AND companyNo = #{companyNo}
+        update company_member
+        SET edit_auth = !edit_auth
+        WHERE user_no = #{userNo}
+          AND company_no = #{companyNo}
     </update>
     <select id="getUserRoleOfCompany" resultType="CompanyRole">
         select role
-        from CompanyMember
-        WHERE userNo = #{userNo}
-          AND companyNo = #{companyNo}
+        from company_member
+        WHERE user_no = #{userNo}
+          AND company_no = #{companyNo}
     </select>
     <delete id="deleteUserMember">
         delete
-        from CompanyMember
-        WHERE userNo = #{userNo}
-          AND companyNo = #{companyNo}
+        from company_member
+        WHERE user_no = #{userNo}
+          AND company_no = #{companyNo}
     </delete>
     <select id="checkUserHasCompany" resultType="_boolean">
-        select EXISTS(select * from CompanyMember WHERE userNo = #{userNo})
+        select EXISTS(select * from company_member WHERE user_no = #{userNo})
     </select>
     <select id="getUserCompany" resultType="Company">
         select *
-        from Company
-        WHERE no = (select companyNo from CompanyMember WHERE userNo = #{userNo})
+        from company
+        WHERE no = (select company_no from company_member WHERE user_no = #{userNo})
     </select>
     <insert id="registerCompanyMaster">
-        insert into CompanyMember(userNo, companyNo, role, editAuth, readAuth, requestDate, createDate, reviseDate)
+        insert into company_member(user_no, company_no, role, edit_auth, read_auth, request_date, reg_datetime, revise_date)
         VALUES (#{userNo}, #{companyNo}, 'MASTER', true, true, now(), now(), now())
     </insert>
 </mapper>

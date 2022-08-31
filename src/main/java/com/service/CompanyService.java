@@ -23,13 +23,13 @@ public class CompanyService {
         if(companyDao.checkCompanyNameExists(company.getName())) {
             return -1;
         }
-        if(Objects.nonNull(company.getBusinessCode()) && companyDao.checkCompanyBusinessCodeExists(company.getBusinessCode())){
+        if(Objects.nonNull(company.getBusiness_code()) && companyDao.checkCompanyBusinessCodeExists(company.getBusiness_code())){
             return -2;
         }
-        company.setCompanyID(TokenGenerator.RandomToken(6));
+        company.setCompany_id(TokenGenerator.RandomToken(6));
         // Company ID 중복 체크
-        while(!checkCompanyIdValid(company.getCompanyID())) {
-            company.setCompanyID(TokenGenerator.RandomToken(6));
+        while(!checkCompanyIdValid(company.getCompany_id())) {
+            company.setCompany_id(TokenGenerator.RandomToken(6));
         }
         companyDao.registerCompany(company);
         companyMemberDao.registerCompanyMaster(company.getNo(), userNo);

@@ -4,11 +4,11 @@ import lombok.Data;
 
 @Data
 public class CompanyMemberPlugAuth {
-    private int userNo;
-    private int companyNo;
-    private String plugNo;
-    private boolean editAuth;
-    private boolean readAuth;
-    private String createDate;
-    private String reviseDate;
+    private int user_no;
+    private int company_no;
+    private int plug_no;
+    private boolean edit_auth;
+    private boolean read_auth;
+    private String reg_datetime;
+    private String revise_date;
 }

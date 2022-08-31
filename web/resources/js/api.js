@@ -52,7 +52,7 @@ async function apiLogout() {
 }
 
 async function apiRegister() {
-    function apiFetchRegister(name, phone, email, password, agreeData, marketingAgree) {
+    function apiFetchRegister(name, phone, email, password, agree_data, marketing_agree) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
 
@@ -61,8 +61,8 @@ async function apiRegister() {
             phone,
             email,
             password,
-            agreeData,
-            marketingAgree
+            agree_data,
+            marketing_agree
         });
 
         let requestOptions = {
