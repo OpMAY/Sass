@@ -44,3 +44,22 @@ button.btn.btn-gray-high-light.active-type.is-active {
 #plugin-left-sidebar ._option:hover {
     background-color: var(--gray-high-light);
 }
+
+.plugin-item:hover {
+    color: var(--brand-purple);
+    transition: color .5s;
+}
+
+._profile-change:hover {
+    text-decoration: underline;
+    opacity: 0.7;
+}
+
+._plugin-list ._plugin-manage-container:hover {
+    background-color: #F8F8F8;
+}
+
+.modal-body ._buttons .btn.is-disabled {
+    background-color: var(--gray-high-light);
+    color: var(--basic-white);
+}

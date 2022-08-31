@@ -1,11 +1,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="custom" tagdir="/WEB-INF/tags" %>
+<%@ page import="com.model.Plugin" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    Integer userNo = (Integer) request.getSession().getAttribute("user");
-    request.setAttribute("userNo", userNo);
+    Plugin plugin = (Plugin) request.getAttribute("plugin");
+    request.setAttribute("plugin", plugin);
 %>
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -48,22 +50,14 @@
     <!-- Element -->
     <link rel="stylesheet"
           href="../../resources/css/base/element.css">
-    <link rel="stylesheet"
-          href="../../resources/css/module/modal.css">
-    <title>aVouch - Home</title>
+    <title>Home</title>
 </head>
 <body>
 <header id="l-header">
     <img src="../../resources/assets/images/icon/black-theme-logo-80x40.svg"/>
     <div class="_option ml-auto my-auto">
-        <c:if test="${userNo ne null}">
-            <div class="bold-h5 c-basic-white" data-toggle="modal" data-target="#setting-modal">내 정보</div>
-            <div class="bold-h5 c-basic-white" id="logout">로그아웃</div>
-        </c:if>
-        <c:if test="${userNo eq null}">
-        <div class="bold-h5 c-basic-white" data-toggle="modal" data-target="#login-modal">로그인</div>
-        <div class="bold-h5 c-basic-white" data-target="#register-modal" data-toggle="modal">회원가입</div>
-        </c:if>
+        <div class="bold-h5 c-basic-white">로그인</div>
+        <div class="bold-h5 c-basic-white">회원가입</div>
     </div>
 </header>
 <div id="l-content-wrapper">
@@ -130,15 +124,35 @@
              aria-labelledby="plugin-tab">
             <div id="plugin-left-sidebar">
                 <div class="_plugin-container">
-                    <div class="_left-plugin" data-href="/query/workspace">
+                    <div class="_left-plugin">
                         <img width="36"
                              height="36"
-                             src="../../resources/assets/images/icon/query/query-plug-logo.png"/>
+                             src="../../resources/assets/images/sample/plugin-sample-1.png"/>
                     </div>
                     <div class="_left-plugin">
                         <img width="36"
                              height="36"
-                             src="../../resources/assets/images/icon/crm-plug-logo.png"/>
+                             src="../../resources/assets/images/sample/plugin-sample-2.png"/>
+                    </div>
+                    <div class="_left-plugin">
+                        <img width="36"
+                             height="36"
+                             src="../../resources/assets/images/sample/plugin-sample-3.png"/>
+                    </div>
+                    <div class="_left-plugin">
+                        <img width="36"
+                             height="36"
+                             src="../../resources/assets/images/sample/plugin-sample-1.png"/>
+                    </div>
+                    <div class="_left-plugin">
+                        <img width="36"
+                             height="36"
+                             src="../../resources/assets/images/sample/plugin-sample-2.png"/>
+                    </div>
+                    <div class="_left-plugin">
+                        <img width="36"
+                             height="36"
+                             src="../../resources/assets/images/sample/plugin-sample-3.png"/>
                     </div>
                 </div>
                 <div class="mt-auto w-100">
@@ -164,44 +178,14 @@
                 </div>
             </div>
             <div class="_body">
-                <div class="_body-wrapper mt-64 mb-64">
-                    <div class="text-center mb-64">
-                        <div class="bold-h1 c-gray-dark-low mb-2">
-                            Plug-In 설치로 <span class="c-brand-purple">서비스 개발</span>이 쉬워지다.
-                        </div>
-                        <div class="regular-h5 c-gray-dark-low">
-                            팀이 서비스를 개발하기 위해 기획, 관리, 데이터베이스 등등의 서비스 플러그인을 제공합니다.
-                        </div>
-                    </div>
-                    <div class="row banner-container mb-64">
-                        <div class="col-6 _banner">
-                            <img class="img-fluid"
-                                 src="../../resources/assets/images/sample/sample-banner-1.png"/>
-                        </div>
-                        <div class="col-6 _banner">
-                            <img class="img-fluid"
-                                 src="../../resources/assets/images/sample/sample-banner-2.png"/>
-                        </div>
-                    </div>
+                <div class="_body-short-wrapper mt-16 mb-24">
                     <div class="service-plugin-container">
-                        <div class="_title bold-h4 c-gray-dark-low mb-20">
-                            Service Plug-in
-                        </div>
                         <div class="_inner">
-                            <div class="media plugin-item p-16">
-                                <img src="../../resources/assets/images/sample/plugin-sample-1.png" alt
-                                     data-href="/desc/query"
+                            <div class="media plugin-title pt-24 pb-24">
+                                <img src="${plugin.profile_image.url}"
                                      class="align-self-start mr-20">
-                                <div class="media-body" data-href="/desc/query">
-                                    <h5 class="bold-h5 mb-8">QeuryPlug - 데이터베이스 ERD 및 SQL 자동 생성</h5>
-                                    <p class="_desc light-h5 c-gray-medium">
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium aperiam
-                                        autem ducimus enim eum
-                                        exercitationem facilis fugiat ipsam laboriosam maiores maxime nam odio quisquam
-                                        recusandae rem, sapiente
-                                        tenetur, veritatis vero? </p>
-                                </div>
-                                <div class="_install">
+                                <div class="media-body _desc">
+                                    <h5 class="bold-h1 mb-24">${plugin.title}</h5>
                                     <div class="_usage mr-16">
                                         <div class="icon-text medium-h5">
                                             <svg width="16"
@@ -210,80 +194,49 @@
                                                  fill="none"
                                                  xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M2.66663 14.6666C2.66663 13.2521 3.22853 11.8956 4.22872 10.8954C5.22892 9.8952 6.58547 9.33329 7.99996 9.33329C9.41445 9.33329 10.771 9.8952 11.7712 10.8954C12.7714 11.8956 13.3333 13.2521 13.3333 14.6666H12C12 13.6058 11.5785 12.5883 10.8284 11.8382C10.0782 11.0881 9.06082 10.6666 7.99996 10.6666C6.93909 10.6666 5.92168 11.0881 5.17153 11.8382C4.42139 12.5883 3.99996 13.6058 3.99996 14.6666H2.66663ZM7.99996 8.66663C5.78996 8.66663 3.99996 6.87663 3.99996 4.66663C3.99996 2.45663 5.78996 0.666626 7.99996 0.666626C10.21 0.666626 12 2.45663 12 4.66663C12 6.87663 10.21 8.66663 7.99996 8.66663ZM7.99996 7.33329C9.47329 7.33329 10.6666 6.13996 10.6666 4.66663C10.6666 3.19329 9.47329 1.99996 7.99996 1.99996C6.52663 1.99996 5.33329 3.19329 5.33329 4.66663C5.33329 6.13996 6.52663 7.33329 7.99996 7.33329Z"
-                                                      fill="#383838"/>
+                                                      fill="#969696"/>
                                             </svg>
-                                            <span class="c-gray-dark-medium">65</span>
+                                            <span class="c-gray-medium">${plugin.subscribes}</span>
                                         </div>
                                     </div>
-                                    <button type="button" onclick="alert('어디로?')"
-                                            class="btn btn-sm btn-gray-dark-low">설치하기
-                                    </button>
                                 </div>
-                                <div class="_date medium-h5 c-gray-dark-medium">3시간 전</div>
+                                <div class="_install">
+                                    <c:choose>
+                                        <c:when test="${plugin.install eq true}">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-gray-dark-low">설치완료
+                                            </button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button type="button"
+                                                    class="btn btn-sm btn-gray-dark-low">설치하기
+                                            </button>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                                <div class="_date medium-h5 c-gray-medium"><custom:formatChatDatetime
+                                        value="${plugin.updated_datetime}"/></div>
                             </div>
-                            <div class="media plugin-item p-16">
-                                <img src="../../resources/assets/images/sample/plugin-sample-2.png"
-                                     class="align-self-start mr-20">
-                                <div class="media-body">
-                                    <h5 class="bold-h5 mb-8">QeuryPlug - 데이터베이스 ERD 및 SQL 자동 생성</h5>
-                                    <p class="_desc light-h5 c-gray-medium">
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium aperiam
-                                        autem ducimus enim eum
-                                        exercitationem facilis fugiat ipsam laboriosam maiores maxime nam odio quisquam
-                                        recusandae rem, sapiente
-                                        tenetur, veritatis vero? </p>
-                                </div>
-                                <div class="_install">
-                                    <div class="_usage mr-16">
-                                        <div class="icon-text medium-h5">
-                                            <svg width="16"
-                                                 height="16"
-                                                 viewBox="0 0 16 16"
-                                                 fill="none"
-                                                 xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M2.66663 14.6666C2.66663 13.2521 3.22853 11.8956 4.22872 10.8954C5.22892 9.8952 6.58547 9.33329 7.99996 9.33329C9.41445 9.33329 10.771 9.8952 11.7712 10.8954C12.7714 11.8956 13.3333 13.2521 13.3333 14.6666H12C12 13.6058 11.5785 12.5883 10.8284 11.8382C10.0782 11.0881 9.06082 10.6666 7.99996 10.6666C6.93909 10.6666 5.92168 11.0881 5.17153 11.8382C4.42139 12.5883 3.99996 13.6058 3.99996 14.6666H2.66663ZM7.99996 8.66663C5.78996 8.66663 3.99996 6.87663 3.99996 4.66663C3.99996 2.45663 5.78996 0.666626 7.99996 0.666626C10.21 0.666626 12 2.45663 12 4.66663C12 6.87663 10.21 8.66663 7.99996 8.66663ZM7.99996 7.33329C9.47329 7.33329 10.6666 6.13996 10.6666 4.66663C10.6666 3.19329 9.47329 1.99996 7.99996 1.99996C6.52663 1.99996 5.33329 3.19329 5.33329 4.66663C5.33329 6.13996 6.52663 7.33329 7.99996 7.33329Z"
-                                                      fill="#383838"/>
-                                            </svg>
-                                            <span class="c-gray-dark-medium">65</span>
-                                        </div>
-                                    </div>
-                                    <button type="button"
-                                            class="btn btn-sm btn-gray-dark-low">설치하기
-                                    </button>
-                                </div>
-                                <div class="_date medium-h5 c-gray-dark-medium">3시간 전</div>
+                            <div class="media plugin-hashtag mb-24">
+                                <c:forEach items="${plugin.hashtag}" varStatus="status" var="tag">
+                                    <button class="btn btn-medium btn-outline-gray-high-light">${tag}</button>
+                                </c:forEach>
                             </div>
-                            <div class="media plugin-item p-16">
-                                <img src="../../resources/assets/images/sample/plugin-sample-3.png"
-                                     class="align-self-start mr-20">
-                                <div class="media-body">
-                                    <h5 class="bold-h5 mb-8">QeuryPlug - 데이터베이스 ERD 및 SQL 자동 생성</h5>
-                                    <p class="_desc light-h5 c-gray-medium">
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium aperiam
-                                        autem ducimus enim eum
-                                        exercitationem facilis fugiat ipsam laboriosam maiores maxime nam odio quisquam
-                                        recusandae rem, sapiente
-                                        tenetur, veritatis vero? </p>
+                            <div class="plugin-img-main mb-40">
+                                <img src="../../resources/assets/images/sample/detail-sample-1.png">
+                            </div>
+                            <div class="plugin-subtitle">
+                                <h5 class="bold-h4 mb-16">플러그인 설명</h5>
+                                <div class="summernote-container">
+                                    ${plugin.manual}
                                 </div>
-                                <div class="_install">
-                                    <div class="_usage mr-16">
-                                        <div class="icon-text medium-h5">
-                                            <svg width="16"
-                                                 height="16"
-                                                 viewBox="0 0 16 16"
-                                                 fill="none"
-                                                 xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M2.66663 14.6666C2.66663 13.2521 3.22853 11.8956 4.22872 10.8954C5.22892 9.8952 6.58547 9.33329 7.99996 9.33329C9.41445 9.33329 10.771 9.8952 11.7712 10.8954C12.7714 11.8956 13.3333 13.2521 13.3333 14.6666H12C12 13.6058 11.5785 12.5883 10.8284 11.8382C10.0782 11.0881 9.06082 10.6666 7.99996 10.6666C6.93909 10.6666 5.92168 11.0881 5.17153 11.8382C4.42139 12.5883 3.99996 13.6058 3.99996 14.6666H2.66663ZM7.99996 8.66663C5.78996 8.66663 3.99996 6.87663 3.99996 4.66663C3.99996 2.45663 5.78996 0.666626 7.99996 0.666626C10.21 0.666626 12 2.45663 12 4.66663C12 6.87663 10.21 8.66663 7.99996 8.66663ZM7.99996 7.33329C9.47329 7.33329 10.6666 6.13996 10.6666 4.66663C10.6666 3.19329 9.47329 1.99996 7.99996 1.99996C6.52663 1.99996 5.33329 3.19329 5.33329 4.66663C5.33329 6.13996 6.52663 7.33329 7.99996 7.33329Z"
-                                                      fill="#383838"/>
-                                            </svg>
-                                            <span class="c-gray-dark-medium">65</span>
-                                        </div>
-                                    </div>
-                                    <button type="button"
-                                            class="btn btn-sm btn-gray-dark-low">설치하기
-                                    </button>
+                            </div>
+                            <hr class="mb-48">
+                            <div class="plugin-content">
+                                <h5 class="bold-h4 mb-20">이용 방법</h5>
+                                <div class="summernote-container">
+                                    ${plugin.instruction}
                                 </div>
-                                <div class="_date medium-h5 c-gray-dark-medium">3시간 전</div>
                             </div>
                         </div>
                     </div>
@@ -304,7 +257,6 @@
         </div>
     </div>
 </div>
-<jsp:include page="common/global-modal.jsp" flush="false"/>
 <!-- Optional JavaScript; choose one of the two! -->
 
 <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
@@ -337,8 +289,6 @@
      (선택자가 없으면 또는 선택자의 Length가 0이면 에러가 터질 수 있기 때문에) -->
 <script src="../../resources/js/module/sample.js"></script>
 <script src="../../resources/js/validation.js"></script>
-<script src="../../resources/js/global-modal.js"></script>
-<script src="../../resources/js/api.js"></script>
 <!--Font Awesome-->
 <script src="https://kit.fontawesome.com/3581631c82.js"
         crossorigin="anonymous"></script>
@@ -350,25 +300,8 @@
      * */
     $(document).ready(function () {
         console.log('Static JS is ready');
-        apiGetPlugs().then((result) => {
-            let container = document.querySelector('.tab-pane#plugin ._body .service-plugin-container ._inner');
-            deleteChild(container);
-            console.log(result.status, result.data);
-            if (result.status === 'OK') {
-                result.data.plugins.forEach(function (plugin) {
-                    $(container).append(createPluginElement(plugin));
-                });
-                container.querySelectorAll('.plugin-item ._install button').forEach(function (button) {
-                    let plugin_item = button.closest('.plugin-item');
-                    plugin_item.addEventListener('click', function (e) {
-                        location.href = '/desc/query';
-                    });
-                    button.addEventListener('click', installClickEventListener);
-                });
-            } else {
-
-            }
-        });
+        let button = document.querySelector('.tab-pane#plugin ._body .service-plugin-container ._inner .plugin-title ._install button');
+        button.addEventListener('click', installClickEventListener);
     });
 </script>
 </body>

@@ -586,3 +586,24 @@ async function apiAddPlugGrant(grant) {
         console.log(error);
     }
 }
+
+async function apiGetPlugs() {
+    function apiFetchGetPlugs() {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+        const response = fetch(`${host}/global/get/plugs`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchGetPlugs();
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}

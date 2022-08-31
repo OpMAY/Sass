@@ -93,6 +93,82 @@ const getParameter = (name) => {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
+class Time {
+
+    static formatLocalDatetime(datetime) {
+        if (datetime === undefined) return this.get_yyyy_mm_dd();
+        try {
+            const year = datetime.year;
+            const month = datetime.monthValue > 9 ? datetime.monthValue : '0' + datetime.monthValue;
+            const day = datetime.dayOfMonth > 9 ? datetime.dayOfMonth : '0' + datetime.dayOfMonth;
+            const hour = datetime.hour > 9 ? datetime.hour : '0' + datetime.hour;
+            const minute = datetime.minute > 9 ? datetime.minute : '0' + datetime.minute;
+            const second = datetime.second > 9 ? datetime.second : '0' + datetime.second;
+
+            return `${year}.${month}.${day} ${hour}:${minute}`;
+        } catch (e) {
+            console.error(e);
+            return '';
+        }
+    }
+
+    static formatLocalDate(datetime) {
+        if (datetime === undefined) return this.get_yyyy_mm_dd();
+        try {
+            const year = datetime.year;
+            const month = datetime.monthValue > 9 ? datetime.monthValue : '0' + datetime.monthValue;
+            const day = datetime.dayOfMonth > 9 ? datetime.dayOfMonth : '0' + datetime.dayOfMonth;
+
+            return `${year}.${month}.${day}`;
+        } catch (e) {
+            console.error(e);
+            return '';
+        }
+    }
+
+    static formatChatDateTime(datetime) {
+        if (datetime === undefined || datetime === null) return '방금 전';
+        try {
+            const time_gap = new Date().getTime() - this.getLocalDateTime(datetime);
+            if (time_gap < 1000 * 60) { // 1분 이내
+                return Math.floor(time_gap / (1000)) + '초전';
+            } else if (time_gap < 1000 * 60 * 60) { // 60분 이내
+                return Math.floor(time_gap / (1000 * 60)) + '분 전';
+            } else if (time_gap < 1000 * 60 * 60 * 24) { // 24시간 이내
+                return Math.floor(time_gap / (1000 * 60 * 60)) + '시간 전';
+            } else if (time_gap < 1000 * 60 * 60 * 24 * datetime.dayOfMonth) { //한달 이내
+                return Math.floor(time_gap / (1000 * 60 * 60 * 24)) + '일 전';
+            } else if (time_gap < 1000 * 60 * 60 * 24 * 365) {
+                return Math.floor(time_gap / (1000 * 60 * 60 * 24 * 30)) + '개월 전';
+            } else if (time_gap < 1000 * 60 * 60 * 24 * 365 * 10) {
+                return Math.floor(time_gap / (1000 * 60 * 60 * 24 * 365)) + '년 전';
+            } else {
+                return this.formatLocalDate(datetime);
+            }
+        } catch (e) {
+            console.error(e);
+            return '';
+        }
+    }
+
+    static getLocalDateTime(datetime) {
+        const year = datetime.year;
+        const month = datetime.monthValue - 1;
+        const day = datetime.dayOfMonth;
+        const hour = datetime.hour;
+        const minute = datetime.minute;
+        const second = datetime.second;
+        return new Date(year, month, day, hour, minute, second).getTime();
+    }
+
+    static get_yyyy_mm_dd(target_date) {
+        if (!target_date)
+            target_date = new Date();
+        const [year, month, date] = target_date.toLocaleDateString().replace(/\s/g, '').split('.');
+        return `${year}.${month > 9 ? month : '0' + month}.${date > 9 ? date : '0' + date}`;
+    }
+}
+
 const phoneNumFormatter = (str) => {
     let RegNotNum = /[^0-9]/g;
     let RegPhoneNum = "";

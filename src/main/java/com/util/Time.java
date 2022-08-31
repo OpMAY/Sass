@@ -1,8 +1,11 @@
 package com.util;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -38,6 +41,22 @@ public class Time {
         Date target_date = from_dateFormat.parse(time);
         DateFormat to_dateFormat = new SimpleDateFormat(to_format, Locale.KOREA);
         return to_dateFormat.format(target_date);
+    }
+
+    public static Long LocalDataTimeToLong(LocalDateTime datetime) {
+        System.out.println("year : " + datetime.getYear());
+        System.out.println("month : " + (datetime.getMonthValue() - 1));
+        System.out.println("day : " + datetime.getDayOfMonth());
+        System.out.println("hour : " + datetime.getHour());
+        System.out.println("minute : " + datetime.getSecond());
+        int year = datetime.getYear();
+        int month = datetime.getMonthValue() - 1;
+        int day = datetime.getDayOfMonth();
+        int hour = datetime.getHour();
+        int minute = datetime.getMinute();
+        int second = datetime.getSecond();
+        return new Date(year, month, day, hour, minute, second).getTime();
+
     }
 
     /**
@@ -125,5 +144,51 @@ public class Time {
             msg = TimeFormatterLongToString("MM월 dd일(E) a HH:mm", regTime);
         }
         return msg;
+    }
+
+    /**
+     * const time_gap = new Date().getTime() - this.getLocalDateTime(datetime);
+     * if (time_gap < 1000 * 60) { // 1분 이내
+     * return '방금 전';
+     * } else if (time_gap < 1000 * 60 * 60) { // 60분 이내
+     * return Math.floor(time_gap / (1000 * 60)) + '분 전';
+     * } else if (time_gap < 1000 * 60 * 60 * 24) { // 24시간 이내
+     * return Math.floor(time_gap / (1000 * 60 * 60)) + '시간 전';
+     * } else if (time_gap < 1000 * 60 * 60 * 24 * datetime.dayOfMonth) { //한달 이내
+     * return Math.floor(time_gap / (1000 * 60 * 60 * 24)) + '일 전';
+     * } else if (time_gap < 1000 * 60 * 60 * 24 * 365) {
+     * return Math.floor(time_gap / (1000 * 60 * 60 * 24 * 30)) + '달 전';
+     * } else if (time_gap < 1000 * 60 * 60 * 24 * 365 * 10) {
+     * return Math.floor(time_gap / (1000 * 60 * 60 * 24 * 365)) + '년 전';
+     * } else {
+     * return this.formatLocalDate(datetime);
+     * }
+     */
+    public static String formatChatDateTime(LocalDateTime time) throws ParseException {
+        LocalDateTime now = LocalDateTime.now();
+        long diffTime = time.until(now, ChronoUnit.SECONDS); // now보다 이후면 +, 전이면 -
+        String msg = null;
+        if (diffTime < SEC) {
+            return diffTime + "초전";
+        }
+        diffTime = diffTime / SEC;
+        if (diffTime < MIN) {
+            return diffTime + "분 전";
+        }
+        diffTime = diffTime / MIN;
+        if (diffTime < HOUR) {
+            return diffTime + "시간 전";
+        }
+        diffTime = diffTime / HOUR;
+        if (diffTime < DAY) {
+            return diffTime + "일 전";
+        }
+        diffTime = diffTime / DAY;
+        if (diffTime < MONTH) {
+            return diffTime + "개월 전";
+        }
+
+        diffTime = diffTime / MONTH;
+        return diffTime + "년 전";
     }
 }
