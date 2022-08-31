@@ -201,8 +201,8 @@ public class MailBuilder {
                 "        colspan=\"3\"></td>\n" +
                 "  </tr>\n" +
                 // CONTENT
-                makeFooterHTML(mailFooter) +
                 content +
+                makeFooterHTML(mailFooter) +
                 "  <!--[if (gte mso 9)|(IE)]>\n" +
                 "\n" +
                 "\n" +

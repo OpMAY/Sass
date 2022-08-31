@@ -5,10 +5,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
@@ -40,11 +37,14 @@ public class Message {
     }
 
     public Map<String, Object> getHashMap(boolean isLog) throws JSONException {
-        if (isLog == true) {
-            Iterator<String> keys = map.keySet().iterator();
-            while (keys.hasNext()) {
-                String key = keys.next();
-                String value = map.get(key).toString();
+        if (isLog) {
+            for (String key : map.keySet()) {
+                String value;
+                if (Objects.nonNull(map.get(key))) {
+                    value = map.get(key).toString();
+                } else {
+                    value = null;
+                }
                 log.info("Message Map Value -> {},{}", key, value);
             }
         }
