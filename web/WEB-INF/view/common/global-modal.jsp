@@ -35,16 +35,16 @@
                 </div>
                 <div class="_body mb-20">
                     <input type="text"
-                           placeholder="이름"
+                           placeholder="이름" data-required="true" data-type="name"
                            class="form-control form-general regular-h5 p-16 mb-20">
                     <input type="text"
-                           placeholder="연락처"
+                           placeholder="연락처" data-required="true" data-type="phone"
                            class="form-control form-general regular-h5 p-16 mb-20">
-                    <input type="text"
-                           placeholder="이메일"
+                    <input type="email"
+                           placeholder="이메일" data-required="true" data-type="email"
                            class="form-control form-general regular-h5 p-16 mb-20">
-                    <input type="text"
-                           placeholder="비밀번호"
+                    <input type="password"
+                           placeholder="비밀번호" data-required="true" data-type="password"
                            class="form-control form-general regular-h5 p-16">
                 </div>
                 <div class="_agree mb-48">
@@ -65,6 +65,7 @@
                                    class="checkbox-item">
                                 <input id="agree-1"
                                        data-type="checkbox"
+                                       data-required="true"
                                        type="checkbox"
                                        name="agree-1">
                                 <span class="_checkbox no-border"></span>
@@ -85,6 +86,7 @@
                                    class="checkbox-item">
                                 <input id="agree-2"
                                        data-type="checkbox"
+                                       data-required="true"
                                        type="checkbox"
                                        name="agree-2">
                                 <span class="_checkbox no-border"></span>
@@ -105,6 +107,7 @@
                                    class="checkbox-item">
                                 <input id="agree-3"
                                        data-type="checkbox"
+                                       data-required="true"
                                        type="checkbox"
                                        name="agree-3">
                                 <span class="_checkbox no-border"></span>
@@ -125,6 +128,7 @@
                                    class="checkbox-item">
                                 <input id="agree-4"
                                        data-type="checkbox"
+                                       data-required="false"
                                        type="checkbox"
                                        name="agree-4">
                                 <span class="_checkbox no-border"></span>
@@ -143,7 +147,7 @@
                     </div>
                 </div>
                 <div class="_buttons">
-                    <button type="button" data-action="register" class="btn btn-block btn-gray-dark-low">회원가입</button>
+                    <button type="button" data-action="register" class="btn btn-block btn-gray-dark-low is-disabled" disabled>회원가입</button>
                 </div>
             </div>
         </div>
@@ -181,7 +185,7 @@
                            placeholder="이메일"
                            name="email"
                            class="form-control form-general regular-h5 p-16 mb-20">
-                    <input type="text"
+                    <input type="password"
                            placeholder="비밀번호"
                            name="password"
                            class="form-control form-general regular-h5 p-16">

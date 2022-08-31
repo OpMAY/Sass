@@ -1,6 +1,6 @@
 let host = 'http://localhost:8080';
 
-async function apiLogin() {
+async function apiLogin(email, password) {
     function apiFetchLogin(email, password) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
@@ -21,7 +21,30 @@ async function apiLogin() {
 
     let result;
     try {
-        result = await apiFetchLogin('zlzldntlr@naver.com', 'zlzldntlr');
+        result = await apiFetchLogin(email, password);
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function apiLogout() {
+    function apiFetchLogout() {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+        };
+        const response = fetch(`${host}/auth/logout`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchLogout();
         return result;
     } catch (error) {
         console.log(error);
@@ -29,7 +52,7 @@ async function apiLogin() {
 }
 
 async function apiRegister() {
-    function apiFetchRegister(name, phone, email, password) {
+    function apiFetchRegister(name, phone, email, password, agreeData, marketingAgree) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
 
@@ -37,7 +60,9 @@ async function apiRegister() {
             name,
             phone,
             email,
-            password
+            password,
+            agreeData,
+            marketingAgree
         });
 
         let requestOptions = {
@@ -51,14 +76,20 @@ async function apiRegister() {
 
     let result;
     try {
-        result = await apiFetchRegister('kimwoosik', '010-4529-9453', 'zlzldntlr@naver.com', 'zlzldntlr');
+        let $modal = $('#register-modal');
+        result = await apiFetchRegister($modal.find('[data-type=name]').val(), $modal.find('[data-type=phone]').val(), $modal.find('[data-type=email]').val(), $modal.find('[data-type=password]').val(), {
+            "serviceAgree": $modal.find('#agree-1').is(':checked'),
+            "personalInfoAgree": $modal.find('#agree-2').is(':checked'),
+            "thirdPartyAgree": $modal.find('#agree-3').is(':checked'),
+            "agreeDate": new Date().toISOString().split('T')[0]
+        }, $modal.find('#agree-4').is(':checked'));
         return result;
     } catch (error) {
         console.log(error);
     }
 }
 
-async function apiFindEmail() {
+async function apiFindEmail(phone) {
     function apiFetchFindEmail(phone) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
@@ -78,14 +109,14 @@ async function apiFindEmail() {
 
     let result;
     try {
-        result = await apiFetchFindEmail('010-4529-9453');
+        result = await apiFetchFindEmail(phone);
         return result;
     } catch (error) {
         console.log(error);
     }
 }
 
-async function apiFindPassword() {
+async function apiFindPassword(email) {
     function apiFetchFindPassword(email) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
@@ -105,21 +136,26 @@ async function apiFindPassword() {
 
     let result;
     try {
-        result = await apiFetchFindPassword('zlzldntlr@naver.com');
+        result = await apiFetchFindPassword(email);
         return result;
     } catch (error) {
         console.log(error);
     }
 }
 
-async function apiSendCode() {
-    function apiFetchSendCode() {
+async function apiSendCode(email) {
+    function apiFetchSendCode(email) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+
+        let raw = JSON.stringify({
+            email
+        });
 
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
+            body: raw
         };
         const response = fetch(`${host}/auth/code/send`, requestOptions);
         return response.then(res => res.json());
@@ -127,14 +163,14 @@ async function apiSendCode() {
 
     let result;
     try {
-        result = await apiFetchSendCode(tokenGenerator(8));
+        result = await apiFetchSendCode(email);
         return result;
     } catch (error) {
         console.log(error);
     }
 }
 
-async function apiConfirmCode() {
+async function apiConfirmCode(code) {
     function apiFetchConfirmCode(code) {
         let myHeaders = new Headers();
         myHeaders.append('Content-type', 'application/json');
@@ -152,19 +188,20 @@ async function apiConfirmCode() {
 
     let result;
     try {
-        result = await apiFetchConfirmCode(tokenGenerator(8));
+        result = await apiFetchConfirmCode(code);
         return result;
     } catch (error) {
         console.log(error);
     }
 }
 
-async function apiChangePassword() {
-    function apiFetchChangePassword(password) {
+async function apiChangePassword(email, password) {
+    function apiFetchChangePassword(email, password) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
 
         let raw = JSON.stringify({
+            email,
             password
         });
 
@@ -179,7 +216,89 @@ async function apiChangePassword() {
 
     let result;
     try {
-        result = await apiFetchChangePassword('zlzldntlr');
+        result = await apiFetchChangePassword(email, password);
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function apiCreateCorporate(name, code) {
+    function apiFetchCreateCorporate(name, code) {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+
+        let raw = JSON.stringify({
+            name,
+            code
+        });
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+        };
+        const response = fetch(`${host}/auth/create/corporate`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchCreateCorporate(name, code);
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function apiFindCorporate(id) {
+    function apiFetchFindCorporate(id) {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+
+        let raw = JSON.stringify({
+            id
+        });
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+        };
+        const response = fetch(`${host}/auth/find/corporate`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchFindCorporate(id);
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function apiJoinCorporate(no) {
+    function apiFetchJoinCorporate(no) {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+
+        let raw = JSON.stringify({
+            no
+        });
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+        };
+        const response = fetch(`${host}/auth/join/corporate`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchJoinCorporate(no);
         return result;
     } catch (error) {
         console.log(error);
@@ -289,7 +408,7 @@ async function apiChangePhone() {
     }
 }
 
-async function apiChangeMarketingAgree() {
+async function apiChangeMarketingAgree(agree) {
     function apiFetchChangeMarketingAgree(agree) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
@@ -309,7 +428,7 @@ async function apiChangeMarketingAgree() {
 
     let result;
     try {
-        result = await apiFetchChangeMarketingAgree(true);
+        result = await apiFetchChangeMarketingAgree(agree);
         return result;
     } catch (error) {
         console.log(error);

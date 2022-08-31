@@ -1,6 +1,6 @@
 'use strict';
-$(document).ready(function() {
-  console.log('utility.js execute');
+$(document).ready(function () {
+    console.log('utility.js execute');
 });
 
 /**
@@ -10,7 +10,7 @@ $(document).ready(function() {
  * @return {String} 자릿수 만큼의 String을 리턴
  * */
 const tokenGenerator = ((length = 11) => {
-  return Math.random().toString(36).substr(2, length); // "twozs5xfni"
+    return Math.random().toString(36).substr(2, length); // "twozs5xfni"
 });
 
 /**
@@ -22,11 +22,11 @@ const tokenGenerator = ((length = 11) => {
  * @return {string} url?key=value&h&v
  */
 function FetchGetURLBuilder(baseUrl, object) {
-  let result = baseUrl + '?';
-  Object.keys(object).forEach((key) => {
-    result += key + '=' + object[key] + '&';
-  });
-  return result.substring(0, result.length - 1);
+    let result = baseUrl + '?';
+    Object.keys(object).forEach((key) => {
+        result += key + '=' + object[key] + '&';
+    });
+    return result.substring(0, result.length - 1);
 }
 
 /**
@@ -38,22 +38,22 @@ function FetchGetURLBuilder(baseUrl, object) {
  * @param {HTMLElement} root 부모 엘리먼트, default = document.getElementsByTagName('body')[0]
  */
 function focusInputLastCarret({id = undefined, selector = undefined, root = document.getElementsByTagName('body')[0]}) {
-  const inputField = id !== undefined ? root.getElementById(id) : root.querySelector(selector);
-  if (inputField != null && inputField.value.length != 0) {
-    if (inputField.createTextRange) {
-      const FieldRange = inputField.createTextRange();
-      FieldRange.moveStart('character', inputField.value.length);
-      FieldRange.collapse();
-      FieldRange.select();
-    } else if (inputField.selectionStart || inputField.selectionStart == '0') {
-      const elemLen = inputField.value.length;
-      inputField.selectionStart = elemLen;
-      inputField.selectionEnd = elemLen;
-      inputField.focus();
+    const inputField = id !== undefined ? root.getElementById(id) : root.querySelector(selector);
+    if (inputField != null && inputField.value.length != 0) {
+        if (inputField.createTextRange) {
+            const FieldRange = inputField.createTextRange();
+            FieldRange.moveStart('character', inputField.value.length);
+            FieldRange.collapse();
+            FieldRange.select();
+        } else if (inputField.selectionStart || inputField.selectionStart == '0') {
+            const elemLen = inputField.value.length;
+            inputField.selectionStart = elemLen;
+            inputField.selectionEnd = elemLen;
+            inputField.focus();
+        }
+    } else {
+        inputField.focus();
     }
-  } else {
-    inputField.focus();
-  }
 }
 
 /**
@@ -63,31 +63,184 @@ function focusInputLastCarret({id = undefined, selector = undefined, root = docu
  * @param {HTMLElement | Node} element 하위 엘리먼트를 제거할 상위 엘리먼트
  * */
 const deleteChild = (element) => {
-  element.innerHTML = '';
+    element.innerHTML = '';
 };
 
 function copyText(target, callback) {
-  let range; let select;
-  if (document.createRange) {
-    range = document.createRange();
-    range.selectNode(target);
-    select = window.getSelection();
-    select.removeAllRanges();
-    select.addRange(range);
-    document.execCommand('copy');
-    select.removeAllRanges();
-  } else {
-    range = document.body.createTextRange();
-    range.moveToElementText(target);
-    range.select();
-    document.execCommand('copy');
-  }
-  callback();
+    let range;
+    let select;
+    if (document.createRange) {
+        range = document.createRange();
+        range.selectNode(target);
+        select = window.getSelection();
+        select.removeAllRanges();
+        select.addRange(range);
+        document.execCommand('copy');
+        select.removeAllRanges();
+    } else {
+        range = document.body.createTextRange();
+        range.moveToElementText(target);
+        range.select();
+        document.execCommand('copy');
+    }
+    callback();
 }
 
 const getParameter = (name) => {
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-  let regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-      results = regex.exec(location.search);
-  return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    let regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+const phoneNumFormatter = (str) => {
+    let RegNotNum = /[^0-9]/g;
+    let RegPhoneNum = "";
+    let DataForm = "";
+
+    // return blank
+
+    if (str === "" || str == null) return "";
+
+    // delete not number
+    str = str.replace(RegNotNum, '');
+
+    /* 4자리 이하일 경우 아무런 액션도 취하지 않음. */
+
+    if (str.length < 4) return str;
+
+    if (str.substring(0, 2) === "02" && str.length > 10) {
+        /* 지역번호 02일 경우 10자리 이상입력 못하도록 제어함. */
+        str = str.substring(0, 10);
+    } else {
+        /* 그 외의 경우 11자리 이상입력 못하도록 제어함. */
+        str = str.substring(0, 11);
+    }
+
+    if (str.length > 3 && str.length < 7) {
+        if (str.substring(0, 2) === "02") {
+            DataForm = "$1-$2";
+
+            RegPhoneNum = /([0-9]{2})([0-9]+)/;
+
+        } else {
+            DataForm = "$1-$2";
+
+            RegPhoneNum = /([0-9]{3})([0-9]+)/;
+        }
+    } else if (str.length === 7) {
+        if (str.substring(0, 2) === "02") {
+            DataForm = "$1-$2-$3";
+
+            RegPhoneNum = /([0-9]{2})([0-9]{3})([0-9]+)/;
+        } else {
+            DataForm = "$1-$2";
+
+            RegPhoneNum = /([0-9]{3})([0-9]{4})/;
+        }
+    } else if (str.length === 9) {
+        if (str.substring(0, 2) === "02") {
+            DataForm = "$1-$2-$3";
+
+            RegPhoneNum = /([0-9]{2})([0-9]{3})([0-9]+)/;
+        } else {
+            DataForm = "$1-$2-$3";
+
+            RegPhoneNum = /([0-9]{3})([0-9]{3})([0-9]+)/;
+        }
+    } else if (str.length === 10) {
+        if (str.substring(0, 2) === "02") {
+            DataForm = "$1-$2-$3";
+
+            RegPhoneNum = /([0-9]{2})([0-9]{4})([0-9]+)/;
+        } else {
+            DataForm = "$1-$2-$3";
+
+            RegPhoneNum = /([0-9]{3})([0-9]{3})([0-9]+)/;
+        }
+    } else if (str.length > 10) {
+        if (str.substring(0, 2) === "02") {
+            DataForm = "$1-$2-$3";
+
+            RegPhoneNum = /([0-9]{2})([0-9]{4})([0-9]+)/;
+        } else {
+            DataForm = "$1-$2-$3";
+
+            RegPhoneNum = /([0-9]{3})([0-9]{4})([0-9]+)/;
+        }
+    } else {
+        if (str.substring(0, 2) === "02") {
+            DataForm = "$1-$2-$3";
+
+            RegPhoneNum = /([0-9]{2})([0-9]{3})([0-9]+)/;
+        } else {
+            DataForm = "$1-$2-$3";
+
+            RegPhoneNum = /([0-9]{3})([0-9]{3})([0-9]+)/;
+        }
+    }
+
+    while (RegPhoneNum.test(str)) {
+        str = str.replace(RegPhoneNum, DataForm);
+    }
+
+    return str;
+}
+
+const passwordValidation = (pw, type, isAlert) => {
+    let number = pw.search(/[0-9]/g);
+    let english = pw.search(/[a-z]/ig);
+    let spece = pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+    let reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+    if (type === 0) {
+        return pw.length >= 8;
+    } else if (type === 1) {
+
+        if (pw.length < 8 || pw.length > 20) {
+            if (isAlert) {
+                alert("8자리 ~ 20자리 이내로 입력해주세요.");
+            }
+            return false;
+        } else if (pw.search(/\s/) !== -1) {
+            if (isAlert) {
+                alert("비밀번호는 공백 없이 입력해주세요.");
+            }
+            return false;
+
+        } else if (number < 0 || english < 0 || spece < 0) {
+            if (isAlert) {
+                alert("영문,숫자,특수문자를 혼합하여 입력해주세요.");
+            }
+            return false;
+
+        } else if ((number < 0 && english < 0) || (english < 0 && spece < 0) || (spece < 0 && number < 0)) {
+            if (isAlert) {
+                alert("영문,숫자, 특수문자 중 2가지 이상을 혼합하여 입력해주세요.");
+            }
+            return false;
+
+        } else if (/(\w)\1\1\1/.test(pw)) {
+            if (isAlert) {
+                alert('같은 문자를 4번 이상 사용하실 수 없습니다.');
+            }
+            return false;
+        } else if (pw.search(id) > -1) {
+            if (isAlert) {
+                alert("비밀번호에 아이디가 포함되었습니다.");
+            }
+            return false;
+        } else {
+            return true;
+        }
+
+    } else if (type === 2) {
+        if (false === reg.test(pw)) {
+            if (isAlert) {
+                alert('비밀번호는 8자 이상이어야 하며, 숫자/대문자/소문자/특수문자를 모두 포함해야 합니다.');
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

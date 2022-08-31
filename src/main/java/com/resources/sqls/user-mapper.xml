@@ -46,7 +46,7 @@
     <update id="changeUserMarketingAgree">
         update User
         SET marketingAgree = #{marketingAgree},
-            IF(#{marketingAgree} = false, null, NOW())
+            marketingAgreeDate = IF(#{marketingAgree} = false, null, NOW())
         WHERE no = #{userNo}
     </update>
 </mapper>
