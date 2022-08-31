@@ -14,11 +14,11 @@ public interface UserMapper {
 
     boolean checkUserEmailExists(String email);
 
-    void changeUserPassword(String email, String password);
+    void changeUserPassword(@Param("email") String email, @Param("password") String password);
 
-    void changeUserName(int userNo, String name);
+    void changeUserName(@Param("userNo") int userNo, @Param("name") String name);
 
-    void changeUserPhone(int userNo, String phone);
+    void changeUserPhone(@Param("userNo") int userNo, @Param("phone") String phone);
 
-    void changeUserMarketingAgree(int userNo, boolean marketingAgree);
+    void changeUserMarketingAgree(@Param("userNo") int userNo, @Param("marketingAgree") boolean marketingAgree);
 }

@@ -142,6 +142,9 @@ function timer(time) {
             sec = '0' + sec;
         }
         $element.html('0' + min + ':' + sec);
+        if(time <= 60) {
+            $element.css('color', 'red');
+        }
         time--;
         if (time < 0) {
             clearInterval(x);
@@ -634,13 +637,15 @@ $(document).ready(function () {
     });
     $('[data-action="find-password"]').on('click', function () {
         let $this_modal = $('#find-password-modal');
-        apiFindPassword($this_modal.find('input').val()).then((result) => {
+        let email = $this_modal.find('input').val();
+        apiFindPassword(email).then((result) => {
             console.log(result.status, result.data);
             if (result.status === 'OK') {
-                apiSendCode().then((result) => {
+                apiSendCode(email).then((result) => {
                     console.log(result.status, result.data);
                     if (result.status === 'OK') {
                         let $validate_modal = $('#password-validate-modal');
+                        $validate_modal.data().email = email;
                         $this_modal.modal('hide');
                         $validate_modal.modal('show');
                     } else {
@@ -654,19 +659,27 @@ $(document).ready(function () {
         });
     });
     $('[data-action="code-confirm"]').on('click', function () {
-        apiConfirmCode().then((result) => {
+        let $this_modal = $('#password-validate-modal');
+        apiConfirmCode($this_modal.find('input').val()).then((result) => {
             console.log(result.status, result.data);
             if (result.status === 'OK') {
                 let $password_change_modal = $('#password-change-modal');
+                alert('인증이 완료되었습니다.\n비밀번호 변경을 해주시길 바랍니다.');
+                $this_modal.modal('hide');
                 $password_change_modal.modal('show');
+                $password_change_modal.data('email', $this_modal.data().email);
             } else {
+                alert('인증 코드가 일치하지 않습니다.');
             }
         });
     });
     $('[data-action="change-password"]').on('click', function () {
-        apiChangePassword().then((result) => {
+        let $this_modal = $('#password-change-modal');
+        apiChangePassword($this_modal.data().email, $this_modal.find('#new-password').val()).then((result) => {
             console.log(result.status, result.data);
             if (result.status === 'OK') {
+                alert('변경되었습니다.');
+                $this_modal.modal('hide');
                 $('#login-modal').modal('show');
             } else {
             }

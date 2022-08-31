@@ -53,8 +53,13 @@ async function apiRegister() {
 
     let result;
     try {
-        let modal = $('#register-modal');
-        result = await apiFetchRegister('한지우', '010-4529-9453', 'zlzldntlr@naver.com', 'zlzldntlr', {"serviceAgree" : true, "personalInfoAgree" : true, "thirdPartyAgree" : true, "agreeDate" : '2022-08-31'}, false);
+        let $modal = $('#register-modal');
+        result = await apiFetchRegister($modal.find('[data-type=name]').val(), $modal.find('[data-type=phone]').val(), $modal.find('[data-type=email]').val(), $modal.find('[data-type=password]').val(), {
+            "serviceAgree": $modal.find('#agree-1').is(':checked'),
+            "personalInfoAgree": $modal.find('#agree-2').is(':checked'),
+            "thirdPartyAgree": $modal.find('#agree-3').is(':checked'),
+            "agreeDate": new Date().toISOString().split('T')[0]
+        }, $modal.find('#agree-4').is(':checked'));
         return result;
     } catch (error) {
         console.log(error);
@@ -115,14 +120,19 @@ async function apiFindPassword(email) {
     }
 }
 
-async function apiSendCode() {
-    function apiFetchSendCode() {
+async function apiSendCode(email) {
+    function apiFetchSendCode(email) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+
+        let raw = JSON.stringify({
+            email
+        });
 
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
+            body: raw
         };
         const response = fetch(`${host}/auth/code/send`, requestOptions);
         return response.then(res => res.json());
@@ -130,14 +140,14 @@ async function apiSendCode() {
 
     let result;
     try {
-        result = await apiFetchSendCode(tokenGenerator(8));
+        result = await apiFetchSendCode(email);
         return result;
     } catch (error) {
         console.log(error);
     }
 }
 
-async function apiConfirmCode() {
+async function apiConfirmCode(code) {
     function apiFetchConfirmCode(code) {
         let myHeaders = new Headers();
         myHeaders.append('Content-type', 'application/json');
@@ -155,19 +165,20 @@ async function apiConfirmCode() {
 
     let result;
     try {
-        result = await apiFetchConfirmCode(tokenGenerator(8));
+        result = await apiFetchConfirmCode(code);
         return result;
     } catch (error) {
         console.log(error);
     }
 }
 
-async function apiChangePassword() {
-    function apiFetchChangePassword(password) {
+async function apiChangePassword(email, password) {
+    function apiFetchChangePassword(email, password) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
 
         let raw = JSON.stringify({
+            email,
             password
         });
 
@@ -182,7 +193,7 @@ async function apiChangePassword() {
 
     let result;
     try {
-        result = await apiFetchChangePassword('zlzldntlr');
+        result = await apiFetchChangePassword(email, password);
         return result;
     } catch (error) {
         console.log(error);

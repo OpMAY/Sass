@@ -61,7 +61,7 @@ public class AuthRestController {
 
     @RequestMapping(value = "/find/password", method = RequestMethod.POST)
     public ResponseEntity<String> findPassword(@RequestBody User user) {
-        if(userService.findPassword(user)) {
+        if (userService.findPassword(user)) {
             return new ResponseEntity(DefaultRes.res(HttpStatus.OK), HttpStatus.OK);
         } else {
             return new ResponseEntity(DefaultRes.res(HttpStatus.BAD_REQUEST), HttpStatus.OK);
@@ -71,21 +71,32 @@ public class AuthRestController {
     @RequestMapping(value = "/change/password", method = RequestMethod.POST)
     public ResponseEntity<String> changePassword(@RequestBody User user) {
         Message message = new Message();
+        userService.changePassword(user);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/code/send", method = RequestMethod.POST)
-    public ResponseEntity<String> sendCode(HttpServletRequest request) {
+    public ResponseEntity<String> sendCode(HttpServletRequest request, @RequestBody User user) {
         Message message = new Message();
-        message.put("code", TokenGenerator.RandomToken(8));
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        if (Objects.nonNull(user.getEmail())) {
+            if (userService.sendCode(user.getEmail(), request)) {
+                return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+            } else {
+                return new ResponseEntity(DefaultRes.res(HttpStatus.INTERNAL_SERVER_ERROR, message, true), HttpStatus.OK);
+            }
+        } else {
+            return new ResponseEntity(DefaultRes.res(HttpStatus.BAD_REQUEST, message, true), HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "/code/confirm", method = RequestMethod.POST)
-    public ResponseEntity<String> confirmCode(@RequestBody Map<String, Object> map) {
+    public ResponseEntity<String> confirmCode(HttpServletRequest request, @RequestBody Map<String, Object> map) {
         Message message = new Message();
-        message.put("code", map.get("code").toString());
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        if (request.getSession().getAttribute("code").equals(map.get("code").toString()) && request.getSession().getAttribute("email").equals(map.get("email").toString())) {
+            return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(DefaultRes.res(HttpStatus.BAD_REQUEST, message, true), HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "/change/name", method = RequestMethod.POST)
@@ -123,7 +134,7 @@ public class AuthRestController {
     @RequestMapping(value = "/change/agree", method = RequestMethod.POST)
     public ResponseEntity<String> changeMarketingAgree(HttpServletRequest request, @RequestBody Map<String, Object> map) {
         Message message = new Message();
-        message.put("agree", Boolean.valueOf(map.get("agree").toString()).booleanValue());
+        message.put("agree", Boolean.valueOf(map.get("agree").toString()));
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
