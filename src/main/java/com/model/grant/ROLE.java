@@ -2,5 +2,6 @@ package com.model.grant;
 
 public enum ROLE {
     OWNER,
-    PERSONAL
+    PERSONAL,
+    READY
 }

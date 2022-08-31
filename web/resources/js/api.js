@@ -6,6 +6,7 @@ async function apiLogin(email, password) {
     function apiFetchLogin(email, password) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify({
             email,

@@ -3,6 +3,7 @@ package com.dao;
 import com.mapper.CompanyMemberMapper;
 import com.model.company.Company;
 import com.model.company.CompanyRole;
+import com.model.grant.ROLE;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
@@ -38,7 +39,7 @@ public class CompanyMemberDao {
         mapper.updateUserEditAuth(userNo, companyNo);
     }
 
-    public CompanyRole getUserRoleOfCompany(int userNo, int companyNo) {
+    public ROLE getUserRoleOfCompany(int userNo, int companyNo) {
         return mapper.getUserRoleOfCompany(userNo, companyNo);
     }
 

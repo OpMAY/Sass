@@ -1,14 +1,14 @@
 package com.model.jwt;
 
 import com.model.common.Time;
+import com.model.grant.PlugGrant;
+import com.model.grant.TeamGrant;
 import lombok.Data;
 
 @Data
 public abstract class RootUser extends Time {
     private String version;
-    private String grant;
     private String access_token;
     private String email;
-    private String id;
     private int no;
 }

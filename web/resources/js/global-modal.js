@@ -619,17 +619,17 @@ $(document).ready(function () {
         apiLogin(email, password).then((result) => {
             console.log(result.status, result.data);
             if (result.status === 'OK') {
-                let r = result.data.result;
+                let r = result.data.login_status;
                 if (r !== null) {
                     // 로그인 완료
-                    if (r.login_status === 1) {
+                    if (r === 1) {
                         // 회사 선택 승인 대기중
                         alert('기업 멤버 승인 대기 중');
-                    } else if (r.login_status === 2) {
+                    } else if (r === 2) {
                         // 회사 선택 반려됨
                         alert('기업 멤버 요청이 반려됨');
                         $('#corporation-type-modal').modal('show');
-                    } else if (r.login_status === 3) {
+                    } else if (r === 3) {
                         // 회사 선택 필요
                         alert('기업 선택 안함');
                         $('#corporation-type-modal').modal('show');

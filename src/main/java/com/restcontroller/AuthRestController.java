@@ -10,6 +10,8 @@ import com.response.DefaultRes;
 import com.response.Message;
 import com.service.CompanyService;
 import com.service.UserService;
+import com.util.Encryption.EncryptionService;
+import com.util.Encryption.JWTEnum;
 import com.util.TokenGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,21 +32,22 @@ public class AuthRestController {
     private final FileUploadUtility uploadUtility;
     private final UserService userService;
     private final CompanyService companyService;
+    private final EncryptionService encryptionService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@RequestBody User user, HttpServletRequest request) {
+    public ResponseEntity<String> login(@RequestBody User login_user, HttpServletRequest request) {
         Message message = new Message();
-        User result = userService.loginUser(user);
-        if (Objects.nonNull(result) && result.getLogin_status() >= 0) {
-            request.getSession().setAttribute("user", result.getNo());
+        User user = userService.loginUser(login_user);
+        if (Objects.nonNull(user) && user.getLogin_status() >= 0) {
+            request.getSession().setAttribute(JWTEnum.JWTToken.name(), encryptionService.encryptJWT(user));
         }
-        message.put("result", result);
+        message.put("login_status", user.getLogin_status());
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public ResponseEntity<String> logout(HttpServletRequest request) {
-        request.getSession().removeAttribute("user");
+        request.getSession().removeAttribute(JWTEnum.JWTToken.name());
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK), HttpStatus.OK);
     }
 
@@ -187,41 +190,6 @@ public class AuthRestController {
     public ResponseEntity<String> changeWithdrawal(HttpServletRequest request, @RequestBody Map<String, Object> map) {
         Message message = new Message();
         message.put("password", map.get("password").toString());
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/change/team/grant", method = RequestMethod.POST)
-    public ResponseEntity<String> changeTeamGrant(HttpServletRequest request, @RequestBody TeamGrant grant) {
-        log.info(grant.toString());
-        Message message = new Message();
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/delete/team/grant", method = RequestMethod.POST)
-    public ResponseEntity<String> deleteTeamGrant(HttpServletRequest request, @RequestBody TeamGrant grant) {
-        log.info(grant.toString());
-        Message message = new Message();
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/change/plug/grant", method = RequestMethod.POST)
-    public ResponseEntity<String> changePlugGrant(HttpServletRequest request, @RequestBody PlugGrant grant) {
-        log.info(grant.toString());
-        Message message = new Message();
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/delete/plug/grant", method = RequestMethod.POST)
-    public ResponseEntity<String> deletePlugGrant(HttpServletRequest request, @RequestBody PlugGrant grant) {
-        log.info(grant.toString());
-        Message message = new Message();
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/add/plug/grant", method = RequestMethod.POST)
-    public ResponseEntity<String> addPlugGrant(HttpServletRequest request, @RequestBody PlugGrant grant) {
-        log.info(grant.toString());
-        Message message = new Message();
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 }

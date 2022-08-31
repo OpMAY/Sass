@@ -2,6 +2,7 @@ package com.mapper;
 
 import com.model.company.Company;
 import com.model.company.CompanyRole;
+import com.model.grant.ROLE;
 import org.apache.ibatis.annotations.Param;
 
 public interface CompanyMemberMapper {
@@ -17,7 +18,7 @@ public interface CompanyMemberMapper {
 
     void updateUserEditAuth(@Param("userNo") int userNo, @Param("companyNo") int companyNo);
 
-    CompanyRole getUserRoleOfCompany(@Param("userNo") int userNo, @Param("companyNo") int companyNo);
+    ROLE getUserRoleOfCompany(@Param("userNo") int userNo, @Param("companyNo") int companyNo);
 
     void deleteUserMember(@Param("userNo") int userNo, @Param("companyNo") int companyNo);
 

@@ -5,9 +5,8 @@ public enum JWTEnum {
     VERSION,
     TOKEN,
     EMAIL,
-    ID,
     NO,
     SIGNATURE,
     SECRET,
-    GRANT
+    GRANT,
 }

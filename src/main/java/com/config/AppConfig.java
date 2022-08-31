@@ -2,11 +2,11 @@ package com.config;
 
 import com.filter.GeneralFilter;
 import com.filter.LogFilter;
-import com.filter.SessionFilter;
-import com.interceptor.BaseInterceptor;
-import com.interceptor.LogInterceptor;
+import com.interceptor.*;
+import com.model.grant.TeamGrant;
 import com.util.Constant;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
@@ -78,14 +78,10 @@ public class AppConfig implements WebApplicationInitializer, SchedulingConfigure
         charaterEncodingFilter.setInitParameter("forceEncoding", "true");
 
         FilterRegistration.Dynamic generalFilter = container.addFilter("generalFilter", new GeneralFilter()); // general filter 등록
-        generalFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "*.do");
+        generalFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
 
         FilterRegistration.Dynamic logFilter = container.addFilter("logFilter", new LogFilter()); // session filter 등록
         logFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
-
-        FilterRegistration.Dynamic sessionFilter = container.addFilter("sessionFilter", new SessionFilter()); // session filter 등록
-        sessionFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "*.do");
-
 
         /**
          * Clear Setting
@@ -192,9 +188,19 @@ public class AppConfig implements WebApplicationInitializer, SchedulingConfigure
      * -------------------------------
      * RecoverInterceptor Add
      */
+    @Autowired
+    private LogInterceptor logInterceptor;
+    @Autowired
+    private BaseInterceptor baseInterceptor;
+    @Autowired
+    private AuthInterceptor authInterceptor;
+    @Autowired
+    private TeamGrantInterceptor teamGrantInterceptor;
+    @Autowired
+    private PluginInterceptor pluginInterceptor;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LogInterceptor()).order(0)
+        registry.addInterceptor(logInterceptor).order(0)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/resources/**")
                 .excludePathPatterns("/files/**");
@@ -202,10 +208,31 @@ public class AppConfig implements WebApplicationInitializer, SchedulingConfigure
 //                .addPathPatterns("/**")
 //                .excludePathPatterns("/resources/**")
 //                .excludePathPatterns("/files/**");
-        registry.addInterceptor(new BaseInterceptor()).order(2)
+        registry.addInterceptor(baseInterceptor).order(2)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/resources/**")
                 .excludePathPatterns("/files/**");
+        /** is Login */
+        //registry.addInterceptor(authInterceptor).order(3)
+        //        .addPathPatterns("/auth")
+        //        .addPathPatterns("/global/**/plug/grant")
+        //        .addPathPatterns("/global/**/team/grant")
+        //        .excludePathPatterns("/login")
+        //        .excludePathPatterns("/logout")
+        //        .excludePathPatterns("/register")
+        //        .excludePathPatterns("/find/**")
+        //        .excludePathPatterns("/change/password")
+        //        .excludePathPatterns("/code/**");
+        /** is Team Grant, OWNER or PERSONAL 구분지어서 Intercept */
+        //registry.addInterceptor(teamGrantInterceptor).order(4)
+        //        .addPathPatterns("/global/**/plug/grant")
+        //       .addPathPatterns("/global/**/team/grant");
+        /** is Plugin Grant, READ or EDIT or READ(무조건 Intercept) 구분 지어서 Intercept*/
+        /*registry.addInterceptor(pluginInterceptor).order(5)
+                .addPathPatterns("/query")
+                .addPathPatterns("/crm")
+                .addPathPatterns("/chat")
+                .addPathPatterns("/plan");*/
     }
 
     @Bean

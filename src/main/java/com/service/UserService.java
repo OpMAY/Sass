@@ -10,6 +10,7 @@ import com.dao.UserDao;
 import com.model.User;
 import com.model.company.Company;
 import com.model.company.CompanyRole;
+import com.model.grant.ROLE;
 import com.response.ResponseEnum;
 import com.util.TokenGenerator;
 import lombok.RequiredArgsConstructor;
@@ -39,13 +40,10 @@ public class UserService {
              * **/
             if (companyMemberDao.checkUserHasCompany(target.getNo())) {
                 Company company = companyMemberDao.getUserCompany(target.getNo());
-                CompanyRole role = companyMemberDao.getUserRoleOfCompany(target.getNo(), company.getNo());
-                if (role == CompanyRole.PRE_MEMBER) {
+                ROLE role = companyMemberDao.getUserRoleOfCompany(target.getNo(), company.getNo());
+                if (role == ROLE.READY) {
                     // 승인 대기
                     target.setLogin_status(1);
-                } else if (role == CompanyRole.DENIED) {
-                    // 반려 됨
-                    target.setLogin_status(2);
                 } else {
                     target.setLogin_status(0);
                 }
