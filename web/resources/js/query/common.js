@@ -9,7 +9,7 @@ const initializeLeftSidebarClickEventListener = () => {
     switch (target.dataset.type) {
       case 'query':
         console.log('location', location);
-        location.href = '/web/WEB-INF/view/query/workspace.html';
+        location.href = 'query/workspace';
         break;
     }
   });

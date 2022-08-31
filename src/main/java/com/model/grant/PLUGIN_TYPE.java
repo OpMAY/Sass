@@ -1,7 +1,7 @@
 package com.model.grant;
 
-public enum PLUGIN {
+public enum PLUGIN_TYPE {
     CRM,
     QUERY,
-    CHAT
+    CHAT,
 }

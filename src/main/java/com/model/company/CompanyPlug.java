@@ -1,11 +1,13 @@
 package com.model.company;
 
+import com.model.common.Time;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
-public class CompanyPlug {
+public class CompanyPlug extends Time {
     private int companyNo;
-    private String plugNo;
-    private String createDate;
-    private String reviseDate;
+    private int plugNo;
+    private LocalDateTime revise_date;
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Slf4j
 @Repository
 public class UserDao {
-    private UserMapper mapper;
+    private final UserMapper mapper;
 
     private UserDao(SqlSession sqlSession) {
         this.mapper = sqlSession.getMapper(UserMapper.class);

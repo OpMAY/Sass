@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.PluginMapper">
+    <resultMap id="plugin" type="com.model.Plugin">
+        <result column="profile_image" property="profile_image" javaType="com.model.common.MFile"
+                typeHandler="JsonObjectTypeHandler"/>
+        <result column="detail_image" property="detail_image" javaType="com.model.common.MFile"
+                typeHandler="JsonObjectTypeHandler"/>
+        <result column="hashtag" property="hashtag" typeHandler="StringArrayListTypeHandler"/>
+    </resultMap>
+    <select id="getPlugs" resultType="Plugin" resultMap="plugin">
+        select *
+        from plugin;
+    </select>
+    <select id="getPlug" resultType="Plugin" resultMap="plugin">
+        select *
+        from plugin
+        where type = #{type};
+    </select>
+</mapper>

@@ -1,7 +1,12 @@
 package com.config;
 
+import com.google.gson.JsonObject;
+import com.middleware.JsonArrayObjectTypeHandler;
+import com.middleware.JsonObjectTypeHandler;
+import com.middleware.StringArrayListTypeHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;

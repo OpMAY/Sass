@@ -300,9 +300,11 @@ button.btn.btn-outline-gray-dark-low.border-2px {
 
 /*Media Object*/
 .plugin-item {
+    cursor: pointer;
     position: relative;
     border: var(--border-1px) var(--gray-high-medium);
     border-radius: var(--plugin-radius);
+    transition: color .5s;
 }
 
 .plugin-item ._desc {
@@ -396,11 +398,6 @@ button.btn.btn-outline-gray-dark-low.border-2px {
     border-radius: 30px;
 }
 
-.modal-body ._buttons .btn.is-disabled {
-    background-color: var(--gray-high-light);
-    color: var(--basic-white);
-}
-
 .modal-body.gray-top {
     border-top: 1px solid var(--gray-high-light);
 }
@@ -426,11 +423,6 @@ button.btn.btn-outline-gray-dark-low.border-2px {
 
 ._profile-change {
     cursor: pointer;
-}
-
-._profile-change:hover {
-    text-decoration: underline;
-    opacity: 0.7;
 }
 
 .modal-content.height-fixed {
@@ -572,10 +564,6 @@ button.btn.btn-outline-gray-dark-low.border-2px {
     border-bottom: 1px solid var(--gray-high-medium);
     padding: 20px 40px;
     cursor: pointer;
-}
-
-._plugin-list ._plugin-manage-container:hover {
-    background-color: #F8F8F8;
 }
 
 ._plugin-list ._plugin-manage-container.open {

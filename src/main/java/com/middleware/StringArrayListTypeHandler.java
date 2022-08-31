@@ -1,6 +1,7 @@
 package com.middleware;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.type.Alias;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
+@Alias("StringArrayListTypeHandler")
 public class StringArrayListTypeHandler<T> extends BaseTypeHandler<T> {
 
     private Class<T> type;

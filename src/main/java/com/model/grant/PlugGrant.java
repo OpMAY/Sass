@@ -4,13 +4,13 @@ import lombok.Data;
 
 @Data
 public class PlugGrant extends Grant {
-    private PLUGIN plugin;
+    private PLUGIN_TYPE plugin;
 
     public PlugGrant() {
         super();
     }
 
-    public PlugGrant(PLUGIN plugin, int user_no, ROLE role, GRANT_TYPE type, boolean auth) {
+    public PlugGrant(PLUGIN_TYPE plugin, int user_no, ROLE role, GRANT_TYPE type, boolean auth) {
         this.plugin = plugin;
         super.setAuth(auth);
         super.setRole(role);
