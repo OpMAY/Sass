@@ -44,21 +44,6 @@ public class TestController {
         }
     }
 
-    @RequestMapping(value = "/test/login", method = RequestMethod.GET)
-    public ModelAndView loginTest() {
-        ModelAndView VIEW = new ModelAndView("test");
-        VIEW.addObject("KAKAO_KEY", KAKAO_KEY);
-        VIEW.addObject("KAKAO_SECRET", KAKAO_SECRET);
-        VIEW.addObject("KAKAO_JAVASCRIPT", KAKAO_JAVASCRIPT);
-        VIEW.addObject("NAVER_KEY", NAVER_KEY);
-        VIEW.addObject("NAVER_SECRET", NAVER_SECRET);
-        VIEW.addObject("GOOGLE_KEY", GOOGLE_KEY);
-        VIEW.addObject("GOOGLE_SECRET", GOOGLE_SECRET);
-        return VIEW;
-    }
-
-
-
     /**
      * <a href="/test/download.do?file_name=test.mp4"
      * class="btn btn-primary _card-btn">Go somewhere</a>
