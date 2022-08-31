@@ -1,5 +1,4 @@
-'use strict'
-let host = 'http://localhost:8080';
+'use strict';
 
 function apiGetTables(database_no) {
     let result = {

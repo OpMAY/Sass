@@ -1,3 +1,5 @@
+'use strict';
+
 let host = 'http://localhost:8080';
 
 async function apiLogin(email, password) {
