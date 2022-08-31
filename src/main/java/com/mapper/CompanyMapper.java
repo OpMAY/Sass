@@ -10,4 +10,6 @@ public interface CompanyMapper {
     boolean checkCompanyBusinessCodeExists(String code);
 
     Company getCompanyByCompanyID(String companyID);
+
+    boolean checkCompanyIdValid(String companyId);
 }

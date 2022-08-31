@@ -2,7 +2,6 @@ package com.dao;
 
 import com.mapper.CompanyMapper;
 import com.model.company.Company;
-import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
@@ -28,5 +27,9 @@ public class CompanyDao {
 
     public Company getCompanyByCompanyID(String companyID) {
         return mapper.getCompanyByCompanyID(companyID);
+    }
+
+    public boolean checkCompanyIdValid(String companyId) {
+        return mapper.checkCompanyIdValid(companyId);
     }
 }

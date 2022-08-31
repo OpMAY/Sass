@@ -53,4 +53,8 @@ public class CompanyMemberDao {
     public Company getUserCompany(int userNo) {
         return mapper.getUserCompany(userNo);
     }
+
+    public void registerCompanyMaster(int companyNo, int userNo) {
+        mapper.registerCompanyMaster(companyNo, userNo);
+    }
 }

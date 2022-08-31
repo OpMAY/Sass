@@ -142,7 +142,7 @@ function timer(time) {
             sec = '0' + sec;
         }
         $element.html('0' + min + ':' + sec);
-        if(time <= 60) {
+        if (time <= 60) {
             $element.css('color', 'red');
         }
         time--;
@@ -190,9 +190,8 @@ $('#new-password-valid').on('input', function () {
  * corporation create modal listener
  * **/
 $('#corporation-create-name').on('input', function () {
-    let $restInput = $('#corporation-create-code');
     let $button = $(this).parent().next().find(':first-child');
-    if ($(this).val().trim().length > 8 && $restInput.val().trim().length > 8) {
+    if ($(this).val().trim().length > 2) {
         if ($button.hasClass('is-disabled')) {
             $button.removeClass('is-disabled').removeAttr('disabled');
         }
@@ -203,19 +202,30 @@ $('#corporation-create-name').on('input', function () {
     }
 });
 
-$('#corporation-create-code').on('input', function () {
-    let $restInput = $('#corporation-create-name');
-    let $button = $(this).parent().next().find(':first-child');
-    if ($(this).val().trim().length > 8 && $restInput.val().trim().length > 8) {
-        if ($button.hasClass('is-disabled')) {
-            $button.removeClass('is-disabled').removeAttr('disabled');
+$('#corporation-create-modal').find('._buttons button:first-child').on('click', function () {
+    let $this_modal = $('#corporation-create-modal');
+    apiCreateCorporate($('#corporation-create-name').val()).then((result) => {
+        console.log(result.data, result.status);
+        if (result.status === 'OK') {
+            let r = result.data.result;
+            if (r === null) {
+                alert('로그인 세션이 만료되었습니다.\n다시 로그인해주세요.');
+                window.location.reload();
+            } else {
+                if (r === -1) {
+                    alert('기업 이름이 이미 존재합니다');
+                } else if (r === -2) {
+                    alert('이미 사용중인 사업자 등록번호입니다.');
+                } else {
+                    alert('생성 완료');
+                    $this_modal.modal('hide');
+                }
+            }
+        } else {
+            alert('서버 에러, error : ' + result.status);
         }
-    } else {
-        if (!$button.hasClass('is-disabled')) {
-            $button.addClass('is-disabled').attr('disabled', true);
-        }
-    }
-});
+    })
+})
 
 /**
  * corporation create modal listener
@@ -233,6 +243,38 @@ $('#corporation-find-input').on('input', function () {
     }
 });
 
+$('#corporation-find-modal').find('._buttons button:first-child').on('click', function () {
+    let $this_modal = $('#corporation-find-modal');
+    apiFindCorporate($this_modal.find('input').val()).then((result) => {
+        if (result.status === 'OK') {
+            let company = result.data.company;
+            let $next_modal = $('#corporation-select-modal');
+            $next_modal.find('input').val(company.name).data('c_id', company.no);
+            $this_modal.modal('hide');
+            $next_modal.modal('show');
+        } else {
+            alert('ID와 일치하는 기업이 존재하지 않습니다.');
+        }
+    })
+})
+
+$('#corporation-select-modal').find('._buttons button:first-child').on('click', function () {
+    let $this_modal = $('#corporation-select-modal');
+    apiJoinCorporate($this_modal.find('input').data().c_id).then((result) => {
+        if (result.status === 'OK') {
+            if (result.data.result) {
+                alert('기업 팀원 참여 요청되었습니다.');
+                $this_modal.modal('hide');
+            } else {
+                alert('로그인 세션이 만료되었습니다.\n다시 로그인해주세요.');
+                window.location.reload();
+            }
+        } else {
+            alert('기업 팀원 참여 요청할 수 없습니다. error : ' + result.status);
+        }
+    })
+})
+
 
 /**
  * Setting modal myInfo Listener
@@ -243,19 +285,21 @@ $('#agree-checkbox').on('change', function () {
     if ($disagreeCheckbox.is(':checked')) {
         console.log('checked');
         $disagreeCheckbox.prop('checked', false);
+        apiChangeMarketingAgree(true).then((result) => {
+            console.log(result.status, result.data);
+            if (result.status === 'OK') {
+            } else {
+                alert('로그인 세션이 만료되었습니다.\n다시 로그인해주세요.');
+                window.location.reload();
+            }
+        });
     }
 
     // Block checked remove on toggle twice
     if (!$(this).is(':checked')) {
         $(this).prop('checked', true);
     }
-    // TODO status change fetch
-    apiChangeMarketingAgree().then((result) => {
-        console.log(result.status, result.data);
-        if (result.status === 'OK') {
-        } else {
-        }
-    });
+
 });
 
 $('#disagree-checkbox').on('change', function () {
@@ -264,19 +308,21 @@ $('#disagree-checkbox').on('change', function () {
     if ($agreeCheckbox.is(':checked')) {
         console.log('checked');
         $agreeCheckbox.prop('checked', false);
+        apiChangeMarketingAgree(false).then((result) => {
+            console.log(result.status, result.data);
+            if (result.status === 'OK') {
+            } else {
+                alert('로그인 세션이 만료되었습니다.\n다시 로그인해주세요.');
+                window.location.reload();
+            }
+        });
     }
 
     // Block checked remove on toggle twice
     if (!$(this).is(':checked')) {
         $(this).prop('checked', true);
     }
-    // TODO status change fetch
-    apiChangeMarketingAgree().then((result) => {
-        console.log(result.status, result.data);
-        if (result.status === 'OK') {
-        } else {
-        }
-    });
+
 });
 
 $('._pencil').on('click', function () {

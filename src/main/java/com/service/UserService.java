@@ -37,9 +37,9 @@ public class UserService {
              * 2. 기업 팀원으로 참여 반려 시 사유 -> 기업 정보 연결
              * 3. 기업 정보 연결되었을 시 로그인
              * **/
-            if (companyMemberDao.checkUserHasCompany(user.getNo())) {
-                Company company = companyMemberDao.getUserCompany(user.getNo());
-                CompanyRole role = companyMemberDao.getUserRoleOfCompany(user.getNo(), company.getNo());
+            if (companyMemberDao.checkUserHasCompany(target.getNo())) {
+                Company company = companyMemberDao.getUserCompany(target.getNo());
+                CompanyRole role = companyMemberDao.getUserRoleOfCompany(target.getNo(), company.getNo());
                 if (role == CompanyRole.PRE_MEMBER) {
                     // 승인 대기
                     target.setLogin_status(1);
@@ -103,5 +103,10 @@ public class UserService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Transactional
+    public void changeMarketingAgree(int userNo, boolean agree) {
+        userDao.changeUserMarketingAgree(userNo, agree);
     }
 }

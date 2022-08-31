@@ -5,17 +5,20 @@
 <mapper namespace="com.mapper.CompanyMapper">
     <insert id="registerCompany" useGeneratedKeys="true" keyProperty="no">
         insert into Company(companyID, businessCode, name, createDate)
-        VALUES (#{companyID}, hex(aes_encrypt(#{businessCode}, 'okiwi')), #{name}, NOW())
+        VALUES (#{companyID}, #{businessCode}, #{name}, NOW())
     </insert>
     <select id="checkCompanyNameExists" resultType="_boolean">
         select EXISTS(select * from Company WHERE name = #{name})
     </select>
     <select id="checkCompanyBusinessCodeExists" resultType="_boolean">
-        select EXISTS(select * from Company WHERE aes_decrypt(unhex(businessCode), 'okiwi') = #{code})
+        select EXISTS(select * from Company WHERE businessCode = #{code})
     </select>
     <select id="getCompanyByCompanyID" resultType="Company">
         select *
         from Company
         WHERE companyID = #{companyID}
+    </select>
+    <select id="checkCompanyIdValid" resultType="_boolean">
+        select !EXISTS(select * from Company WHERE companyID = #{companyId})
     </select>
 </mapper>

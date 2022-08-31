@@ -13,5 +13,15 @@ $(document).ready(function() {
     $(this).data('op', '');
   })
 
+  $('#logout').on('click', function () {
+    apiLogout().then((result) => {
+      if (result.status === 'OK') {
+        alert('로그아웃 되었습니다.');
+        window.location.reload();
+      } else {
+      }
+    })
+  })
+
   console.log('common.js execute');
 });

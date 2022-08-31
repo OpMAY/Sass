@@ -1,12 +1,14 @@
 package com.restcontroller;
 
 import com.aws.file.FileUploadUtility;
+import com.model.company.Company;
 import com.model.grant.PlugGrant;
 import com.model.grant.TeamGrant;
 import com.model.User;
 import com.model.common.MFile;
 import com.response.DefaultRes;
 import com.response.Message;
+import com.service.CompanyService;
 import com.service.UserService;
 import com.util.TokenGenerator;
 import lombok.AllArgsConstructor;
@@ -27,6 +29,7 @@ import java.util.Objects;
 public class AuthRestController {
     private final FileUploadUtility uploadUtility;
     private final UserService userService;
+    private final CompanyService companyService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<String> login(@RequestBody User user, HttpServletRequest request) {
@@ -37,6 +40,12 @@ public class AuthRestController {
         }
         message.put("result", result);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        request.getSession().removeAttribute("user");
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -99,6 +108,38 @@ public class AuthRestController {
         }
     }
 
+    @RequestMapping(value = "/create/corporate", method = RequestMethod.POST)
+    public ResponseEntity<String> createCorporate(HttpServletRequest request, @RequestBody Company company) {
+        Message message = new Message();
+        Integer userNo = (Integer) request.getSession().getAttribute("user");
+        if (userNo != null) {
+            message.put("result", companyService.createCorporate(company, userNo));
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/find/corporate", method = RequestMethod.POST)
+    public ResponseEntity<String> findCorporate(HttpServletRequest request, @RequestBody Map<String, Object> map) {
+        Message message = new Message();
+        String companyId = map.get("id").toString();
+        Company company = companyService.getCompanyNameByCode(companyId);
+        if (Objects.nonNull(company)) {
+            message.put("company", company);
+            return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.BAD_REQUEST), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/join/corporate", method = RequestMethod.POST)
+    public ResponseEntity<String> joinCorporate(HttpServletRequest request, @RequestBody Company company) {
+        Message message = new Message();
+        Integer userNo = (Integer) request.getSession().getAttribute("user");
+        if (userNo != null) {
+            message.put("result", companyService.joinCorporate(company, userNo));
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/change/name", method = RequestMethod.POST)
     public ResponseEntity<String> changeName(HttpServletRequest request, @RequestBody Map<String, Object> map) {
         Message message = new Message();
@@ -134,8 +175,12 @@ public class AuthRestController {
     @RequestMapping(value = "/change/agree", method = RequestMethod.POST)
     public ResponseEntity<String> changeMarketingAgree(HttpServletRequest request, @RequestBody Map<String, Object> map) {
         Message message = new Message();
-        message.put("agree", Boolean.valueOf(map.get("agree").toString()));
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        Integer userNo = (Integer) request.getSession().getAttribute("user");
+        if (Objects.nonNull(userNo)) {
+            userService.changeMarketingAgree(userNo, Boolean.parseBoolean(map.get("agree").toString()));
+            return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.UNAUTHORIZED), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/withdrawal", method = RequestMethod.POST)

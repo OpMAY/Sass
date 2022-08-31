@@ -54,4 +54,8 @@
         from Company
         WHERE no = (select companyNo from CompanyMember WHERE userNo = #{userNo})
     </select>
+    <insert id="registerCompanyMaster">
+        insert into CompanyMember(userNo, companyNo, role, editAuth, readAuth, requestDate, createDate, reviseDate)
+        VALUES (#{userNo}, #{companyNo}, 'MASTER', true, true, now(), now(), now())
+    </insert>
 </mapper>

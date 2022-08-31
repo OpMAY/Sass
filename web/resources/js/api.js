@@ -28,6 +28,29 @@ async function apiLogin(email, password) {
     }
 }
 
+async function apiLogout() {
+    function apiFetchLogout() {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+        };
+        const response = fetch(`${host}/auth/logout`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchLogout();
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 async function apiRegister() {
     function apiFetchRegister(name, phone, email, password, agreeData, marketingAgree) {
         let myHeaders = new Headers();
@@ -200,6 +223,88 @@ async function apiChangePassword(email, password) {
     }
 }
 
+async function apiCreateCorporate(name, code) {
+    function apiFetchCreateCorporate(name, code) {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+
+        let raw = JSON.stringify({
+            name,
+            code
+        });
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+        };
+        const response = fetch(`${host}/auth/create/corporate`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchCreateCorporate(name, code);
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function apiFindCorporate(id) {
+    function apiFetchFindCorporate(id) {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+
+        let raw = JSON.stringify({
+            id
+        });
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+        };
+        const response = fetch(`${host}/auth/find/corporate`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchFindCorporate(id);
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function apiJoinCorporate(no) {
+    function apiFetchJoinCorporate(no) {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+
+        let raw = JSON.stringify({
+            no
+        });
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+        };
+        const response = fetch(`${host}/auth/join/corporate`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchJoinCorporate(no);
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 async function apiChangeName() {
     function apiFetchChangeName(name) {
         let myHeaders = new Headers();
@@ -303,7 +408,7 @@ async function apiChangePhone() {
     }
 }
 
-async function apiChangeMarketingAgree() {
+async function apiChangeMarketingAgree(agree) {
     function apiFetchChangeMarketingAgree(agree) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
@@ -323,7 +428,7 @@ async function apiChangeMarketingAgree() {
 
     let result;
     try {
-        result = await apiFetchChangeMarketingAgree(true);
+        result = await apiFetchChangeMarketingAgree(agree);
         return result;
     } catch (error) {
         console.log(error);
