@@ -18,4 +18,7 @@ public class User {
     private boolean serviceAlarm;
     private String createDate;
     private String lastLoginDate;
+
+    // For Login Validation
+    private int login_status;
 }

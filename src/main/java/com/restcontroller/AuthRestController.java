@@ -7,6 +7,7 @@ import com.model.User;
 import com.model.common.MFile;
 import com.response.DefaultRes;
 import com.response.Message;
+import com.service.UserService;
 import com.util.TokenGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -24,29 +26,46 @@ import java.util.Map;
 @RequestMapping("/auth")
 public class AuthRestController {
     private final FileUploadUtility uploadUtility;
+    private final UserService userService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@RequestBody User user) {
+    public ResponseEntity<String> login(@RequestBody User user, HttpServletRequest request) {
         Message message = new Message();
+        User result = userService.loginUser(user);
+        if (Objects.nonNull(result) && result.getLogin_status() >= 0) {
+            request.getSession().setAttribute("user", result.getNo());
+        }
+        message.put("result", result);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<String> register(@RequestBody User user) {
         Message message = new Message();
+        log.info("user : {}", user);
+        message.put("r", userService.registerUser(user));
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/find/email", method = RequestMethod.POST)
     public ResponseEntity<String> findEmail(@RequestBody User user) {
         Message message = new Message();
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        String email = userService.findEmail(user);
+        if (email != null) {
+            message.put("email", email);
+            return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(DefaultRes.res(HttpStatus.BAD_REQUEST), HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "/find/password", method = RequestMethod.POST)
     public ResponseEntity<String> findPassword(@RequestBody User user) {
-        Message message = new Message();
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        if(userService.findPassword(user)) {
+            return new ResponseEntity(DefaultRes.res(HttpStatus.OK), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(DefaultRes.res(HttpStatus.BAD_REQUEST), HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "/change/password", method = RequestMethod.POST)

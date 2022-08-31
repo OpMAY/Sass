@@ -1,10 +1,86 @@
 /**
+ * register Modal checkbox listener
+ * **/
+$('#agree-all').on('change', function () {
+    const status = $(this).is(':checked');
+    $('._agree').find('[data-type=checkbox]:not(#agree-all)').prop('checked', status);
+    listenRegisterModalValid();
+})
+
+$('#register-modal input[data-required=true]').on('input', function () {
+    listenRegisterModalValid()
+})
+
+$('[data-type=phone]').on('input', function () {
+    $(this).val(phoneNumFormatter($(this).val()));
+})
+
+function listenRegisterModalValid() {
+    const inputs = $('#register-modal').find('input[data-required=true]');
+    let valid = true;
+    const eRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
+    const pRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+    inputs.each((i, e) => {
+        switch (e.dataset.type) {
+            case 'name' :
+                valid = valid && $(e).val().length >= 3;
+                break;
+            case 'phone' :
+                valid = valid && pRegex.test($(e).val());
+                break;
+            case 'email' :
+                valid = valid && eRegex.test($(e).val());
+                break;
+            case 'password' :
+                valid = valid && passwordValidation($(e).val(), 0, false);
+                break;
+            case 'checkbox' :
+                valid = valid && $(e).is(':checked');
+                break;
+            default:
+                valid = false;
+                break;
+        }
+    })
+    if (valid) {
+        $('[data-action=register]').removeClass('is-disabled').removeAttr('disabled');
+    } else {
+        $('[data-action=register]').addClass('is-disabled').attr('disabled', 'disabled');
+    }
+}
+
+$('#register-modal').on('show.bs.modal', function () {
+    listenRegisterModalValid();
+}).on('hide.bs.modal', function () {
+    $(this).find('input[type=text]').val('');
+    $(this).find('input[type=checkbox]').prop('checked', false);
+    $(this).find('input[type=password]').val('');
+    $(this).find('input[type=email]').val('');
+})
+
+$('#login-modal').on('hide.bs.modal', function () {
+    $(this).find('input').val('');
+})
+
+/**
+ * login modal input listener
+ * **/
+$('#login-modal input').on('keypress', function (e) {
+    if (e.keyCode === 13) {
+        $('[data-action=login]').click();
+    }
+});
+
+/**
  * email find modal input listener
  * **/
 $('#phone-number-input').on('input', function (e) {
+    $(this).val(phoneNumFormatter($(this).val()));
     let $button = $(this).parent().next().find(':first-child');
     // TODO add Phone number validation function
-    if ($(this).val().length > 5) {
+    const pRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+    console.log($(this).val());
+    if (pRegex.test($(this).val())) {
         if ($button.hasClass('is-disabled')) {
             $button.removeClass('is-disabled').removeAttr('disabled');
         }
@@ -15,13 +91,17 @@ $('#phone-number-input').on('input', function (e) {
     }
 });
 
+$('#find-email-modal').on('hide.bs.modal', function () {
+    $(this).find('input').val('');
+})
 /**
  * Password find modal input listener
  * **/
 $('#email-input').on('input', function (e) {
     let $button = $(this).parent().next().find(':first-child');
     // TODO add email validation function
-    if ($(this).val().length > 5) {
+    const eRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
+    if (eRegex.test($(this).val())) {
         if ($button.hasClass('is-disabled')) {
             $button.removeClass('is-disabled').removeAttr('disabled');
         }
@@ -32,6 +112,9 @@ $('#email-input').on('input', function (e) {
     }
 });
 
+$('#find-password-modal').on('hide.bs.modal', function () {
+    $(this).find('input').val('');
+})
 
 /**
  * Password validation modal timer function
@@ -472,51 +555,101 @@ $('[data-action="cancel-plug"]').on('click', function () {
 
 $(document).ready(function () {
     $('[data-action="login"]').on('click', function () {
-        apiLogin().then((result) => {
+        let modal = $('#login-modal');
+        let email = modal.find('input[name=email]').val();
+        let password = modal.find('input[name=password]').val();
+        // Input Validation
+        if (email.length < 10) {
+            alert('이메일을 입력하세요.');
+            return;
+        }
+        if (password.length < 8) {
+            alert('비밀번호를 입력하세요.')
+            return;
+        }
+        apiLogin(email, password).then((result) => {
             console.log(result.status, result.data);
             if (result.status === 'OK') {
+                let r = result.data.result;
+                if (r !== null) {
+                    // 로그인 완료
+                    if (r.login_status === 1) {
+                        // 회사 선택 승인 대기중
+                        alert('기업 멤버 승인 대기 중');
+                    } else if (r.login_status === 2) {
+                        // 회사 선택 반려됨
+                        alert('기업 멤버 요청이 반려됨');
+                        $('#corporation-type-modal').modal('show');
+                    } else if (r.login_status === 3) {
+                        // 회사 선택 필요
+                        alert('기업 선택 안함');
+                        $('#corporation-type-modal').modal('show');
+                    } else {
+                        // 로그인 완료
+                    }
+                    $('#login-modal').modal('hide');
+                } else {
+                    // 로그인 실패
+                    alert('이메일 또는 비밀번호가 일치하지 않습니다.');
+                }
             } else {
+                // 통신 실패
+                alert('통신에 오류가 발생했습니다.\nerror: ' + result.status);
             }
-            $('#login-modal').modal('hide');
         });
     });
     $('[data-action="register"]').on('click', function () {
         apiRegister().then((result) => {
             console.log(result.status, result.data);
             if (result.status === 'OK') {
+                if (result.data.r) {
+                    alert('회원가입 완료');
+                    $('#register-modal').modal('hide');
+                    $('#corporation-type-modal').modal('show');
+                } else {
+                    alert('이미 등록된 회원입니다.');
+                }
             } else {
+                // 통신 실패
+                alert('통신에 오류가 발생했습니다.\nerror: ' + result.status);
             }
-            $('#register-modal').modal('hide');
         });
     });
     $('[data-action="find-email"]').on('click', function () {
-        apiFindEmail().then((result) => {
+        let $this_modal = $('#find-email-modal');
+        apiFindEmail($this_modal.find('input').val()).then((result) => {
             console.log(result.status, result.data);
             if (result.status === 'OK') {
                 let $result_modal = $('#email-result-modal');
                 let $input = $result_modal.find('input[name="email"]');
-                $input.prop('disabled', false);
-                $input.val('zlzldntlr@naver.com');
+                // $input.prop('disabled', false);
+                $input.val(result.data.email);
                 $input.prop('disabled', true);
+                $this_modal.modal('hide');
                 $result_modal.modal('show');
             } else {
+                alert('일치하는 이메일이 없습니다.');
             }
         });
     });
     $('[data-action="find-password"]').on('click', function () {
-        apiFindPassword().then((result) => {
+        let $this_modal = $('#find-password-modal');
+        apiFindPassword($this_modal.find('input').val()).then((result) => {
             console.log(result.status, result.data);
             if (result.status === 'OK') {
                 apiSendCode().then((result) => {
                     console.log(result.status, result.data);
                     if (result.status === 'OK') {
-                        let code = result.data.code;
                         let $validate_modal = $('#password-validate-modal');
+                        $this_modal.modal('hide');
                         $validate_modal.modal('show');
                     } else {
+                        // 통신 실패
+                        alert('통신에 오류가 발생했습니다.\nerror: ' + result.status);
                     }
                 });
             } else {
+                alert('존재하지 않는 이메일입니다.');
             }
         });
     });

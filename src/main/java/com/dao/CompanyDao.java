@@ -14,19 +14,19 @@ public class CompanyDao {
         this.mapper = sqlSession.getMapper(CompanyMapper.class);
     }
 
-//    public void registerCompany(Company company) {
-//        mapper.registerCompany(company);
-//    }
-//
-//    public boolean checkCompanyNameExists(String name) {
-//        return mapper.checkCompanyNameExists(name);
-//    }
-//
-//    public boolean checkCompanyBusinessCodeExists(String code) {
-//        return mapper.checkCompanyBusinessCodeExists(code);
-//    }
-//
-//    public Company getCompanyByCompanyID(String companyID) {
-//        return mapper.getCompanyByCompanyID(companyID);
-//    }
+    public void registerCompany(Company company) {
+        mapper.registerCompany(company);
+    }
+
+    public boolean checkCompanyNameExists(String name) {
+        return mapper.checkCompanyNameExists(name);
+    }
+
+    public boolean checkCompanyBusinessCodeExists(String code) {
+        return mapper.checkCompanyBusinessCodeExists(code);
+    }
+
+    public Company getCompanyByCompanyID(String companyID) {
+        return mapper.getCompanyByCompanyID(companyID);
+    }
 }

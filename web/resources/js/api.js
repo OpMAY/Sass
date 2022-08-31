@@ -1,6 +1,6 @@
 let host = 'http://localhost:8080';
 
-async function apiLogin() {
+async function apiLogin(email, password) {
     function apiFetchLogin(email, password) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
@@ -21,7 +21,7 @@ async function apiLogin() {
 
     let result;
     try {
-        result = await apiFetchLogin('zlzldntlr@naver.com', 'zlzldntlr');
+        result = await apiFetchLogin(email, password);
         return result;
     } catch (error) {
         console.log(error);
@@ -29,7 +29,7 @@ async function apiLogin() {
 }
 
 async function apiRegister() {
-    function apiFetchRegister(name, phone, email, password) {
+    function apiFetchRegister(name, phone, email, password, agreeData, marketingAgree) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
 
@@ -37,7 +37,9 @@ async function apiRegister() {
             name,
             phone,
             email,
-            password
+            password,
+            agreeData,
+            marketingAgree
         });
 
         let requestOptions = {
@@ -51,14 +53,15 @@ async function apiRegister() {
 
     let result;
     try {
-        result = await apiFetchRegister('kimwoosik', '010-4529-9453', 'zlzldntlr@naver.com', 'zlzldntlr');
+        let modal = $('#register-modal');
+        result = await apiFetchRegister('한지우', '010-4529-9453', 'zlzldntlr@naver.com', 'zlzldntlr', {"serviceAgree" : true, "personalInfoAgree" : true, "thirdPartyAgree" : true, "agreeDate" : '2022-08-31'}, false);
         return result;
     } catch (error) {
         console.log(error);
     }
 }
 
-async function apiFindEmail() {
+async function apiFindEmail(phone) {
     function apiFetchFindEmail(phone) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
@@ -78,14 +81,14 @@ async function apiFindEmail() {
 
     let result;
     try {
-        result = await apiFetchFindEmail('010-4529-9453');
+        result = await apiFetchFindEmail(phone);
         return result;
     } catch (error) {
         console.log(error);
     }
 }
 
-async function apiFindPassword() {
+async function apiFindPassword(email) {
     function apiFetchFindPassword(email) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
@@ -105,7 +108,7 @@ async function apiFindPassword() {
 
     let result;
     try {
-        result = await apiFetchFindPassword('zlzldntlr@naver.com');
+        result = await apiFetchFindPassword(email);
         return result;
     } catch (error) {
         console.log(error);

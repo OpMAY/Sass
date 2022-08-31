@@ -4,18 +4,18 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.CompanyMapper">
     <insert id="registerCompany" useGeneratedKeys="true" keyProperty="no">
-        insert into company(companyID, businessCode, name, createDate)
+        insert into Company(companyID, businessCode, name, createDate)
         VALUES (#{companyID}, hex(aes_encrypt(#{businessCode}, 'okiwi')), #{name}, NOW())
     </insert>
     <select id="checkCompanyNameExists" resultType="_boolean">
-        select EXISTS(select * from company WHERE name = #{name})
+        select EXISTS(select * from Company WHERE name = #{name})
     </select>
     <select id="checkCompanyBusinessCodeExists" resultType="_boolean">
-        select EXISTS(select * from company WHERE aes_decrypt(unhex(businessCode), 'okiwi') = #{code})
+        select EXISTS(select * from Company WHERE aes_decrypt(unhex(businessCode), 'okiwi') = #{code})
     </select>
     <select id="getCompanyByCompanyID" resultType="Company">
         select *
-        from company
+        from Company
         WHERE companyID = #{companyID}
     </select>
 </mapper>
