@@ -10,6 +10,12 @@
                 typeHandler="JsonObjectTypeHandler"/>
         <result column="hashtag" property="hashtag" typeHandler="StringArrayListTypeHandler"/>
     </resultMap>
+    <resultMap id="CompanyPluginListData" type="com.model.CompanyPluginListData">
+        <result column="profile_image" property="profile_image" javaType="com.model.common.MFile"
+                typeHandler="JsonObjectTypeHandler"/>
+        <result column="teammates" property="teammates" javaType="com.model.company.CompanyMemberListData"
+                typeHandler="JsonArrayObjectTypeHandler"/>
+    </resultMap>
     <select id="getPlugs" resultType="Plugin" resultMap="plugin">
         select *
         from plugin;
@@ -18,5 +24,28 @@
         select *
         from plugin
         where type = #{type};
+    </select>
+    <select id="getCompanyPlugs" resultType="CompanyPluginListData" resultMap="CompanyPluginListData">
+        select c.plug_no,
+               c.company_no,
+               p.title,
+               p.`desc`,
+               p.profile_image,
+               p.type,
+               JSON_ARRAYAGG(JSON_OBJECT(
+                       'user_no', cmpa.user_no,
+                       'company_no', cmpa.company_no,
+                       'name', u.name,
+                       'email', u.email,
+                       'read_auth', cmpa.read_auth,
+                       'edit_auth', cmpa.edit_auth,
+                       'role', cm.role
+                   )) as teammates
+        from company_plug c
+                 left join plugin p on c.plug_no = p.no
+                 left join company_member_plug_auth cmpa on c.company_no = cmpa.company_no
+                 left join company_member cm on cmpa.user_no = cm.user_no
+                 left join user u on cm.user_no = u.no
+        WHERE c.company_no = #{companyNo}
     </select>
 </mapper>

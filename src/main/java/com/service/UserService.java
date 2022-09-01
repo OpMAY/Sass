@@ -107,4 +107,9 @@ public class UserService {
     public void changeMarketingAgree(int userNo, boolean agree) {
         userDao.changeUserMarketingAgree(userNo, agree);
     }
+
+
+    public User getModalMyInfo(int userNo) {
+        return userDao.getModalMyInfo(userNo);
+    }
 }

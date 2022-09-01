@@ -2,8 +2,6 @@ package com.restcontroller;
 
 import com.aws.file.FileUploadUtility;
 import com.model.company.Company;
-import com.model.grant.PlugGrant;
-import com.model.grant.TeamGrant;
 import com.model.User;
 import com.model.common.MFile;
 import com.response.DefaultRes;
@@ -12,7 +10,6 @@ import com.service.CompanyService;
 import com.service.UserService;
 import com.util.Encryption.EncryptionService;
 import com.util.Encryption.JWTEnum;
-import com.util.TokenGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -40,8 +38,8 @@ public class AuthRestController {
         User user = userService.loginUser(login_user);
         if (Objects.nonNull(user) && user.getLogin_status() >= 0) {
             request.getSession().setAttribute(JWTEnum.JWTToken.name(), encryptionService.encryptJWT(user));
+            message.put("login_status", user.getLogin_status());
         }
-        message.put("login_status", user.getLogin_status());
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
@@ -114,7 +112,8 @@ public class AuthRestController {
     @RequestMapping(value = "/create/corporate", method = RequestMethod.POST)
     public ResponseEntity<String> createCorporate(HttpServletRequest request, @RequestBody Company company) {
         Message message = new Message();
-        Integer userNo = (Integer) request.getSession().getAttribute("user");
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
         if (userNo != null) {
             message.put("result", companyService.createCorporate(company, userNo));
         }
@@ -136,9 +135,43 @@ public class AuthRestController {
     @RequestMapping(value = "/join/corporate", method = RequestMethod.POST)
     public ResponseEntity<String> joinCorporate(HttpServletRequest request, @RequestBody Company company) {
         Message message = new Message();
-        Integer userNo = (Integer) request.getSession().getAttribute("user");
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
         if (userNo != null) {
             message.put("result", companyService.joinCorporate(company, userNo));
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/get/myInfo", method = RequestMethod.GET)
+    public ResponseEntity<String> GetModalMyInfo(HttpServletRequest request) {
+        Message message = new Message();
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
+        if (userNo != null) {
+            message.put("u", userService.getModalMyInfo(userNo));
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/get/myCorp", method = RequestMethod.GET)
+    public ResponseEntity<String> GetModalMyCorp(HttpServletRequest request) {
+        Message message = new Message();
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
+        if (userNo != null) {
+            message = companyService.getUserCorpInfo(userNo);
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/get/plugin", method = RequestMethod.GET)
+    public ResponseEntity<String> GetModalPugin(HttpServletRequest request) {
+        Message message = new Message();
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
+        if (userNo != null) {
+            message = companyService.getUserCorpPluginInfo(userNo);
         }
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
@@ -178,7 +211,8 @@ public class AuthRestController {
     @RequestMapping(value = "/change/agree", method = RequestMethod.POST)
     public ResponseEntity<String> changeMarketingAgree(HttpServletRequest request, @RequestBody Map<String, Object> map) {
         Message message = new Message();
-        Integer userNo = (Integer) request.getSession().getAttribute("user");
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
         if (Objects.nonNull(userNo)) {
             userService.changeMarketingAgree(userNo, Boolean.parseBoolean(map.get("agree").toString()));
             return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);

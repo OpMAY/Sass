@@ -7,7 +7,8 @@
         select EXISTS(select * from company_member WHERE user_no = #{userNo} AND company_no = #{companyNo})
     </select>
     <insert id="requestCompanyJoin">
-        insert into company_member(user_no, company_no, role, edit_auth, read_auth, request_date, reg_datetime, revise_date)
+        insert into company_member(user_no, company_no, role, edit_auth, read_auth, request_date, reg_datetime,
+                                   revise_date)
         VALUES (#{userNo}, #{companyNo}, 'PRE_MEMBER', false, false, now(), now(), now())
     </insert>
     <select id="checkUserReadAuth" resultType="_boolean">
@@ -55,7 +56,14 @@
         WHERE no = (select company_no from company_member WHERE user_no = #{userNo})
     </select>
     <insert id="registerCompanyMaster">
-        insert into company_member(user_no, company_no, role, edit_auth, read_auth, request_date, reg_datetime, revise_date)
+        insert into company_member(user_no, company_no, role, edit_auth, read_auth, request_date, reg_datetime,
+                                   revise_date)
         VALUES (#{userNo}, #{companyNo}, 'MASTER', true, true, now(), now(), now())
     </insert>
+    <select id="getCompanyMemberList" resultType="CompanyMemberListData">
+        select company_member.*, u.name, u.email
+        from company_member
+                 left join user u on company_member.user_no = u.no
+        WHERE company_no = #{companyNo}
+    </select>
 </mapper>

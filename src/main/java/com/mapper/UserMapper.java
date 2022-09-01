@@ -21,4 +21,6 @@ public interface UserMapper {
     void changeUserPhone(@Param("userNo") int userNo, @Param("phone") String phone);
 
     void changeUserMarketingAgree(@Param("userNo") int userNo, @Param("marketingAgree") boolean marketingAgree);
+
+    User getModalMyInfo(int userNo);
 }

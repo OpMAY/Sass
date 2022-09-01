@@ -275,6 +275,233 @@ $('#corporation-select-modal').find('._buttons button:first-child').on('click', 
     })
 })
 
+/** Setting modal open listener **/
+$('#setting-modal').on('show.bs.modal', function () {
+    let $this_modal = $(this);
+    $this_modal.find('.nav-item:first-child button').click();
+    // TODO login 세션 없을 시 모달 open 막기
+    apiCallMyInfo().then((result) => {
+        let data = result.data.u;
+        setMyInfoModalData(data);
+    })
+})
+
+$('#setting-modal button[data-toggle=tab]').on('show.bs.tab', function (event) {
+    let $target_tab = $($(this).data().target);
+    switch ($target_tab.attr('id')) {
+        case 'myInfo':
+            apiCallMyInfo().then((result) => {
+                if (result.status === 'OK') {
+                    let data = result.data.u;
+                    setMyInfoModalData(data);
+                } else {
+                    alert('오류');
+                    event.preventDefault();
+                }
+            })
+            break;
+        case 'teammates':
+            apiCallMyCorpInfo().then((result) => {
+                if (result.status === 'OK') {
+                    console.log(result.status, result.data);
+                    let c_data = result.data.company;
+                    let m_data = result.data.members;
+                    let $corp_tab = $('#teammates .tab-content');
+                    let $member_list_group = $corp_tab.find('._item-group');
+                    $corp_tab.find('[data-company-id]').html(c_data.company_id);
+                    $corp_tab.find('[data-company-owner]').html(m_data[0].name + '(' + m_data[0].email + ')');
+                    $member_list_group.children().remove();
+                    m_data.forEach((e, i) => {
+                        console.log(e)
+                        $member_list_group.append(`<ul class="nav nav-tabs _items"
+                                        role="tablist" data-type="TEAM" data-user-no="${e.user_no}" data-user-role="${e.role}" data-user-email="${e.email}">
+                                        <li class="nav-item light-h6 _name"
+                                            role="presentation">
+                                            ${e.name}
+                                        </li>
+                                        <li class="nav-item light-h6 _email"
+                                            role="menuitem">
+                                            <span title="asszxc@naver.com">${e.email}</span>
+                                        </li>
+                                        <li class="nav-item light-h6 _role"
+                                            role="presentation">
+                                            ${e.role.keyword}
+                                        </li>
+                                        <li class="nav-item light-h6 _read"
+                                            role="presentation">
+                                            <span class="_check ${e.read_auth ? 'on' : 'off'}" data-type="READ" data-toggle="auth-switch"></span>
+                                        </li>
+                                        <li class="nav-item light-h6 _edit"
+                                            role="presentation">
+                                            <span class="_check ${e.edit_auth ? 'on' : 'off'}" data-type="EDIT" data-toggle="auth-switch"></span>
+                                        </li>
+                                        <li class="nav-item medium-h4 _remove"
+                                        role="presentation">
+                                        ${i !== 0 && result.data.userRole === 'OWNER' ? '<span>&times;</span>' : ''}
+                                        </li>
+                                    </ul>`);
+                    })
+                } else {
+                    alert('오류');
+                    event.preventDefault();
+                }
+            })
+            break;
+        case 'plugin-manage':
+            apiCallMyCorpPlugInfo().then((result) => {
+                if (result.status === 'OK') {
+                    console.log(result.data);
+                    let list = $target_tab.find('._plugin-list');
+                    list.children('._plugin-list-container').remove();
+                    let d_list = result.data.plugins;
+                    d_list.forEach((e, i) => {
+                        let targetDiv = `<div class="_plugin-list-container col-12 px-0">
+                                    <div class="_plugin-manage-container media">
+                                        <div class="_plugin-manage-info media">
+                                            <img src="../../resources/assets/images/sample/plugin-sample-1.png"
+                                                 width="48" height="48"
+                                                 class="align-self-start mr-20" alt>
+                                            <div class="_media-title media-body d-block">
+                                                <h5 class="medium-h6 mb-8">${e.title}</h5>
+                                                <p class="_desc regular-h6 c-gray-medium text-ellipsis">${e.desc}</p>
+                                            </div>
+                                        </div>
+                                        <div class="_plugin-manage-button hidden">
+                                            <span class="_arrow-down"></span>
+                                        </div>
+                                    </div>
+                                    <div class="_plugin-manage-child collapse">
+                                        <ul class="nav nav-tabs mb-12 mt-12"
+                                            role="tablist">
+                                            <li class="nav-item medium-h6 _name"
+                                                role="presentation">
+                                                이름
+                                            </li>
+                                            <li class="nav-item medium-h6 _email"
+                                                role="menuitem">
+                                                이메일
+                                            </li>
+                                            <li class="nav-item medium-h6 _role"
+                                                role="presentation">
+                                                역할
+                                            </li>
+                                            <li class="nav-item medium-h6 _read"
+                                                role="presentation">
+                                                읽기
+                                            </li>
+                                            <li class="nav-item medium-h6 _edit"
+                                                role="presentation">
+                                                수정
+                                            </li>
+                                            <li class="nav-item medium-h6 _remove"
+                                                role="presentation">
+                                                제거
+                                            </li>
+                                        </ul>
+                                        <div class="_cover-line _bottom"></div>
+                                        <div class="_item-group">`;
+                        e.teammates.forEach((te, ti) => {
+                            targetDiv = targetDiv + `<ul class="nav nav-tabs _items"
+                                                role="tablist" data-plugin="${e.type}" data-type="PLUG" data-user-no="${te.user_no}" data-user-role="${te.role.keyword}" data-user-email="${te.email}">
+                                                <li class="nav-item light-h6 _name"
+                                                    role="presentation">
+                                                    ${te.name}
+                                                </li>
+                                                <li class="nav-item light-h6 _email"
+                                                    role="menuitem">
+                                                    <span title="${te.email}">${te.email}</span>
+                                                </li>
+                                                <li class="nav-item light-h6 _role"
+                                                    role="presentation">
+                                                    ${te.role.keyword}
+                                                </li>
+                                                <li class="nav-item light-h6 _read"
+                                                    role="presentation">
+                                                    <span class="_check ${te.read_auth ? 'on' : 'off'}" data-type="READ" data-toggle="auth-switch"></span>
+                                                </li>
+                                                <li class="nav-item light-h6 _edit"
+                                                    role="presentation">
+                                                    <span class="_check ${te.edit_auth ? 'on' : 'off'}" data-type="EDIT" data-toggle="auth-switch"></span>
+                                                </li>
+                                                <li class="nav-item medium-h4 _remove"
+                                                    role="presentation">
+                                                    ${result.data.userRole.keyword === '관리자' ? '<span>&times;</span>' : ''}
+                                                </li>
+                                            </ul>`;
+                        })
+                        targetDiv = targetDiv + `</div>
+                                        <div class="_control-panel">
+                                            <h5 class="_setting medium-h6">환경 설정</h5>
+                                            <h5 class="_add-new medium-h6 c-brand-purple">팀원 추가하기 +</h5>
+                                        </div>
+                                    </div>
+                                    <div class="_plugin-add-member-container d-none">
+                                        <ul class="nav nav-tabs mb-12 mt-12"
+                                            role="tablist">
+                                            <li class="nav-item medium-h6 _name"
+                                                role="presentation">
+                                                이름
+                                            </li>
+                                            <li class="nav-item medium-h6 _email"
+                                                role="menuitem">
+                                                이메일
+                                            </li>
+                                            <li class="nav-item medium-h6 _role"
+                                                role="presentation">
+                                                역할
+                                            </li>
+                                            <li class="nav-item medium-h6 _read"
+                                                role="presentation">
+                                                읽기
+                                            </li>
+                                            <li class="nav-item medium-h6 _edit"
+                                                role="presentation">
+                                                수정
+                                            </li>
+                                            <li class="nav-item medium-h6 _remove"
+                                                role="presentation">
+                                                선택
+                                            </li>
+                                        </ul>
+                                        <div class="_cover-line _bottom"></div>
+                                        <div class="_item-group">
+                                        </div>
+                                    </div>
+                                </div>
+                                            `;
+                        list.append(targetDiv);
+                    })
+                } else {
+                    alert('오류');
+                    event.preventDefault();
+                }
+            })
+            break;
+        default:
+            alert('nope');
+    }
+})
+
+function setMyInfoModalData(data) {
+    $('[data-update="name"]').html(data.name);
+    $('#profileImg').attr('src', data.profile_img.url);
+    $('[data-update="email"]').html(data.email);
+    $('[data-update="phone"]').html(data.phone);
+    let agreeTarget;
+    if (data.marketing_agree) {
+        agreeTarget = $('#agree-checkbox');
+        if (!agreeTarget.is(':checked')) {
+            agreeTarget.prop('checked', true);
+            $('#disagree-checkbox').prop('checked', false);
+        }
+    } else {
+        agreeTarget = $('#disagree-checkbox');
+        if (!agreeTarget.is(':checked')) {
+            agreeTarget.prop('checked', true);
+            $('#agree-checkbox').prop('checked', false);
+        }
+    }
+}
 
 /**
  * Setting modal myInfo Listener
@@ -392,8 +619,9 @@ $('#phone-change-input').on('input', function () {
 /**
  * Setting modal teammate info check button
  * **/
-$('.nav-item ._check').on('click', function () {
+$('.check-button-content').on('click', '._check[data-toggle=auth-switch]',function () {
     // TODO FETCH status change
+    console.log($(this))
     if ($(this).hasClass('on')) {
         $(this).removeClass('on');
         $(this).addClass('off');
@@ -437,7 +665,7 @@ $('.nav-item ._check').on('click', function () {
     }
 });
 
-$('.nav-item._remove span').on('click', function () {
+$('._item-group').on('click', '.nav-item._remove span', function () {
     // TODO FETCH remove teammate
     let info = this.closest('._items').dataset;
     if (info.type === 'TEAM') {
@@ -471,8 +699,7 @@ $('.nav-item._remove span').on('click', function () {
 });
 
 
-$('._plugin-manage-button').on('click', function (e) {
-    console.log('arrow clicked');
+$('._plugin-list').on('click', '._plugin-manage-button', function (e) {
     // TODO CLOSED -> hidden  로 변경
     if (!$(this).hasClass('closed') && $(this).parent().next().hasClass('show') && !$(this).hasClass('blocked')) {
         $(this).addClass('closed');
@@ -482,7 +709,7 @@ $('._plugin-manage-button').on('click', function (e) {
     }
 });
 
-$('._plugin-list ._plugin-manage-container').on('click', function () {
+$('._plugin-list').on('click', '._plugin-manage-container', function () {
     if (!$(this).hasClass('open') && $(this).next().hasClass('collapse')) {
         $(this).addClass('open');
         let $button = $(this).find('._plugin-manage-button');
@@ -496,11 +723,11 @@ $('._plugin-list ._plugin-manage-container').on('click', function () {
     }
 });
 
-$('._control-panel ._setting').on('click', function () {
+$('._plugin-list').on('click', '._control-panel ._setting', function () {
     alert('환경설정으로 이동');
 })
 
-$('._control-panel ._add-new').on('click', function () {
+$('._plugin-list').on('click', '._control-panel ._add-new', function () {
     let thisTab = $(this).parent().parent().parent();
     let listDiv = $('._plugin-list');
     let containerList = listDiv.find('._plugin-list-container');
@@ -635,6 +862,7 @@ $(document).ready(function () {
                         $('#corporation-type-modal').modal('show');
                     } else {
                         // 로그인 완료
+                        window.location.reload();
                     }
                     $('#login-modal').modal('hide');
                 } else {

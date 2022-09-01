@@ -51,4 +51,8 @@ public class UserDao {
     public void changeUserMarketingAgree(int userNo, boolean marketingAgree) {
         mapper.changeUserMarketingAgree(userNo, marketingAgree);
     }
+
+    public User getModalMyInfo(int userNo) {
+        return mapper.getModalMyInfo(userNo);
+    }
 }

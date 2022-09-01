@@ -641,7 +641,7 @@
                     <li class="nav-item"
                         role="presentation">
                         <button class="nav-link p-8 pt-0 pb-0 active"
-                                id=""
+                                id="myInfo-tab"
                                 data-toggle="tab"
                                 data-target="#myInfo"
                                 type="button"
@@ -769,7 +769,7 @@
                          role="tabpanel"
                          aria-labelledby="teammates-tab">
                         <!-- TODO 글 길이 길어질 때 Ellipsis -->
-                        <div class="tab-content">
+                        <div class="tab-content check-button-content">
                             <div class="_corp-title row mb-40">
                                 <div class="col-12">
                                     <h5 class="medium-h3 c-gray-dark-low mb-12">팀원 정보 및 권한 설정</h5>
@@ -912,7 +912,7 @@
                          id="plugin-manage"
                          role="tabpanel"
                          aria-labelledby="plugin-manage-tab">
-                        <div class="tab-content full-width-tab position-relative">
+                        <div class="tab-content full-width-tab position-relative check-button-content">
                             <div class="_plugin-manage-title row mb-40">
                                 <div class="col-12">
                                     <h5 class="medium-h3 mb-12">플러그인 및 권한 설정</h5>
@@ -1098,7 +1098,7 @@
                                                 </li>
                                                 <li class="nav-item light-h6 _read"
                                                     role="presentation">
-                                                    <span class="_check on" data-type="EDIT"></span>
+                                                    <span class="_check on" data-type="READ"></span>
                                                 </li>
                                                 <li class="nav-item light-h6 _edit"
                                                     role="presentation">

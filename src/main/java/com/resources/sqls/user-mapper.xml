@@ -3,6 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.UserMapper">
+    <resultMap id="User" type="com.model.User">
+        <result column="profile_img" property="profile_img" javaType="com.model.common.MFile" typeHandler="com.middleware.JsonObjectTypeHandler"/>
+    </resultMap>
     <select id="checkUserExists" resultType="_boolean">
         select EXISTS(select * from user WHERE email = #{email} OR phone = #{phone})
     </select>
@@ -45,8 +48,13 @@
     </update>
     <update id="changeUserMarketingAgree">
         update user
-        SET marketing_agree = #{marketingAgree},
+        SET marketing_agree      = #{marketingAgree},
             marketing_agree_date = IF(#{marketingAgree} = false, null, NOW())
         WHERE no = #{userNo}
     </update>
+    <select id="getModalMyInfo" resultType="User" resultMap="User">
+        select *
+        from user
+        WHERE no = #{userNo}
+    </select>
 </mapper>
