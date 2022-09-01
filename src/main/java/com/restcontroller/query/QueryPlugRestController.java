@@ -9,6 +9,7 @@ import com.model.queue.Token;
 import com.response.DefaultRes;
 import com.response.Message;
 import com.service.query.QueryPlugService;
+import com.util.Encryption.EncryptionService;
 import com.util.TokenGenerator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +28,7 @@ import java.util.Objects;
 @RequestMapping("/query")
 public class QueryPlugRestController {
     private final QueryPlugService queryPlugService;
+    private final EncryptionService encryptionService;
 
     /**
      * var requestOptions = {
@@ -39,9 +42,9 @@ public class QueryPlugRestController {
      * .catch(error => console.log('error', error));
      */
     @RequestMapping(value = "/get/{database_no}/tables", method = RequestMethod.GET)
-    public ResponseEntity<String> getTables(@PathVariable("database_no") int database_no) {
+    public ResponseEntity<String> getTables(@PathVariable("database_no") String database_hash) throws Exception {
         Message message = new Message();
-
+        int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         DataBase dataBase = queryPlugService.getDataBase(database_no);
         List<Table> tables = dataBase.getTables();
         message.put("tables", tables);
@@ -96,7 +99,8 @@ public class QueryPlugRestController {
      * .catch(error => console.log('error', error));
      */
     @RequestMapping(value = "/create/{database_no}/table", method = RequestMethod.POST)
-    public ResponseEntity<String> createTable(@PathVariable("database_no") int database_no, @RequestBody Table table) {
+    public ResponseEntity<String> createTable(@PathVariable("database_no") String database_hash, @RequestBody Table table) throws Exception {
+        int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.createTable(database_no, table);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
@@ -128,8 +132,9 @@ public class QueryPlugRestController {
      * .catch(error => console.log('error', error));
      */
     @RequestMapping(value = "/create/{database_no}/table/{table_id}/row", method = RequestMethod.POST)
-    public ResponseEntity<String> createTableRow(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id, @RequestBody Column column) {
+    public ResponseEntity<String> createTableRow(@PathVariable("database_no") String database_hash, @PathVariable("table_id") String table_id, @RequestBody Column column) throws Exception {
         log.info(column.toString());
+        int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.createTableRow(database_no, table_id, column);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
@@ -159,7 +164,8 @@ public class QueryPlugRestController {
      * .catch(error => console.log('error', error));
      */
     @RequestMapping(value = "/update/{database_no}/table/{table_id}", method = RequestMethod.POST)
-    public ResponseEntity<String> updateTableName(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id, @RequestBody Table table) {
+    public ResponseEntity<String> updateTableName(@PathVariable("database_no") String database_hash, @PathVariable("table_id") String table_id, @RequestBody Table table) throws Exception {
+        int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.updateTableName(database_no, table_id, table);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
@@ -191,8 +197,9 @@ public class QueryPlugRestController {
      * .catch(error => console.log('error', error));
      */
     @RequestMapping(value = "/update/{database_no}/table/{table_id}/row", method = RequestMethod.POST)
-    public ResponseEntity<String> updateTableRow(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id, @RequestBody Column column) {
+    public ResponseEntity<String> updateTableRow(@PathVariable("database_no") String database_hash, @PathVariable("table_id") String table_id, @RequestBody Column column) throws Exception {
         log.info(column.toString());
+        int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.updateTableRow(database_no, table_id, column);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
@@ -221,8 +228,9 @@ public class QueryPlugRestController {
      * .catch(error => console.log('error', error));
      */
     @RequestMapping(value = "/update/{database_no}/table/{table_id}/position", method = RequestMethod.POST)
-    public ResponseEntity<String> updateTablePosition(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id, @RequestBody Position position) {
+    public ResponseEntity<String> updateTablePosition(@PathVariable("database_no") String database_hash, @PathVariable("table_id") String table_id, @RequestBody Position position) throws Exception {
         log.info(position.toString());
+        int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.updateTablePosition(database_no, table_id, position);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
@@ -268,8 +276,9 @@ public class QueryPlugRestController {
      * .catch(error => console.log('error', error));
      */
     @RequestMapping(value = "/update/{database_no}/table/positions", method = RequestMethod.POST)
-    public ResponseEntity<String> updateTablesPosition(@PathVariable("database_no") int database_no, @RequestBody ArrayList<Table> tables) {
+    public ResponseEntity<String> updateTablesPosition(@PathVariable("database_no") String database_hash, @RequestBody ArrayList<Table> tables) throws Exception {
         log.info(tables.toString());
+        int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
@@ -313,8 +322,9 @@ public class QueryPlugRestController {
      * .catch(error => console.log('error', error));
      */
     @RequestMapping(value = "/update/{database_no}/table/{table_id}/rows", method = RequestMethod.POST)
-    public ResponseEntity<String> updateTableRowsOrder(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id, @RequestBody ArrayList<Column> columns) {
+    public ResponseEntity<String> updateTableRowsOrder(@PathVariable("database_no") String database_hash, @PathVariable("table_id") String table_id, @RequestBody ArrayList<Column> columns) throws Exception {
         log.info(columns.toString());
+        int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.updateTableRowsOrder(database_no, table_id, columns);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
@@ -335,7 +345,8 @@ public class QueryPlugRestController {
      * .catch(error => console.log('error', error));
      */
     @RequestMapping(value = "/delete/{database_no}/table/{table_id}", method = RequestMethod.POST)
-    public ResponseEntity<String> deleteTable(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id) {
+    public ResponseEntity<String> deleteTable(@PathVariable("database_no") String database_hash, @PathVariable("table_id") String table_id) throws Exception {
+        int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.deleteTable(database_no, table_id);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
@@ -356,7 +367,8 @@ public class QueryPlugRestController {
      * .catch(error => console.log('error', error));
      */
     @RequestMapping(value = "/delete/{database_no}/table/{table_id}/row/{row_id}", method = RequestMethod.POST)
-    public ResponseEntity<String> deleteTableRow(@PathVariable("database_no") int database_no, @PathVariable("table_id") String table_id, @PathVariable("row_id") String row_id) {
+    public ResponseEntity<String> deleteTableRow(@PathVariable("database_no") String database_hash, @PathVariable("table_id") String table_id, @PathVariable("row_id") String row_id) throws Exception {
+        int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.deleteTableRow(database_no, table_id, row_id);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
@@ -386,7 +398,8 @@ public class QueryPlugRestController {
      * .catch(error => console.log('error', error));
      */
     @RequestMapping(value = "/create/{database_no}/line", method = RequestMethod.POST)
-    public ResponseEntity<String> connectLine(@PathVariable("database_no") int database_no, @RequestBody Line line) {
+    public ResponseEntity<String> connectLine(@PathVariable("database_no") String database_hash, @RequestBody Line line) throws Exception {
+        int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.connectLine(database_no, line);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
@@ -424,15 +437,17 @@ public class QueryPlugRestController {
      * .catch(error => console.log('error', error));
      */
     @RequestMapping(value = "/delete/{database_no}/lines", method = RequestMethod.POST)
-    public ResponseEntity<String> disconnectLine(@PathVariable("database_no") int database_no, @RequestBody ArrayList<Line> lines) {
+    public ResponseEntity<String> disconnectLine(@PathVariable("database_no") String database_hash, @RequestBody ArrayList<Line> lines) throws Exception {
         log.info(lines.toString());
+        int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.disconnectLine(database_no, lines);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/create/{database_no}/{type}/next/id", method = RequestMethod.POST)
-    public ResponseEntity<String> createNextId(@PathVariable("database_no") int database_no, @PathVariable("type") String type) {
+    public ResponseEntity<String> createNextId(@PathVariable("database_no") String database_hash, @PathVariable("type") String type) throws Exception {
+        int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         String token = null;
         do {
             if (type.equals("table")) {
@@ -443,6 +458,34 @@ public class QueryPlugRestController {
         } while (!queryPlugService.checkTokenValid(database_no, token));
         Message message = new Message();
         message.put("id", token);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/get/databases", method = RequestMethod.GET)
+    public ResponseEntity<String> getDatabases(HttpServletRequest request) {
+        int company_no = 2; //company_no session을 통해서 얻어온다.
+        ArrayList<DataBase> dataBases = queryPlugService.getDatabases(company_no);
+        dataBases.forEach(dataBase -> {
+            try {
+                dataBase.setHash_no(encryptionService.encryptAES(Integer.toString(dataBase.getNo()), true));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        Message message = new Message();
+        message.put("databases", dataBases);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/create/databases", method = RequestMethod.POST)
+    public ResponseEntity<String> createDatabase(HttpServletRequest request, @RequestBody DataBase dataBase) throws Exception {
+        int company_no = 2; //company_no session을 통해서 얻어온다.
+        dataBase.setCompany_no(company_no);
+        int status = queryPlugService.createDataBase(dataBase);
+        Message message = new Message();
+        dataBase.setHash_no(encryptionService.encryptAES(Integer.toString(dataBase.getNo()), true));
+        message.put("status", status);
+        message.put("database", dataBase);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 }

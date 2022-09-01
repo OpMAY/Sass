@@ -35,7 +35,7 @@ public class Table {
         this.id = token;
         this.database_no = database_no;
         this.name = token;
-        this.position = new Position().samplePosition();
+        this.position = new Position().InitializePosition();
         ArrayList<Column> columns = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             columns.add(new Column().sampleColumn(this.id));

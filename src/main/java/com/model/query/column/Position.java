@@ -8,6 +8,12 @@ public class Position {
     private int top;
     private int left;
 
+    public Position InitializePosition() {
+        this.top = 150;
+        this.left = 400;
+        return this;
+    }
+
     public Position samplePosition() {
         this.top = TokenGenerator.RandomInteger(1000) + 150;
         this.left = TokenGenerator.RandomInteger(5000) + 400;

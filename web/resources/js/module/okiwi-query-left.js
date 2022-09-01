@@ -1,5 +1,64 @@
 'use strict';
 
+let search_check = false;
+let search_value;
+let search_tables;
+let search_table_idx = -1;
+const initializeLeftSearch = (selector) => {
+    let input = document.querySelector(selector);
+    let search_icon = input.parentElement.querySelector('p');
+    input.addEventListener('keypress', function (event) {
+        // 엔터키가 눌렸을 때
+        if (event.keyCode == 13) {
+            let value = this.value;
+            // find table
+            if (!search_check) {
+                search_value = value;
+                search_check = true;
+                search_tables = searchTableByName(draggable_tables, value);
+            }
+            if (search_tables !== undefined && search_tables !== null && search_tables.length !== 0) {
+                console.log(search_tables);
+                search_table_idx = search_table_idx + 1 > search_tables.length - 1 ? 0 : search_table_idx + 1;
+                if (search_tables[search_table_idx].type === 'column') {
+                    console.log(search_tables[search_table_idx]);
+                    tableRowMoveScroll(search_tables[search_table_idx].table_id, search_tables[search_table_idx].id);
+                } else {
+                    tableMoveScroll(search_tables[search_table_idx].id, 0, 500);
+                }
+            }
+            //tableRowMoveScroll(table_id, table_row_id);
+            //tableMoveScroll(table_id);
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    });
+    input.addEventListener('keypress', function (event) {
+        // 엔터키가 눌렸을 때
+        search_check = false;
+        search_value = undefined;
+        search_tables = undefined;
+    });
+    search_icon.addEventListener('click', function (event) {
+        let value = input.value;
+        // find table
+    });
+}
+
+const searchTableByName = (draggable_tables, value) => {
+    let tables = findTableByName(draggable_tables, value);
+    tables.forEach(function (table) {
+        table.type = 'table';
+    });
+    tables.addAll(searchTableRowByName(draggable_tables, value));
+    return tables;
+}
+
+const searchTableRowByName = (draggable_tables, value) => {
+    let table_rows = findTableRowByName(draggable_tables, value);
+    return table_rows;
+}
+
 /**
  * InitializeTableList,
  * 테이블들의 데이터를 가지고 실제 리스트 테이블을 생성하는 함수
@@ -328,7 +387,7 @@ function updateTableName(option) {
 function createTableListColumn(option) {
     const list_table = option.closest('.table-list-component');
     const list_container = list_table.querySelector('.card-body .list-group');
-    const row_id = apiCreateNextId(getParameter('no'), 'ROW');
+    const row_id = apiCreateNextId(getURLParamByPrevAndNext('database', 'detail'), 'ROW');
     const column = {
         id: row_id,
         name: row_id,
@@ -367,8 +426,8 @@ function createTableListColumn(option) {
  * */
 const createTableList = (selector, writable = undefined) => {
     const list_container = document.querySelector(selector);
-    let table_id = apiCreateNextId(getParameter('no'), 'TABLE');
-    let row_id = apiCreateNextId(getParameter('no'), 'ROW');
+    let table_id = apiCreateNextId(getURLParamByPrevAndNext('database', 'detail'), 'TABLE');
+    let row_id = apiCreateNextId(getURLParamByPrevAndNext('database', 'detail'), 'ROW');
     const table = {
         id: table_id,
         name: table_id,
@@ -459,7 +518,7 @@ function inputTableListChangeConnectable(input) {
     }
     table_row.name = input.value;
     column_name_input_timer = setTimeout(function () {
-        apiUpdateTableRow(getParameter('no'), table_row_element.dataset.tableId, table_row, () => {
+        apiUpdateTableRow(getURLParamByPrevAndNext('database', 'detail'), table_row_element.dataset.tableId, table_row, () => {
         }, () => {
         });
     }, 500);

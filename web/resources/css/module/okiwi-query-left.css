@@ -22,6 +22,10 @@
     line-height: var(--line-20);
     font-weight: bold;
     width: 100%;
+    max-width: 207px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .table-list-component ._header ._title > input {
@@ -77,6 +81,7 @@
     font-size: var(--font-12);
     font-weight: 500;
     line-height: var(--line-16);
+    min-height: 16px;
 }
 
 .table-list-component .card-body .list-group li[data-table-row]:hover ._delete {

@@ -2,143 +2,144 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
-        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
-        crossorigin="anonymous">
-  <!-- Base -->
-  <link rel="stylesheet" href="../../../resources/css/base/reset.css">
-  <link rel="stylesheet" href="../../../resources/css/base/default.css">
-  <link rel="stylesheet" href="../../../resources/css/base/common.css">
-  <!-- Theme -->
-  <link rel="stylesheet" href="../../../resources/css/theme/theme.css">
-  <link rel="stylesheet" href="../../../resources/css/theme/query/theme.css">
-  <!-- Layout -->
-  <link rel="stylesheet" href="../../../resources/css/layout/layout.css">
-  <link rel="stylesheet" href="../../../resources/css/layout/res-layout.css">
-  <link rel="stylesheet" href="../../../resources/css/layout/query/layout.css">
-  <!-- Plugin -->
-  <link rel="stylesheet" href="../../../resources/css/plugin/sample.css">
-  <!-- State -->
-  <link rel="stylesheet" href="../../../resources/css/state/state.css">
-  <link rel="stylesheet" href="../../../resources/css/state/res-state.css">
-  <link rel="stylesheet" href="../../../resources/css/state/query/state.css">
-  <!-- Module -->
-  <link rel="stylesheet" href="../../../resources/css/module/module.css">
-  <link rel="stylesheet" href="../../../resources/css/module/res-module.css">
-  <!-- Element -->
-  <link rel="stylesheet" href="../../../resources/css/base/element.css">
-  <link rel="stylesheet" href="../../../resources/css/base/query/element.css">
-  <link rel="stylesheet" href="../../../resources/css/module/modal.css">
-  <title>Okiwi Query Workspace - Create</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+          integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+          crossorigin="anonymous">
+    <!-- Base -->
+    <link rel="stylesheet" href="../../../resources/css/base/reset.css">
+    <link rel="stylesheet" href="../../../resources/css/base/default.css">
+    <link rel="stylesheet" href="../../../resources/css/base/common.css">
+    <!-- Theme -->
+    <link rel="stylesheet" href="../../../resources/css/theme/theme.css">
+    <link rel="stylesheet" href="../../../resources/css/theme/query/theme.css">
+    <!-- Layout -->
+    <link rel="stylesheet" href="../../../resources/css/layout/layout.css">
+    <link rel="stylesheet" href="../../../resources/css/layout/res-layout.css">
+    <link rel="stylesheet" href="../../../resources/css/layout/query/layout.css">
+    <!-- Plugin -->
+    <link rel="stylesheet" href="../../../resources/css/plugin/sample.css">
+    <!-- State -->
+    <link rel="stylesheet" href="../../../resources/css/state/state.css">
+    <link rel="stylesheet" href="../../../resources/css/state/res-state.css">
+    <link rel="stylesheet" href="../../../resources/css/state/query/state.css">
+    <!-- Module -->
+    <link rel="stylesheet" href="../../../resources/css/module/module.css">
+    <link rel="stylesheet" href="../../../resources/css/module/res-module.css">
+    <!-- Element -->
+    <link rel="stylesheet" href="../../../resources/css/base/element.css">
+    <link rel="stylesheet" href="../../../resources/css/base/query/element.css">
+    <link rel="stylesheet" href="../../../resources/css/module/modal.css">
+    <title>Okiwi Query Workspace - Create</title>
 </head>
 <body>
 <jsp:include page="common/header.jsp"/>
 <jsp:include page="../common/plugin-left-sidebar.jsp"/>
 <div id="l-content-wrapper">
-  <div class="content-wrapper">
-    <div class="container pt-100 pb-100">
-      <div class="row">
-        <div class="col-12 mb-24">
-          <div class="d-flex">
-            <img class="my-auto mr-16" src="../../../resources/assets/images/icon/query/icon-clap.png"/>
-            <div class="my-auto bold-h3 c-gray-dark-low">
-              데이터베이스 만들기
-            </div>
-          </div>
-        </div>
-        <div class="col-12">
-          <div class="callout regular-h5 bg-basic-white c-gray-dark-low p-24">
-            데이터베이스를 구축하기 위해 기본 설정 정보를 입력해주세요.
-          </div>
-        </div>
-        <div class="col-12 mt-48 mb-48">
-          <div class="divider"></div>
-        </div>
-        <div class="col-3">
-          <div class="bold-h3 c-gray-dark-low mb-24">
-            데이터베이스
-          </div>
-          <input type="text"
-                 placeholder="데이터베이스"
-                 class="form-control form-general outline-gray-high-medium regular-h5 p-16">
-        </div>
-        <div class="col-8 mb-64">
-          <div class="bold-h3 c-gray-dark-low mb-24">
-            간단 설명
-          </div>
-          <input type="text"
-                 placeholder="간단 설명"
-                 class="form-control form-general outline-gray-high-medium regular-h5 p-16">
-        </div>
-        <div class="col-12 database-type-container mb-64">
-          <div class="c-gray-dark-low bold-h3 mb-24">
-            데이터베이스 타입
-          </div>
-          <div class="row row-cols-4 database-type-item-container">
-            <div class="col mb-32">
-              <div class="database-type-item">
-                <div class="_image background-image"
-                     style="background-image: url('../../../resources/assets/images/icon/query/database-oracle.png')"></div>
-                <div class="_name medium-h4 c-gray-dark-low">
-                  ORACLE
+    <div class="content-wrapper">
+        <div class="container pt-100 pb-100">
+            <div class="row">
+                <div class="col-12 mb-24">
+                    <div class="d-flex">
+                        <img class="my-auto mr-16" src="../../../resources/assets/images/icon/query/icon-clap.png"/>
+                        <div class="my-auto bold-h3 c-gray-dark-low">
+                            데이터베이스 만들기
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-            <div class="col mb-32">
-              <div class="database-type-item">
-                <div class="_image background-image"
-                     style="background-image: url('../../../resources/assets/images/icon/query/database-mysql.png')"></div>
-                <div class="_name medium-h4 c-gray-dark-low">
-                  MySQL
+                <div class="col-12">
+                    <div class="callout regular-h5 bg-basic-white c-gray-dark-low p-24">
+                        데이터베이스를 구축하기 위해 기본 설정 정보를 입력해주세요.
+                    </div>
                 </div>
-              </div>
-            </div>
-            <div class="col mb-32">
-              <div class="database-type-item">
-                <div class="_image background-image"
-                     style="background-image: url('../../../resources/assets/images/icon/query/database-mssql.png')"></div>
-                <div class="_name medium-h4 c-gray-dark-low">
-                  MSSQL
+                <div class="col-12 mt-48 mb-48">
+                    <div class="divider"></div>
                 </div>
-              </div>
-            </div>
-            <div class="col mb-32">
-              <div class="database-type-item">
-                <div class="_image background-image"
-                     style="background-image: url('../../../resources/assets/images/icon/query/database-maria.png')"></div>
-                <div class="_name medium-h4 c-gray-dark-low">
-                  MariaDB
+                <div class="col-3">
+                    <div class="bold-h3 c-gray-dark-low mb-24">
+                        데이터베이스
+                    </div>
+                    <input type="text"
+                           placeholder="데이터베이스" name="name"
+                           class="form-control form-general outline-gray-high-medium regular-h5 p-16">
                 </div>
-              </div>
-            </div>
-            <div class="col mb-32">
-              <div class="database-type-item">
-                <div class="_image background-image"
-                     style="background-image: url('../../../resources/assets/images/icon/query/database-postgre.png')"></div>
-                <div class="_name medium-h4 c-gray-dark-low">
-                  PostgreSQL
+                <div class="col-8 mb-64">
+                    <div class="bold-h3 c-gray-dark-low mb-24">
+                        간단 설명
+                    </div>
+                    <input type="text"
+                           placeholder="간단 설명" name="description"
+                           class="form-control form-general outline-gray-high-medium regular-h5 p-16">
                 </div>
-              </div>
+                <div class="col-12 database-type-container mb-64">
+                    <div class="c-gray-dark-low bold-h3 mb-24">
+                        데이터베이스 타입
+                    </div>
+                    <div class="row row-cols-4 database-type-item-container">
+                        <div class="col mb-32">
+                            <div class="database-type-item" data-type="ORACLE">
+                                <div class="_image background-image"
+                                     style="background-image: url('../../../resources/assets/images/icon/query/database-oracle.png')"></div>
+                                <div class="_name medium-h4 c-gray-dark-low">
+                                    ORACLE
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col mb-32">
+                            <div class="database-type-item" data-type="MYSQL">
+                                <div class="_image background-image"
+                                     style="background-image: url('../../../resources/assets/images/icon/query/database-mysql.png')"></div>
+                                <div class="_name medium-h4 c-gray-dark-low">
+                                    MySQL
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col mb-32">
+                            <div class="database-type-item" data-type="MSSQL">
+                                <div class="_image background-image"
+                                     style="background-image: url('../../../resources/assets/images/icon/query/database-mssql.png')"></div>
+                                <div class="_name medium-h4 c-gray-dark-low">
+                                    MSSQL
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col mb-32">
+                            <div class="database-type-item" data-type="MARIA_DB">
+                                <div class="_image background-image"
+                                     style="background-image: url('../../../resources/assets/images/icon/query/database-maria.png')"></div>
+                                <div class="_name medium-h4 c-gray-dark-low">
+                                    MariaDB
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col mb-32">
+                            <div class="database-type-item" data-type="POSTGRE_SQL">
+                                <div class="_image background-image"
+                                     style="background-image: url('../../../resources/assets/images/icon/query/database-postgre.png')"></div>
+                                <div class="_name medium-h4 c-gray-dark-low">
+                                    PostgreSQL
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 create-button-container">
+                    <button class="btn btn-outline-gray-high-medium c-gray-dark-low">
+                        취소
+                    </button>
+                    <button type="button" data-action="database-create"
+                            class="btn btn-brand c-gray-dark-low">
+                        데이터베이스 생성
+                    </button>
+                </div>
             </div>
-          </div>
         </div>
-        <div class="col-12 create-button-container">
-          <button class="btn btn-outline-gray-high-medium c-gray-dark-low">
-            취소
-          </button>
-          <button type="button" onclick="location.href='database-detail.html'" class="btn btn-brand c-gray-dark-low">
-            데이터베이스 생성
-          </button>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
 <!-- Optional JavaScript; choose one of the two! -->
 
@@ -197,11 +198,22 @@
             });
             target.classList.add('is-active');
         });
+        $('[data-action="database-create"]').click(function (e) {
+            apiCreateDatabase().then((result) => {
+                console.log(result);
+                if (result.status === 'OK') {
+                    alert('데이터베이스 생성 완료');
+                    location.href = '/query/database/' + result.data.database.hash_no + '/detail';
+                } else {
+
+                }
+            });
+        });
     });
 
     $('.create-button-container button:first-child').on('click', function () {
-      history.back();
-    })
+        location.href = '/query/workspace';
+    });
 </script>
 </body>
 </html>

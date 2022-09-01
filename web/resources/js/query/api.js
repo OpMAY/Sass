@@ -332,3 +332,52 @@ function apiCreateNextId(database_no, type) {
     });
     return result;
 }
+
+async function apiGetDatabases() {
+    function apiFetchGetDatabases() {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+        const response = fetch(`${host}/query/get/databases`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchGetDatabases();
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function apiCreateDatabase() {
+    function apiFetchCreateDatabase() {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+        let database = {
+            name: $('[name="name"]').val(),
+            description: $('[name="description"]').val(),
+            database_type: $('.database-type-item-container .database-type-item.is-active[data-type]').data().type
+        }
+        let raw = JSON.stringify(database);
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+        };
+        const response = fetch(`${host}/query/create/databases`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchCreateDatabase();
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}

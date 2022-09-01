@@ -4,6 +4,7 @@ $(document).ready(function () {
 });
 
 const createPluginElement = (plugin) => {
+    console.log(plugin);
     let button = document.createElement('button');
     button.classList.add('btn', 'btn-sm', 'btn-gray-dark-low');
     if (plugin.install) {
@@ -13,9 +14,9 @@ const createPluginElement = (plugin) => {
         button.textContent = '설치하기';
     }
 
-    return `<div class="media plugin-item p-16">
-                    <img width="82" height="82" src="${plugin.profile_image.url}" alt="" data-href="/desc/query" class="align-self-start mr-20">
-                    <div class="media-body" data-href="/desc/query">
+    return `<div class="media plugin-item p-16" data-plugin-type="${plugin.type}">
+                    <img width="82" height="82" src="${plugin.profile_image.url}" class="align-self-start mr-20">
+                    <div class="media-body">
                         <h5 class="bold-h5 mb-8">${plugin.title}</h5>
                         <p class="_desc light-h5 c-gray-medium">${plugin.desc}</p>
                     </div>

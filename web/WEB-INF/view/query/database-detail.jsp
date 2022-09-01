@@ -1,4 +1,9 @@
+<%@ page import="com.model.query.DataBase" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    DataBase dataBase = (DataBase) request.getAttribute("database");
+    request.setAttribute("database", dataBase);
+%>
 <!doctype html>
 <html lang="en">
 <head>
@@ -95,16 +100,13 @@
             <div class="row mx-0">
                 <div class="col-12 pl-16 pr-16">
                     <div class="d-flex _title">
-                        <div class="_name medium-h3">
-                            Sustable
-                        </div>
-                        <div class="_version regular-h6 ml-8 mt-auto">
-                            0.0.2
+                        <div class="_name medium-h3 ellipsis-double-line pr-16">
+                            ${database.name}
                         </div>
                     </div>
-                    <div class="d-flex _database mt-1">
+                    <div class="d-flex _database mt-2">
                         <div class="_type c-brand-orange">
-                            MySQL
+                            ${database.database_type.name()}
                         </div>
                     </div>
                     <div class="d-flex _search mt-16 mb-16">
@@ -776,7 +778,7 @@
         initializeTableOptions('#table-option-list');
         initializeGuideLines(guide_line, 600, 600, 20);
         // apis.js
-        let get_tables = apiGetTables(getParameter('no'));
+        let get_tables = apiGetTables(getURLParamByPrevAndNext('database', 'detail'));
         let tables = get_tables.tables;
         let lines = get_tables.lines;
         /**
@@ -827,8 +829,8 @@
             draggable_tables.forEach(function (table) {
                 table_elems.push(table.draggable_table.element);
             });
-            let table_id = apiCreateNextId(getParameter('no'), 'TABLE');
-            let row_id = apiCreateNextId(getParameter('no'), 'ROW');
+            let table_id = apiCreateNextId(getURLParamByPrevAndNext('database', 'detail'), 'TABLE');
+            let row_id = apiCreateNextId(getURLParamByPrevAndNext('database', 'detail'), 'ROW');
             let table = {
                 id: table_id,
                 name: table_id,
@@ -909,6 +911,7 @@
         tableRowContextMenuInitialize();
 
         /** Initialize Left Side (okiwi-query-left.js)*/
+        initializeLeftSearch('#right-sidebar ._right-menu ._info-container input[name="search"]');
         initializeTableList('#list-tables', draggable_tables);
 
         /** Ctrl + Mouse Drag Event Listener Initialize */

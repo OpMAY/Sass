@@ -8,6 +8,7 @@ import com.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,10 +27,10 @@ public class GlobalController {
         return new ModelAndView("home");
     }
 
-    @RequestMapping(value = "/desc/query", method = RequestMethod.GET)
-    public ModelAndView QueryPlugDesc(HttpServletRequest request) {
+    @RequestMapping(value = "/plugin/{type}/detail", method = RequestMethod.GET)
+    public ModelAndView pluginDetail(HttpServletRequest request,@PathVariable("type") PLUGIN_TYPE type) {
         ModelAndView VIEW = new ModelAndView("plugin-detail");
-        Plugin plugin = pluginService.getPlug(PLUGIN_TYPE.QUERY);
+        Plugin plugin = pluginService.getPlug(type);
         VIEW.addObject("plugin", plugin);
         return VIEW;
     }

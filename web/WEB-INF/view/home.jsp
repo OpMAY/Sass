@@ -312,7 +312,7 @@
                 container.querySelectorAll('.plugin-item ._install button').forEach(function (button) {
                     let plugin_item = button.closest('.plugin-item');
                     plugin_item.addEventListener('click', function (e) {
-                        location.href = '/desc/query';
+                        location.href = '/plugin/' + this.dataset.pluginType + '/detail';
                     });
                     button.addEventListener('click', installClickEventListener);
                 });
