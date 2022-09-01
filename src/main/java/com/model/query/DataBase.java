@@ -16,4 +16,5 @@ public class DataBase {
     private String description;
     private String create_date;
     private String update_date;
+    private String hash_no;
 }

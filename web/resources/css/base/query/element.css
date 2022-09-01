@@ -134,6 +134,14 @@ button.btn.btn-outline-gray-high-medium {
     cursor: pointer;
 }
 
+.workspace ._info {
+    padding-right: 15px;
+}
+
+.workspace ._info ._title {
+    width: 215px;
+}
+
 .workspace ._sub-info ._users {
     height: 27px;
     display: flex;

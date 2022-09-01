@@ -11,12 +11,12 @@
         <div class="_left-plugin" data-href="/query/workspace">
             <img width="36"
                  height="36"
-                 src="../../resources/assets/images/icon/query/query-plug-logo.png"/>
+                 src="/resources/assets/images/icon/query/query-plug-logo.png"/>
         </div>
         <div class="_left-plugin">
             <img width="36"
                  height="36"
-                 src="../../resources/assets/images/icon/crm-plug-logo.png"/>
+                 src="/resources/assets/images/icon/crm-plug-logo.png"/>
         </div>
     </div>
 </div>

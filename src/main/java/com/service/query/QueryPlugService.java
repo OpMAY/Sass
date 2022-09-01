@@ -10,7 +10,6 @@ import com.model.query.column.Column;
 import com.model.query.column.Line;
 import com.model.query.column.Position;
 import com.model.query.column.Relation;
-import com.util.TokenGenerator;
 import com.util.query.ERDValidation;
 import com.util.query.QueryMaker;
 import lombok.AllArgsConstructor;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,10 +48,10 @@ public class QueryPlugService {
     }
 
     @Transactional
-    public void createDataBase(DataBase dataBase) {
+    public int createDataBase(DataBase dataBase) {
         List<Table> tables = new ArrayList<>();
         if (dataBaseDao.checkDataBaseNameExistsOnSameCompany(dataBase.getCompany_no(), dataBase.getName())) {
-            log.info("database name Exists");
+            return 0; //database name has exist
         } else {
             dataBaseDao.createDataBase(dataBase);
             tables.add(new Table().initTable(dataBase.getNo()));
@@ -65,6 +63,7 @@ public class QueryPlugService {
             if (Objects.nonNull(dataBase.getRelations()) && !dataBase.getRelations().isEmpty()) {
                 relationDao.insertRelations(dataBase.getRelations());
             }
+            return 1; //database create success
         }
     }
 
@@ -76,7 +75,7 @@ public class QueryPlugService {
     public void createTable(int database_no, Table table) {
         table.setDatabase_no(database_no);
         tableDao.insertTable(table);
-        for(Column column : table.getColumns()) {
+        for (Column column : table.getColumns()) {
             column.setTable_id(table.getId());
         }
         columnDao.insertColumns(table.getColumns());
@@ -134,7 +133,7 @@ public class QueryPlugService {
 
     @Transactional
     public void disconnectLine(int database_no, ArrayList<Line> lines) {
-        for(Line line : lines) {
+        for (Line line : lines) {
             relationDao.disconnectLine(new Relation(database_no, line.getTo(), line.getTo_row(), line.getFrom(), line.getFrom_row()));
         }
     }
@@ -158,5 +157,7 @@ public class QueryPlugService {
     }
 
 
-
+    public ArrayList<DataBase> getDatabases(int company_no) {
+        return dataBaseDao.getDatabases(company_no);
+    }
 }

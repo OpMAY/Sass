@@ -1,9 +1,12 @@
 package com.controller.query;
 
+import com.model.query.DataBase;
 import com.service.query.QueryPlugService;
+import com.util.Encryption.EncryptionService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 @AllArgsConstructor
 @RequestMapping("/query")
 public class QueryPlugController {
+    private final EncryptionService encryptionService;
     private final QueryPlugService queryPlugService;
 
     @RequestMapping(value = "/workspace", method = RequestMethod.GET)
@@ -26,8 +30,12 @@ public class QueryPlugController {
         return new ModelAndView("query/workspace-create");
     }
 
-    @RequestMapping(value = "/database/detail")
-    public ModelAndView databaseDetail(){
-        return new ModelAndView("query/database-detail");
+    @RequestMapping(value = "/database/{hash}/detail", method = RequestMethod.GET)
+    public ModelAndView databaseDetail(@PathVariable("hash") String hash) throws Exception {
+        ModelAndView VIEW = new ModelAndView("query/database-detail");
+        int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
+        DataBase dataBase = queryPlugService.getDataBase(database_no);
+        VIEW.addObject("database", dataBase);
+        return VIEW;
     }
 }

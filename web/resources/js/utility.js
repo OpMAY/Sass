@@ -13,6 +13,11 @@ const tokenGenerator = ((length = 11) => {
     return Math.random().toString(36).substr(2, length); // "twozs5xfni"
 });
 
+const getURLParamByPrevAndNext = (find_first_slash_string, find_last_slash_string) => {
+    let path_name = location.pathname;
+    return path_name.substring(path_name.indexOf(find_first_slash_string) + (find_first_slash_string.length + 1), path_name.lastIndexOf(find_last_slash_string) - 1);
+}
+
 /**
  * GetURLBuilder,
  * base url 에 json object 를 get 요청 url 로 변환해주는 함수

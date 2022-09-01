@@ -20,10 +20,15 @@
     </select>
     <select id="checkTokenValid" resultType="_boolean">
         select NOT EXISTS(select *
-                      from `database`
-                               left join `table` t on `database`.no = t.database_no
-                               left join `column` c on t.id = c.table_id
-                      WHERE no = #{database_no}
-                        AND (t.id = #{token} OR c.id = #{token}))
+                          from `database`
+                                   left join `table` t on `database`.no = t.database_no
+                                   left join `column` c on t.id = c.table_id
+                          WHERE no = #{database_no}
+                            AND (t.id = #{token} OR c.id = #{token}))
+    </select>
+    <select id="getDatabases" resultType="Database" parameterType="int">
+        select *
+        from `database`
+        where company_no = #{company_no}
     </select>
 </mapper>

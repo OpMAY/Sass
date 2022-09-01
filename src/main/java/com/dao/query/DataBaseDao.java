@@ -2,9 +2,10 @@ package com.dao.query;
 
 import com.mapper.query.DataBaseMapper;
 import com.model.query.DataBase;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
 
 @Repository
 public class DataBaseDao {
@@ -32,5 +33,9 @@ public class DataBaseDao {
 
     public boolean checkTokenValid( int database_no, String token) {
         return mapper.checkTokenValid(database_no, token);
+    }
+
+    public ArrayList<DataBase> getDatabases(int company_no) {
+        return mapper.getDatabases(company_no);
     }
 }

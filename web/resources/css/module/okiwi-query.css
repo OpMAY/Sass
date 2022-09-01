@@ -202,6 +202,7 @@ svg.leader-line {
 
 .component .table thead th:first-child {
     border-left: 1px solid var(--gray-high-medium);
+    min-width: 47px;
 }
 
 .component .table tbody th:first-child {
@@ -234,6 +235,7 @@ svg.leader-line {
 
 .component ._table thead > tr > th:last-child {
     background-color: var(--brand-orange);
+    max-width: 42px;
 }
 
 .component ._table thead > tr.is-selected > th:last-child,
