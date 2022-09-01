@@ -47,6 +47,8 @@
           href="../../resources/css/module/module.css">
     <link rel="stylesheet"
           href="../../resources/css/module/res-module.css">
+    <link rel="stylesheet"
+          href="../../resources/css/module/summernote.css">
     <!-- Element -->
     <link rel="stylesheet"
           href="../../resources/css/base/element.css">

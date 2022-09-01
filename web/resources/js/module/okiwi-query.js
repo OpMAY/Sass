@@ -2141,6 +2141,15 @@ const findTableById = (draggable_tables, table_id) => {
     return draggable_table;
 };
 
+const findTableByName = (draggable_tables, table_name) => {
+    const draggable_table = draggable_tables.filter(function (draggable_table) {
+        if (draggable_table.name.includes(table_name)) {
+            return true;
+        }
+    });
+    return draggable_table;
+}
+
 /**
  * DeleteTableRowConnectable,
  * LeftSidebar에서 테이블의 행을 삭제시, 화면에서 테이블의 행을 삭제하는 함수
@@ -2242,6 +2251,20 @@ const findTableRowById = (table_id, row_id) => {
     return result;
 };
 
+const findTableRowByName = (draggable_tables, row_name) => {
+    let columns = new Array();
+    draggable_tables.forEach(function (draggable_table) {
+        columns.addAll(draggable_table.columns.filter(function (column) {
+            if (column.name.includes(row_name)) {
+                column.type = 'column';
+                column.table_id = draggable_table.id;
+                return true;
+            }
+        }));
+    });
+    return columns;
+}
+
 /**
  * InputChangeEventListener,
  *
@@ -2310,7 +2333,7 @@ const detailTableView = (table) => {
  * @requires [getMaxZIndex, tableOutlineHighlightCallback]
  * @param {string} table_id 테이블의 아이디
  * */
-const tableMoveScroll = (table_id) => {
+const tableMoveScroll = (table_id, effectTimeout = 500, callbackTimeout = 1000) => {
     const table = document.querySelector(`.component[id="${table_id}"]`);
     const position = getTransformStyle(table);
 
@@ -2331,8 +2354,8 @@ const tableMoveScroll = (table_id) => {
     });
     setTimeout(function () {
         table.style.outline = '2px solid #F08705';
-        $(table).effect('highlight', {}, 1000, tableOutlineHighlightCallback);
-    }, 500);
+        $(table).effect('highlight', {}, callbackTimeout, tableOutlineHighlightCallback);
+    }, effectTimeout);
 };
 
 /**
@@ -2343,7 +2366,7 @@ const tableMoveScroll = (table_id) => {
  * @param {string} table_id 테이블의 아이디
  * @param {string} table_row_id 테이블의 행의 아이디
  * */
-const tableRowMoveScroll = (table_id, table_row_id) => {
+const tableRowMoveScroll = (table_id, table_row_id, effectTimeout = 500, callbackTimeout = 1000) => {
     const table = document.querySelector(`.component[id="${table_id}"]`);
     const position = getTransformStyle(table);
     const table_row = table.querySelector(`._table tr[data-table-id="${table_id}"][data-table-row="${table_row_id}"]`);
@@ -2364,8 +2387,8 @@ const tableRowMoveScroll = (table_id, table_row_id) => {
     });
     setTimeout(function () {
         table_row.style.outline = '2px solid #F08705';
-        $(table_row).effect('highlight', {color: 'transparent'}, 1000, tableOutlineHighlightCallback);
-    }, 500);
+        $(table_row).effect('highlight', {color: 'transparent'}, callbackTimeout, tableOutlineHighlightCallback);
+    }, effectTimeout);
 };
 
 /**

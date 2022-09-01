@@ -68,8 +68,8 @@
 #database-editor-container {
     position: fixed;
     top: 52px;
-    left: 92px;
-    width: calc(100% - 92px);
+    left: 55px;
+    width: calc(100% - 55px);
     height: calc(100% - 52px);
     background-color: var(--layout-background);
     opacity: 1;
