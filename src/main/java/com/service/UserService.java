@@ -112,8 +112,11 @@ public class UserService {
     }
 
 
-    public User getModalMyInfo(int userNo) {
-        return userDao.getModalMyInfo(userNo);
+    public Message getModalMyInfo(int userNo) {
+        Message message = new Message();
+        message.put("u", userDao.getModalMyInfo(userNo));
+        message.put("grant", companyMemberDao.getUserRoleOfCompany(userNo, companyMemberDao.getUserCompany(userNo).getNo()));
+        return message;
     }
 
     @Transactional

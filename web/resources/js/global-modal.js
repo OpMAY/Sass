@@ -331,18 +331,21 @@ $('#setting-modal').on('show.bs.modal', function () {
     // TODO login 세션 없을 시 모달 open 막기
     apiCallMyInfo().then((result) => {
         let data = result.data.u;
-        setMyInfoModalData(data);
+        let grant = result.data.grant;
+        setMyInfoModalData(data, grant);
     })
 })
 
-$('#setting-modal button[data-toggle=tab]').on('show.bs.tab', function (event) {
+$('#setting-modal button[data-toggle=tab]').on('shown.bs.tab', function (event) {
     let $target_tab = $($(this).data().target);
+    let $this_button = $(this);
     switch ($target_tab.attr('id')) {
         case 'myInfo':
             apiCallMyInfo().then((result) => {
                 if (result.status === 'OK') {
                     let data = result.data.u;
-                    setMyInfoModalData(data);
+                    let grant = result.data.grant;
+                    setMyInfoModalData(data, grant);
                 } else {
                     alert('오류');
                     event.preventDefault();
@@ -391,8 +394,9 @@ $('#setting-modal button[data-toggle=tab]').on('show.bs.tab', function (event) {
                                     </ul>`);
                     })
                 } else {
-                    alert('오류');
-                    event.preventDefault();
+                    alert('권한이 없습니다.');
+                    $('#myInfo-tab').tab('show');
+                    $this_button.tab('hide');
                 }
             })
             break;
@@ -521,8 +525,9 @@ $('#setting-modal button[data-toggle=tab]').on('show.bs.tab', function (event) {
                         list.append(targetDiv);
                     })
                 } else {
-                    alert('오류');
-                    event.preventDefault();
+                    alert('권한이 없습니다.');
+                    $('#myInfo-tab').tab('show');
+                    $this_button.tab('hide');
                 }
             })
             break;
@@ -531,7 +536,7 @@ $('#setting-modal button[data-toggle=tab]').on('show.bs.tab', function (event) {
     }
 })
 
-function setMyInfoModalData(data) {
+function setMyInfoModalData(data, grant) {
     $('[data-update="name"]').html(data.name);
     $('#profileImg').attr('src', data.profile_img.url);
     $('[data-update="email"]').html(data.email);
@@ -551,6 +556,13 @@ function setMyInfoModalData(data) {
         }
     }
     $('#withdrawal-password-input').val('');
+    if(grant.keyword === 'READY') {
+        $('#teammates-tab').attr('disabled', 'disabled');
+        $('#plugin-manage-tab').attr('disabled', 'disabled');
+    } else {
+        $('#teammates-tab').removeAttr('disabled');
+        $('#plugin-manage-tab').removeAttr('disabled');
+    }
 }
 
 /**
@@ -704,6 +716,7 @@ $('.check-button-content').on('click', '._check[data-toggle=auth-switch]', funct
             if (result.status === 'OK') {
                 changeCheckElementStatus($check, type);
             } else {
+                alert('권한이 없습니다.');
             }
         });
     } else {
@@ -720,6 +733,7 @@ $('.check-button-content').on('click', '._check[data-toggle=auth-switch]', funct
             if (result.status === 'OK') {
                 changeCheckElementStatus($check, type);
             } else {
+                alert('권한이 없습니다.');
             }
         });
     }
@@ -888,7 +902,7 @@ $plugin_list.on('click', '._control-panel ._add-new', function () {
                                             </ul>`);
             })
         } else {
-
+            alert('권한이 없습니다.');
         }
     })
 

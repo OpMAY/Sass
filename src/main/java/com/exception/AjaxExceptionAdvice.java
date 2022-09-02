@@ -55,9 +55,9 @@ public class AjaxExceptionAdvice {
      */
     @ExceptionHandler(GrantAccessDeniedException.class)
     protected ResponseEntity handleGrantAccessDeniedException(GrantAccessDeniedException e) {
-        e.printStackTrace();
-        log.info("handleGrantAccessDeniedException");
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK), HttpStatus.FORBIDDEN);
+//        e.printStackTrace();
+//        log.info("handleGrantAccessDeniedException");
+        return new ResponseEntity(DefaultRes.res(HttpStatus.UNAUTHORIZED), HttpStatus.OK);
     }
 
     /**

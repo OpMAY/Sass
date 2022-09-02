@@ -9,5 +9,5 @@ public enum JWTEnum {
     SIGNATURE,
     SECRET,
     GRANT,
-    COMPANY
+    COMPANY,
 }
