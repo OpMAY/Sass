@@ -61,9 +61,9 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler(GrantAccessDeniedException.class)
     protected ModelAndView handleGrantAccessDeniedException(HttpServletRequest request, GrantAccessDeniedException e) {
-        e.printStackTrace();
-        log.error("handleGrantAccessDeniedException");
-        modelAndView = new ModelAndView("error/error");
+//        e.printStackTrace();
+//        log.error("handleGrantAccessDeniedException");
+        modelAndView = new ModelAndView("redirect:/");
         return modelAndView;
     }
 

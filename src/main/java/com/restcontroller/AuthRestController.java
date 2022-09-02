@@ -148,7 +148,7 @@ public class AuthRestController {
         HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
         Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
         if (userNo != null) {
-            message.put("u", userService.getModalMyInfo(userNo));
+            message = userService.getModalMyInfo(userNo);
         }
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }

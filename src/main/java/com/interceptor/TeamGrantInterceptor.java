@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -40,15 +41,23 @@ public class TeamGrantInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.debug("TeamGrant Interceptor preHandle");
         HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
-        int user_no = Integer.valueOf(hashMap.get(JWTEnum.NO).toString());
+        int user_no = (Integer) hashMap.get(JWTEnum.NO.name());
         if (companyMemberDao.checkUserHasCompany(user_no)) {
             Company company = companyMemberDao.getUserCompany(user_no);
             ROLE role = companyMemberDao.getUserRoleOfCompany(user_no, company.getNo());
-            if (role != ROLE.OWNER) {
-                throw new GrantAccessDeniedException(BusinessExceptionType.GRANT_EXCEPTION);
+            log.debug("request header : {}", request.getHeader("Content-Api"));
+            if(request.getHeader("Content-Api") != null && request.getMethod().equals(RequestMethod.POST.toString())) {
+                if (role != ROLE.OWNER) {
+                    throw new GrantAccessDeniedException(BusinessExceptionType.GRANT_EXCEPTION);
                 /*response.sendError(HttpStatus.UNAUTHORIZED.value());
                 return false;*/
+                }
+            } else {
+                if(role.equals(ROLE.READY)) {
+                    throw new GrantAccessDeniedException(BusinessExceptionType.GRANT_EXCEPTION);
+                }
             }
+
         } else {
             /*중간 추방 케이스*/
             throw new GrantAccessDeniedException(BusinessExceptionType.GRANT_EXCEPTION);

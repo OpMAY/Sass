@@ -213,20 +213,18 @@ public class AppConfig implements WebApplicationInitializer, SchedulingConfigure
                 .excludePathPatterns("/resources/**")
                 .excludePathPatterns("/files/**");
         /** is Login */
-        //registry.addInterceptor(authInterceptor).order(3)
-        //        .addPathPatterns("/auth")
-        //        .addPathPatterns("/global/**/plug/grant")
-        //        .addPathPatterns("/global/**/team/grant")
-        //        .excludePathPatterns("/login")
-        //        .excludePathPatterns("/logout")
-        //        .excludePathPatterns("/register")
-        //        .excludePathPatterns("/find/**")
-        //        .excludePathPatterns("/change/password")
-        //        .excludePathPatterns("/code/**");
+        registry.addInterceptor(authInterceptor).order(3)
+                .addPathPatterns("/auth")
+                .addPathPatterns("/global/**")
+                .excludePathPatterns("/login")
+                .excludePathPatterns("/logout")
+                .excludePathPatterns("/register")
+                .excludePathPatterns("/find/**")
+                .excludePathPatterns("/change/password")
+                .excludePathPatterns("/code/**");
         /** is Team Grant, OWNER or PERSONAL 구분지어서 Intercept */
-        //registry.addInterceptor(teamGrantInterceptor).order(4)
-        //        .addPathPatterns("/global/**/plug/grant")
-        //       .addPathPatterns("/global/**/team/grant");
+        registry.addInterceptor(teamGrantInterceptor).order(4)
+                .addPathPatterns("/global/**");
         /** is Plugin Grant, READ or EDIT or READ(무조건 Intercept) 구분 지어서 Intercept*/
         /*registry.addInterceptor(pluginInterceptor).order(5)
                 .addPathPatterns("/query")
