@@ -18,3 +18,12 @@
 .modal .close:not(:disabled):not(.disabled):hover {
     opacity: 1;
 }
+
+.modal-dialog-scrollable .modal-body::-webkit-scrollbar {
+    width: 4px;
+    background-color: var(--brand-purple-opacity);
+}
+
+.modal-dialog-scrollable .modal-body::-webkit-scrollbar-thumb {
+    background-color: var(--brand-purple);
+}

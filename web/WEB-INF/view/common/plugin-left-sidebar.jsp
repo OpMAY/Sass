@@ -8,6 +8,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <div id="plugin-left-sidebar">
     <div class="_plugin-container">
+        <div class="_left-plugin" data-href="/">
+            <img class="bg-basic-black rounded-circle" width="36"
+                 height="36"
+                 src="/resources/assets/images/icon/black-theme-logo-80x40.svg"/>
+        </div>
         <div class="_left-plugin" data-href="/query/workspace">
             <img width="36"
                  height="36"

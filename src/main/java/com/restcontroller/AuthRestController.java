@@ -52,8 +52,7 @@ public class AuthRestController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<String> register(@RequestBody User user) {
         Message message = new Message();
-        log.info("user : {}", user);
-        message.put("r", userService.registerUser(user));
+        message.put("register_status", userService.registerUser(user));
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 

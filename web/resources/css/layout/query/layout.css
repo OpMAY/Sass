@@ -1,3 +1,13 @@
+body::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+    background-color: var(--brand-orange-opacity);
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: var(--brand-orange);
+}
+
 #l-header.query-theme {
     top: 0;
     left: 0;

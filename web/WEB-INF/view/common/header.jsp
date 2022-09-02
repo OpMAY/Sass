@@ -25,7 +25,7 @@
                 <div class="bold-h5 c-basic-white" data-target="#register-modal" data-toggle="modal">회원가입</div>
             </c:when>
             <c:otherwise>
-                <div class="bold-h5 c-basic-white" data-toggle="modal" data-no="${token.get(JWTEnum.NO)}" data-target="#setting-modal">내 정보</div>
+                <div class="bold-h5 c-basic-white" data-is-company="false" data-toggle="modal" data-no="${token.get(JWTEnum.NO)}" data-target="#setting-modal">내 정보</div>
                 <div class="bold-h5 c-basic-white" id="logout">로그아웃</div>
             </c:otherwise>
         </c:choose>

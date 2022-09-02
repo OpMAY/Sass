@@ -100,7 +100,7 @@
         </li>
         <li class="nav-item ml-auto"
             role="presentation">
-            <button class="nav-link active p-16"
+            <button class="nav-link active p-16 d-none"
                     type="button">
                 <svg width="24"
                      height="24"

@@ -45,7 +45,7 @@ input.form-control.form-general.outline-gray-high-medium {
     overflow: auto;
     overflow-x: hidden;
     height: 100%;
-    max-height: calc(100% - 136px);
+    max-height: calc(100% - 144px);
     padding-bottom: 36px;
 }
 

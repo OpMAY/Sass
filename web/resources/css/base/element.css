@@ -11,6 +11,15 @@ ul.tabs.modal-tabs {
     position: relative;
 }
 
+.tab-content > .tab-pane ._body::-webkit-scrollbar {
+    width: 6px;
+    background-color: var(--brand-purple-opacity);
+}
+
+.tab-content > .tab-pane ._body::-webkit-scrollbar-thumb {
+    background-color: var(--brand-purple);
+}
+
 .tab-content > .tab-pane ._body {
     margin-left: auto;
     width: calc(100% - 55px);

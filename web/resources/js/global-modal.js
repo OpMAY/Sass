@@ -5,34 +5,68 @@ $('#agree-all').on('change', function () {
     const status = $(this).is(':checked');
     $('._agree').find('[data-type=checkbox]:not(#agree-all)').prop('checked', status);
     listenRegisterModalValid();
-})
+});
+
+$('[data-type=phone]').on('input', function (e) {
+    $(this).val(phoneNumFormatter($(this).val()));
+});
 
 $('#register-modal input[data-required=true]').on('input', function () {
     listenRegisterModalValid()
-})
-
-$('[data-type=phone]').on('input', function () {
-    $(this).val(phoneNumFormatter($(this).val()));
-})
+});
 
 function listenRegisterModalValid() {
     const inputs = $('#register-modal').find('input[data-required=true]');
     let valid = true;
-    const eRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
-    const pRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
     inputs.each((i, e) => {
         switch (e.dataset.type) {
             case 'name' :
-                valid = valid && $(e).val().length >= 3;
+                valid = valid && inspection({
+                    selector: null,
+                    element: e,
+                    value: e.value,
+                    regex_check: true,
+                    regex_type: 'name',
+                    empty_text: '',
+                    failed_text: '',
+                    isFocus: false,
+                });
                 break;
             case 'phone' :
-                valid = valid && pRegex.test($(e).val());
+                valid = valid && inspection({
+                    selector: null,
+                    element: e,
+                    value: e.value.replace(/[-| ]/gi, ''),
+                    regex_check: true,
+                    regex_type: 'phone',
+                    empty_text: '',
+                    failed_text: '',
+                    isFocus: false,
+                });
                 break;
             case 'email' :
-                valid = valid && eRegex.test($(e).val());
+                valid = valid && inspection({
+                    selector: null,
+                    element: e,
+                    value: e.value,
+                    regex_check: true,
+                    regex_type: 'email',
+                    empty_text: '',
+                    failed_text: '',
+                    isFocus: false,
+                });
                 break;
             case 'password' :
-                valid = valid && passwordValidation($(e).val(), 0, false);
+                valid = valid && inspection({
+                    selector: null,
+                    element: e,
+                    value: e.value,
+                    regex_check: true,
+                    regex_type: 'password',
+                    empty_text: '',
+                    failed_text: '',
+                    isFocus: false,
+                });
                 break;
             case 'checkbox' :
                 valid = valid && $(e).is(':checked');
@@ -41,11 +75,16 @@ function listenRegisterModalValid() {
                 valid = false;
                 break;
         }
-    })
+        if (valid) {
+            $(`#register-modal [data-failed-type="${e.dataset.type}"]`).hide();
+        } else {
+            $(`#register-modal [data-failed-type="${e.dataset.type}"]`).show();
+        }
+    });
     if (valid) {
-        $('[data-action=register]').removeClass('is-disabled').removeAttr('disabled');
+        $('#register-modal [data-action=register]').removeClass('is-disabled').removeAttr('disabled');
     } else {
-        $('[data-action=register]').addClass('is-disabled').attr('disabled', 'disabled');
+        $('#register-modal [data-action=register]').addClass('is-disabled').attr('disabled', 'disabled');
     }
 }
 
@@ -60,7 +99,7 @@ $('#register-modal').on('show.bs.modal', function () {
 
 $('#login-modal').on('hide.bs.modal', function () {
     $(this).find('input').val('');
-})
+});
 
 /**
  * login modal input listener
@@ -226,7 +265,10 @@ $('#corporation-create-modal').find('._buttons button:first-child').on('click', 
         }
     })
 })
-
+$('[data-action="corporation-create-cancel"]').on('click', function () {
+    let $type_modal = $('#corporation-type-modal');
+    $type_modal.modal('show');
+});
 /**
  * corporation create modal listener
  * **/
@@ -257,7 +299,10 @@ $('#corporation-find-modal').find('._buttons button:first-child').on('click', fu
         }
     })
 })
-
+$('[data-action="corporation-find-cancel"]').on('click', function () {
+    let $type_modal = $('#corporation-type-modal');
+    $type_modal.modal('show');
+});
 $('#corporation-select-modal').find('._buttons button:first-child').on('click', function () {
     let $this_modal = $('#corporation-select-modal');
     apiJoinCorporate($this_modal.find('input').data().c_id).then((result) => {
@@ -274,6 +319,10 @@ $('#corporation-select-modal').find('._buttons button:first-child').on('click', 
         }
     })
 })
+$('[data-action="corporation-select-cancel"]').on('click', function () {
+    let $find_modal = $('#corporation-find-modal');
+    $find_modal.modal('show');
+});
 
 /** Setting modal open listener **/
 $('#setting-modal').on('show.bs.modal', function () {
@@ -681,12 +730,12 @@ function changeCheckElementStatus($check, type) {
      * Read off 시 -> write off
      * Write On 시 -> read on
      * **/
-    if(type === 'READ') {
+    if (type === 'READ') {
         if ($check.hasClass('on')) {
             $check.removeClass('on');
             $check.addClass('off');
             let $editCheck = $check.parent().next().find('._check');
-            if($editCheck.hasClass('on')) {
+            if ($editCheck.hasClass('on')) {
                 $editCheck.removeClass('on');
                 $editCheck.addClass('off');
             }
@@ -702,7 +751,7 @@ function changeCheckElementStatus($check, type) {
             $check.removeClass('off');
             $check.addClass('on');
             let $readCheck = $check.parent().prev().find('._check');
-            if($readCheck.hasClass('off')) {
+            if ($readCheck.hasClass('off')) {
                 $readCheck.removeClass('off');
                 $readCheck.addClass('on');
             }
@@ -788,7 +837,7 @@ $plugin_list.on('click', '._control-panel ._add-new', function () {
     let dataset = this.dataset;
     apiCallPlugNotAssociatedMembers(dataset.companyNo, dataset.plugNo).then((result) => {
         console.log(result);
-        if(result.status === 'OK') {
+        if (result.status === 'OK') {
             let thisTab = $(this).parent().parent().parent();
             let listDiv = $('._plugin-list');
             let containerList = listDiv.find('._plugin-list-container');
@@ -931,19 +980,30 @@ $(document).ready(function () {
         let email = modal.find('input[name=email]').val();
         let password = modal.find('input[name=password]').val();
         // Input Validation
-        if (email.length < 10) {
-            alert('이메일을 입력하세요.');
+        if (!inspection({
+            selector: 'input[name=email]',
+            regex_check: true,
+            regex_type: 'email',
+            empty_text: '이메일을 입력해주세요.',
+            failed_text: '이메일 형식이 아닙니다. 정확히 입력해주세요.',
+        })) {
             return;
         }
-        if (password.length < 8) {
-            alert('비밀번호를 입력하세요.')
+        if (!inspection({
+            selector: 'input[name=password]',
+            regex_check: true,
+            regex_type: 'password',
+            empty_text: '비밀번호를 입력해주세요.',
+            failed_text: '비밀번호를 정확히 입력해주세요. (8자 이상 20자 이하, 영문, 숫자, 특수문자(@$!%*#?&^) 모두 포함)',
+        })) {
             return;
         }
         apiLogin(email, password).then((result) => {
             console.log(result.status, result.data);
             if (result.status === 'OK') {
                 let r = result.data.login_status;
-                if (r !== null) {
+                // Validation 로직 추가
+                if (r !== null && r !== undefined) {
                     // 로그인 완료
                     if (r === 1) {
                         // 회사 선택 승인 대기중
@@ -975,7 +1035,7 @@ $(document).ready(function () {
         apiRegister().then((result) => {
             console.log(result.status, result.data);
             if (result.status === 'OK') {
-                if (result.data.r) {
+                if (result.data.register_status !== undefined && result.data.register_status !== null && result.data.register_status) {
                     alert('회원가입 완료');
                     $('#register-modal').modal('hide');
                     $('#corporation-type-modal').modal('show');
@@ -1004,6 +1064,18 @@ $(document).ready(function () {
                 alert('일치하는 이메일이 없습니다.');
             }
         });
+    });
+    $('[data-action="find-email-cancel"]').on('click', function () {
+        let $this_modal = $('#find-email-modal');
+        let $login_modal = $('#login-modal');
+        $this_modal.modal('hide');
+        $login_modal.modal('show');
+    });
+    $('[data-action="find-password-cancel"]').on('click', function () {
+        let $this_modal = $('#find-password-modal');
+        let $login_modal = $('#login-modal');
+        $this_modal.modal('hide');
+        $login_modal.modal('show');
     });
     $('[data-action="find-password"]').on('click', function () {
         let $this_modal = $('#find-password-modal');
@@ -1134,4 +1206,13 @@ $(document).ready(function () {
             });
         }
     });
+});
+
+$(document).ready(function () {
+    let header_is_company = document.querySelector('[data-is-company]');
+    if (header_is_company !== undefined && header_is_company !== null) {
+        if (header_is_company.dataset.isCompany === 'false') {
+            $('#corporation-type-modal').modal('show');
+        }
+    }
 });

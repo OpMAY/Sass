@@ -14,8 +14,8 @@
         insert into user(name, email, phone, password, agree_data, marketing_agree, marketing_agree_date, profile_img,
                          plugin_alarm, service_alarm, reg_datetime, last_login_date)
         VALUES (#{name}, #{email}, #{phone}, hex(aes_encrypt(#{password}, 'okiwi')),
-                #{agreeData, typeHandler=com.middleware.JsonObjectTypeHandler}, #{marketingAgree},
-                IF(#{marketingAgree} = false, null, NOW()), #{profileImg}, #{pluginAlarm}, #{serviceAlarm}, NOW(),
+                #{agree_data, typeHandler=com.middleware.JsonObjectTypeHandler}, #{marketing_agree},
+                IF(#{marketing_agree} = false, null, NOW()), #{profile_img}, #{plugin_alarm}, #{service_alarm}, NOW(),
                 NOW())
     </insert>
     <select id="loginUser" resultType="User">

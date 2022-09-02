@@ -14,7 +14,7 @@
      tabindex="-1"
      aria-labelledby="staticBackdropLabel"
      aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button"
@@ -34,18 +34,30 @@
                     </div>
                 </div>
                 <div class="_body mb-20">
-                    <input type="text"
-                           placeholder="이름" data-required="true" data-type="name"
-                           class="form-control form-general regular-h5 p-16 mb-20">
-                    <input type="text"
-                           placeholder="연락처" data-required="true" data-type="phone"
-                           class="form-control form-general regular-h5 p-16 mb-20">
-                    <input type="email"
-                           placeholder="이메일" data-required="true" data-type="email"
-                           class="form-control form-general regular-h5 p-16 mb-20">
-                    <input type="password"
-                           placeholder="비밀번호" data-required="true" data-type="password"
-                           class="form-control form-general regular-h5 p-16">
+                    <div class="mb-20">
+                        <input type="text"
+                               placeholder="이름" data-required="true" data-type="name"
+                               class="form-control form-general regular-h5 p-16">
+                        <p class="mt-1 regular-h6 c-brand-purple text-right" data-failed-type="name" style="display: none;">이름을 정확히 입력해주세요.<br/>(2~20자 영어, 한글, 숫자, 띄어쓰기)</p>
+                    </div>
+                    <div class="mb-20">
+                        <input type="text"
+                               placeholder="연락처" data-required="true" data-type="phone"
+                               class="form-control form-general regular-h5 p-16">
+                        <p class="mt-1 regular-h6 c-brand-purple text-right" data-failed-type="phone" style="display: none;">연락처를 정확히 입력해주세요.</p>
+                    </div>
+                    <div class="mb-20">
+                        <input type="email"
+                               placeholder="이메일" data-required="true" data-type="email"
+                               class="form-control form-general regular-h5 p-16">
+                        <p class="mt-1 regular-h6 c-brand-purple text-right" data-failed-type="email" style="display: none;">이메일을 정확히 입력해주세요.</p>
+                    </div>
+                    <div class="mb-20">
+                        <input type="password"
+                               placeholder="비밀번호" data-required="true" data-type="password"
+                               class="form-control form-general regular-h5 p-16">
+                        <p class="mt-1 regular-h6 c-brand-purple text-right" data-failed-type="password" style="display: none;">비밀번호를 정확히 입력해주세요.<br/>(8자 이상 20자 이하, 영문, 숫자, 특수문자(@$!%*#?&^) 모두 포함)</p>
+                    </div>
                 </div>
                 <div class="_agree mb-48">
                     <div class="mb-12">
@@ -147,7 +159,9 @@
                     </div>
                 </div>
                 <div class="_buttons">
-                    <button type="button" data-action="register" class="btn btn-block btn-gray-dark-low is-disabled" disabled>회원가입</button>
+                    <button type="button" data-action="register" class="btn btn-block btn-gray-dark-low is-disabled"
+                            disabled>회원가입
+                    </button>
                 </div>
             </div>
         </div>
@@ -253,9 +267,11 @@
                            class="form-control form-general regular-h5 p-16 mb-20">
                 </div>
                 <div class="_buttons">
-                    <button type="button" data-action="find-email" class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>아이디 조회
+                    <button type="button" data-action="find-email"
+                            class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>아이디 조회
                     </button>
-                    <button type="button" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
+                    <button type="button" data-action="find-email-cancel"
+                            class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
                     </button>
                 </div>
             </div>
@@ -341,8 +357,11 @@
                            class="form-control form-general regular-h5 p-16 mb-20">
                 </div>
                 <div class="_buttons">
-                    <button type="button" data-action="find-password" class="btn btn-block btn-gray-dark-low is-disabled mb-28">인증코드 전송</button>
-                    <button type="button" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
+                    <button type="button" data-action="find-password"
+                            class="btn btn-block btn-gray-dark-low is-disabled mb-28">인증코드 전송
+                    </button>
+                    <button type="button" data-action="find-password-cancel"
+                            class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
                     </button>
                 </div>
             </div>
@@ -391,7 +410,9 @@
                     <a href="#" class="ml-8"><h5 class="medium-h5">인증코드 전송</h5></a>
                 </div>
                 <div class="_buttons mb-36">
-                    <button type="button" data-action="code-confirm" class="btn btn-block btn-gray-dark-low mb-28">인증코드 확인</button>
+                    <button type="button" data-action="code-confirm" class="btn btn-block btn-gray-dark-low mb-28">인증코드
+                        확인
+                    </button>
                     <button type="button" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
                     </button>
                 </div>
@@ -435,7 +456,9 @@
                            class="form-control form-general regular-h5 p-16 mb-20">
                 </div>
                 <div class="_buttons">
-                    <button type="button" data-action="change-password" class="btn btn-block btn-gray-dark-low is-disabled mb-28">비밀번호 변경</button>
+                    <button type="button" data-action="change-password"
+                            class="btn btn-block btn-gray-dark-low is-disabled mb-28">비밀번호 변경
+                    </button>
                     <button type="button" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
                     </button>
                 </div>
@@ -453,14 +476,6 @@
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button"
-                        class="close"
-                        data-dismiss="modal"
-                        aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
             <div class="modal-body">
                 <div class="_header text-center mb-68">
                     <div class="_title mb-2 bold-h1 c-gray-dark-low">
@@ -522,14 +537,14 @@
                            placeholder="상호명" id="corporation-create-name"
                            class="form-control form-general regular-h5 p-16 mb-20">
                     <input type="text"
-                           placeholder="사업자 등록 번호" id="corporation-create-code"
+                           placeholder="사업자 등록 번호 (선택)" id="corporation-create-code"
                            class="form-control form-general regular-h5 p-16 mb-20">
                 </div>
                 <div class="_buttons">
                     <button type="button" class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>기업 회원으로
                         가입하기
                     </button>
-                    <button type="button" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
+                    <button type="button" data-action="corporation-create-cancel" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
                     </button>
                 </div>
             </div>
@@ -546,14 +561,6 @@
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button"
-                        class="close"
-                        data-dismiss="modal"
-                        aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
             <div class="modal-body">
                 <div class="_header text-center mb-68">
                     <div class="_title mb-2 bold-h1 c-gray-dark-low">
@@ -571,7 +578,7 @@
                 <div class="_buttons">
                     <button type="button" class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>기업 ID 조회
                     </button>
-                    <button type="button" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
+                    <button type="button" data-action="corporation-find-cancel" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
                     </button>
                 </div>
             </div>
@@ -588,14 +595,6 @@
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button"
-                        class="close"
-                        data-dismiss="modal"
-                        aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
             <div class="modal-body">
                 <div class="_header text-center mb-68">
                     <div class="_title mb-2 bold-h1 c-gray-dark-low">
@@ -615,7 +614,7 @@
                 <div class="_buttons">
                     <button type="button" class="btn btn-block btn-gray-dark-low mb-28">기업 팀원으로 참여하기
                     </button>
-                    <button type="button" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
+                    <button type="button" data-action="corporation-select-cancel" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
                     </button>
                 </div>
             </div>
@@ -756,7 +755,8 @@
                                         </div>
                                         <div class="col-3">
                                             <button type="button"
-                                                    class="btn btn-block btn-gray-dark-low" data-action="withdrawal">회원 탈퇴
+                                                    class="btn btn-block btn-gray-dark-low" data-action="withdrawal">회원
+                                                탈퇴
                                             </button>
                                         </div>
                                     </div>
@@ -789,7 +789,8 @@
                                     <h5 class="regular-h6 c-gray-medium">관리자</h5>
                                 </div>
                                 <div class="_item col-10">
-                                    <h5 class="regular-h6 c-gray-dark-low" data-company-owner="유병준" data-compnay-owner-email="asszxc@naver.com">유병준(asszxc@naver.com)</h5>
+                                    <h5 class="regular-h6 c-gray-dark-low" data-company-owner="유병준"
+                                        data-compnay-owner-email="asszxc@naver.com">유병준(asszxc@naver.com)</h5>
                                 </div>
                             </div>
                             <div class="_authorization">
@@ -824,7 +825,8 @@
                                 <div class="_cover-line _bottom"></div>
                                 <div class="_item-group">
                                     <ul class="nav nav-tabs _items"
-                                        role="tablist" data-type="TEAM" data-user-no="1" data-user-role="OWNER" data-user-email="asszxc@naver.com">
+                                        role="tablist" data-type="TEAM" data-user-no="1" data-user-role="OWNER"
+                                        data-user-email="asszxc@naver.com">
                                         <li class="nav-item light-h6 _name"
                                             role="presentation">
                                             유병준
@@ -850,7 +852,8 @@
 
                                         </li>
                                     </ul>
-                                    <ul class="nav nav-tabs _items" data-type="TEAM" data-user-no="2" data-user-role="PERSONAL" data-user-email="zlzldntlr@naver.com"
+                                    <ul class="nav nav-tabs _items" data-type="TEAM" data-user-no="2"
+                                        data-user-role="PERSONAL" data-user-email="zlzldntlr@naver.com"
                                         role="tablist">
                                         <li class="nav-item light-h6 _name"
                                             role="presentation">
@@ -877,7 +880,8 @@
                                             <span>&times;</span>
                                         </li>
                                     </ul>
-                                    <ul class="nav nav-tabs _items" data-type="TEAM" data-user-no="3" data-user-role="PERSONAL" data-user-email="kevin8622@naver.com"
+                                    <ul class="nav nav-tabs _items" data-type="TEAM" data-user-no="3"
+                                        data-user-role="PERSONAL" data-user-email="kevin8622@naver.com"
                                         role="tablist">
                                         <li class="nav-item light-h6 _name"
                                             role="presentation">
@@ -967,7 +971,8 @@
                                         <div class="_cover-line _bottom"></div>
                                         <div class="_item-group">
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist" data-plugin="QUERY" data-type="PLUG" data-user-no="1" data-user-role="OWNER" data-user-email="asszxc@naver.com">
+                                                role="tablist" data-plugin="QUERY" data-type="PLUG" data-user-no="1"
+                                                data-user-role="OWNER" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     유병준
@@ -993,7 +998,8 @@
                                                 </li>
                                             </ul>
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist" data-plugin="QUERY" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
+                                                role="tablist" data-plugin="QUERY" data-type="PLUG" data-user-no="1"
+                                                data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     유병준
@@ -1020,7 +1026,8 @@
                                                 </li>
                                             </ul>
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist" data-plugin="QUERY" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
+                                                role="tablist" data-plugin="QUERY" data-type="PLUG" data-user-no="1"
+                                                data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     유병준
@@ -1083,7 +1090,8 @@
                                         <div class="_cover-line _bottom"></div>
                                         <div class="_item-group">
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist" data-plugin="QUERY" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
+                                                role="tablist" data-plugin="QUERY" data-type="PLUG" data-user-no="1"
+                                                data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     한지우
@@ -1160,7 +1168,8 @@
                                         <div class="_cover-line _bottom"></div>
                                         <div class="_item-group">
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist" data-plugin="CRM" data-type="PLUG" data-user-no="1" data-user-role="OWNER" data-user-email="asszxc@naver.com">
+                                                role="tablist" data-plugin="CRM" data-type="PLUG" data-user-no="1"
+                                                data-user-role="OWNER" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     유병준
@@ -1186,7 +1195,8 @@
                                                 </li>
                                             </ul>
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist" data-plugin="CRM" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
+                                                role="tablist" data-plugin="CRM" data-type="PLUG" data-user-no="1"
+                                                data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     유병준
@@ -1249,7 +1259,8 @@
                                         <div class="_cover-line _bottom"></div>
                                         <div class="_item-group">
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist" data-plugin="CRM" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
+                                                role="tablist" data-plugin="CRM" data-type="PLUG" data-user-no="1"
+                                                data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     한지우
@@ -1326,7 +1337,8 @@
                                         <div class="_cover-line _bottom"></div>
                                         <div class="_item-group">
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist" data-plugin="CHAT" data-type="PLUG" data-user-no="1" data-user-role="OWNER" data-user-email="asszxc@naver.com">
+                                                role="tablist" data-plugin="CHAT" data-type="PLUG" data-user-no="1"
+                                                data-user-role="OWNER" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     유병준
@@ -1352,7 +1364,8 @@
                                                 </li>
                                             </ul>
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist" data-plugin="CHAT" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
+                                                role="tablist" data-plugin="CHAT" data-type="PLUG" data-user-no="1"
+                                                data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     유병준
@@ -1379,7 +1392,8 @@
                                                 </li>
                                             </ul>
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist" data-plugin="CHAT" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
+                                                role="tablist" data-plugin="CHAT" data-type="PLUG" data-user-no="1"
+                                                data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     유병준
@@ -1442,7 +1456,8 @@
                                         <div class="_cover-line _bottom"></div>
                                         <div class="_item-group">
                                             <ul class="nav nav-tabs _items"
-                                                role="tablist" data-plugin="CHAT" data-type="PLUG" data-user-no="1" data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
+                                                role="tablist" data-plugin="CHAT" data-type="PLUG" data-user-no="1"
+                                                data-user-role="PERSONAL" data-user-email="asszxc@naver.com">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     한지우
@@ -1476,7 +1491,8 @@
                                         <button type="button"
                                                 class="btn btn-block btn-gray-dark-low" data-action="create-plug">추가하기
                                         </button>
-                                        <button type="button" class="btn btn-block btn-transparent c-brand-purple" data-action="cancel-plug">취소
+                                        <button type="button" class="btn btn-block btn-transparent c-brand-purple"
+                                                data-action="cancel-plug">취소
                                         </button>
                                     </div>
                                 </div>
@@ -1521,7 +1537,8 @@
                            class="form-control form-general regular-h5 p-16 mb-20">
                 </div>
                 <div class="_buttons">
-                    <button type="button" data-action="change-name" class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>수정 완료
+                    <button type="button" data-action="change-name"
+                            class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>수정 완료
                     </button>
                     <button type="button" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
                     </button>
@@ -1563,7 +1580,8 @@
                            class="form-control form-general regular-h5 p-16 mb-20">
                 </div>
                 <div class="_buttons">
-                    <button type="button" data-action="change-email" class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>수정 완료
+                    <button type="button" data-action="change-email"
+                            class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>수정 완료
                     </button>
                     <button type="button" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
                     </button>
@@ -1605,7 +1623,8 @@
                            class="form-control form-general regular-h5 p-16 mb-20">
                 </div>
                 <div class="_buttons">
-                    <button type="button" data-action="change-phone" class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>수정 완료
+                    <button type="button" data-action="change-phone"
+                            class="btn btn-block btn-gray-dark-low is-disabled mb-28" disabled>수정 완료
                     </button>
                     <button type="button" class="btn btn-block btn-transparent c-brand-purple" data-dismiss="modal">취소
                     </button>

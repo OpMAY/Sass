@@ -100,7 +100,7 @@
             <div class="row mx-0">
                 <div class="col-12 pl-16 pr-16">
                     <div class="d-flex _title">
-                        <div class="_name medium-h3 ellipsis-double-line pr-16">
+                        <div class="_name medium-h3 ellipsis-one-line pr-16">
                             ${database.name}
                         </div>
                     </div>
