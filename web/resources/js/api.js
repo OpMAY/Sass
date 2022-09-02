@@ -35,6 +35,7 @@ async function apiLogout() {
     function apiFetchLogout() {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
 
         let requestOptions = {
@@ -58,6 +59,7 @@ async function apiRegister() {
     function apiFetchRegister(name, phone, email, password, agree_data, marketing_agree) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify({
             name,
@@ -96,6 +98,7 @@ async function apiFindEmail(phone) {
     function apiFetchFindEmail(phone) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify({
             phone
@@ -123,6 +126,7 @@ async function apiFindPassword(email) {
     function apiFetchFindPassword(email) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify({
             email
@@ -150,6 +154,7 @@ async function apiSendCode(email) {
     function apiFetchSendCode(email) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify({
             email
@@ -176,7 +181,8 @@ async function apiSendCode(email) {
 async function apiConfirmCode(code) {
     function apiFetchConfirmCode(code) {
         let myHeaders = new Headers();
-        myHeaders.append('Content-type', 'application/json');
+        myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
         let row = JSON.stringify({
             code
         });
@@ -202,6 +208,7 @@ async function apiChangePassword(email, password) {
     function apiFetchChangePassword(email, password) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify({
             email,
@@ -230,6 +237,7 @@ async function apiCreateCorporate(name, code) {
     function apiFetchCreateCorporate(name, code) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify({
             name,
@@ -258,6 +266,7 @@ async function apiFindCorporate(id) {
     function apiFetchFindCorporate(id) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify({
             id
@@ -285,6 +294,7 @@ async function apiJoinCorporate(no) {
     function apiFetchJoinCorporate(no) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify({
             no
@@ -308,10 +318,103 @@ async function apiJoinCorporate(no) {
     }
 }
 
-async function apiChangeName() {
+async function apiCallMyInfo() {
+    function apiFetchCallMyInfo() {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+        const response = fetch(`${host}/auth/get/myInfo`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchCallMyInfo();
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function apiCallMyCorpInfo() {
+    function apiFetchCallMyCorpInfo() {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+        const response = fetch(`${host}/global/get/myCorp`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchCallMyCorpInfo();
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function apiCallMyCorpPlugInfo() {
+    function apiFetchCallMyCorpPlugInfo() {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+        const response = fetch(`${host}/global/get/plugin`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchCallMyCorpPlugInfo();
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function apiCallPlugNotAssociatedMembers(companyNo, plugNo) {
+    function apiFetchCallPlugNotAssociatedMembers(companyNo, plugNo) {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+        const response = fetch(`${host}/global/get/plugin/ready_member?companyNo=${companyNo}&plugNo=${plugNo}`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchCallPlugNotAssociatedMembers(companyNo, plugNo);
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function apiChangeName(name) {
     function apiFetchChangeName(name) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify({
             name
@@ -328,7 +431,7 @@ async function apiChangeName() {
 
     let result;
     try {
-        result = await apiFetchChangeName('zlzldntlr');
+        result = await apiFetchChangeName(name);
         return result;
     } catch (error) {
         console.log(error);
@@ -357,10 +460,11 @@ async function apiChangeProfile(file) {
     }
 }
 
-async function apiChangeEmail() {
+async function apiChangeEmail(email) {
     function apiFetchChangeEmail(email) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify({
             email
@@ -377,17 +481,18 @@ async function apiChangeEmail() {
 
     let result;
     try {
-        result = await apiFetchChangeEmail('zlzldntlr1@naver.com');
+        result = await apiFetchChangeEmail(email);
         return result;
     } catch (error) {
         console.log(error);
     }
 }
 
-async function apiChangePhone() {
+async function apiChangePhone(phone) {
     function apiFetchChangePhone(phone) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify({
             phone
@@ -404,7 +509,7 @@ async function apiChangePhone() {
 
     let result;
     try {
-        result = await apiFetchChangePhone('010-4529-9453');
+        result = await apiFetchChangePhone(phone);
         return result;
     } catch (error) {
         console.log(error);
@@ -415,6 +520,7 @@ async function apiChangeMarketingAgree(agree) {
     function apiFetchChangeMarketingAgree(agree) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify({
             agree
@@ -438,10 +544,11 @@ async function apiChangeMarketingAgree(agree) {
     }
 }
 
-async function apiChangeWithdrawal() {
+async function apiChangeWithdrawal(password) {
     function apiFetchChangeWithdrawal(password) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify({
             password
@@ -458,7 +565,7 @@ async function apiChangeWithdrawal() {
 
     let result;
     try {
-        result = await apiFetchChangeWithdrawal('zlzldntlr');
+        result = await apiFetchChangeWithdrawal(password);
         return result;
     } catch (error) {
         console.log(error);
@@ -469,6 +576,7 @@ async function apiChangeTeamGrant(grant) {
     function apiFetchChangeTeamGrant() {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify(grant);
 
@@ -477,7 +585,7 @@ async function apiChangeTeamGrant(grant) {
             headers: myHeaders,
             body: raw,
         };
-        const response = fetch(`${host}/auth/change/team/grant`, requestOptions);
+        const response = fetch(`${host}/global/change/team/grant`, requestOptions);
         return response.then(res => res.json());
     }
 
@@ -494,6 +602,7 @@ async function apiDeleteTeamGrant(grant) {
     function apiFetchDeleteTeamGrant(grant) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify(grant);
 
@@ -502,7 +611,7 @@ async function apiDeleteTeamGrant(grant) {
             headers: myHeaders,
             body: raw,
         };
-        const response = fetch(`${host}/auth/delete/team/grant`, requestOptions);
+        const response = fetch(`${host}/global/delete/team/grant`, requestOptions);
         return response.then(res => res.json());
     }
 
@@ -519,6 +628,7 @@ async function apiChangePlugGrant(grant) {
     function apiFetchChangePlugGrant() {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify(grant);
 
@@ -527,7 +637,7 @@ async function apiChangePlugGrant(grant) {
             headers: myHeaders,
             body: raw,
         };
-        const response = fetch(`${host}/auth/change/plug/grant`, requestOptions);
+        const response = fetch(`${host}/global/change/plug/grant`, requestOptions);
         return response.then(res => res.json());
     }
 
@@ -544,6 +654,7 @@ async function apiDeletePlugGrant(grant) {
     function apiFetchDeletePlugGrant(grant) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify(grant);
 
@@ -552,7 +663,7 @@ async function apiDeletePlugGrant(grant) {
             headers: myHeaders,
             body: raw,
         };
-        const response = fetch(`${host}/auth/delete/plug/grant`, requestOptions);
+        const response = fetch(`${host}/global/delete/plug/grant`, requestOptions);
         return response.then(res => res.json());
     }
 
@@ -569,6 +680,7 @@ async function apiAddPlugGrant(grant) {
     function apiFetchAddPlugGrant(grant) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
 
         let raw = JSON.stringify(grant);
 
@@ -577,7 +689,7 @@ async function apiAddPlugGrant(grant) {
             headers: myHeaders,
             body: raw,
         };
-        const response = fetch(`${host}/auth/add/plug/grant`, requestOptions);
+        const response = fetch(`${host}/global/add/plug/grant`, requestOptions);
         return response.then(res => res.json());
     }
 
@@ -594,6 +706,7 @@ async function apiGetPlugs() {
     function apiFetchGetPlugs() {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", 'application/json');
+        myHeaders.append("Content-Api", tokenGenerator(8));
         let requestOptions = {
             method: 'GET',
             headers: myHeaders,

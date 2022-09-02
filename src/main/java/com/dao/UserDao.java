@@ -51,4 +51,28 @@ public class UserDao {
     public void changeUserMarketingAgree(int userNo, boolean marketingAgree) {
         mapper.changeUserMarketingAgree(userNo, marketingAgree);
     }
+
+    public User getModalMyInfo(int userNo) {
+        return mapper.getModalMyInfo(userNo);
+    }
+
+    public void changeUserEmail(int userNo, String email) {
+        mapper.changeUserEmail(userNo, email);
+    }
+
+    public boolean checkUserEmailExists(int userNo, String email) {
+        return mapper.checkOtherUserEmailExists(userNo, email);
+    }
+
+    public boolean checkUserPhoneExists(int userNo, String phone) {
+        return mapper.checkUserPhoneExists(userNo, phone);
+    }
+
+    public boolean checkUserPasswordValid(int userNo, String password) {
+        return mapper.checkUserPasswordValid(userNo, password);
+    }
+
+    public void changeWithdrawal(int userNo) {
+        mapper.changeWithdrawal(userNo);
+    }
 }

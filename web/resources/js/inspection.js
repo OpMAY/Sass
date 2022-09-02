@@ -140,3 +140,7 @@ function inspection
         throw new Error(e);
     }
 }
+
+function isEmpty(value) {
+    return value.trim().length === 0;
+}

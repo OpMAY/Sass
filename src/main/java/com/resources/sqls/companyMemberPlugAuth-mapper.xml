@@ -3,4 +3,51 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.CompanyMemberPlugAuthMapper">
+    <update id="updateUserReadAuth">
+        update company_member_plug_auth
+        SET read_auth   = !read_auth,
+            edit_auth   = if(read_auth, edit_auth, false),
+            revise_date = now()
+        WHERE member_no = #{member_no}
+          AND plug_no = (select plug_no from plugin WHERE type = #{plugin})
+    </update>
+    <update id="updateUserEditAuth">
+        update company_member_plug_auth
+        SET edit_auth   = !edit_auth,
+            read_auth   = if(edit_auth, true, edit_auth),
+            revise_date = now()
+        WHERE member_no = #{member_no}
+          AND plug_no = (select plug_no from plugin WHERE type = #{plugin})
+    </update>
+    <delete id="deletePlugGrant">
+        delete
+        from company_member_plug_auth
+        WHERE member_no = #{member_no}
+          AND plug_no = (select plug_no from plugin WHERE type = #{plugin})
+    </delete>
+    <insert id="addPlugGrant">
+        insert into company_member_plug_auth(member_no, company_no, plug_no, edit_auth, read_auth, reg_datetime,
+                                             revise_date)
+        VALUES (#{member_no}, (select company_no from company_member WHERE no = #{member_no}), #{plug_no},
+                (select edit_auth from company_member WHERE no = #{member_no}),
+                (select read_auth from company_member WHERE no = #{member_no}), NOW(),
+                NOW())
+    </insert>
+    <select id="getUserCorpPluginReadyMembers" resultType="CompanyMemberListData">
+        select company_member.no as member_no,
+               user_no,
+               company_no,
+               u.name,
+               u.email,
+               role,
+               edit_auth,
+               read_auth
+        from company_member
+                 left join user u on company_member.user_no = u.no
+        WHERE company_member.no not in
+              (select member_no
+               from company_member_plug_auth
+               WHERE company_member_plug_auth.company_no = #{companyNo}
+                 AND plug_no = #{plugNo})
+    </select>
 </mapper>

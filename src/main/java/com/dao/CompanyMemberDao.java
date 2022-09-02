@@ -2,10 +2,13 @@ package com.dao;
 
 import com.mapper.CompanyMemberMapper;
 import com.model.company.Company;
+import com.model.company.CompanyMember;
 import com.model.company.CompanyRole;
 import com.model.grant.ROLE;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class CompanyMemberDao {
@@ -31,20 +34,20 @@ public class CompanyMemberDao {
         return mapper.checkUserEditAuth(userNo, companyNo);
     }
 
-    public void updateUserReadAuth(int userNo, int companyNo) {
-        mapper.updateUserReadAuth(userNo, companyNo);
+    public void updateUserReadAuth(int userNo) {
+        mapper.updateUserReadAuth(userNo);
     }
 
-    public void updateUserEditAuth(int userNo, int companyNo) {
-        mapper.updateUserEditAuth(userNo, companyNo);
+    public void updateUserEditAuth(int userNo) {
+        mapper.updateUserEditAuth(userNo);
     }
 
     public ROLE getUserRoleOfCompany(int userNo, int companyNo) {
         return mapper.getUserRoleOfCompany(userNo, companyNo);
     }
 
-    public void deleteUserMember(int userNo, int companyNo) {
-        mapper.deleteUserMember(userNo, companyNo);
+    public void deleteUserMember(int userNo) {
+        mapper.deleteUserMember(userNo);
     }
 
     public boolean checkUserHasCompany(int userNo) {
@@ -57,5 +60,9 @@ public class CompanyMemberDao {
 
     public void registerCompanyMaster(int companyNo, int userNo) {
         mapper.registerCompanyMaster(companyNo, userNo);
+    }
+
+    public List<CompanyMember> getCompanyMemberList(int companyNo) {
+        return mapper.getCompanyMemberList(companyNo);
     }
 }
