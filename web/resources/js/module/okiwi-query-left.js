@@ -556,3 +556,8 @@ function deleteTableListRowConnectable(table_id, row_id) {
         list_table_column.querySelector('._delete').click();
     }
 }
+
+function deleteTableList(table_id) {
+    const list_table = document.querySelector(`.table-list-component[data-table-id="${table_id}"]`);
+    list_table.remove();
+}

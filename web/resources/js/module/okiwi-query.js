@@ -1598,6 +1598,8 @@ const deleteTable = (table) => {
         return table.id === table_id ? false : true;
     });
     $table.remove();
+    // okiwi-query-left.js
+    deleteTableList(table_id);
     // api.js
     if (deleted_lines.length !== 0) {
         apiDisconnectLine(getURLParamByPrevAndNext('database', 'detail'), deleted_lines, () => {
