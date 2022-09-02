@@ -33,4 +33,6 @@ public interface UserMapper {
     boolean checkUserPasswordValid(@Param("userNo") int userNo,@Param("password") String password);
 
     void changeWithdrawal(int userNo);
+
+    User getUser(@Param("user_no")int user_no);
 }

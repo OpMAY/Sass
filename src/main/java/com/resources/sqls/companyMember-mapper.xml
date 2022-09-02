@@ -61,7 +61,7 @@
     <insert id="registerCompanyMaster">
         insert into company_member(user_no, company_no, role, edit_auth, read_auth, request_date, reg_datetime,
                                    revise_date)
-        VALUES (#{userNo}, #{companyNo}, 'MASTER', true, true, now(), now(), now())
+        VALUES (#{userNo}, #{companyNo}, 'OWNER', true, true, now(), now(), now())
     </insert>
     <select id="getCompanyMemberList" resultType="CompanyMemberListData">
         select company_member.no as member_no,

@@ -1,5 +1,10 @@
 package com.interceptor;
 
+import com.model.User;
+import com.service.CompanyService;
+import com.service.UserService;
+import com.util.Encryption.EncryptionService;
+import com.util.Encryption.JWTEnum;
 import com.util.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,11 +16,17 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class BaseInterceptor extends HandlerInterceptorAdapter {
+
+    private final UserService userService;
+    private final CompanyService companyService;
+    private final EncryptionService encryptionService;
+
     /**
      * Interceptor 사용할 경우
      * - 애플리케이션 로깅과 같은 교차 문제 처리
@@ -55,6 +66,13 @@ public class BaseInterceptor extends HandlerInterceptorAdapter {
          *../../../resources/js/theme/theme.js?vc=${RESOURCES_VERSION}
          * */
         request.setAttribute("RESOURCES_VERSION", TokenGenerator.RandomIntegerToken(7));
+        if (request.getSession().getAttribute(JWTEnum.JWTToken.name()) != null) {
+            HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+            User user = userService.getUser(Integer.parseInt(hashMap.get(JWTEnum.NO.name()).toString()));
+            user.set_company(companyService.checkUserHasCompany(user.getNo()));
+            String token = encryptionService.encryptJWT(user);
+            request.setAttribute(JWTEnum.JWTToken.name(), token);
+        }
         return super.preHandle(request, response, handler);
     }
 

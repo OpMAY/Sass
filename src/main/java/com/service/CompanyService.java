@@ -127,4 +127,8 @@ public class CompanyService {
         message.put("plugin_type", plugin_type);
         return message;
     }
+
+    public boolean checkUserHasCompany(int user_no) {
+        return companyMemberDao.checkUserHasCompany(user_no);
+    }
 }

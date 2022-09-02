@@ -49,8 +49,8 @@
     </update>
     <update id="changeUserMarketingAgree">
         update user
-        SET marketing_agree      = #{marketingAgree},
-            marketing_agree_date = IF(#{marketingAgree} = false, null, NOW())
+        SET marketing_agree      = #{marketing_agree},
+            marketing_agree_date = IF(#{marketing_agree} = false, null, NOW())
         WHERE no = #{userNo}
     </update>
     <select id="getModalMyInfo" resultType="User" resultMap="User">
@@ -79,4 +79,9 @@
         from user
         WHERE no = #{userNo}
     </delete>
+    <select id="getUser" resultType="User">
+        select *
+        from user
+        where no = #{user_no};
+    </select>
 </mapper>

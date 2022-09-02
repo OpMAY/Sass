@@ -161,4 +161,8 @@ public class UserService {
             return -1;
         }
     }
+
+    public User getUser(int user_no) {
+        return userDao.getUser(user_no);
+    }
 }
