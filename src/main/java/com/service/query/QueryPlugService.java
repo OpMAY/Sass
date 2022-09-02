@@ -10,6 +10,7 @@ import com.model.query.column.Column;
 import com.model.query.column.Line;
 import com.model.query.column.Position;
 import com.model.query.column.Relation;
+import com.response.Message;
 import com.util.query.ERDValidation;
 import com.util.query.QueryMaker;
 import lombok.AllArgsConstructor;
@@ -159,5 +160,20 @@ public class QueryPlugService {
 
     public ArrayList<DataBase> getDatabases(int company_no) {
         return dataBaseDao.getDatabases(company_no);
+    }
+
+    public Message checkDatabaseValid(int decryptedNo) {
+        Message message = new Message();
+        DataBase dataBase = getDataBase(decryptedNo);
+        ERDValidation erdValidation = new ERDValidation(dataBase, true);
+        if(erdValidation.checkAll()) {
+            QueryMaker queryMaker = new QueryMaker(dataBase);
+            String query = queryMaker.makeAllTableQuery();
+            message.put("query", query);
+        } else {
+            List<String> errorList = erdValidation.getErrorLogs();
+            message.put("errors", errorList);
+        }
+        return message;
     }
 }

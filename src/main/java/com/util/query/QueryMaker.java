@@ -22,6 +22,12 @@ public class QueryMaker {
 
     private final Map<String, Column> allColumnMap = new HashMap<>();
 
+    public QueryMaker(DataBase dataBase) {
+        allReset();
+        this.dataBase = dataBase;
+        this.filePath = "";
+    }
+
     public QueryMaker(DataBase dataBase, String filePath) {
         allReset();
         this.dataBase = dataBase;
@@ -179,7 +185,7 @@ public class QueryMaker {
             return "error";
         }
         String tableName = nTable.getName();
-        builder.append("-- '").append(tableName).append("' 테이블 생성 쿼리\n");
+        builder.append("-- '").append(tableName).append("' 테이블 생성 쿼리<br>");
         List<Column> columnList = nTable.getColumns();
         makeTableQuery(tableMap, builder, nTable, tableName, columnList);
 
@@ -187,9 +193,9 @@ public class QueryMaker {
     }
 
     private void makeTableQuery(Map<String, Table> tableMap, StringBuilder builder, Table nTable, String tableName, List<Column> columnList) {
-        builder.append("CREATE TABLE ").append(tableName).append("\n(\n");
+        builder.append("CREATE TABLE ").append(tableName).append("<br>(<br>");
         for (Column column : columnList) {
-            builder.append("\t").append(column.getName()).append(" ").append(column.getType());
+            builder.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(column.getName()).append(" ").append(column.getType());
             builder.append(column.getSize() != null && column.getSize() != 0 ? "(" + column.getSize() + ")" : "");
             builder.append(column.getDefault_value() != null ? (ERDValidation.checkDefaultValueIsExpression(column.getDefault_value()) ? " DEFAULT (" + column.getDefault_value() + ")" : " DEFAULT '" + column.getDefault_value() + "'") : "");
             builder.append(column.isNullable() ? " NULL" : " NOT NULL");
@@ -197,29 +203,32 @@ public class QueryMaker {
             builder.append(column.getComment() != null ? " COMMENT '" + column.getComment() + "'" : "");
             builder.append(column.isPk() ? " PRIMARY KEY" : "");
             if (!column.equals(columnList.get(columnList.size() - 1))) {
-                builder.append(",\n");
+                builder.append(",<br>");
             } else {
                 if (nTable.isHas_foreign_key()) {
+                    log.info("{}", 1);
                     List<Relation> relationList = dataBase.getRelations();
                     // 해당 테이블에서 Relation 찾기
                     for (Relation relation : relationList) {
+                        log.info("{}", 2);
                         if (relation.getMain_table().equals(nTable.getId())) {
+                            log.info("{}", 3);
                             // TODO SQL로 변경
                             String nowColumnName = allColumnMap.get(relation.getMain_column()).getName();
                             Table targetTable = tableMap.get(relation.getTarget_table());
                             String targetTableName = targetTable.getName();
                             String targetColumnName = allColumnMap.get(relation.getTarget_column()).getName();
 
-                            builder.append(",\n");
-                            builder.append("\tCONSTRAINT FK_" + tableName + "_" + nowColumnName + "_" + targetTableName + "_" + targetColumnName + "\n");
-                            builder.append("\t\tFOREIGN KEY (" + nowColumnName + ") REFERENCES " + targetTableName + " (" + targetColumnName + ")\n");
-                            builder.append("\t\t\tON UPDATE CASCADE ON DELETE CASCADE");
+                            builder.append(",<br>");
+                            builder.append("&nbsp;&nbsp;&nbsp;&nbsp;CONSTRAINT FK_" + tableName + "_" + nowColumnName + "_" + targetTableName + "_" + targetColumnName + "<br>");
+                            builder.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FOREIGN KEY (" + nowColumnName + ") REFERENCES " + targetTableName + " (" + targetColumnName + ")<br>");
+                            builder.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ON UPDATE CASCADE ON DELETE CASCADE");
                         }
                     }
                 }
             }
         }
-        builder.append("\n);\n\n");
+        builder.append("<br>);<br><br>");
     }
 
     private Map<String, Table> configTableMap(List<String> tableFormattedList) {
@@ -241,7 +250,7 @@ public class QueryMaker {
     private String makeCreateQuery(List<String> tableFormattedList) {
         log.info("tableFormattedList : {} -> ", tableFormattedList);
         StringBuilder builder = new StringBuilder();
-        builder.append("-- 쿼리 생성 테스트 시작\n");
+        builder.append("-- 쿼리 생성 테스트 시작<br>");
         Map<String, Table> tableMap = configTableMap(tableFormattedList);
 
         log.info("tableMap : {}", tableMap);
@@ -250,7 +259,7 @@ public class QueryMaker {
             Table table = entry.getValue();
             String nowTableName = table.getName();
             List<Column> columnList = table.getColumns();
-            builder.append("\n-- Table ").append(nowTableName).append(" create Start\n");
+            builder.append("<br>-- Table ").append(nowTableName).append(" create Start<br>");
             makeTableQuery(tableMap, builder, table, nowTableName, columnList);
         }
 

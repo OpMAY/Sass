@@ -488,4 +488,11 @@ public class QueryPlugRestController {
         message.put("database", dataBase);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/get/database/validation/{id}", method = RequestMethod.GET)
+    public ResponseEntity<String> getDatabaseValidation(HttpServletRequest request, @PathVariable String id) throws Exception {
+        int decryptedNo = Integer.parseInt(encryptionService.decryptAES(id));
+        Message message = queryPlugService.checkDatabaseValid(decryptedNo);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
 }

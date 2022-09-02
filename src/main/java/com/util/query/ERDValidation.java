@@ -18,6 +18,9 @@ import java.util.*;
 public class ERDValidation {
 
     private final DataBase dataBase;
+    private final boolean logging;
+
+    private final List<String> errorLogs = new ArrayList<>();
 
     private final Map<String, Column> allColumnMap = new HashMap<>();
 
@@ -25,13 +28,25 @@ public class ERDValidation {
 
     private final Map<String, List<String>> columnRelationTableMap = new HashMap<>();
 
+
     public ERDValidation(DataBase dataBase) {
         allReset();
         this.dataBase = dataBase;
+        this.logging = false;
+    }
+
+    public ERDValidation(DataBase dataBase, boolean logging) {
+        allReset();
+        this.dataBase = dataBase;
+        this.logging = logging;
     }
 
     public Map<String, Column> getAllColumnMap() {
         return allColumnMap;
+    }
+
+    public List<String> getErrorLogs() {
+        return errorLogs;
     }
 
     public boolean checkAll() {
@@ -79,19 +94,21 @@ public class ERDValidation {
     private void allReset() {
         this.columnRelationMap.clear();
         this.allColumnMap.clear();
+        this.errorLogs.clear();
     }
 
     /**
      * 컬럼 Validation Check
+     *
+     * @param column : Column
+     * @return boolean
+     * @author OpMAY
      * @see ERDValidation#checkPrimaryKeyValid(Column)
      * @see ERDValidation#checkNameValid(String)
      * @see ERDValidation#checkColumnSizeValid(Column)
      * @see ERDValidation#checkColumnDefaultValue(Column)
      * @see ERDValidation#autoIncrementRuleCheck(Column)
-     * @param column : Column
-     * @return boolean
-     * @author OpMAY
-     * **/
+     **/
     private boolean checkColumnValid(Column column) {
         /**
          * TODO Column Valid Check (PK, name, defaultValue, size, FK)
@@ -104,11 +121,31 @@ public class ERDValidation {
         boolean b = checkNameValid(column.getName());
         // size Validation
         boolean c = checkColumnSizeValid(column);
-        // defaultValue Validation
+        // defaultValue Validation (Not Use)
         boolean d = checkColumnDefaultValue(column);
         // A.I Validation
         boolean e = autoIncrementRuleCheck(column);
-        return a && b && c && d&& e;
+
+        boolean result = a && b && c && e;
+        if (!result && logging) {
+            StringBuilder errBuilder = new StringBuilder();
+            errBuilder.append("Error Column : ").append(column.getName());
+            errBuilder.append("\nError Type");
+            if (!a) {
+                errBuilder.append("\nPrimary Key의 조건이 맞지 않습니다.");
+            }
+            if (!b) {
+                errBuilder.append("\n컬럼 명의 조건이 맞지 않습니다. 컬럼 명 길이 : ").append(column.getName().length());
+            }
+            if (!c) {
+                errBuilder.append("\n컬럼 사이즈가 type의 조건에 올바르지 않습니다. 컬럼 type : ").append(column.getType()).append(", 컬럼 사이즈 설정 가능 여부 : ").append(column.getType().isHasSizeParameter()).append(", 컬럼 사이즈 최대 길이 : ").append(column.getType().getSizeParameterMax());
+            }
+            if (!e) {
+                errBuilder.append("\nauto_increment 컬럼의 조건이 맞지 않습니다. Number Type 컬럼만 가능합니다, 현재 Type : ").append(column.getType());
+            }
+            errorLogs.add(errBuilder.toString());
+        }
+        return result;
     }
 
     private boolean autoIncrementRuleCheck(Column column) {
@@ -130,7 +167,7 @@ public class ERDValidation {
         Column mainColumn = allColumnMap.get(relation.getMain_column());
         log.info("checking relation valid : {} => {} ...", mainColumn.getId(), targetColumn.getId());
         columnRelationMap.put(mainColumn.getId(), targetColumn.getId());
-        if(columnRelationTableMap.containsKey(relation.getMain_table())) {
+        if (columnRelationTableMap.containsKey(relation.getMain_table())) {
             List<String> list = columnRelationTableMap.get(relation.getMain_table());
             list.add(relation.getTarget_table());
             columnRelationTableMap.replace(relation.getMain_table(), list);
@@ -142,6 +179,9 @@ public class ERDValidation {
         // 1
         if (targetColumn.getType() != mainColumn.getType() && !Objects.equals(targetColumn.getSize(), mainColumn.getSize())) {
             log.info("FK 참조를 하려는 컬럼 간의 타입이 맞지 않습니다.\n{} : {}({}) => {} : {}({})", mainColumn.getId(), mainColumn.getType(), mainColumn.getSize(), targetColumn.getId(), targetColumn.getType(), targetColumn.getSize());
+            if (logging) {
+                errorLogs.add("FK 참조를 하려는 컬럼 간의 타입이 맞지 않습니다.\n" + mainColumn.getName() + ":" + mainColumn.getType() + "(" + mainColumn.getSize() + ") => " + targetColumn.getName() + " : " + targetColumn.getType() + "(" + targetColumn.getSize() + ")");
+            }
             return false;
         }
 
@@ -152,18 +192,21 @@ public class ERDValidation {
              * 2. targetColumn이 이미 mainColumn을 FK 걸어놨을 때
              * **/
             log.info("서로 참조는 불가능합니다. {}, {}", mainColumn.getId(), targetColumn.getId());
+            if (logging) {
+                errorLogs.add("서로 참조는 불가능합니다. " + mainColumn.getName() + ", " + targetColumn.getName());
+            }
             return false;
         }
 
         // 4
-        if (!targetColumn.is_unique()) {
-            /**
-             * Unique 컬럼에만 FK 참조 가능
-             *  PrimaryKey는 checkPrimaryKeyValid() 함수를 통해 Unique 검증을 하므로 따로 조건 X
-             * **/
-            log.info("Unique 속성이 있는 컬럼에만 FK 참조가 가능합니다. target : {} => unique : {}", targetColumn.getId(), targetColumn.is_unique());
-            return false;
-        }
+//        if (!targetColumn.is_unique()) {
+//            /**
+//             * Unique 컬럼에만 FK 참조 가능
+//             *  PrimaryKey는 checkPrimaryKeyValid() 함수를 통해 Unique 검증을 하므로 따로 조건 X
+//             * **/
+//            log.info("Unique 속성이 있는 컬럼에만 FK 참조가 가능합니다. target : {} => unique : {}", targetColumn.getId(), targetColumn.is_unique());
+//            return false;
+//        }
 
         // 5 - X
 
@@ -171,15 +214,19 @@ public class ERDValidation {
     }
 
     private boolean checkPrimaryKeyValid(Column column) {
-        return column.is_unique()
-                && !column.isNullable()
+        return !column.isNullable()
                 && primaryAvailableTypes.contains(column.getType());
+
+//        column.is_unique()
+//                &&
     }
 
     /**
      * Name Valid Check
-     * @code
-     * Identifier                      Maximum Length (characters)<br><hr>
+     *
+     * @param name : String
+     * @return Boolean
+     * @code Identifier                      Maximum Length (characters)<br><hr>
      * Database                        64<br>
      * Table                           64<br>
      * Column                          64<br>
@@ -190,10 +237,8 @@ public class ERDValidation {
      * View                            64<br>
      * Alias                           256<br>
      * Compound Statement Label        16<br>
-     * @param name : String
-     * @return Boolean
      * @author OpMAY
-     * **/
+     **/
     private boolean checkNameValid(String name) {
         log.info("checkNameValid - name.length : {}", name.length());
         // MySQL 기준 모든 table, column 최대 길이 64
@@ -202,7 +247,7 @@ public class ERDValidation {
     }
 
     private boolean checkColumnSizeValid(Column column) {
-        if (column.getSize() != null) {
+        if (column.getSize() != null && column.getSize() != 0) {
             if (!column.getType().isHasSizeParameter()) {
                 log.info("Type '{}' can not get Size Parameter", column.getType().name());
                 return false;

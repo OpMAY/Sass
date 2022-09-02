@@ -381,3 +381,25 @@ async function apiCreateDatabase() {
         console.log(error);
     }
 }
+
+async function apiQueryCreateSQL(id) {
+    function apiFetchQueryCreateSQL(id) {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", 'application/json');
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+        const response = fetch(`${host}/query/get/database/validation/${id}`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchQueryCreateSQL(id);
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
