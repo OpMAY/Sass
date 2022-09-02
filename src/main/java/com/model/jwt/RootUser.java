@@ -11,4 +11,5 @@ public abstract class RootUser extends Time {
     private String access_token;
     private String email;
     private int no;
+    private boolean is_company = false;
 }

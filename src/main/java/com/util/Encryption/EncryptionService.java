@@ -53,6 +53,9 @@ public class EncryptionService implements Encrypt {
         if (jwt.getClaim(JWTEnum.NO.name()) != null) {
             hashMap.put(JWTEnum.NO.name(), jwt.getClaim(JWTEnum.NO.name()).asInt());
         }
+        if (jwt.getClaim(JWTEnum.COMPANY.name()) != null) {
+            hashMap.put(JWTEnum.COMPANY.name(), jwt.getClaim(JWTEnum.COMPANY.name()).asBoolean().booleanValue());
+        }
 
         return hashMap;
     }
@@ -66,6 +69,7 @@ public class EncryptionService implements Encrypt {
                     .withClaim(JWTEnum.VERSION.name(), Constant.VERSION)
                     .withClaim(JWTEnum.TOKEN.name(), user.getAccess_token())
                     .withClaim(JWTEnum.EMAIL.name(), user.getEmail())
+                    .withClaim(JWTEnum.COMPANY.name(),user.is_company())
                     .withClaim(JWTEnum.NO.name(), user.getNo())
                     .withClaim(JWTEnum.SIGNATURE.name(), encryptSHA256("secret"))
                     .withIssuer("auth0")

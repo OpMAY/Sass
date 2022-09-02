@@ -5,7 +5,7 @@
 <mapper namespace="com.mapper.CompanyMapper">
     <insert id="registerCompany" useGeneratedKeys="true" keyProperty="no">
         insert into company(company_id, business_code, name, reg_datetime)
-        VALUES (#{companyID}, #{businessCode}, #{name}, NOW())
+        VALUES (#{company_id}, #{business_code}, #{name}, NOW())
     </insert>
     <select id="checkCompanyNameExists" resultType="_boolean">
         select EXISTS(select * from company WHERE name = #{name})
@@ -16,9 +16,9 @@
     <select id="getCompanyByCompanyID" resultType="Company">
         select *
         from company
-        WHERE company_id = #{companyID}
+        WHERE company_id = #{company_id}
     </select>
     <select id="checkCompanyIdValid" resultType="_boolean">
-        select !EXISTS(select * from company WHERE company_id = #{companyId})
+        select !EXISTS(select * from company WHERE company_id = #{company_id})
     </select>
 </mapper>

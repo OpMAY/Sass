@@ -1038,7 +1038,6 @@ $(document).ready(function () {
                 if (result.data.register_status !== undefined && result.data.register_status !== null && result.data.register_status) {
                     alert('회원가입 완료');
                     $('#register-modal').modal('hide');
-                    $('#corporation-type-modal').modal('show');
                 } else {
                     alert('이미 등록된 회원입니다.');
                 }
