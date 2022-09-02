@@ -295,13 +295,21 @@ const initializeTableOptions = (selector) => {
                 const update_value = name_element.querySelector('input').value;
                 const table = findTableById(draggable_tables, name_element.querySelector('input').dataset.tableId);
                 // okiwi-query-left.js
-                updateTableListName(name_element.querySelector('input').dataset.tableId, update_value);
-                name_element.innerHTML = `${update_value}`;
-                table.name = `${update_value}`;
-                // apis.js
-                apiUpdateTable(getURLParamByPrevAndNext('database', 'detail'), table.id, {name: `${update_value}`}, () => {
-                }, () => {
-                });
+                if (findTableByName(draggable_tables, update_value).length !== 0) {
+                    alert('테이블의 이름이 다른 테이블과 중복됩니다. 다시 입력해주세요.');
+                    return;
+                }
+                if (update_value.length !== 0 && (update_value.length >= 2 && update_value.length < 64) && !update_value.includes(' ')) {
+                    updateTableListName(name_element.querySelector('input').dataset.tableId, update_value);
+                    name_element.innerHTML = `${update_value}`;
+                    table.name = `${update_value}`;
+                    // apis.js
+                    apiUpdateTable(getURLParamByPrevAndNext('database', 'detail'), table.id, {name: `${update_value}`}, () => {
+                    }, () => {
+                    });
+                } else {
+                    alert('테이블 이름은 최소 2글자 최대 63자 까지 설정이 가능합니다.');
+                }
             });
         } else if (this.classList.contains('_duplicate')) {
             // TODO Duplicate
@@ -1028,7 +1036,7 @@ const createTableRowElement = (table, index, is_simple = false) => {
               <td class="_ai not-draggable ${column.auto_increment === true ? 'is-checked' : ''}" ${is_simple ? 'style="display: none;"' : ''}>${column.auto_increment === true ? createTableCheckboxElement() : createTableCheckboxElement()}</td>
               <td class="_null not-draggable ${column.nullable === true ? 'is-checked' : ''}" ${is_simple ? 'style="display: none;"' : ''}>${column.nullable === true ? createTableCheckboxElement() : createTableCheckboxElement()}</td>
               <td class="_column-name not-draggable">
-                  <input oninput="inputTableListChangeConnectable(this)" type="text" name="${table.id}__${table.name}__name" value="${column.name}"/>
+                  <input oninput="inputTableListChangeConnectable(this)" type="text" maxlength="32" name="${table.id}__${table.name}__name" value="${column.name}"/>
               </td>
               <td class="_type not-draggable" ${is_simple ? 'style="display: none;"' : ''}>
                 <div class="autocomplete">
@@ -1187,11 +1195,16 @@ const initializeTableRowDrag = (table_rows) => {
     // Drag Row Event Listener로 대체 요구
     $(table_rows).draggable({
         opacity: 0.6, helper: 'clone', cancel: '.not-draggable', start: function (e, ui) {
-            ui.position.left = 0;
-            ui.position.top = 0;
-            ui.helper.addClass('is-selected');
-            const dragged_item = e.target;
-            return true;
+            let lines = findLineRowByTo(leader_lines, $(this));
+            if (lines.length === 0) {
+                ui.position.left = 0;
+                ui.position.top = 0;
+                ui.helper.addClass('is-selected');
+                return true;
+            } else {
+                alert('이미 참조되어 있는 컬럼입니다.');
+                return false;
+            }
         }, drag: function (e, ui) {
             const scale = parseFloat(document.querySelector('._right-option._scale-up').dataset.scale);
             // console.log('drag', e, ui);
@@ -1208,6 +1221,10 @@ const initializeTableRowDrag = (table_rows) => {
     });
     $(table_rows).droppable({
         drop: function (event, ui) {
+            /**
+             * Type 일치
+             * PK 여부 확인
+             * */
             const dropped_item = this;
             const dragged_item = ui.draggable;
 
@@ -1223,31 +1240,56 @@ const initializeTableRowDrag = (table_rows) => {
             // 이후 .is-selected 제거
             const to_row = dragged_item[0];
             const from_row = dropped_item;
-            const options = {
-                path: 'fluid', color: '#969696', dash: {len: 5, gap: 2},
-            };
-            const info_line = {
-                to: `${dragged_item[0].dataset.tableId}`,
-                to_row: `${dragged_item[0].dataset.tableRow}`,
-                from: `${dropped_item.dataset.tableId}`,
-                from_row: `${dropped_item.dataset.tableRow}`,
-            };
-            const leader_line_obj = createLine(leader_lines, to_row, from_row, options, info_line);
-            if (dragged_item[0].classList.contains('is-selected')) {
-                dragged_item[0].classList.remove('is-selected');
-            }
-            if (dropped_item.classList.contains('is-selected')) {
-                dropped_item.classList.remove('is-selected');
-            }
+            let to_row_object = findTableRowById(to_row.dataset.tableId, to_row.dataset.tableRow);
+            let from_row_object = findTableRowById(from_row.dataset.tableId, from_row.dataset.tableRow);
+            let from_lines = findLineRowByTo(leader_lines, $(from_row));
+            let check = false;
+            from_lines.forEach(function (line) {
+                if (line.info_line.from_row === to_row_object.id && line.info_line.to_row === from_row_object.id) {
+                    check = true;
+                }
+            });
+            if (check) {
+                if (this.classList.contains('is-selected')) {
+                    this.classList.remove('is-selected');
+                }
+                alert('순환참조는 불가능 합니다.');
+            } else if (from_row_object.pk !== true) {
+                if (this.classList.contains('is-selected')) {
+                    this.classList.remove('is-selected');
+                }
+                alert('연결 대상 컬럼이 Primary Key여야만 합니다.');
+            } else if (!to_row_object.type.toUpperCase().includes(from_row_object.type.toUpperCase())) {
+                if (this.classList.contains('is-selected')) {
+                    this.classList.remove('is-selected');
+                }
+                alert('연결하려는 컬럼의 타입이 동일해야합니다.');
+            } else {
+                const options = {
+                    path: 'fluid', color: '#969696', dash: {len: 5, gap: 2},
+                };
+                const info_line = {
+                    to: `${dragged_item[0].dataset.tableId}`,
+                    to_row: `${dragged_item[0].dataset.tableRow}`,
+                    from: `${dropped_item.dataset.tableId}`,
+                    from_row: `${dropped_item.dataset.tableRow}`,
+                };
+                const leader_line_obj = createLine(leader_lines, to_row, from_row, options, info_line);
+                if (dragged_item[0].classList.contains('is-selected')) {
+                    dragged_item[0].classList.remove('is-selected');
+                }
+                if (dropped_item.classList.contains('is-selected')) {
+                    dropped_item.classList.remove('is-selected');
+                }
 
-            updateLine(leader_line_obj);
+                updateLine(leader_line_obj);
 
-            $(dropped_item).effect('highlight', {}, 500, effectHighlightCallback);
+                $(dropped_item).effect('highlight', {}, 500, effectHighlightCallback);
 
-            const button_fk = to_row.querySelector(`._fk[data-status="open"]`);
-            if (button_fk !== undefined && button_fk !== null) {
-                button_fk.setAttribute('data-status', 'close');
-                button_fk.innerHTML = `<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                const button_fk = to_row.querySelector(`._fk[data-status="open"]`);
+                if (button_fk !== undefined && button_fk !== null) {
+                    button_fk.setAttribute('data-status', 'close');
+                    button_fk.innerHTML = `<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                                        <g clip-path="url(#clip0_6_4459)">
                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M6.85575 6.8558C3.65198 10.0596 3.65198 15.2542 6.85575 18.4579C10.0595 21.6617 15.2541 21.6617 18.4579 18.4579C21.6616 15.2542 21.6616 10.0596 18.4579 6.8558C15.2541 3.65203 10.0595 3.65203 6.85575 6.8558ZM15.2937 14.239C15.4335 14.3788 15.5121 14.5685 15.5121 14.7663C15.5121 14.9641 15.4335 15.1538 15.2937 15.2937C15.1538 15.4336 14.9641 15.5121 14.7663 15.5122C14.5685 15.5122 14.3788 15.4336 14.2389 15.2937L12.6568 13.7116L11.0747 15.2937C10.9348 15.4336 10.7451 15.5121 10.5473 15.5121C10.3495 15.5121 10.1598 15.4336 10.02 15.2937C9.8801 15.1538 9.80152 14.9641 9.80152 14.7663C9.80152 14.5685 9.8801 14.3788 10.02 14.239L11.6021 12.6569L10.02 11.0748C9.8801 10.9349 9.80152 10.7452 9.80152 10.5474C9.80152 10.3496 9.8801 10.1599 10.02 10.02C10.1598 9.88015 10.3495 9.80157 10.5473 9.80157C10.7451 9.80157 10.9348 9.88015 11.0747 10.02L12.6568 11.6021L14.2389 10.02C14.3788 9.88015 14.5685 9.80157 14.7663 9.80157C14.9641 9.80157 15.1538 9.88015 15.2937 10.02C15.4335 10.1599 15.5121 10.3496 15.5121 10.5474C15.5121 10.7452 15.4335 10.9349 15.2937 11.0748L13.7115 12.6569L15.2937 14.239Z" fill="#F08705"></path>
                                        </g>
@@ -1257,6 +1299,7 @@ const initializeTableRowDrag = (table_rows) => {
                                            </clipPath>
                                        </defs>
                                    </svg>`;
+                }
             }
         }, over: function () {
             if (!this.classList.contains('is-selected')) {
@@ -1377,18 +1420,23 @@ function tableRowSelectEventListener(event) {
                         break;
                     case '_pk':
                         // _pk setting(checkbox)
-                        if (write_target.classList.contains('is-checked')) {
-                            write_target.classList.remove('is-checked');
-                            table_row.column_pk = false;
+                        if (table_row.pk === false && table_row.nullable === true) {
+                            alert('해당 컬럼에 Primary Key를 설정하시려면 Null을 해제해주세요.');
+                            break;
                         } else {
-                            write_target.classList.add('is-checked');
-                            table_row.column_pk = true;
+                            if (write_target.classList.contains('is-checked')) {
+                                write_target.classList.remove('is-checked');
+                                table_row.column_pk = false;
+                            } else {
+                                write_target.classList.add('is-checked');
+                                table_row.column_pk = true;
+                            }
+                            table_row.pk = table_row.column_pk;
+                            apiUpdateTableRow(getURLParamByPrevAndNext('database', 'detail'), table_row_element.dataset.tableId, table_row, () => {
+                            }, () => {
+                            });
+                            break;
                         }
-                        table_row.pk = table_row.column_pk;
-                        apiUpdateTableRow(getURLParamByPrevAndNext('database', 'detail'), table_row_element.dataset.tableId, table_row, () => {
-                        }, () => {
-                        });
-                        break;
                     case '_ai':
                         // auto increment setting(checkbox)
                         if (write_target.classList.contains('is-checked')) {
@@ -1405,18 +1453,23 @@ function tableRowSelectEventListener(event) {
                         break;
                     case '_null':
                         // nullable setting(checkbox)
-                        if (write_target.classList.contains('is-checked')) {
-                            write_target.classList.remove('is-checked');
-                            table_row.column_nullable = false;
+                        if (table_row.pk === true && table_row.nullable === false) {
+                            alert('해당 컬럼에 Null을 설정하시려면 Primary Key를 해제해주세요.');
+                            break;
                         } else {
-                            write_target.classList.add('is-checked');
-                            table_row.column_nullable = true;
+                            if (write_target.classList.contains('is-checked')) {
+                                write_target.classList.remove('is-checked');
+                                table_row.column_nullable = false;
+                            } else {
+                                write_target.classList.add('is-checked');
+                                table_row.column_nullable = true;
+                            }
+                            table_row.nullable = table_row.column_nullable;
+                            apiUpdateTableRow(getURLParamByPrevAndNext('database', 'detail'), table_row_element.dataset.tableId, table_row, () => {
+                            }, () => {
+                            });
+                            break;
                         }
-                        table_row.nullable = table_row.column_nullable;
-                        apiUpdateTableRow(getURLParamByPrevAndNext('database', 'detail'), table_row_element.dataset.tableId, table_row, () => {
-                        }, () => {
-                        });
-                        break;
                     case '_column-name':
                         // column name setting
                         focusInputLastCarret({id: undefined, selector: 'input', root: write_target});
