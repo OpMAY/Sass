@@ -368,13 +368,21 @@ function updateTableName(option) {
     const btn_create = list_table.querySelector('._option._create');
     const btn_dropdown = list_table.querySelector('._option._dropdown');
     // $(btn_create).show();
-    $(btn_dropdown).show();
     let updated_value = input_element.value;
-    // okiwi-query.js
-    updateTableNameConnectable(draggable_tables, list_table.dataset.tableId, updated_value);
+    if (findTableByName(draggable_tables, updated_value).length !== 0) {
+        alert('테이블의 이름이 다른 테이블과 중복됩니다. 다시 입력해주세요.');
+        return;
+    }
+    if (updated_value.length !== 0 && (updated_value.length >= 2 && updated_value.length < 64) && !updated_value.includes(' ')) {
+        $(btn_dropdown).show();
+        // okiwi-query.js
+        updateTableNameConnectable(draggable_tables, list_table.dataset.tableId, updated_value);
 
-    title_element.innerHTML = `${updated_value}`;
-    option.remove();
+        title_element.innerHTML = `${updated_value}`;
+        option.remove();
+    } else {
+        alert('테이블 이름은 최소 2글자 최대 63자 까지 설정이 가능합니다.');
+    }
 }
 
 /**
@@ -396,6 +404,12 @@ function createTableListColumn(option) {
     writable_column.querySelector('._check').addEventListener('click', function (event) {
         const li = this.closest('li');
         const input = li.querySelector('input');
+        let regex = findRegex('column_name');
+        if (input.value.trim().length < 2 || !regex.test(input.value.trim())) {
+            input.value = input.value.replace(findRegex('column_name_replace'), '');
+            alert('컬럼 이름은 영문 대소문자 포함 2 ~ 32글자 사이에 입력이 가능합니다.');
+            return;
+        }
         li.innerHTML = `<div class="_name">${input.value}</div>
                         <div class="_delete">
                           <svg width="10"
@@ -436,7 +450,7 @@ const createTableList = (selector, writable = undefined) => {
             name: 'no',
             type: 'INT',
             comment: '',
-            pk: false,
+            pk: true,
             nullable: false,
             auto_increment: false,
         }],
@@ -501,6 +515,10 @@ const createTableListRowConnectable = (draggable_table, row) => {
  * @param {HTMLInputElement | Node} input 삭제옵션이 담긴 엘리먼트, 자기자신(this)
  * */
 function inputTableListChangeConnectable(input) {
+    let regex = findRegex('column_name')
+    if (!regex.test(input.value.trim())) {
+        input.value = input.value.replace(findRegex('column_name_replace'), '');
+    }
     const table_row_element = input.closest('[data-table-id][data-table-row]');
     const list_table = document.querySelector(`.table-list-component[data-table-id="${table_row_element.dataset.tableId}"]`);
     const list_table_column_name = list_table.querySelector(`.card-body .list-group .list-group-item[data-table-row="${table_row_element.dataset.tableRow}"] ._name`);

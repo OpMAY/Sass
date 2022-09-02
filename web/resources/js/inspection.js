@@ -67,6 +67,10 @@ function findRegex(type) {
             return /^(\d{3})+[-]+(\d{2})+[-]+(\d{5})/gm;
         case 'company': //법인 사업자 등록 번호
             return /^(\d{6})+[-]+(\d{7})/gm;
+        case 'column_name' :
+            return /^[a-zA-Z|_]{0,32}$/g;
+        case 'column_name_replace' :
+            return /([^a-zA-Z|_])*$/gm;
         default:
             throw new Error(`${type} is not define`);
     }

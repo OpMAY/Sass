@@ -748,6 +748,7 @@
 <script src="../../../resources/js/module/sample.js"></script>
 <script src="../../../resources/js/inspection.js"></script>
 <script src="../../../resources/js/validation.js"></script>
+<script src="../../../resources/js/query/validation.js"></script>
 <!-- UI Draggable Lib -->
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <!-- UI Arrow Line Lib -->
@@ -836,7 +837,7 @@
                 name: table_id,
                 columns: [{
                     id: row_id,
-                    name: 'no', type: 'INT', comment: '', pk: false,
+                    name: 'no', type: 'INT', comment: '', pk: true,
                     auto_increment: false, nullable: false
                 }]
             }
