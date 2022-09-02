@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class CompanyMemberPlugAuth {
-    private int user_no;
+    private int member_no;
     private int company_no;
     private int plug_no;
     private boolean edit_auth;

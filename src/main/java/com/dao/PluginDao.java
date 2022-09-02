@@ -31,4 +31,8 @@ public class PluginDao {
     public List<CompanyPluginListData> getCompanyPlugs(int companyNo) {
         return mapper.getCompanyPlugs(companyNo);
     }
+
+    public PLUGIN_TYPE getPlugType(int plugNo) {
+        return mapper.getPlugType(plugNo);
+    }
 }

@@ -17,13 +17,13 @@ public interface CompanyMemberMapper {
 
     boolean checkUserEditAuth(@Param("userNo") int userNo, @Param("companyNo") int companyNo);
 
-    void updateUserReadAuth(@Param("userNo") int userNo, @Param("companyNo") int companyNo);
+    void updateUserReadAuth(@Param("userNo") int userNo);
 
-    void updateUserEditAuth(@Param("userNo") int userNo, @Param("companyNo") int companyNo);
+    void updateUserEditAuth(@Param("userNo") int userNo);
 
     ROLE getUserRoleOfCompany(@Param("userNo") int userNo, @Param("companyNo") int companyNo);
 
-    void deleteUserMember(@Param("userNo") int userNo, @Param("companyNo") int companyNo);
+    void deleteUserMember(@Param("userNo") int userNo);
 
     boolean checkUserHasCompany(@Param("userNo") int userNo);
 

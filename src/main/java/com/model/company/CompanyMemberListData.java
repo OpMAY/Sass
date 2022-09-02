@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class CompanyMemberListData {
+    private int member_no;
     private int user_no;
     private int company_no;
     private String name;

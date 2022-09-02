@@ -14,4 +14,6 @@ public interface PluginMapper {
     Plugin getPlug(@Param("type") PLUGIN_TYPE type);
 
     List<CompanyPluginListData> getCompanyPlugs(int companyNo);
+
+    PLUGIN_TYPE getPlugType(int plugNo);
 }

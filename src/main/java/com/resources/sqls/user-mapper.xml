@@ -4,7 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.UserMapper">
     <resultMap id="User" type="com.model.User">
-        <result column="profile_img" property="profile_img" javaType="com.model.common.MFile" typeHandler="com.middleware.JsonObjectTypeHandler"/>
+        <result column="profile_img" property="profile_img" javaType="com.model.common.MFile"
+                typeHandler="com.middleware.JsonObjectTypeHandler"/>
     </resultMap>
     <select id="checkUserExists" resultType="_boolean">
         select EXISTS(select * from user WHERE email = #{email} OR phone = #{phone})
@@ -57,4 +58,25 @@
         from user
         WHERE no = #{userNo}
     </select>
+    <update id="changeUserEmail">
+        update user
+        SET email = #{email}
+        WHERE no = #{userNo}
+    </update>
+    <select id="checkOtherUserEmailExists" resultType="_boolean">
+        select EXISTS(select * from user WHERE no != #{userNo} AND email = #{email})
+    </select>
+    <select id="checkUserPhoneExists" resultType="_boolean">
+        select EXISTS(select * from user WHERE no != #{userNo} AND phone = #{phone})
+    </select>
+    <select id="checkUserPasswordValid" resultType="_boolean">
+        select password = aes_decrypt(unhex(#{password}), 'okiwi')
+        from user
+        WHERE no = #{userNo}
+    </select>
+    <delete id="changeWithdrawal">
+        delete
+        from user
+        WHERE no = #{userNo}
+    </delete>
 </mapper>

@@ -154,32 +154,15 @@ public class AuthRestController {
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/get/myCorp", method = RequestMethod.GET)
-    public ResponseEntity<String> GetModalMyCorp(HttpServletRequest request) {
-        Message message = new Message();
-        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
-        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
-        if (userNo != null) {
-            message = companyService.getUserCorpInfo(userNo);
-        }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/get/plugin", method = RequestMethod.GET)
-    public ResponseEntity<String> GetModalPugin(HttpServletRequest request) {
-        Message message = new Message();
-        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
-        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
-        if (userNo != null) {
-            message = companyService.getUserCorpPluginInfo(userNo);
-        }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
-    }
-
     @RequestMapping(value = "/change/name", method = RequestMethod.POST)
     public ResponseEntity<String> changeName(HttpServletRequest request, @RequestBody Map<String, Object> map) {
         Message message = new Message();
-        message.put("name", map.get("name").toString());
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
+        if (userNo != null) {
+            userService.changeUserName(userNo, map.get("name").toString());
+            message.put("name", map.get("name").toString());
+        }
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
@@ -197,14 +180,25 @@ public class AuthRestController {
     @RequestMapping(value = "/change/email", method = RequestMethod.POST)
     public ResponseEntity<String> changeEmail(HttpServletRequest request, @RequestBody Map<String, Object> map) {
         Message message = new Message();
-        message.put("email", map.get("email").toString());
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
+        if (userNo != null) {
+            message.put("result", userService.changeUserEmail(userNo, map.get("email").toString()));
+            message.put("email", map.get("email").toString());
+        }
+        request.getSession().removeAttribute(JWTEnum.JWTToken.name());
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/change/phone", method = RequestMethod.POST)
     public ResponseEntity<String> changePhone(HttpServletRequest request, @RequestBody Map<String, Object> map) {
         Message message = new Message();
-        message.put("phone", map.get("phone").toString());
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
+        if (userNo != null) {
+            message.put("result", userService.changeUserPhone(userNo, map.get("phone").toString()));
+            message.put("phone", map.get("phone").toString());
+        }
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
@@ -223,7 +217,15 @@ public class AuthRestController {
     @RequestMapping(value = "/withdrawal", method = RequestMethod.POST)
     public ResponseEntity<String> changeWithdrawal(HttpServletRequest request, @RequestBody Map<String, Object> map) {
         Message message = new Message();
-        message.put("password", map.get("password").toString());
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
+        if (Objects.nonNull(userNo)) {
+            int result = userService.changeWithdrawal(userNo, map.get("password").toString());
+            message.put("result", result);
+            if(result == 0) {
+                request.getSession().removeAttribute(JWTEnum.JWTToken.name());
+            }
+        }
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 }

@@ -43,7 +43,7 @@ const findPsSubmit = () => {
 
 const verifyMailSubmit = () => {
   return inspection({
-    selector: '[name="email"]',
+    selector: '#email-change-input',
     regex_type: 'email',
     empty_text: '이메일을 입력해주세요.',
     failed_text: '이메일을 정확히 입력해주세요.',
@@ -52,9 +52,18 @@ const verifyMailSubmit = () => {
 
 const verifyPhoneSubmit = () => {
   return inspection({
-    selector: '[name="phone"]',
+    selector: '#phone-change-input',
     regex_type: 'phone',
     empty_text: '휴대폰 번호를 입력해주세요.',
     failed_text: '휴대폰 번호를 정확히 입력해주세요. (3자리, 3~4자리, 4자리, 띄어쓰기나 \'-\' 허용)',
+  });
+}
+
+const verifyNameSubmit = () => {
+  return inspection({
+    selector: '#name-change-input',
+    regex_type: 'name',
+    empty_text: '이름을 입력해주세요.',
+    failed_text: '이름은 띄어쓰기를 포함한 2~20자 이내의 한글 및 영어만 가능합니다.',
   });
 }

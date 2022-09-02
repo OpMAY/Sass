@@ -9,7 +9,7 @@
     <insert id="requestCompanyJoin">
         insert into company_member(user_no, company_no, role, edit_auth, read_auth, request_date, reg_datetime,
                                    revise_date)
-        VALUES (#{userNo}, #{companyNo}, 'PRE_MEMBER', false, false, now(), now(), now())
+        VALUES (#{userNo}, #{companyNo}, 'READY', false, false, now(), now(), now())
     </insert>
     <select id="checkUserReadAuth" resultType="_boolean">
         select read_auth
@@ -25,15 +25,19 @@
     </select>
     <update id="updateUserReadAuth">
         update company_member
-        SET read_auth = !read_auth
+        SET read_auth   = !read_auth,
+            edit_auth   = if(read_auth, edit_auth, false),
+            role        = 'PERSONAL',
+            revise_date = NOW()
         WHERE user_no = #{userNo}
-          AND company_no = #{companyNo}
     </update>
     <update id="updateUserEditAuth">
         update company_member
-        SET edit_auth = !edit_auth
+        SET edit_auth   = !edit_auth,
+            read_auth   = if(edit_auth, true, edit_auth),
+            role        = 'PERSONAL',
+            revise_date = now()
         WHERE user_no = #{userNo}
-          AND company_no = #{companyNo}
     </update>
     <select id="getUserRoleOfCompany" resultType="ROLE">
         select role
@@ -45,7 +49,6 @@
         delete
         from company_member
         WHERE user_no = #{userNo}
-          AND company_no = #{companyNo}
     </delete>
     <select id="checkUserHasCompany" resultType="_boolean">
         select EXISTS(select * from company_member WHERE user_no = #{userNo})
@@ -61,7 +64,14 @@
         VALUES (#{userNo}, #{companyNo}, 'MASTER', true, true, now(), now(), now())
     </insert>
     <select id="getCompanyMemberList" resultType="CompanyMemberListData">
-        select company_member.*, u.name, u.email
+        select company_member.no as member_no,
+               user_no,
+               company_no,
+               role,
+               edit_auth,
+               read_auth,
+               u.name,
+               u.email
         from company_member
                  left join user u on company_member.user_no = u.no
         WHERE company_no = #{companyNo}

@@ -34,20 +34,20 @@ public class CompanyMemberDao {
         return mapper.checkUserEditAuth(userNo, companyNo);
     }
 
-    public void updateUserReadAuth(int userNo, int companyNo) {
-        mapper.updateUserReadAuth(userNo, companyNo);
+    public void updateUserReadAuth(int userNo) {
+        mapper.updateUserReadAuth(userNo);
     }
 
-    public void updateUserEditAuth(int userNo, int companyNo) {
-        mapper.updateUserEditAuth(userNo, companyNo);
+    public void updateUserEditAuth(int userNo) {
+        mapper.updateUserEditAuth(userNo);
     }
 
     public ROLE getUserRoleOfCompany(int userNo, int companyNo) {
         return mapper.getUserRoleOfCompany(userNo, companyNo);
     }
 
-    public void deleteUserMember(int userNo, int companyNo) {
-        mapper.deleteUserMember(userNo, companyNo);
+    public void deleteUserMember(int userNo) {
+        mapper.deleteUserMember(userNo);
     }
 
     public boolean checkUserHasCompany(int userNo) {

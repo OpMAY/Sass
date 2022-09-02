@@ -751,7 +751,7 @@
                                     <div class="row">
                                         <div class="col-9">
                                             <input type="password"
-                                                   placeholder="비밀번호"
+                                                   placeholder="비밀번호" id="withdrawal-password-input"
                                                    class="form-control form-general regular-h5 p-16">
                                         </div>
                                         <div class="col-3">

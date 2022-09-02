@@ -314,7 +314,7 @@ $('#setting-modal button[data-toggle=tab]').on('show.bs.tab', function (event) {
                     m_data.forEach((e, i) => {
                         console.log(e)
                         $member_list_group.append(`<ul class="nav nav-tabs _items"
-                                        role="tablist" data-type="TEAM" data-user-no="${e.user_no}" data-user-role="${e.role}" data-user-email="${e.email}">
+                                        role="tablist" data-type="TEAM" data-user-no="${e.user_no}" data-user-role="${e.role.name}" data-user-email="${e.email}">
                                         <li class="nav-item light-h6 _name"
                                             role="presentation">
                                             ${e.name}
@@ -337,7 +337,7 @@ $('#setting-modal button[data-toggle=tab]').on('show.bs.tab', function (event) {
                                         </li>
                                         <li class="nav-item medium-h4 _remove"
                                         role="presentation">
-                                        ${i !== 0 && result.data.userRole === 'OWNER' ? '<span>&times;</span>' : ''}
+                                        ${i !== 0 && result.data.userRole.name === 'OWNER' ? '<span>&times;</span>' : ''}
                                         </li>
                                     </ul>`);
                     })
@@ -402,7 +402,7 @@ $('#setting-modal button[data-toggle=tab]').on('show.bs.tab', function (event) {
                                         <div class="_item-group">`;
                         e.teammates.forEach((te, ti) => {
                             targetDiv = targetDiv + `<ul class="nav nav-tabs _items"
-                                                role="tablist" data-plugin="${e.type}" data-type="PLUG" data-user-no="${te.user_no}" data-user-role="${te.role.keyword}" data-user-email="${te.email}">
+                                                role="tablist" data-plugin="${e.type}" data-type="PLUG" data-member-no="${te.member_no}" data-user-role="${te.role.name}" data-user-email="${te.email}">
                                                 <li class="nav-item light-h6 _name"
                                                     role="presentation">
                                                     ${te.name}
@@ -432,7 +432,7 @@ $('#setting-modal button[data-toggle=tab]').on('show.bs.tab', function (event) {
                         targetDiv = targetDiv + `</div>
                                         <div class="_control-panel">
                                             <h5 class="_setting medium-h6">환경 설정</h5>
-                                            <h5 class="_add-new medium-h6 c-brand-purple">팀원 추가하기 +</h5>
+                                            <h5 class="_add-new medium-h6 c-brand-purple" data-plug-no="${e.plug_no}" data-company-no="${e.company_no}">팀원 추가하기 +</h5>
                                         </div>
                                     </div>
                                     <div class="_plugin-add-member-container d-none">
@@ -501,6 +501,7 @@ function setMyInfoModalData(data) {
             $('#agree-checkbox').prop('checked', false);
         }
     }
+    $('#withdrawal-password-input').val('');
 }
 
 /**
@@ -586,8 +587,7 @@ $('#profileInput').on('change', function () {
 $('#name-change-input').on('input', function () {
     // TODO input validation & fetch
     let $button = $(this).parent().next().find('button:first-child');
-    if ($(this).val().length > 3) {
-        console.log('over');
+    if ($(this).val().trim().length >= 2 && $(this).val().trim().length <= 20) {
         $button.removeClass('is-disabled').removeAttr('disabled');
     } else {
         $button.addClass('is-disabled').attr('disabled', 'disabled');
@@ -597,8 +597,8 @@ $('#name-change-input').on('input', function () {
 $('#email-change-input').on('input', function () {
     // TODO input validation & fetch
     let $button = $(this).parent().next().find('button:first-child');
-    if ($(this).val().length > 3) {
-        console.log('over');
+    const eRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
+    if (eRegex.test($(this).val())) {
         $button.removeClass('is-disabled').removeAttr('disabled');
     } else {
         $button.addClass('is-disabled').attr('disabled', 'disabled');
@@ -608,27 +608,36 @@ $('#email-change-input').on('input', function () {
 $('#phone-change-input').on('input', function () {
     // TODO input validation & fetch
     let $button = $(this).parent().next().find('button:first-child');
-    if ($(this).val().length > 3) {
-        console.log('over');
+    const pRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+    if (pRegex.test($(this).val())) {
         $button.removeClass('is-disabled').removeAttr('disabled');
     } else {
         $button.addClass('is-disabled').attr('disabled', 'disabled');
     }
 })
 
+$('#name-change-modal').on('hide.bs.modal', function () {
+    $(this).find('input').val('');
+    $(this).find('button:first-child').addClass('is-disabled').attr('disabled', 'disabled');
+})
+
+$('#email-change-modal').on('hide.bs.modal', function () {
+    $(this).find('input').val('');
+    $(this).find('button:first-child').addClass('is-disabled').attr('disabled', 'disabled');
+})
+
+$('#phone-change-modal').on('hide.bs.modal', function () {
+    $(this).find('input').val('');
+    $(this).find('button:first-child').addClass('is-disabled').attr('disabled', 'disabled');
+})
+
 /**
  * Setting modal teammate info check button
  * **/
-$('.check-button-content').on('click', '._check[data-toggle=auth-switch]',function () {
+$('.check-button-content').on('click', '._check[data-toggle=auth-switch]', function () {
     // TODO FETCH status change
     console.log($(this))
-    if ($(this).hasClass('on')) {
-        $(this).removeClass('on');
-        $(this).addClass('off');
-    } else {
-        $(this).removeClass('off');
-        $(this).addClass('on');
-    }
+    let $check = $(this);
     let info = this.closest('._items').dataset;
     let type = this.dataset.type;
     let is_checked = this.classList.contains('on');
@@ -639,11 +648,12 @@ $('.check-button-content').on('click', '._check[data-toggle=auth-switch]',functi
             user_no: info.userNo,
             role: info.userRole,
             type,
-            auth: is_checked
+            auth: !is_checked
         }
         apiChangeTeamGrant(grant).then((result) => {
             console.log(result.status, result.data);
             if (result.status === 'OK') {
+                changeCheckElementStatus($check, type);
             } else {
             }
         });
@@ -651,21 +661,56 @@ $('.check-button-content').on('click', '._check[data-toggle=auth-switch]',functi
         console.log('update plug', info);
         const grant = {
             plugin: info.plugin,
-            user_no: info.userNo,
+            member_no: info.memberNo,
             role: info.userRole,
             type,
-            auth: is_checked
+            auth: !is_checked
         }
         apiChangePlugGrant(grant).then((result) => {
             console.log(result.status, result.data);
             if (result.status === 'OK') {
+                changeCheckElementStatus($check, type);
             } else {
             }
         });
     }
 });
 
-$('._item-group').on('click', '.nav-item._remove span', function () {
+function changeCheckElementStatus($check, type) {
+    /**
+     * Read off 시 -> write off
+     * Write On 시 -> read on
+     * **/
+    if(type === 'READ') {
+        if ($check.hasClass('on')) {
+            $check.removeClass('on');
+            $check.addClass('off');
+            let $editCheck = $check.parent().next().find('._check');
+            if($editCheck.hasClass('on')) {
+                $editCheck.removeClass('on');
+                $editCheck.addClass('off');
+            }
+        } else {
+            $check.removeClass('off');
+            $check.addClass('on');
+        }
+    } else {
+        if ($check.hasClass('on')) {
+            $check.removeClass('on');
+            $check.addClass('off');
+        } else {
+            $check.removeClass('off');
+            $check.addClass('on');
+            let $readCheck = $check.parent().prev().find('._check');
+            if($readCheck.hasClass('off')) {
+                $readCheck.removeClass('off');
+                $readCheck.addClass('on');
+            }
+        }
+    }
+}
+
+$('.check-button-content').on('click', '.nav-item._remove span', function () {
     // TODO FETCH remove teammate
     let info = this.closest('._items').dataset;
     if (info.type === 'TEAM') {
@@ -685,7 +730,7 @@ $('._item-group').on('click', '.nav-item._remove span', function () {
         console.log('delete plug', info);
         const grant = {
             plugin: info.plugin,
-            user_no: info.userNo,
+            member_no: info.memberNo,
             role: info.userRole,
         }
         apiDeletePlugGrant(grant).then((result) => {
@@ -698,8 +743,20 @@ $('._item-group').on('click', '.nav-item._remove span', function () {
     }
 });
 
+let $plugin_list = $('._plugin-list');
 
-$('._plugin-list').on('click', '._plugin-manage-button', function (e) {
+$plugin_list.on('click', '._select ._check', function () {
+    if ($(this).hasClass('on')) {
+        $(this).removeClass('on');
+        $(this).addClass('off');
+    } else {
+        $(this).removeClass('off');
+        $(this).addClass('on');
+    }
+})
+
+
+$plugin_list.on('click', '._plugin-manage-button', function (e) {
     // TODO CLOSED -> hidden  로 변경
     if (!$(this).hasClass('closed') && $(this).parent().next().hasClass('show') && !$(this).hasClass('blocked')) {
         $(this).addClass('closed');
@@ -709,7 +766,7 @@ $('._plugin-list').on('click', '._plugin-manage-button', function (e) {
     }
 });
 
-$('._plugin-list').on('click', '._plugin-manage-container', function () {
+$plugin_list.on('click', '._plugin-manage-container', function () {
     if (!$(this).hasClass('open') && $(this).next().hasClass('collapse')) {
         $(this).addClass('open');
         let $button = $(this).find('._plugin-manage-button');
@@ -723,31 +780,69 @@ $('._plugin-list').on('click', '._plugin-manage-container', function () {
     }
 });
 
-$('._plugin-list').on('click', '._control-panel ._setting', function () {
+$plugin_list.on('click', '._control-panel ._setting', function () {
     alert('환경설정으로 이동');
 })
 
-$('._plugin-list').on('click', '._control-panel ._add-new', function () {
-    let thisTab = $(this).parent().parent().parent();
-    let listDiv = $('._plugin-list');
-    let containerList = listDiv.find('._plugin-list-container');
-    console.log('thisTab : ', thisTab);
-    containerList.each((idx, item) => {
-        if (item === thisTab[0]) {
-            console.log('match index : ', idx);
-            $(item).find('._plugin-manage-button').addClass('blocked');
+$plugin_list.on('click', '._control-panel ._add-new', function () {
+    let dataset = this.dataset;
+    apiCallPlugNotAssociatedMembers(dataset.companyNo, dataset.plugNo).then((result) => {
+        console.log(result);
+        if(result.status === 'OK') {
+            let thisTab = $(this).parent().parent().parent();
+            let listDiv = $('._plugin-list');
+            let containerList = listDiv.find('._plugin-list-container');
+            console.log('thisTab : ', thisTab);
+            containerList.each((idx, item) => {
+                if (item === thisTab[0]) {
+                    console.log('match index : ', idx);
+                    $(item).find('._plugin-manage-button').addClass('blocked');
+                } else {
+                    $(item).addClass('d-none');
+                }
+            })
+            $(this).parent().addClass('d-none');
+            $('._plugin-teammate-add-button').removeClass('d-none').fadeIn('slow');
+
+            thisTab.find('._plugin-manage-child').addClass('d-none');
+            let $new_member_tab = thisTab.find('._plugin-add-member-container')
+            $new_member_tab.removeClass('d-none');
+            let list_group = $new_member_tab.find('._item-group');
+            list_group.children().remove();
+            result.data.members.forEach((e, i) => {
+                list_group.append(`<ul class="nav nav-tabs _items"
+                                                role="tablist" data-plugin="${result.data.plugin_type}" data-plug-no="${dataset.plugNo}" data-type="PLUG" data-member-no="${e.member_no}" data-user-role="${e.role.name}" data-user-email="${e.email}">
+                                                <li class="nav-item light-h6 _name"
+                                                    role="presentation">
+                                                    ${e.name}
+                                                </li>
+                                                <li class="nav-item light-h6 _email"
+                                                    role="menuitem">
+                                                    <span title="${e.email}">${e.email}</span>
+                                                </li>
+                                                <li class="nav-item light-h6 _role"
+                                                    role="presentation">
+                                                    ${e.role.keyword}
+                                                </li>
+                                                <li class="nav-item light-h6 _read"
+                                                    role="presentation">
+                                                    <span class="_check ${e.read_auth ? 'on' : 'off'}" data-type="READ"></span>
+                                                </li>
+                                                <li class="nav-item light-h6 _edit"
+                                                    role="presentation">
+                                                    <span class="_check ${e.edit_auth ? 'on' : 'off'}" data-type="EDIT"></span>
+                                                </li>
+                                                <li class="nav-item medium-h4 _select"
+                                                    role="presentation">
+                                                    <span class="_check off" data-type="READY"></span>
+                                                </li>
+                                            </ul>`);
+            })
         } else {
-            $(item).addClass('d-none');
+
         }
     })
-    $(this).parent().addClass('d-none');
-    $('._plugin-teammate-add-button').removeClass('d-none').fadeIn('slow');
 
-    thisTab.find('._plugin-manage-child').addClass('d-none');
-    thisTab.find('._plugin-add-member-container').removeClass('d-none');
-
-    // TODO 해당 버튼에 data 요소 추가
-    console.log(containerList);
 })
 
 $('[data-action="create-plug"]').on('click', function () {
@@ -775,8 +870,9 @@ $('[data-action="create-plug"]').on('click', function () {
             let info = member_element.dataset;
             const grant = {
                 plugin: info.plugin,
-                user_no: info.userNo,
+                member_no: info.memberNo,
                 role: info.userRole,
+                plug_no: info.plugNo,
             }
             console.log(info);
             apiAddPlugGrant(grant).then((result) => {
@@ -960,48 +1056,82 @@ $(document).ready(function () {
         });
     });
     $('[data-action="change-name"]').on('click', function () {
-        apiChangeName().then((result) => {
-            console.log(result.status, result.data);
-            if (result.status === 'OK') {
-                let $change_name_modal = $('#name-change-modal');
-                let $change_name_element = $('[data-update="name"]');
-                $change_name_element.html(`${result.data.name}`);
-                $change_name_modal.modal('hide');
-            } else {
-            }
-        });
+        let $name_modal = $('#name-change-modal');
+        if (verifyNameSubmit()) {
+            apiChangeName($name_modal.find('input').val()).then((result) => {
+                console.log(result.status, result.data);
+                if (result.status === 'OK') {
+                    alert('변경되었습니다.');
+                    let $change_name_modal = $('#name-change-modal');
+                    let $change_name_element = $('[data-update="name"]');
+                    $change_name_element.html(`${result.data.name}`);
+                    $change_name_modal.modal('hide');
+                } else {
+                }
+            });
+        }
     });
 
     $('[data-action="change-email"]').on('click', function () {
-        apiChangeEmail().then((result) => {
-            console.log(result.status, result.data);
-            if (result.status === 'OK') {
-                let $change_email_modal = $('#email-change-modal');
-                let $change_email_element = $('[data-update="email"]');
-                $change_email_element.html(`${result.data.email}`);
-                $change_email_modal.modal('hide');
-            } else {
-            }
-        });
+        let $email_modal = $('#email-change-modal');
+        if (verifyMailSubmit()) {
+            apiChangeEmail($email_modal.find('input').val()).then((result) => {
+                console.log(result.status, result.data);
+                if (result.status === 'OK') {
+                    if (result.data.result === -1) {
+                        alert('이미 다른 회원이 사용 중인 이메일입니다.');
+                    } else if (result.data.result === -2) {
+                        alert('현재 사용 중인 이메일과 동일합니다.');
+                    } else {
+                        alert('변경되었습니다.\n변경된 이메일로 다시 로그인해주세요.');
+                        window.location.reload();
+                    }
+                    // let $change_email_modal = $('#email-change-modal');
+                    // let $change_email_element = $('[data-update="email"]');
+                    // $change_email_element.html(`${result.data.email}`);
+                    // $change_email_modal.modal('hide');
+                } else {
+                }
+            });
+        }
     });
     $('[data-action="change-phone"]').on('click', function () {
-        apiChangePhone().then((result) => {
-            console.log(result.status, result.data);
-            if (result.status === 'OK') {
-                let $change_phone_modal = $('#phone-change-modal');
-                let $change_phone_element = $('[data-update="phone"]');
-                $change_phone_element.html(`${result.data.phone}`);
-                $change_phone_modal.modal('hide');
-            } else {
-            }
-        });
+        let $phone_modal = $('#phone-change-modal');
+        if (verifyPhoneSubmit()) {
+            apiChangePhone($phone_modal.find('input').val()).then((result) => {
+                console.log(result.status, result.data);
+                if (result.status === 'OK') {
+                    if (result.data.result === -1) {
+                        alert('이미 다른 회원이 사용 중인 연락처입니다.');
+                    } else if (result.data.result === -2) {
+                        alert('현재 사용 중인 연락처와 동일합니다.');
+                    } else {
+                        alert('변경되었습니다.');
+                        let $change_phone_modal = $('#phone-change-modal');
+                        let $change_phone_element = $('[data-update="phone"]');
+                        $change_phone_element.html(`${result.data.phone}`);
+                        $change_phone_modal.modal('hide');
+                    }
+                } else {
+                }
+            });
+        }
     });
     $('[data-action="withdrawal"]').on('click', function () {
-        apiChangeWithdrawal().then((result) => {
-            console.log(result.status, result.data);
-            if (result.status === 'OK') {
-            } else {
-            }
-        });
+        if (confirm('정말 회원 탈퇴하시겠습니까?')) {
+            apiChangeWithdrawal($('#withdrawal-password-input').val()).then((result) => {
+                console.log(result.status, result.data);
+                if (result.status === 'OK') {
+                    if (result.data.result === -1) {
+                        alert('비밀번호가 일치하지 않습니다.');
+                    } else {
+                        alert('회원 탈퇴 되었습니다.');
+                        window.location.reload();
+                    }
+                } else {
+
+                }
+            });
+        }
     });
 });

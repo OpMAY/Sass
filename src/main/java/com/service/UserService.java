@@ -11,10 +11,13 @@ import com.model.User;
 import com.model.company.Company;
 import com.model.company.CompanyRole;
 import com.model.grant.ROLE;
+import com.response.Message;
 import com.response.ResponseEnum;
 import com.util.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -111,5 +114,51 @@ public class UserService {
 
     public User getModalMyInfo(int userNo) {
         return userDao.getModalMyInfo(userNo);
+    }
+
+    @Transactional
+    public void changeUserName(int userNo, String name) {
+        userDao.changeUserName(userNo, name);
+    }
+
+    @Transactional
+    public int changeUserEmail(int userNo, String email) {
+        if (userDao.getModalMyInfo(userNo).getEmail().equals(email)) {
+            // 내 이메일로 변경하려는 경우
+            return -2;
+        } else if (userDao.checkUserEmailExists(userNo, email)) {
+            // 다른 사람이 사용 중인 이메일일 경우
+            return -1;
+        } else {
+            // 변경 가능
+            userDao.changeUserEmail(userNo, email);
+            return 0;
+        }
+    }
+
+    @Transactional
+    public int changeUserPhone(int userNo, String phone) {
+        if (userDao.getModalMyInfo(userNo).getPhone().equals(phone)) {
+            // 내 전화번호로 변경하려는 경우
+            return -2;
+        } else if (userDao.checkUserPhoneExists(userNo, phone)) {
+            // 다른 사람이 사용 중인 전화번호일 경우
+            return -1;
+        } else {
+            // 변경 가능
+            userDao.changeUserPhone(userNo, phone);
+            return 0;
+        }
+    }
+
+    @Transactional
+    public int changeWithdrawal(int userNo, String password) {
+        // TODO 특정 기업의 장 + 해당 기업에 인원이 있을 경우 Block?
+        if(userDao.checkUserPasswordValid(userNo, password)) {
+            userDao.changeWithdrawal(userNo);
+            return 0;
+        } else {
+            return -1;
+        }
     }
 }

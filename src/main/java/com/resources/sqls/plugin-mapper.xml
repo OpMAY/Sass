@@ -33,7 +33,7 @@
                p.profile_image,
                p.type,
                JSON_ARRAYAGG(JSON_OBJECT(
-                       'user_no', cmpa.user_no,
+                       'member_no', cmpa.member_no,
                        'company_no', cmpa.company_no,
                        'name', u.name,
                        'email', u.email,
@@ -44,8 +44,13 @@
         from company_plug c
                  left join plugin p on c.plug_no = p.no
                  left join company_member_plug_auth cmpa on c.company_no = cmpa.company_no
-                 left join company_member cm on cmpa.user_no = cm.user_no
+                 left join company_member cm on cmpa.member_no = cm.no
                  left join user u on cm.user_no = u.no
         WHERE c.company_no = #{companyNo}
+    </select>
+    <select id="getPlugType" resultType="PLUGIN_TYPE">
+        select type
+        from plugin
+        WHERE plugin.no = #{plugNo}
     </select>
 </mapper>
