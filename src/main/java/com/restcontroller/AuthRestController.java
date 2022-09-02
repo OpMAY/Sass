@@ -37,6 +37,7 @@ public class AuthRestController {
         Message message = new Message();
         User user = userService.loginUser(login_user);
         if (Objects.nonNull(user) && user.getLogin_status() >= 0) {
+            user.set_company(companyService.checkUserHasCompany(user.getNo()));
             request.getSession().setAttribute(JWTEnum.JWTToken.name(), encryptionService.encryptJWT(user));
             message.put("login_status", user.getLogin_status());
         }
@@ -221,7 +222,7 @@ public class AuthRestController {
         if (Objects.nonNull(userNo)) {
             int result = userService.changeWithdrawal(userNo, map.get("password").toString());
             message.put("result", result);
-            if(result == 0) {
+            if (result == 0) {
                 request.getSession().removeAttribute(JWTEnum.JWTToken.name());
             }
         }

@@ -75,4 +75,8 @@ public class UserDao {
     public void changeWithdrawal(int userNo) {
         mapper.changeWithdrawal(userNo);
     }
+
+    public User getUser(int user_no) {
+        return mapper.getUser(user_no);
+    }
 }
