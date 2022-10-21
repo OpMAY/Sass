@@ -36,4 +36,8 @@ public class RelationDao {
     public void disconnectLine(Relation relation) {
         mapper.disconnectLine(relation);
     }
+
+    public boolean checkTableHasForeignKey(String table_id) {
+        return mapper.checkTableHasForeignKey(table_id);
+    }
 }

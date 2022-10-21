@@ -10,7 +10,7 @@
     </select>
     <insert id="createDataBase" keyProperty="no" useGeneratedKeys="true">
         insert into `database`(company_no, name, description, database_type, create_date, update_date)
-        VALUES (null, #{name}, #{description}, #{database_type}, NOW(), NOW())
+        VALUES (#{company_no}, #{name}, #{description}, #{database_type}, NOW(), NOW())
     </insert>
     <select id="checkDataBaseExists" resultType="_boolean">
         select EXISTS(select * from `database` WHERE no = #{database_no})

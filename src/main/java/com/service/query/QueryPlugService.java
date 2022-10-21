@@ -76,15 +76,21 @@ public class QueryPlugService {
     public void createTable(int database_no, Table table) {
         table.setDatabase_no(database_no);
         tableDao.insertTable(table);
+        int index = 1;
         for (Column column : table.getColumns()) {
             column.setTable_id(table.getId());
+            column.setOrder(index);
+            index++;
         }
+        index = 0;
         columnDao.insertColumns(table.getColumns());
     }
 
     @Transactional
     public void createTableRow(int database_no, String table_id, Column column) {
         column.setTable_id(table_id);
+        List<Column> columns = columnDao.getColumns(table_id);
+        column.setOrder(columns.size() + 1);
         columnDao.insertColumn(column);
     }
 
@@ -99,6 +105,9 @@ public class QueryPlugService {
     public void updateTableRow(int database_no, String table_id, Column column) {
         column.setTable_id(table_id);
         columnDao.updateTableRow(column);
+
+        // Update Table Has Primary Key
+        updateTableStatus(table_id);
     }
 
     @Transactional
@@ -116,27 +125,76 @@ public class QueryPlugService {
 
     @Transactional
     public void deleteTable(int database_no, String table_id) {
+        // Update Table has FK
         tableDao.deleteTable(database_no, table_id);
     }
 
     @Transactional
     public void deleteTableRow(int database_no, String table_id, String row_id) {
+        // Update Table has FK
         columnDao.deleteTableRow(table_id, row_id);
+        // Reset Ordering
+        ArrayList<Column> columns = columnDao.getColumns(table_id);
+        List<Column> nonOrderedColumns = new ArrayList<>();
+        for (Column column : columns) {
+            if (column.getOrder() == 0) {
+                nonOrderedColumns.add(column);
+            }
+        }
+        columns.removeIf(s -> (s.getOrder() == 0));
+        for (int i = 0; i < columns.size(); i++) {
+            if (columns.get(i).getOrder() != i + 1) {
+                columns.get(i).setOrder(i + 1);
+            }
+        }
+        for (Column column : nonOrderedColumns) {
+            log.info("main columns now size : {}", columns.size());
+            column.setOrder(columns.size() + 1);
+            columns.add(column);
+        }
+        columnDao.updateTableRowsOrder(columns);
+        updateTableStatus(table_id);
     }
 
     @Transactional
     public void connectLine(int database_no, Line line) {
+        // Update Table has FK
         Relation relation = new Relation(database_no, line.getTo(), line.getTo_row(), line.getFrom(), line.getFrom_row());
         if (!relationDao.checkRelationAlreadyExists(relation)) {
             relationDao.insertRelation(relation);
         }
+        updateTableStatus(relation.getMain_table());
     }
 
     @Transactional
     public void disconnectLine(int database_no, ArrayList<Line> lines) {
+        // Update Table has FK
+        List<String> changed_table_id = new ArrayList<>();
         for (Line line : lines) {
-            relationDao.disconnectLine(new Relation(database_no, line.getTo(), line.getTo_row(), line.getFrom(), line.getFrom_row()));
+            Relation relation = new Relation(database_no, line.getTo(), line.getTo_row(), line.getFrom(), line.getFrom_row());
+            relationDao.disconnectLine(relation);
+            if (!changed_table_id.contains(relation.getMain_table())) {
+                changed_table_id.add(relation.getMain_table());
+            }
         }
+        for (String id : changed_table_id) {
+            updateTableStatus(id);
+        }
+    }
+
+    @Transactional
+    public void updateTableStatus(String table_id) {
+        boolean has_pk = false;
+        List<Column> columns = columnDao.getColumns(table_id);
+        for (Column column : columns) {
+            if (column.isPk()) {
+                has_pk = true;
+                break;
+            }
+        }
+        boolean has_fk = relationDao.checkTableHasForeignKey(table_id);
+        tableDao.updateTableHasPk(table_id, has_pk);
+        tableDao.updateTableHasFk(table_id, has_fk);
     }
 
     /**
@@ -166,7 +224,7 @@ public class QueryPlugService {
         Message message = new Message();
         DataBase dataBase = getDataBase(decryptedNo);
         ERDValidation erdValidation = new ERDValidation(dataBase, true);
-        if(erdValidation.checkAll()) {
+        if (erdValidation.checkAll()) {
             QueryMaker queryMaker = new QueryMaker(dataBase);
             String query = queryMaker.makeAllTableQuery();
             message.put("query", query);

@@ -14,4 +14,6 @@ public interface RelationMapper {
     boolean checkRelationAlreadyExists(Relation relation);
 
     void disconnectLine(Relation relation);
+
+    boolean checkTableHasForeignKey(String table_id);
 }

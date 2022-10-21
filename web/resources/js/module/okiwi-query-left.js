@@ -369,7 +369,8 @@ function updateTableName(option) {
     const btn_dropdown = list_table.querySelector('._option._dropdown');
     // $(btn_create).show();
     let updated_value = input_element.value;
-    if (findTableByName(draggable_tables, updated_value).length !== 0) {
+    console.log(list_table);
+    if (list_table.dataset.tableId !== updated_value && findTableByName(draggable_tables, updated_value).length !== 0) {
         alert('테이블의 이름이 다른 테이블과 중복됩니다. 다시 입력해주세요.');
         return;
     }

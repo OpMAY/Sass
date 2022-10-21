@@ -32,7 +32,8 @@
             pk             = #{pk},
             auto_increment = #{auto_increment},
             nullable       = #{nullable},
-            comment        = #{comment}
+            comment        = #{comment},
+            size           = #{size}
         WHERE id = #{id}
     </update>
     <update id="updateTableRowsOrder">

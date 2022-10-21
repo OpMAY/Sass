@@ -40,4 +40,16 @@ public class TableDao {
     public void deleteTable(int database_no, String table_id) {
         mapper.deleteTable(database_no, table_id);
     }
+
+    public void updateTableHasPk(String table_id, boolean hasPk) {
+        mapper.updateTableHasPk(table_id, hasPk);
+    }
+
+    public void updateTableHasFk(String table_id, boolean hasFk) {
+        mapper.updateTableHasFk(table_id, hasFk);
+    }
+
+    public Table getTableById(String table_id) {
+        return mapper.getTableById(table_id);
+    }
 }

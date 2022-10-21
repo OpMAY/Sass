@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="en">
@@ -48,7 +49,7 @@
                     <div class="d-flex">
                         <img class="my-auto mr-16" src="../../../resources/assets/images/icon/query/icon-clap.png"/>
                         <div class="my-auto bold-h3 c-gray-dark-low">
-                            데이터베이스 만들기
+                            데이터베이스 <c:choose><c:when test="${type == 'new'}">만들기</c:when><c:otherwise>수정하기</c:otherwise></c:choose>
                         </div>
                     </div>
                 </div>
@@ -66,6 +67,7 @@
                     </div>
                     <input type="text"
                            placeholder="데이터베이스" name="name"
+                           value="<c:choose><c:when test="${type != 'new'}">${dataBase.name}</c:when></c:choose>"
                            class="form-control form-general outline-gray-high-medium regular-h5 p-16">
                 </div>
                 <div class="col-8 mb-64">
@@ -74,6 +76,7 @@
                     </div>
                     <input type="text"
                            placeholder="간단 설명" name="description"
+                           value="<c:choose><c:when test="${type != 'new'}">${dataBase.description}</c:when></c:choose>"
                            class="form-control form-general outline-gray-high-medium regular-h5 p-16">
                 </div>
                 <div class="col-12 database-type-container mb-64">
@@ -82,7 +85,8 @@
                     </div>
                     <div class="row row-cols-4 database-type-item-container">
                         <div class="col mb-32">
-                            <div class="database-type-item" data-type="ORACLE">
+                            <div class="database-type-item <c:if test="${type != 'new' && dataBase.database_type.name() == 'ORACLE'}">is-active</c:if>"
+                                 data-type="ORACLE">
                                 <div class="_image background-image"
                                      style="background-image: url('../../../resources/assets/images/icon/query/database-oracle.png')"></div>
                                 <div class="_name medium-h4 c-gray-dark-low">
@@ -91,7 +95,8 @@
                             </div>
                         </div>
                         <div class="col mb-32">
-                            <div class="database-type-item" data-type="MYSQL">
+                            <div class="database-type-item <c:if test="${type != 'new' && dataBase.database_type.name() == 'MYSQL'}">is-active</c:if>"
+                                 data-type="MYSQL">
                                 <div class="_image background-image"
                                      style="background-image: url('../../../resources/assets/images/icon/query/database-mysql.png')"></div>
                                 <div class="_name medium-h4 c-gray-dark-low">
@@ -100,7 +105,8 @@
                             </div>
                         </div>
                         <div class="col mb-32">
-                            <div class="database-type-item" data-type="MSSQL">
+                            <div class="database-type-item <c:if test="${type != 'new' && dataBase.database_type.name() == 'MSSQL'}">is-active</c:if>"
+                                 data-type="MSSQL">
                                 <div class="_image background-image"
                                      style="background-image: url('../../../resources/assets/images/icon/query/database-mssql.png')"></div>
                                 <div class="_name medium-h4 c-gray-dark-low">
@@ -109,7 +115,8 @@
                             </div>
                         </div>
                         <div class="col mb-32">
-                            <div class="database-type-item" data-type="MARIA_DB">
+                            <div class="database-type-item <c:if test="${type != 'new' && dataBase.database_type.name() == 'MARIA_DB'}">is-active</c:if>"
+                                 data-type="MARIA_DB">
                                 <div class="_image background-image"
                                      style="background-image: url('../../../resources/assets/images/icon/query/database-maria.png')"></div>
                                 <div class="_name medium-h4 c-gray-dark-low">
@@ -118,7 +125,8 @@
                             </div>
                         </div>
                         <div class="col mb-32">
-                            <div class="database-type-item" data-type="POSTGRE_SQL">
+                            <div class="database-type-item <c:if test="${type != 'new' && dataBase.database_type.name() == 'POSTGRE_SQL'}">is-active</c:if>"
+                                 data-type="POSTGRE_SQL">
                                 <div class="_image background-image"
                                      style="background-image: url('../../../resources/assets/images/icon/query/database-postgre.png')"></div>
                                 <div class="_name medium-h4 c-gray-dark-low">
@@ -132,9 +140,12 @@
                     <button class="btn btn-outline-gray-high-medium c-gray-dark-low">
                         취소
                     </button>
-                    <button type="button" data-action="database-create"
+                    <button type="button"
+                            data-action="<c:choose><c:when test="${type == 'new'}">database-create</c:when><c:otherwise>database-edit</c:otherwise></c:choose>"
+                            <c:if test="${type != 'new' && dataBase != null}">data-no="${dataBase.hash_no}"</c:if>
                             class="btn btn-brand c-gray-dark-low">
-                        데이터베이스 생성
+                        데이터베이스 <c:choose><c:when
+                            test="${type == 'new'}">생성</c:when><c:otherwise>수정</c:otherwise></c:choose>
                     </button>
                 </div>
             </div>
@@ -208,6 +219,19 @@
 
                 }
             });
+        });
+        $('[data-action="database-edit"]').click(function (e) {
+            console.log('수정');
+            console.log($(this).data().no);
+            // apiCreateDatabase().then((result) => {
+            //     console.log(result);
+            //     if (result.status === 'OK') {
+            //         alert('데이터베이스 생성 완료');
+            //         location.href = '/query/database/' + result.data.database.hash_no + '/detail';
+            //     } else {
+            //
+            //     }
+            // });
         });
     });
 

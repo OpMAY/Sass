@@ -839,7 +839,8 @@
                     id: row_id,
                     name: 'no', type: 'INT', comment: '', pk: true,
                     auto_increment: false, nullable: false
-                }]
+                }],
+                has_primary_key : true,
             }
             createTable($('.table-container'), draggable_tables, table, getMaxZIndex(table_elems));
         });

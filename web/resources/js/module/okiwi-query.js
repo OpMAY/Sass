@@ -14,7 +14,7 @@ let MINIMUM_POSITION = {
     top: 150
 }
 // Auto Complete Entries Variable
-const entries = ['bit(n)', 'bool', 'boolean', 'tinyint(n)', 'smallint(n)', 'mediumint(n)', 'int(n)', 'integer(n)', 'bigint(n)', 'decimal(m,d)', 'float(n)', 'double(n)', 'date', 'datetime', 'timestamp', 'year', 'char(n)', 'vachar(n)', 'binary(n)', 'varbinary(n)', 'tinyblob', 'tinytext', 'text(n)', 'blob(n)', 'mediumtext', 'longtext', 'longblob', 'enum(\'val1\', \'val2\')', 'set(\'val1\', \'val2\')',];
+const entries = ['bit(n)', 'bool', 'boolean', 'tinyint(n)', 'smallint(n)', 'mediumint(n)', 'int(n)', 'integer(n)', 'bigint(n)', 'decimal(m,d)', 'float(n)', 'double(n)', 'date', 'datetime', 'timestamp', 'year', 'char(n)', 'varchar(n)', 'binary(n)', 'varbinary(n)', 'tinyblob', 'tinytext', 'text(n)', 'blob(n)', 'mediumtext', 'longtext', 'longblob', 'enum(\'val1\', \'val2\')', 'set(\'val1\', \'val2\')',];
 
 // Event Status Variable
 const status = {
@@ -295,7 +295,8 @@ const initializeTableOptions = (selector) => {
                 const update_value = name_element.querySelector('input').value;
                 const table = findTableById(draggable_tables, name_element.querySelector('input').dataset.tableId);
                 // okiwi-query-left.js
-                if (findTableByName(draggable_tables, update_value).length !== 0) {
+                if (table.name !== update_value && findTableByName(draggable_tables, update_value).length !== 0) {
+                    console.log(table);
                     alert('테이블의 이름이 다른 테이블과 중복됩니다. 다시 입력해주세요.');
                     return;
                 }
@@ -2325,7 +2326,98 @@ const findTableRowByName = (draggable_tables, row_name) => {
  *
  * @param {HTMLInputElement} input
  * */
+
+class MySQLType {
+    constructor(size_available, max_size, type_name) {
+        this.size_available = size_available;
+        this.max_size = max_size;
+        this.type_name = type_name;
+    }
+
+    get name() {
+        return this.type_name;
+    }
+}
 function inputChangeEventListener(input) {
+    const BIT = new MySQLType(true, 64, 'BIT');
+    const TINYINT = new MySQLType(true, 3, 'TINYINT');
+    const BOOL = new MySQLType(false, null, 'BOOL');
+    const BOOLEAN = new MySQLType(false, null, 'BOOLEAN');
+    const SMALLINT = new MySQLType(true, 5, 'SMALLINT');
+    const MEDIUMINT = new MySQLType(true, 7, 'MEDIUMINT');
+    const INT = new MySQLType(true, 11, 'INT');
+    const INTEGER = new MySQLType(true, 11, 'INTEGER');
+    const BIGINT = new MySQLType(true, 20, 'BIGINT');
+    const DECIMAL = new MySQLType(true, 65, 'DECIMAL');
+    const DEC = new MySQLType(true, 65, 'DEC');
+    const NUMERIC = new MySQLType(true, 65, 'NUMERIC');
+    const FIXED = new MySQLType(true, 65, 'FIXED');
+    const FLOAT = new MySQLType(true, 23, 'FLOAT');
+    const DOUBLE = new MySQLType(true, 53, 'DOUBLE');
+    const DOUBLE_PRECISION = new MySQLType(true, 255, 'DOUBLE_PRECISION');
+    const REAL = new MySQLType(true, 255, 'REAL');
+    const CHAR = new MySQLType(true, 255, 'CHAR');
+    const VARCHAR = new MySQLType(true, 65535, 'VARCHAR');
+    const BINARY = new MySQLType(true, 255, 'BINARY');
+    const VARBINARY = new MySQLType(true, 65535, 'VARBINARY');
+    const TINYBLOB = new MySQLType(false, null, 'TINYBLOB');
+    const TINYTEXT = new MySQLType(false, null, 'TINYTEXT');
+    const BLOB = new MySQLType(true, 65535, 'BLOB');
+    const TEXT = new MySQLType(true, 65535, 'TEXT');
+    const MEDIUMBLOB = new MySQLType(false, null, 'MEDIUMBLOB');
+    const MEDIUMTEXT = new MySQLType(false, null, 'MEDIUMTEXT');
+    const LONGBLOB = new MySQLType(false, null, 'LONGBLOB');
+    const LONGTEXT = new MySQLType(false, null, 'LONGTEXT');
+    const ENUM = new MySQLType(true, 65535, 'ENUM');
+    const SET = new MySQLType(true, 65535, 'SET');
+    const DATE = new MySQLType(false, null, 'DATE');
+    const TIME = new MySQLType(true, 6, 'TIME');
+    const DATETIME = new MySQLType(true, 6, 'DATETIME');
+    const TIMESTAMP = new MySQLType(true, 6, 'TIMESTAMP');
+    const YEAR = new MySQLType(false, null, 'YEAR');
+    const JSON = new MySQLType(false, null, 'JSON');
+
+    const mySQLTypesArray = [
+        BIT,
+        TINYINT,
+        BOOL,
+        BOOLEAN,
+        SMALLINT,
+        MEDIUMINT,
+        INT,
+        INTEGER,
+        BIGINT,
+        DECIMAL,
+        DEC,
+        NUMERIC,
+        FIXED,
+        FLOAT,
+        DOUBLE,
+        DOUBLE_PRECISION,
+        REAL,
+        CHAR,
+        VARCHAR,
+        BINARY,
+        VARBINARY,
+        TINYBLOB,
+        TINYTEXT,
+        BLOB,
+        TEXT,
+        MEDIUMBLOB,
+        MEDIUMTEXT,
+        LONGBLOB,
+        LONGTEXT,
+        ENUM,
+        SET,
+        DATE,
+        TIME,
+        DATETIME,
+        TIMESTAMP,
+        YEAR,
+        JSON
+    ];
+
+
     const table_row_element = input.closest('[data-table-id][data-table-row]');
     const table_row = findTableRowById(table_row_element.dataset.tableId, table_row_element.dataset.tableRow);
     if (comment_type_input_timer) {
@@ -2333,14 +2425,52 @@ function inputChangeEventListener(input) {
     }
     if (input.dataset.type === 'comment') {
         table_row.comment = input.value;
+        comment_type_input_timer = setTimeout(function () {
+            apiUpdateTableRow(getURLParamByPrevAndNext('database', 'detail'), table_row_element.dataset.tableId, table_row, () => {
+            }, () => {
+            });
+        }, 500);
     } else if (input.dataset.type === 'type') {
+        // Type Change Listener
         table_row.type = input.value;
+        // TODO Inspection
+        // 1. 괄호 있으면 괄호랑 구분
+        let type = input.value.split('(')[0];
+        let number = input.value.split('(')[1];
+        let match = false;
+        mySQLTypesArray.forEach((item) => {
+            if (type.toUpperCase() === item.name) {
+                match = true;
+                table_row.type = type;
+                let bracketNumberRegex = /\(([^)]+)\)/;
+                if(number !== undefined && bracketNumberRegex.test(('(' + number)) && item.size_available && item.max_size >= number.replace(')', '')) {
+                    table_row.size = number.replace(')', '');
+                    console.log('업데이트 가능 input timer 끝나면 업데이트');
+                    comment_type_input_timer = setTimeout(function () {
+                        apiUpdateTableRow(getURLParamByPrevAndNext('database', 'detail'), table_row_element.dataset.tableId, table_row, () => {
+                        }, () => {
+                        });
+                    }, 500);
+                } else if (number === undefined && !item.size_available) {
+                    console.log('업데이트 가능 input timer 끝나면 업데이트');
+                    comment_type_input_timer = setTimeout(function () {
+                        apiUpdateTableRow(getURLParamByPrevAndNext('database', 'detail'), table_row_element.dataset.tableId, table_row, () => {
+                        }, () => {
+                        });
+                    }, 500);
+                } else {
+                    console.log('업데이트 실패');
+                    console.log('size 가 필요한데 없거나, 사이즈가 필요없는데 있거나');
+                    console.log('형식이 올바르지 않을때도 적용 Type(size)의 형식을 맞춰야함');
+                    console.log('Type Rule : ', item);
+                }
+            }
+        })
+
+        if(!match) {
+            console.log('일치하는 Type 없음');
+        }
     }
-    comment_type_input_timer = setTimeout(function () {
-        apiUpdateTableRow(getURLParamByPrevAndNext('database', 'detail'), table_row_element.dataset.tableId, table_row, () => {
-        }, () => {
-        });
-    }, 500);
 }
 
 /**

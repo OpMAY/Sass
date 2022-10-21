@@ -18,4 +18,10 @@ public interface TableMapper {
     void updateTablePosition(@Param("database_no") int database_no, @Param("table_id") String table_id, @Param("position") Position position);
 
     void deleteTable(@Param("database_no") int database_no, @Param("table_id") String table_id);
+
+    void updateTableHasPk(@Param("table_id") String table_id, @Param("hasPk") boolean hasPk);
+
+    void updateTableHasFk(@Param("table_id") String table_id, @Param("hasFk") boolean hasFk);
+
+    Table getTableById(String table_id);
 }
