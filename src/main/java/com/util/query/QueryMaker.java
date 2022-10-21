@@ -90,7 +90,6 @@ public class QueryMaker {
     }
 
 
-
     // NO Use
     private String makeQuery(boolean allQuery, String targetUUID) {
         /** TODO DataBase 기준 쿼리문 생성 과정
@@ -129,10 +128,11 @@ public class QueryMaker {
 
     /**
      * FK 관계도에 맞춰 테이블 쿼리 실행 순서를 정하는 함수
+     *
      * @param relationMap : Map(String, List(String))
      * @return List(String)
      * @author OpMAY
-     * **/
+     **/
     private List<String> reformatTableListOnRelation(Map<String, List<String>> relationMap) {
         log.info("relationMap : {}", relationMap);
 
@@ -182,13 +182,12 @@ public class QueryMaker {
         }
 
 
-
         if (Objects.isNull(nTable)) {
             return "error";
         }
 
-        for(Relation relation : dataBase.getRelations()) {
-            if(relation.getMain_table().equals(nTable.getId())) {
+        for (Relation relation : dataBase.getRelations()) {
+            if (relation.getMain_table().equals(nTable.getId())) {
                 nTable.setHas_foreign_key(true);
                 break;
             }
@@ -203,14 +202,14 @@ public class QueryMaker {
     }
 
     private void makeTableQuery(Map<String, Table> tableMap, StringBuilder builder, Table nTable, String tableName, List<Column> columnList) {
-        builder.append("CREATE TABLE ").append(tableName).append("<br>(<br>");
+        builder.append("CREATE TABLE ").append("`" + tableName + "`").append("<br>(<br>");
         for (Column column : columnList) {
-            builder.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(column.getName()).append(" ").append(column.getType());
+            builder.append("&nbsp;&nbsp;&nbsp;&nbsp;").append("`" + column.getName() + "`").append(" ").append(column.getType());
             builder.append(column.getSize() != null && column.getSize() != 0 ? "(" + column.getSize() + ")" : "");
             builder.append(column.getDefault_value() != null ? (ERDValidation.checkDefaultValueIsExpression(column.getDefault_value()) ? " DEFAULT (" + column.getDefault_value() + ")" : " DEFAULT '" + column.getDefault_value() + "'") : "");
             builder.append(column.isNullable() ? " NULL" : " NOT NULL");
             builder.append(column.isAuto_increment() ? " AUTO_INCREMENT" : "");
-            builder.append(column.getComment() != null ? " COMMENT '" + column.getComment() + "'" : "");
+            builder.append(column.getComment() != null && column.getComment().trim().length() > 0 ? " COMMENT '" + column.getComment() + "'" : "");
             builder.append(column.isPk() ? " PRIMARY KEY" : "");
             if (!column.equals(columnList.get(columnList.size() - 1))) {
                 builder.append(",<br>");

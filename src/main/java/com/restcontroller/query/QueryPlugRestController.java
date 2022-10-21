@@ -5,7 +5,6 @@ import com.model.query.column.Column;
 import com.model.query.column.Line;
 import com.model.query.column.Position;
 import com.model.query.column.Relation;
-import com.model.queue.Token;
 import com.response.DefaultRes;
 import com.response.Message;
 import com.service.query.QueryPlugService;
