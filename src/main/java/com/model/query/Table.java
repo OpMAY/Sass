@@ -24,7 +24,7 @@ public class Table {
         this.position = new Position().samplePosition();
         ArrayList<Column> columns = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            columns.add(new Column().sampleColumn(this.id));
+            columns.add(new Column().sampleColumn(this.id, i + 1));
         }
         this.columns = columns;
         return this;
@@ -38,7 +38,7 @@ public class Table {
         this.position = new Position().InitializePosition();
         ArrayList<Column> columns = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            columns.add(new Column().sampleColumn(this.id));
+            columns.add(new Column().sampleColumn(this.id, i + 1));
         }
         this.columns = columns;
         return this;

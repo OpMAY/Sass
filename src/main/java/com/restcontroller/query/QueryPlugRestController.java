@@ -491,7 +491,7 @@ public class QueryPlugRestController {
 
     @RequestMapping(value = "/get/database/validation/{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getDatabaseValidation(HttpServletRequest request, @PathVariable String id) throws Exception {
-        int decryptedNo = Integer.parseInt(encryptionService.decryptAES(id));
+        int decryptedNo = Integer.parseInt(encryptionService.decryptAESWithSlash(id));
         Message message = queryPlugService.checkDatabaseValid(decryptedNo);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }

@@ -295,7 +295,8 @@ const initializeTableOptions = (selector) => {
                 const update_value = name_element.querySelector('input').value;
                 const table = findTableById(draggable_tables, name_element.querySelector('input').dataset.tableId);
                 // okiwi-query-left.js
-                if (findTableByName(draggable_tables, update_value).length !== 0) {
+                if (table.name !== update_value && findTableByName(draggable_tables, update_value).length !== 0) {
+                    console.log(table);
                     alert('테이블의 이름이 다른 테이블과 중복됩니다. 다시 입력해주세요.');
                     return;
                 }

@@ -145,6 +145,21 @@
                         location.href = '/query/database/' + workspace.dataset.hash + '/detail';
                     }
                 });
+
+                container.find('.workspace .dropdown-menu').on('click', '.list-group .list-group-item', function (e) {
+                    let target = e.target;
+                    let workspace = target.closest('.workspace');
+                    let actionClass = this.classList[2];
+                    if(actionClass === '_copy') {
+                        alert('복사');
+                    } else if (actionClass === '_delete') {
+                        alert('삭제');
+                    } else if (actionClass === '_update') {
+                        window.location.href = '/query/workspace/edit/' + workspace.dataset.hash;
+                    } else {
+                        console.error('wrong type : ' + actionClass);
+                    }
+                })
             } else {
 
             }

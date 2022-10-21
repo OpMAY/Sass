@@ -1,5 +1,7 @@
 package com.controller.query;
 
+import com.exception.GrantAccessDeniedException;
+import com.exception.enums.BusinessExceptionType;
 import com.model.query.DataBase;
 import com.service.query.QueryPlugService;
 import com.util.Encryption.EncryptionService;
@@ -27,7 +29,24 @@ public class QueryPlugController {
 
     @RequestMapping(value = "/workspace/create", method = RequestMethod.GET)
     public ModelAndView CreateWorkSpace() {
-        return new ModelAndView("query/workspace-create");
+        ModelAndView VIEW = new ModelAndView("query/workspace-create");
+        VIEW.addObject("type", "new");
+        return VIEW;
+    }
+
+    @RequestMapping(value = "/workspace/edit/{hash}", method = RequestMethod.GET)
+    public ModelAndView EditWorkSpace(@PathVariable("hash") String hash) throws Exception {
+        ModelAndView VIEW = new ModelAndView("query/workspace-create");
+        int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
+        DataBase dataBase = queryPlugService.getDataBase(database_no);
+        if (dataBase != null) {
+            VIEW.addObject("type", "edit");
+            dataBase.setHash_no(encryptionService.encryptAES(Integer.toString(dataBase.getNo()), true));
+            VIEW.addObject("dataBase", dataBase);
+            return VIEW;
+        } else {
+            throw new GrantAccessDeniedException(BusinessExceptionType.GRANT_EXCEPTION);
+        }
     }
 
     @RequestMapping(value = "/database/{hash}/detail", method = RequestMethod.GET)

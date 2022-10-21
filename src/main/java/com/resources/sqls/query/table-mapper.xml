@@ -41,4 +41,19 @@
         WHERE database_no = #{database_no}
           AND id = #{table_id}
     </delete>
+    <update id="updateTableHasPk">
+        update `table`
+        SET has_primary_key = #{hasPk}
+        WHERE id = #{table_id}
+    </update>
+    <update id="updateTableHasFk">
+        update `table`
+        SET has_foreign_key = #{hasFk}
+        WHERE id = #{table_id}
+    </update>
+    <select id="getTableById" resultType="Table" resultMap="Table">
+        select *
+        from `table`
+        WHERE id = #{table_id}
+    </select>
 </mapper>

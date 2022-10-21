@@ -21,7 +21,7 @@ public class Column {
     private String default_value;
     private Integer size;
 
-    public Column sampleColumn(String table_id) {
+    public Column sampleColumn(String table_id, int order) {
         String token = TokenGenerator.RandomToken(8);
         this.id = token;
         this.table_id = table_id;
@@ -31,6 +31,7 @@ public class Column {
         this.pk = false;
         this.auto_increment = false;
         this.nullable = false;
+        this.order = order;
         return this;
     }
 }
