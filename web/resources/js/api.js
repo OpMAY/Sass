@@ -1,6 +1,6 @@
 'use strict';
 
-let host = 'http://localhost:8080';
+let host = '';
 
 async function apiLogin(email, password) {
     function apiFetchLogin(email, password) {

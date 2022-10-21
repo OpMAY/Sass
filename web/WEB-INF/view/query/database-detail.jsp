@@ -864,12 +864,28 @@
 
         /** Global Event Listener (Right Option) */
         document.querySelector('._right-option._create-sql').addEventListener('click', function (event) {
-            let $editor_container = document.querySelector('#database-editor-container');
-            if (!$editor_container.classList.contains('is-open')) {
-                $editor_container.classList.add('is-open');
-            } else {
-                $editor_container.classList.remove('is-open');
-            }
+            apiQueryCreateSQL(location.pathname.split('/')[3]).then((result) => {
+                console.log(result);
+                if(result.data.query !== undefined && result.data.query !== null) {
+                    let $editor_container = document.querySelector('#database-editor-container');
+                    if (!$editor_container.classList.contains('is-open')) {
+                        $editor_container.classList.add('is-open');
+                    } else {
+                        $editor_container.classList.remove('is-open');
+                    }
+                    let q = result.data.query;
+                    $('._editor').html(q);
+                } else {
+                    alert('쿼리 에러 발생');
+                    console.log(result.data.errors);
+                }
+            })
+            // let $editor_container = document.querySelector('#database-editor-container');
+            // if (!$editor_container.classList.contains('is-open')) {
+            //     $editor_container.classList.add('is-open');
+            // } else {
+            //     $editor_container.classList.remove('is-open');
+            // }
         });
 
         /** Global Event Listener (Database Editor Container) */
