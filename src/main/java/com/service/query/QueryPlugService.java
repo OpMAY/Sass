@@ -133,6 +133,26 @@ public class QueryPlugService {
     public void deleteTableRow(int database_no, String table_id, String row_id) {
         // Update Table has FK
         columnDao.deleteTableRow(table_id, row_id);
+        // Reset Ordering
+        ArrayList<Column> columns = columnDao.getColumns(table_id);
+        List<Column> nonOrderedColumns = new ArrayList<>();
+        for (Column column : columns) {
+            if (column.getOrder() == 0) {
+                nonOrderedColumns.add(column);
+            }
+        }
+        columns.removeIf(s -> (s.getOrder() == 0));
+        for (int i = 0; i < columns.size(); i++) {
+            if (columns.get(i).getOrder() != i + 1) {
+                columns.get(i).setOrder(i + 1);
+            }
+        }
+        for (Column column : nonOrderedColumns) {
+            log.info("main columns now size : {}", columns.size());
+            column.setOrder(columns.size() + 1);
+            columns.add(column);
+        }
+        columnDao.updateTableRowsOrder(columns);
         updateTableStatus(table_id);
     }
 
@@ -153,11 +173,11 @@ public class QueryPlugService {
         for (Line line : lines) {
             Relation relation = new Relation(database_no, line.getTo(), line.getTo_row(), line.getFrom(), line.getFrom_row());
             relationDao.disconnectLine(relation);
-            if(!changed_table_id.contains(relation.getMain_table())) {
+            if (!changed_table_id.contains(relation.getMain_table())) {
                 changed_table_id.add(relation.getMain_table());
             }
         }
-        for(String id : changed_table_id) {
+        for (String id : changed_table_id) {
             updateTableStatus(id);
         }
     }
