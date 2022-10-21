@@ -181,9 +181,19 @@ public class QueryMaker {
             }
         }
 
+
+
         if (Objects.isNull(nTable)) {
             return "error";
         }
+
+        for(Relation relation : dataBase.getRelations()) {
+            if(relation.getMain_table().equals(nTable.getId())) {
+                nTable.setHas_foreign_key(true);
+                break;
+            }
+        }
+
         String tableName = nTable.getName();
         builder.append("-- '").append(tableName).append("' 테이블 생성 쿼리<br>");
         List<Column> columnList = nTable.getColumns();
