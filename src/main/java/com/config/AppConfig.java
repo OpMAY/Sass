@@ -198,6 +198,7 @@ public class AppConfig implements WebApplicationInitializer, SchedulingConfigure
     private TeamGrantInterceptor teamGrantInterceptor;
     @Autowired
     private PluginInterceptor pluginInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(logInterceptor).order(0)
@@ -217,6 +218,7 @@ public class AppConfig implements WebApplicationInitializer, SchedulingConfigure
                 .addPathPatterns("/auth")
                 .addPathPatterns("/global/**")
                 .excludePathPatterns("/login")
+                .excludePathPatterns("/global/get/plugs")
                 .excludePathPatterns("/logout")
                 .excludePathPatterns("/register")
                 .excludePathPatterns("/find/**")
@@ -224,7 +226,8 @@ public class AppConfig implements WebApplicationInitializer, SchedulingConfigure
                 .excludePathPatterns("/code/**");
         /** is Team Grant, OWNER or PERSONAL 구분지어서 Intercept */
         registry.addInterceptor(teamGrantInterceptor).order(4)
-                .addPathPatterns("/global/**");
+                .addPathPatterns("/global/**")
+                .excludePathPatterns("/global/get/plugs");
         /** is Plugin Grant, READ or EDIT or READ(무조건 Intercept) 구분 지어서 Intercept*/
         /*registry.addInterceptor(pluginInterceptor).order(5)
                 .addPathPatterns("/query")

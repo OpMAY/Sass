@@ -13,8 +13,59 @@ let MINIMUM_POSITION = {
     left: 400,
     top: 150
 }
+
+//// 숫자 계열
+//     BIT(true, 64, true, NUMBER),
+//     TINYINT(true, 3, true, NUMBER),
+//     BOOL(false, null, true, NUMBER),
+//     BOOLEAN(false, null, true, NUMBER),
+//     SMALLINT(true, 5, true, NUMBER),
+//     MEDIUMINT(true, 7, true, NUMBER),
+//     INT(true, 11 , true, NUMBER),
+//     INTEGER(true, 11, true, NUMBER),
+//     BIGINT(true, 20, true, NUMBER),
+//     DECIMAL(true, 65, true, NUMBER),
+//     DEC(true, 65, true, NUMBER),
+//     NUMERIC(true, 65, true, NUMBER),
+//     FIXED(true, 65, true, NUMBER),
+//     FLOAT(true, 23, true, NUMBER),
+//     DOUBLE(true, 53, true, NUMBER),
+//     DOUBLE_PRECISION(true, 255, true, NUMBER),
+//     REAL(true, 255, true, NUMBER),
+//     // 문자열
+//     CHAR(true, 255, true, STRING),
+//     VARCHAR(true, 65535, true, STRING),
+//     BINARY(true, 255, true, STRING),
+//     VARBINARY(true, 65535, true, STRING),
+//     TINYBLOB(false, null, false, STRING),
+//     TINYTEXT(false, null, false, STRING),
+//     BLOB(true, 65535, false, STRING),
+//     TEXT(true, 65535, false, STRING),
+//     MEDIUMBLOB(false, null, false, STRING),
+//     MEDIUMTEXT(false, null, false, STRING),
+//     LONGBLOB(false, null, false, STRING),
+//     LONGTEXT(false, null, false, STRING),
+//     // SPECIAL CASES
+//     ENUM(true, 65535, true, STRING),
+//     SET(true, 65535, true, STRING),
+//
+//     // 시간형형
+//     DATE(false, null, true, TIME_TYPE),
+//     TIME(true, 6, true, TIME_TYPE),
+//     DATETIME(true, 6, true, TIME_TYPE),
+//     TIMESTAMP(true, 6, true, TIME_TYPE),
+//     YEAR(false, null, true, TIME_TYPE),
+//
+//     // JSON Type
+//     JSON(false, null, true, JSON_TYPE);
 // Auto Complete Entries Variable
-const entries = ['bit(n)', 'bool', 'boolean', 'tinyint(n)', 'smallint(n)', 'mediumint(n)', 'int(n)', 'integer(n)', 'bigint(n)', 'decimal(m,d)', 'float(n)', 'double(n)', 'date', 'datetime', 'timestamp', 'year', 'char(n)', 'varchar(n)', 'binary(n)', 'varbinary(n)', 'tinyblob', 'tinytext', 'text(n)', 'blob(n)', 'mediumtext', 'longtext', 'longblob', 'enum(\'val1\', \'val2\')', 'set(\'val1\', \'val2\')',];
+const entries = ['BIT(64)',
+    'BOOL', 'BOOLEAN',
+    'TINYINT(3)', 'SMALLINT(5)', 'MEDIUMINT(7)', 'INT(11)', 'INTEGER(11)', 'BIGINT(20)',
+    'DECIMAL(65)', 'FLOAT(23)', 'DOUBLE(53)', 'DATE', 'DATETIME', 'TIMESTAMP', 'YEAR',
+    'CHAR(255)', 'VARCHAR(65535)', 'BINARY(255)', 'VARBINARY(65535)',
+    'TINYBLOB', 'TINYTEXT', 'TEXT(65535)', 'BLOB(65535)', 'MEDIUMTEXT', 'LONGTEXT', 'LONGBLOB',
+    'ENUM(65535)', 'SET(65535)'];
 
 // Event Status Variable
 const status = {
@@ -2338,6 +2389,7 @@ class MySQLType {
         return this.type_name;
     }
 }
+
 function inputChangeEventListener(input) {
     const BIT = new MySQLType(true, 64, 'BIT');
     const TINYINT = new MySQLType(true, 3, 'TINYINT');
@@ -2443,7 +2495,8 @@ function inputChangeEventListener(input) {
                 match = true;
                 table_row.type = type;
                 let bracketNumberRegex = /\(([^)]+)\)/;
-                if(number !== undefined && bracketNumberRegex.test(('(' + number)) && item.size_available && item.max_size >= number.replace(')', '')) {
+                let inspection_check = false;
+                if (number !== undefined && bracketNumberRegex.test(('(' + number)) && item.size_available && item.max_size >= number.replace(')', '')) {
                     table_row.size = number.replace(')', '');
                     console.log('업데이트 가능 input timer 끝나면 업데이트');
                     comment_type_input_timer = setTimeout(function () {
@@ -2451,6 +2504,7 @@ function inputChangeEventListener(input) {
                         }, () => {
                         });
                     }, 500);
+                    inspection_check = true;
                 } else if (number === undefined && !item.size_available) {
                     console.log('업데이트 가능 input timer 끝나면 업데이트');
                     comment_type_input_timer = setTimeout(function () {
@@ -2458,17 +2512,36 @@ function inputChangeEventListener(input) {
                         }, () => {
                         });
                     }, 500);
+                    inspection_check = true;
                 } else {
+                    //2022-10-25
                     console.log('업데이트 실패');
                     console.log('size 가 필요한데 없거나, 사이즈가 필요없는데 있거나');
                     console.log('형식이 올바르지 않을때도 적용 Type(size)의 형식을 맞춰야함');
                     console.log('Type Rule : ', item);
+                    inspection_check = false;
+                }
+                let container = input.closest('._type');
+                if (!inspection_check) {
+                    if (!container.classList.contains('is-failed')) {
+                        container.classList.add('is-failed');
+                        viewAlert({content: '컬럼의 타입이 올바르지 않습니다.', type: 'failed'});
+                    }
+                } else {
+                    if (container.classList.contains('is-failed')) {
+                        container.classList.remove('is-failed');
+                    }
                 }
             }
         })
 
-        if(!match) {
+        if (!match) {
             console.log('일치하는 Type 없음');
+            let container = input.closest('._type');
+            if (!container.classList.contains('is-failed')) {
+                container.classList.add('is-failed');
+                viewAlert({content: '컬럼의 타입이 일치하는 타입이 없습니다.', type: 'failed'});
+            }
         }
     }
 }

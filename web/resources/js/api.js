@@ -1,6 +1,6 @@
 'use strict';
 
-let host = '';
+let host = 'http://localhost:8080';
 
 async function apiLogin(email, password) {
     function apiFetchLogin(email, password) {
@@ -718,6 +718,7 @@ async function apiGetPlugs() {
     let result;
     try {
         result = await apiFetchGetPlugs();
+        console.log(result);
         return result;
     } catch (error) {
         console.log(error);

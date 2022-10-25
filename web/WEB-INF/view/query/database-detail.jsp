@@ -714,6 +714,8 @@
         </div>
     </div>
 </div>
+<div id="modal-container"></div>
+<div id="alert-container"></div>
 <!-- Optional JavaScript; choose one of the two! -->
 
 <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
@@ -749,6 +751,7 @@
 <script src="../../../resources/js/inspection.js"></script>
 <script src="../../../resources/js/validation.js"></script>
 <script src="../../../resources/js/query/validation.js"></script>
+<script src="../../../resources/js/module/modal.js"></script>
 <!-- UI Draggable Lib -->
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <!-- UI Arrow Line Lib -->

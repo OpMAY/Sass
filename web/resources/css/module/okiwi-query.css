@@ -253,6 +253,10 @@ svg.leader-line {
     padding-right: 0;
 }
 
+.component ._table tbody tr[data-table-id][data-table-row] > td._type.is-failed {
+    outline: var(--border-2px) var(--brand-orange);
+}
+
 .component ._table tbody tr[data-table-id][data-table-row] > td._type .__autocomplete {
     padding-left: 12px;
     padding-right: 12px;

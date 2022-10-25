@@ -1,3 +1,26 @@
+.alert {
+    position: fixed;
+    z-index: 9999;
+    bottom: 120px;
+    left: 50%;
+
+    transform: var(--translate-lr-center);
+
+    margin-bottom: 0;
+    word-break: keep-all;
+    border: none;
+    border-radius: 5px;
+}
+
+.alert.alert-danger {
+    color: var(--basic-white);
+    background-color: var(--brand-orange);
+    left: initial;
+    bottom: 80px;
+    right: 80px;
+    transform: none;
+}
+
 .modal .modal-content {
     border-radius: 10px;
 }
