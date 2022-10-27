@@ -138,7 +138,7 @@
             <div class="container-fluid px-0">
                 <div class="row mx-0">
                     <div class="col-12 px-0 text-right">
-                        <div class="_right-menu-option _create" onclick="createTableList('#list-tables','writable')">
+                        <div class="_right-menu-option _create" onclick="createTableList('#list-tables','writable', '${database.database_type}')">
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd"
@@ -785,6 +785,10 @@
         let get_tables = apiGetTables(getURLParamByPrevAndNext('database', 'detail'));
         let tables = get_tables.tables;
         let lines = get_tables.lines;
+        // added for types
+        let types = get_tables.types;
+        let dbType = get_tables.dbType;
+        initializeDatabaseTypes(types, dbType);
         /**
          * Table Sorted Position 추가하는 로직
          * */
@@ -835,12 +839,16 @@
             });
             let table_id = apiCreateNextId(getURLParamByPrevAndNext('database', 'detail'), 'TABLE');
             let row_id = apiCreateNextId(getURLParamByPrevAndNext('database', 'detail'), 'ROW');
+            let table_type = 'INT';
+            if(!types.includes('INT')) {
+                table_type = 'NUMBER';
+            }
             let table = {
                 id: table_id,
                 name: table_id,
                 columns: [{
                     id: row_id,
-                    name: 'no', type: 'INT', comment: '', pk: true,
+                    name: 'no', type: table_type, comment: '', pk: true,
                     auto_increment: false, nullable: false
                 }],
                 has_primary_key : true,

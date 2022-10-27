@@ -17,4 +17,6 @@ public interface DataBaseMapper {
     boolean checkTokenValid(@Param("database_no") int database_no, @Param("token") String token);
 
     ArrayList<DataBase> getDatabases(@Param("company_no") int company_no);
+
+    void deleteDataBase(int no);
 }

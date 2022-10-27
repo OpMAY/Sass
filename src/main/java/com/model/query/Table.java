@@ -24,21 +24,21 @@ public class Table {
         this.position = new Position().samplePosition();
         ArrayList<Column> columns = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            columns.add(new Column().sampleColumn(this.id, i + 1));
+            columns.add(new Column().sampleColumn(this.id, i + 1, DataBaseType.MYSQL));
         }
         this.columns = columns;
         return this;
     }
 
-    public Table initTable(int database_no) {
+    public Table initTable(int database_no, DataBaseType dataBaseType) {
         String token = TokenGenerator.RandomToken(8);
         this.id = token;
         this.database_no = database_no;
-        this.name = token;
+        this.name = "Sample Table";
         this.position = new Position().InitializePosition();
         ArrayList<Column> columns = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            columns.add(new Column().sampleColumn(this.id, i + 1));
+            columns.add(new Column().sampleColumn(this.id, i + 1, dataBaseType));
         }
         this.columns = columns;
         return this;

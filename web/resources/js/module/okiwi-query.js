@@ -59,7 +59,7 @@ let MINIMUM_POSITION = {
 //     // JSON Type
 //     JSON(false, null, true, JSON_TYPE);
 // Auto Complete Entries Variable
-const entries = ['BIT(64)',
+let entries = ['BIT(64)',
     'BOOL', 'BOOLEAN',
     'TINYINT(3)', 'SMALLINT(5)', 'MEDIUMINT(7)', 'INT(11)', 'INTEGER(11)', 'BIGINT(20)',
     'DECIMAL(65)', 'FLOAT(23)', 'DOUBLE(53)', 'DATE', 'DATETIME', 'TIMESTAMP', 'YEAR',
@@ -77,6 +77,8 @@ const guide_line = {
     x_lines: [], y_lines: [],
 };
 
+let database_type = 'MYSQL';
+
 
 // Draggable Tables Global Variable
 let draggable_tables = new Array();
@@ -86,6 +88,21 @@ let leader_lines = new Array();
 // Close Event Initialize
 $(document).mouseup(contextMenuMouseUpCloseEventListener);
 $(document).mouseup(tableOptionListMouseUpCloseEventListener);
+
+
+/**
+ * initializeDatabaseTypes,
+ * 초기 데이터베이스에 맞춘 type array set
+ *
+ *
+ * @param {array} types 서버에서 전달하는 type List
+ * @param {string} dbType 서버에서 전달하는 database Type
+ * */
+function initializeDatabaseTypes(types, dbType) {
+    if (types !== undefined && types.length > 0)
+        entries = types;
+    database_type = dbType;
+}
 
 /**
  * InitializeScale,
@@ -1095,12 +1112,12 @@ const createTableRowElement = (table, index, is_simple = false) => {
                   <input oninput="inputChangeEventListener(this)" type="text" class="__autocomplete"
                          name="${table.id}__${table.name}__type"
                          data-type="type"
-                         value="${column.type}"
+                         value="${column.type}${column.size !== null && column.size !== undefined ? ('(' + column.size + ')') : ''}"
                          placeholder="Write your type">
                 </div>
               </td>
               <td class="_comment not-draggable" ${is_simple ? 'style="display: none;"' : ''}>
-                  <input oninput="inputChangeEventListener(this)" type="text" name="${table.id}__${table.name}__comment" data-type="comment" value="${column.comment}"/>
+                  <input oninput="inputChangeEventListener(this)" type="text" name="${table.id}__${table.name}__comment" data-type="comment" value="${column.comment === null ? '' : column.comment}"/>
               </td>
               <td class="_fk fk-draggable" data-status="open">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2378,7 +2395,7 @@ const findTableRowByName = (draggable_tables, row_name) => {
  * @param {HTMLInputElement} input
  * */
 
-class MySQLType {
+class ColumnType {
     constructor(size_available, max_size, type_name) {
         this.size_available = size_available;
         this.max_size = max_size;
@@ -2391,43 +2408,71 @@ class MySQLType {
 }
 
 function inputChangeEventListener(input) {
-    const BIT = new MySQLType(true, 64, 'BIT');
-    const TINYINT = new MySQLType(true, 3, 'TINYINT');
-    const BOOL = new MySQLType(false, null, 'BOOL');
-    const BOOLEAN = new MySQLType(false, null, 'BOOLEAN');
-    const SMALLINT = new MySQLType(true, 5, 'SMALLINT');
-    const MEDIUMINT = new MySQLType(true, 7, 'MEDIUMINT');
-    const INT = new MySQLType(true, 11, 'INT');
-    const INTEGER = new MySQLType(true, 11, 'INTEGER');
-    const BIGINT = new MySQLType(true, 20, 'BIGINT');
-    const DECIMAL = new MySQLType(true, 65, 'DECIMAL');
-    const DEC = new MySQLType(true, 65, 'DEC');
-    const NUMERIC = new MySQLType(true, 65, 'NUMERIC');
-    const FIXED = new MySQLType(true, 65, 'FIXED');
-    const FLOAT = new MySQLType(true, 23, 'FLOAT');
-    const DOUBLE = new MySQLType(true, 53, 'DOUBLE');
-    const DOUBLE_PRECISION = new MySQLType(true, 255, 'DOUBLE_PRECISION');
-    const REAL = new MySQLType(true, 255, 'REAL');
-    const CHAR = new MySQLType(true, 255, 'CHAR');
-    const VARCHAR = new MySQLType(true, 65535, 'VARCHAR');
-    const BINARY = new MySQLType(true, 255, 'BINARY');
-    const VARBINARY = new MySQLType(true, 65535, 'VARBINARY');
-    const TINYBLOB = new MySQLType(false, null, 'TINYBLOB');
-    const TINYTEXT = new MySQLType(false, null, 'TINYTEXT');
-    const BLOB = new MySQLType(true, 65535, 'BLOB');
-    const TEXT = new MySQLType(true, 65535, 'TEXT');
-    const MEDIUMBLOB = new MySQLType(false, null, 'MEDIUMBLOB');
-    const MEDIUMTEXT = new MySQLType(false, null, 'MEDIUMTEXT');
-    const LONGBLOB = new MySQLType(false, null, 'LONGBLOB');
-    const LONGTEXT = new MySQLType(false, null, 'LONGTEXT');
-    const ENUM = new MySQLType(true, 65535, 'ENUM');
-    const SET = new MySQLType(true, 65535, 'SET');
-    const DATE = new MySQLType(false, null, 'DATE');
-    const TIME = new MySQLType(true, 6, 'TIME');
-    const DATETIME = new MySQLType(true, 6, 'DATETIME');
-    const TIMESTAMP = new MySQLType(true, 6, 'TIMESTAMP');
-    const YEAR = new MySQLType(false, null, 'YEAR');
-    const JSON = new MySQLType(false, null, 'JSON');
+    const BIT = new ColumnType(true, 64, 'BIT');
+    const TINYINT = new ColumnType(true, 3, 'TINYINT');
+    const BOOL = new ColumnType(false, null, 'BOOL');
+    const BOOLEAN = new ColumnType(false, null, 'BOOLEAN');
+    const SMALLINT = new ColumnType(true, 5, 'SMALLINT');
+    const MEDIUMINT = new ColumnType(true, 7, 'MEDIUMINT');
+    const INT = new ColumnType(true, 11, 'INT');
+    const INTEGER = new ColumnType(true, 11, 'INTEGER');
+    const BIGINT = new ColumnType(true, 20, 'BIGINT');
+    const DECIMAL = new ColumnType(true, 65, 'DECIMAL');
+    const DEC = new ColumnType(true, 65, 'DEC');
+    const NUMERIC = new ColumnType(true, 65, 'NUMERIC');
+    const FIXED = new ColumnType(true, 65, 'FIXED');
+    const FLOAT = new ColumnType(true, 23, 'FLOAT');
+    const DOUBLE = new ColumnType(true, 53, 'DOUBLE');
+    const DOUBLE_PRECISION = new ColumnType(true, 255, 'DOUBLE_PRECISION');
+    const REAL = new ColumnType(true, 255, 'REAL');
+    const CHAR = new ColumnType(true, 255, 'CHAR');
+    const VARCHAR = new ColumnType(true, 65535, 'VARCHAR');
+    const BINARY = new ColumnType(true, 255, 'BINARY');
+    const VARBINARY = new ColumnType(true, 65535, 'VARBINARY');
+    const TINYBLOB = new ColumnType(false, null, 'TINYBLOB');
+    const TINYTEXT = new ColumnType(false, null, 'TINYTEXT');
+    const BLOB = new ColumnType(true, 65535, 'BLOB');
+    const TEXT = new ColumnType(true, 65535, 'TEXT');
+    const MEDIUMBLOB = new ColumnType(false, null, 'MEDIUMBLOB');
+    const MEDIUMTEXT = new ColumnType(false, null, 'MEDIUMTEXT');
+    const LONGBLOB = new ColumnType(false, null, 'LONGBLOB');
+    const LONGTEXT = new ColumnType(false, null, 'LONGTEXT');
+    const ENUM = new ColumnType(true, 65535, 'ENUM');
+    const SET = new ColumnType(true, 65535, 'SET');
+    const DATE = new ColumnType(false, null, 'DATE');
+    const TIME = new ColumnType(true, 6, 'TIME');
+    const DATETIME = new ColumnType(true, 6, 'DATETIME');
+    const TIMESTAMP = new ColumnType(true, 6, 'TIMESTAMP');
+    const YEAR = new ColumnType(false, null, 'YEAR');
+    const JSON = new ColumnType(false, null, 'JSON');
+    const DATETIME2 = new ColumnType(false, null, 'DATETIME2');
+    const DATETIMEOFFSET = new ColumnType(false, null, 'DATETIMEOFFSET');
+    const SMALLDATETIME = new ColumnType(false, null, 'SMALLDATETIME');
+    const MONEY = new ColumnType(false, null, 'MONEY');
+    const SMALLMONEY = new ColumnType(false, null, 'SMALLMONEY');
+    const NCHAR = new ColumnType(true, 4000, 'NCHAR');
+    const NVARCHAR = new ColumnType(true, 4000, 'NVARCHAR');
+    const VARCHAR2 = new ColumnType(true, 4000, 'VARCHAR2');
+    const NTEXT = new ColumnType(false, null, 'NTEXT');
+    const IMAGE = new ColumnType(false, null, 'IMAGE');
+    const CURSOR = new ColumnType(false, null, 'CURSOR');
+    const ROWVERSION = new ColumnType(false, null, 'ROWVERSION');
+    const HIERARCHYID = new ColumnType(false, null, 'HIERARCHYID');
+    const UNIQUEIDENTIFIER = new ColumnType(false, null, 'UNIQUEIDENTIFIER');
+    const SQL_VARIANT = new ColumnType(false, null, 'SQL_VARIANT');
+    const XML = new ColumnType(false, null, 'XML');
+    const LONG = new ColumnType(false, null, 'LONG');
+    const CLOB = new ColumnType(false, null, 'CLOB');
+    const NCLOB = new ColumnType(false, null, 'NCLOB');
+    const NUMBER = new ColumnType(false, null, 'NUMBER');
+    const BINARY_FLOAT = new ColumnType(false, null, 'BINARY_FLOAT');
+    const BINARY_DOUBLE = new ColumnType(false, null, 'BINARY_DOUBLE');
+    const BFILE = new ColumnType(false, null, 'BFILE');
+    const FLOAT8 = new ColumnType(false, null, 'FLOAT8');
+    const TIMESTAMPTZ = new ColumnType(false, null, 'TIMESTAMPTZ');
+    const INTERVAL = new ColumnType(false, null, 'INTERVAL');
+    const JSONB = new ColumnType(false, null, 'JSONB');
+    const UUID = new ColumnType(false, null, 'UUID');
 
     const mySQLTypesArray = [
         BIT,
@@ -2468,7 +2513,79 @@ function inputChangeEventListener(input) {
         YEAR,
         JSON
     ];
+    const msSQLTypesArray = [
+        BIGINT,
+        INT,
+        SMALLINT,
+        TINYINT,
+        NUMERIC,
+        DECIMAL,
+        BIT,
+        MONEY,
+        SMALLMONEY,
+        FLOAT,
+        REAL,
+        DATETIME,
+        DATETIME2,
+        DATE,
+        DATETIMEOFFSET,
+        SMALLDATETIME,
+        TIME,
+        CHAR,
+        VARCHAR,
+        TEXT,
+        NCHAR,
+        NVARCHAR,
+        NTEXT,
+        BINARY,
+        VARBINARY,
+        IMAGE,
+        CURSOR,
+        ROWVERSION,
+        HIERARCHYID,
+        UNIQUEIDENTIFIER,
+        SQL_VARIANT,
+        XML
+    ];
+    const oracleTypesArray = [
+        CHAR,
+        VARCHAR2,
+        NCHAR,
+        NVARCHAR,
+        LONG,
+        CLOB,
+        NCLOB,
+        NUMBER,
+        FLOAT,
+        BINARY_FLOAT,
+        BINARY_DOUBLE,
+        DATE,
+        TIMESTAMP,
+        BLOB,
+        BFILE
 
+    ];
+    const postgreSQLTypesArray = [
+        BOOLEAN,
+        BOOL,
+        CHAR,
+        VARCHAR,
+        TEXT,
+        SMALLINT,
+        INT,
+        FLOAT,
+        REAL,
+        FLOAT8,
+        NUMERIC,
+        DATE,
+        TIME,
+        TIMESTAMP,
+        TIMESTAMPTZ,
+        INTERVAL,
+        JSON,
+        JSONB,
+        UUID,
+    ];
 
     const table_row_element = input.closest('[data-table-id][data-table-row]');
     const table_row = findTableRowById(table_row_element.dataset.tableId, table_row_element.dataset.tableRow);
@@ -2490,7 +2607,23 @@ function inputChangeEventListener(input) {
         let type = input.value.split('(')[0];
         let number = input.value.split('(')[1];
         let match = false;
-        mySQLTypesArray.forEach((item) => {
+        let type_match_array = [];
+        switch (database_type) {
+            case 'MYSQL':
+            case 'MARIA_DB':
+                type_match_array = mySQLTypesArray;
+                break;
+            case 'MSSQL':
+                type_match_array = msSQLTypesArray;
+                break;
+            case 'ORACLE':
+                type_match_array = oracleTypesArray;
+                break;
+            case 'POSTGRE_SQL':
+                type_match_array = postgreSQLTypesArray;
+                break;
+        }
+        type_match_array.forEach((item) => {
             if (type.toUpperCase() === item.name) {
                 match = true;
                 table_row.type = type;
@@ -2505,7 +2638,7 @@ function inputChangeEventListener(input) {
                         });
                     }, 500);
                     inspection_check = true;
-                } else if (number === undefined && !item.size_available) {
+                } else if (number === undefined && (!item.size_available || item.name === 'INT')) {
                     console.log('업데이트 가능 input timer 끝나면 업데이트');
                     comment_type_input_timer = setTimeout(function () {
                         apiUpdateTableRow(getURLParamByPrevAndNext('database', 'detail'), table_row_element.dataset.tableId, table_row, () => {
@@ -2514,6 +2647,7 @@ function inputChangeEventListener(input) {
                     }, 500);
                     inspection_check = true;
                 } else {
+                    // TODO 업데이트 안되는 상세 이유?
                     //2022-10-25
                     console.log('업데이트 실패');
                     console.log('size 가 필요한데 없거나, 사이즈가 필요없는데 있거나');

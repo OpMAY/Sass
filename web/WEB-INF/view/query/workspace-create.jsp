@@ -85,7 +85,7 @@
                     </div>
                     <div class="row row-cols-4 database-type-item-container">
                         <div class="col mb-32">
-                            <div class="database-type-item <c:if test="${type != 'new' && dataBase.database_type.name() == 'ORACLE'}">is-active</c:if>"
+                            <div class="database-type-item <c:if test="${type != 'new'}">non-editable</c:if> <c:if test="${type != 'new' && dataBase.database_type.name() == 'ORACLE'}">is-active</c:if>"
                                  data-type="ORACLE">
                                 <div class="_image background-image"
                                      style="background-image: url('../../../resources/assets/images/icon/query/database-oracle.png')"></div>
@@ -95,7 +95,7 @@
                             </div>
                         </div>
                         <div class="col mb-32">
-                            <div class="database-type-item <c:if test="${type != 'new' && dataBase.database_type.name() == 'MYSQL'}">is-active</c:if>"
+                            <div class="database-type-item <c:if test="${type != 'new'}">non-editable</c:if> <c:if test="${type != 'new' && dataBase.database_type.name() == 'MYSQL'}">is-active</c:if>"
                                  data-type="MYSQL">
                                 <div class="_image background-image"
                                      style="background-image: url('../../../resources/assets/images/icon/query/database-mysql.png')"></div>
@@ -105,7 +105,7 @@
                             </div>
                         </div>
                         <div class="col mb-32">
-                            <div class="database-type-item <c:if test="${type != 'new' && dataBase.database_type.name() == 'MSSQL'}">is-active</c:if>"
+                            <div class="database-type-item <c:if test="${type != 'new'}">non-editable</c:if> <c:if test="${type != 'new' && dataBase.database_type.name() == 'MSSQL'}">is-active</c:if>"
                                  data-type="MSSQL">
                                 <div class="_image background-image"
                                      style="background-image: url('../../../resources/assets/images/icon/query/database-mssql.png')"></div>
@@ -115,7 +115,7 @@
                             </div>
                         </div>
                         <div class="col mb-32">
-                            <div class="database-type-item <c:if test="${type != 'new' && dataBase.database_type.name() == 'MARIA_DB'}">is-active</c:if>"
+                            <div class="database-type-item <c:if test="${type != 'new'}">non-editable</c:if> <c:if test="${type != 'new' && dataBase.database_type.name() == 'MARIA_DB'}">is-active</c:if>"
                                  data-type="MARIA_DB">
                                 <div class="_image background-image"
                                      style="background-image: url('../../../resources/assets/images/icon/query/database-maria.png')"></div>
@@ -125,7 +125,7 @@
                             </div>
                         </div>
                         <div class="col mb-32">
-                            <div class="database-type-item <c:if test="${type != 'new' && dataBase.database_type.name() == 'POSTGRE_SQL'}">is-active</c:if>"
+                            <div class="database-type-item <c:if test="${type != 'new'}">non-editable</c:if> <c:if test="${type != 'new' && dataBase.database_type.name() == 'POSTGRE_SQL'}">is-active</c:if>"
                                  data-type="POSTGRE_SQL">
                                 <div class="_image background-image"
                                      style="background-image: url('../../../resources/assets/images/icon/query/database-postgre.png')"></div>
@@ -203,25 +203,31 @@
             let target = this;
             let database_types = $('.database-type-item-container .database-type-item');
             database_types.each(function (i, e) {
-                if (e.classList.contains('is-active')) {
+                if (e.classList.contains('is-active') && !e.classList.contains('non-editable')) {
                     e.classList.remove('is-active');
                 }
             });
-            target.classList.add('is-active');
+            if (!target.classList.contains('non-editable')) {
+                target.classList.add('is-active');
+            }
         });
         $('[data-action="database-create"]').click(function (e) {
             apiCreateDatabase().then((result) => {
                 console.log(result);
                 if (result.status === 'OK') {
-                    alert('데이터베이스 생성 완료');
-                    location.href = '/query/database/' + result.data.database.hash_no + '/detail';
+                    if(result.data.status === 0) {
+                        alert('이미 기업에 동일한 이름의 데이터베이스가 존재합니다.');
+                    } else {
+                        alert('데이터베이스 생성 완료');
+                        window.location.replace('/query/database/' + result.data.database.hash_no + '/detail');
+                    }
                 } else {
 
                 }
             });
         });
         $('[data-action="database-edit"]').click(function (e) {
-            console.log('수정');
+            alert('수정');
             console.log($(this).data().no);
             // apiCreateDatabase().then((result) => {
             //     console.log(result);

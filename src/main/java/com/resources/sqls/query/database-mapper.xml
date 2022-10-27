@@ -31,4 +31,9 @@
         from `database`
         where company_no = #{company_no}
     </select>
+    <delete id="deleteDataBase">
+        delete
+        from `database`
+        WHERE no = #{no}
+    </delete>
 </mapper>

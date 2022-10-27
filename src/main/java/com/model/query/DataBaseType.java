@@ -1,7 +1,7 @@
 package com.model.query;
 
 public enum DataBaseType {
-    ORACLE("Oracle"), MYSQL("MySQL"), MSSQL("MSSQL"), MARIA_DB("MariaDB"), POSTGRE_SQL("PostgreSQL");
+    COMMON("Common"), ORACLE("Oracle"), MYSQL("MySQL"), MSSQL("MSSQL"), MARIA_DB("MariaDB"), POSTGRE_SQL("PostgreSQL");
     private final String type;
 
     DataBaseType(String type) {

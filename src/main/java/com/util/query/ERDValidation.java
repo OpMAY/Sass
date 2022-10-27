@@ -149,7 +149,7 @@ public class ERDValidation {
     }
 
     private boolean autoIncrementRuleCheck(Column column) {
-        return !column.isAuto_increment() || (column.isAuto_increment() && column.getType().getDataTypeCategory().equals(DataTypeCategory.NUMBER));
+        return !column.isAuto_increment() || (column.isAuto_increment() && column.getType().getDataTypeCategory().equals(DataTypeCategory.C_NUMBER));
     }
 
     private boolean checkRelationValid(Relation relation) {
@@ -215,7 +215,7 @@ public class ERDValidation {
 
     private boolean checkPrimaryKeyValid(Column column) {
         return !column.isNullable()
-                && primaryAvailableTypes.contains(column.getType());
+                && (column.getType().getDataTypeCategory().equals(DataTypeCategory.STRING) || column.getType().getDataTypeCategory().equals(DataTypeCategory.C_NUMBER));
 
 //        column.is_unique()
 //                &&
@@ -274,7 +274,7 @@ public class ERDValidation {
             } else {
                 // 기본값이 SQL 함수(expression)의 형태가 아닌 일반 값일 때
                 switch (column.getType().getDataTypeCategory()) {
-                    case NUMBER:
+                    case C_NUMBER:
                         try {
                             double a = Double.parseDouble(column.getDefault_value());
                             long bit = Double.doubleToLongBits(a);
@@ -363,12 +363,13 @@ public class ERDValidation {
         return timeDefaultValueFunctionList.contains(defaultValue) || jsonDefaultValueFunctionList.contains(defaultValue);
     }
 
-    // PK로 올 수 있는 Type = STRING, INT 종류
+    // PK로 올 수 있는 Type = STRING, INT 종류 NO USE
     private final ArrayList<ColumnType> primaryAvailableTypes = new ArrayList<>(Arrays.asList(
             ColumnType.VARCHAR,
             ColumnType.INTEGER,
             ColumnType.CHAR,
-            ColumnType.INT
+            ColumnType.INT,
+            ColumnType.NUMBER
     ));
 
     private static final ArrayList<String> jsonDefaultValueFunctionList = new ArrayList<>(Arrays.asList(

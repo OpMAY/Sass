@@ -38,4 +38,8 @@ public class DataBaseDao {
     public ArrayList<DataBase> getDatabases(int company_no) {
         return mapper.getDatabases(company_no);
     }
+
+    public void deleteDataBase(int decryptedNo) {
+        mapper.deleteDataBase(decryptedNo);
+    }
 }
