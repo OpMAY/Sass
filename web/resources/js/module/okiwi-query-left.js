@@ -439,7 +439,7 @@ function createTableListColumn(option) {
  * @param {string} selector 리스트 테이블을 담을 컨테이너 셀렉터
  * @param {string} writable 테이블의 이름을 수정할 수 있는 엘리먼트를 생성할지 구분하는 변수
  * */
-const createTableList = (selector, writable = undefined) => {
+const createTableList = (selector, writable = undefined, type) => {
     const list_container = document.querySelector(selector);
     let table_id = apiCreateNextId(getURLParamByPrevAndNext('database', 'detail'), 'TABLE');
     let row_id = apiCreateNextId(getURLParamByPrevAndNext('database', 'detail'), 'ROW');
@@ -449,7 +449,7 @@ const createTableList = (selector, writable = undefined) => {
         columns: [{
             id: row_id,
             name: 'no',
-            type: 'INT',
+            type: type === 'ORACLE' ? 'NUMBER' : 'INT',
             comment: '',
             pk: true,
             nullable: false,

@@ -180,7 +180,7 @@ public enum ColumnType {
             MARIA_DB
     ))),
 
-    // 시간형형
+    // 시간형
     DATE(false, null, true, TIME_TYPE, new ArrayList<>(Arrays.asList(
             MYSQL,
             MSSQL,
@@ -375,7 +375,7 @@ public enum ColumnType {
         return dataBaseType.contains(type);
     }
 
-    public List<ColumnType> getDataBaseColumnTypes(DataBaseType dataBaseType) {
+    public static List<ColumnType> getDataBaseColumnTypes(DataBaseType dataBaseType) {
         List<ColumnType> columnTypes = new ArrayList<>();
         for (ColumnType columnType : ColumnType.values()) {
             if (columnType.getDataBaseType().contains(dataBaseType)) {

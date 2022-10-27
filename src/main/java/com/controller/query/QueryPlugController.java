@@ -3,6 +3,8 @@ package com.controller.query;
 import com.exception.GrantAccessDeniedException;
 import com.exception.enums.BusinessExceptionType;
 import com.model.query.DataBase;
+import com.model.query.DataBaseType;
+import com.model.query.column.ColumnType;
 import com.service.query.QueryPlugService;
 import com.util.Encryption.EncryptionService;
 import lombok.AllArgsConstructor;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -54,6 +58,8 @@ public class QueryPlugController {
         ModelAndView VIEW = new ModelAndView("query/database-detail");
         int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
         DataBase dataBase = queryPlugService.getDataBase(database_no);
+        List<ColumnType> dataBaseTypes = ColumnType.getDataBaseColumnTypes(dataBase.getDatabase_type());
+        log.info("databaseTypes : {}", dataBaseTypes);
         VIEW.addObject("database", dataBase);
         return VIEW;
     }

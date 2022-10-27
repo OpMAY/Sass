@@ -215,15 +215,19 @@
             apiCreateDatabase().then((result) => {
                 console.log(result);
                 if (result.status === 'OK') {
-                    alert('데이터베이스 생성 완료');
-                    location.href = '/query/database/' + result.data.database.hash_no + '/detail';
+                    if(result.data.status === 0) {
+                        alert('이미 기업에 동일한 이름의 데이터베이스가 존재합니다.');
+                    } else {
+                        alert('데이터베이스 생성 완료');
+                        window.location.replace('/query/database/' + result.data.database.hash_no + '/detail');
+                    }
                 } else {
 
                 }
             });
         });
         $('[data-action="database-edit"]').click(function (e) {
-            console.log('수정');
+            alert('수정');
             console.log($(this).data().no);
             // apiCreateDatabase().then((result) => {
             //     console.log(result);

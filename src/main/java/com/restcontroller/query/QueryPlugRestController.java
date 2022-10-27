@@ -1,10 +1,7 @@
 package com.restcontroller.query;
 
 import com.model.query.*;
-import com.model.query.column.Column;
-import com.model.query.column.Line;
-import com.model.query.column.Position;
-import com.model.query.column.Relation;
+import com.model.query.column.*;
 import com.response.DefaultRes;
 import com.response.Message;
 import com.service.query.QueryPlugService;
@@ -57,7 +54,10 @@ public class QueryPlugRestController {
                         relation.getTarget_column()));
             }
         }
+        List<ColumnType> dataBaseTypes = ColumnType.getDataBaseColumnTypes(dataBase.getDatabase_type());
         message.put("lines", lines);
+        message.put("types", dataBaseTypes);
+        message.put("dbType", dataBase.getDatabase_type().toString());
 
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
@@ -493,5 +493,12 @@ public class QueryPlugRestController {
         int decryptedNo = Integer.parseInt(encryptionService.decryptAESWithSlash(id));
         Message message = queryPlugService.checkDatabaseValid(decryptedNo);
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/delete/database/{hash}", method = RequestMethod.POST)
+    public ResponseEntity<String> deleteDatabase(HttpServletRequest request, @PathVariable String hash) throws Exception {
+        int decryptedNo = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
+        queryPlugService.deleteDataBase(decryptedNo);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK), HttpStatus.OK);
     }
 }

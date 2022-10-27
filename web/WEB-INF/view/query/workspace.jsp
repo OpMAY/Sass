@@ -151,9 +151,20 @@
                     let workspace = target.closest('.workspace');
                     let actionClass = this.classList[2];
                     if(actionClass === '_copy') {
-                        alert('복사');
+                        alert('복사 - 준비중');
                     } else if (actionClass === '_delete') {
-                        alert('삭제');
+                        let title = workspace.querySelector('._info ._title').textContent.trim();
+                        if(confirm('데이터베이스 이름 : ' + title + '\n\n해당 데이터베이스를 삭제하시겠어요?')) {
+                            apiDeleteDatabase(workspace.dataset.hash).then((result) => {
+                                console.log(result);
+                                if(result.status === 'OK') {
+                                    alert('삭제되었습니다.');
+                                    $(workspace).parent().remove();
+                                } else {
+
+                                }
+                            })
+                        }
                     } else if (actionClass === '_update') {
                         window.location.href = '/query/workspace/edit/' + workspace.dataset.hash;
                     } else {

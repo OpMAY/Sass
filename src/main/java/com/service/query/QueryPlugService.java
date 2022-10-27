@@ -55,7 +55,7 @@ public class QueryPlugService {
             return 0; //database name has exist
         } else {
             dataBaseDao.createDataBase(dataBase);
-            tables.add(new Table().initTable(dataBase.getNo()));
+            tables.add(new Table().initTable(dataBase.getNo(), dataBase.getDatabase_type()));
             dataBase.setTables(tables);
             tableDao.insertTables(dataBase.getTables());
             for (Table table : dataBase.getTables()) {
@@ -233,5 +233,10 @@ public class QueryPlugService {
             message.put("errors", errorList);
         }
         return message;
+    }
+
+    @Transactional
+    public void deleteDataBase(int decryptedNo) {
+        dataBaseDao.deleteDataBase(decryptedNo);
     }
 }
