@@ -26,7 +26,7 @@ public class Column {
         String token = TokenGenerator.RandomToken(8);
         this.id = token;
         this.table_id = table_id;
-        this.name = "Column " + order;
+        this.name = "column_" + order;
         if(order == 1) {
             if(dataBaseType.equals(DataBaseType.ORACLE)) {
                 this.type = ColumnType.NUMBER;

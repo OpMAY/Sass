@@ -215,7 +215,7 @@ public class ERDValidation {
 
     private boolean checkPrimaryKeyValid(Column column) {
         return !column.isNullable()
-                && primaryAvailableTypes.contains(column.getType());
+                && (column.getType().getDataTypeCategory().equals(DataTypeCategory.STRING) || column.getType().getDataTypeCategory().equals(DataTypeCategory.C_NUMBER));
 
 //        column.is_unique()
 //                &&
@@ -363,12 +363,13 @@ public class ERDValidation {
         return timeDefaultValueFunctionList.contains(defaultValue) || jsonDefaultValueFunctionList.contains(defaultValue);
     }
 
-    // PK로 올 수 있는 Type = STRING, INT 종류
+    // PK로 올 수 있는 Type = STRING, INT 종류 NO USE
     private final ArrayList<ColumnType> primaryAvailableTypes = new ArrayList<>(Arrays.asList(
             ColumnType.VARCHAR,
             ColumnType.INTEGER,
             ColumnType.CHAR,
-            ColumnType.INT
+            ColumnType.INT,
+            ColumnType.NUMBER
     ));
 
     private static final ArrayList<String> jsonDefaultValueFunctionList = new ArrayList<>(Arrays.asList(
