@@ -62,16 +62,21 @@
     transition: right 0.5s;
 }
 
-.database-type-item:hover,
+.database-type-item:not(.non-editable):hover,
 .database-type-item.is-active {
     border-color: var(--brand-orange);
 }
 
-.database-type-item:hover ._name,
+.database-type-item:not(.non-editable):hover ._name,
 .database-type-item.is-active ._name {
     color: var(--brand-orange);
 }
 
 #database-editor-container.is-open {
     display: block;
+}
+
+.database-type-item.non-editable {
+    opacity: 0.5;
+    cursor: default;
 }

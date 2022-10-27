@@ -149,7 +149,7 @@ public class ERDValidation {
     }
 
     private boolean autoIncrementRuleCheck(Column column) {
-        return !column.isAuto_increment() || (column.isAuto_increment() && column.getType().getDataTypeCategory().equals(DataTypeCategory.NUMBER));
+        return !column.isAuto_increment() || (column.isAuto_increment() && column.getType().getDataTypeCategory().equals(DataTypeCategory.C_NUMBER));
     }
 
     private boolean checkRelationValid(Relation relation) {
@@ -274,7 +274,7 @@ public class ERDValidation {
             } else {
                 // 기본값이 SQL 함수(expression)의 형태가 아닌 일반 값일 때
                 switch (column.getType().getDataTypeCategory()) {
-                    case NUMBER:
+                    case C_NUMBER:
                         try {
                             double a = Double.parseDouble(column.getDefault_value());
                             long bit = Double.doubleToLongBits(a);
