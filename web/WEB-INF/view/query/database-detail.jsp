@@ -878,18 +878,18 @@
         document.querySelector('._right-option._create-sql').addEventListener('click', function (event) {
             apiQueryCreateSQL(location.pathname.split('/')[3]).then((result) => {
                 console.log(result);
+                let $editor_container = document.querySelector('#database-editor-container');
+                if (!$editor_container.classList.contains('is-open')) {
+                    $editor_container.classList.add('is-open');
+                } else {
+                    $editor_container.classList.remove('is-open');
+                }
                 if(result.data.query !== undefined && result.data.query !== null) {
-                    let $editor_container = document.querySelector('#database-editor-container');
-                    if (!$editor_container.classList.contains('is-open')) {
-                        $editor_container.classList.add('is-open');
-                    } else {
-                        $editor_container.classList.remove('is-open');
-                    }
                     let q = result.data.query;
                     $('._editor').html(q);
                 } else {
-                    alert('쿼리 에러 발생');
-                    console.log(result.data.errors);
+                    viewAlert({content: '쿼리 생성 과정에서 에러가 발생했습니다. 에러 내용을 확인하세요.', type: 'failed'});
+                    $('._editor').html(result.data.errors);
                 }
             })
             // let $editor_container = document.querySelector('#database-editor-container');
