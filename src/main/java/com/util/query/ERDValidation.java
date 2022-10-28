@@ -51,9 +51,10 @@ public class ERDValidation {
 
     public boolean checkAll() {
         allReset();
+        boolean success = true;
         if (checkInitialized()) {
             log.info("error : set ERD first");
-            return false;
+            success = false;
         }
 
         log.info("database -> {}", dataBase);
@@ -63,7 +64,7 @@ public class ERDValidation {
             for (Column column : table.getColumns()) {
                 if (!checkColumnValid(column)) {
                     log.info("One of the Column is not valid, check log -> {}", column);
-                    return false;
+                    success = false;
                 }
                 allColumnMap.put(column.getId(), column);
             }
@@ -73,10 +74,10 @@ public class ERDValidation {
         for (Relation relation : this.dataBase.getRelations()) {
             if (!checkRelationValid(relation)) {
                 log.info("One of the Relation is not valid, check log");
-                return false;
+                success = false;
             }
         }
-        return true;
+        return success;
     }
 
     public Map<String, String> getColumnRelationMap() {
@@ -129,20 +130,32 @@ public class ERDValidation {
         boolean result = a && b && c && e;
         if (!result && logging) {
             StringBuilder errBuilder = new StringBuilder();
-            errBuilder.append("Error Column : ").append(column.getName());
-            errBuilder.append("\nError Type");
+            Table targetTable = null;
+            for (Table table : dataBase.getTables()) {
+                if (table.getId().equals(column.getTable_id())) {
+                    targetTable = table;
+                    break;
+                }
+            }
+            errBuilder.append("=================================================================<br>");
+            if (targetTable != null) {
+                errBuilder.append("# Error Table : ").append(targetTable.getName());
+            }
+            errBuilder.append("<br># Error Column : ").append(column.getName());
+            errBuilder.append("<br># Error Type");
             if (!a) {
-                errBuilder.append("\nPrimary Key의 조건이 맞지 않습니다.");
+                errBuilder.append("<br>- Primary Key의 조건이 맞지 않습니다.");
             }
             if (!b) {
-                errBuilder.append("\n컬럼 명의 조건이 맞지 않습니다. 컬럼 명 길이 : ").append(column.getName().length());
+                errBuilder.append("<br>- 컬럼 명의 조건이 맞지 않습니다. 컬럼 명 길이 : ").append(column.getName().length());
             }
             if (!c) {
-                errBuilder.append("\n컬럼 사이즈가 type의 조건에 올바르지 않습니다. 컬럼 type : ").append(column.getType()).append(", 컬럼 사이즈 설정 가능 여부 : ").append(column.getType().isHasSizeParameter()).append(", 컬럼 사이즈 최대 길이 : ").append(column.getType().getSizeParameterMax());
+                errBuilder.append("<br>- 컬럼 사이즈가 type의 조건에 올바르지 않습니다. 컬럼 type : ").append(column.getType()).append(", 컬럼 사이즈 설정 가능 여부 : ").append(column.getType().isHasSizeParameter()).append(", 컬럼 사이즈 최대 길이 : ").append(column.getType().getSizeParameterMax());
             }
             if (!e) {
-                errBuilder.append("\nauto_increment 컬럼의 조건이 맞지 않습니다. Number Type 컬럼만 가능합니다, 현재 Type : ").append(column.getType());
+                errBuilder.append("<br>- auto_increment 컬럼의 조건이 맞지 않습니다. Number Type 컬럼만 가능합니다, 현재 Type : ").append(column.getType());
             }
+            errBuilder.append("<br>=================================================================<br>");
             errorLogs.add(errBuilder.toString());
         }
         return result;

@@ -2396,10 +2396,11 @@ const findTableRowByName = (draggable_tables, row_name) => {
  * */
 
 class ColumnType {
-    constructor(size_available, max_size, type_name) {
+    constructor(size_available, max_size, type_name, no_size_available) {
         this.size_available = size_available;
         this.max_size = max_size;
         this.type_name = type_name;
+        this.no_size_available = this.size_available === true ? no_size_available : false;
     }
 
     get name() {
@@ -2408,41 +2409,43 @@ class ColumnType {
 }
 
 function inputChangeEventListener(input) {
-    const BIT = new ColumnType(true, 64, 'BIT');
-    const TINYINT = new ColumnType(true, 3, 'TINYINT');
+    // type(n)에서 n이 없어도 되는 type은 new ColumnType의 마지막 인자 => true
+    // 해당 사항은 첫 인자가 true인 경우에만 유효
+    const BIT = new ColumnType(true, 64, 'BIT', true);
+    const TINYINT = new ColumnType(true, 3, 'TINYINT', true);
     const BOOL = new ColumnType(false, null, 'BOOL');
     const BOOLEAN = new ColumnType(false, null, 'BOOLEAN');
-    const SMALLINT = new ColumnType(true, 5, 'SMALLINT');
-    const MEDIUMINT = new ColumnType(true, 7, 'MEDIUMINT');
-    const INT = new ColumnType(true, 11, 'INT');
-    const INTEGER = new ColumnType(true, 11, 'INTEGER');
-    const BIGINT = new ColumnType(true, 20, 'BIGINT');
-    const DECIMAL = new ColumnType(true, 65, 'DECIMAL');
-    const DEC = new ColumnType(true, 65, 'DEC');
-    const NUMERIC = new ColumnType(true, 65, 'NUMERIC');
-    const FIXED = new ColumnType(true, 65, 'FIXED');
-    const FLOAT = new ColumnType(true, 23, 'FLOAT');
-    const DOUBLE = new ColumnType(true, 53, 'DOUBLE');
-    const DOUBLE_PRECISION = new ColumnType(true, 255, 'DOUBLE_PRECISION');
-    const REAL = new ColumnType(true, 255, 'REAL');
-    const CHAR = new ColumnType(true, 255, 'CHAR');
-    const VARCHAR = new ColumnType(true, 65535, 'VARCHAR');
-    const BINARY = new ColumnType(true, 255, 'BINARY');
-    const VARBINARY = new ColumnType(true, 65535, 'VARBINARY');
+    const SMALLINT = new ColumnType(true, 5, 'SMALLINT', true);
+    const MEDIUMINT = new ColumnType(true, 7, 'MEDIUMINT', true);
+    const INT = new ColumnType(true, 11, 'INT', true);
+    const INTEGER = new ColumnType(true, 11, 'INTEGER', true);
+    const BIGINT = new ColumnType(true, 20, 'BIGINT', true);
+    const DECIMAL = new ColumnType(true, 65, 'DECIMAL', true);
+    const DEC = new ColumnType(true, 65, 'DEC', true);
+    const NUMERIC = new ColumnType(true, 65, 'NUMERIC', true);
+    const FIXED = new ColumnType(true, 65, 'FIXED', true);
+    const FLOAT = new ColumnType(true, 23, 'FLOAT', true);
+    const DOUBLE = new ColumnType(true, 53, 'DOUBLE', true);
+    const DOUBLE_PRECISION = new ColumnType(true, 255, 'DOUBLE_PRECISION', true);
+    const REAL = new ColumnType(true, 255, 'REAL', true);
+    const CHAR = new ColumnType(true, 255, 'CHAR', false);
+    const VARCHAR = new ColumnType(true, 65535, 'VARCHAR', false);
+    const BINARY = new ColumnType(true, 255, 'BINARY', false);
+    const VARBINARY = new ColumnType(true, 65535, 'VARBINARY', false);
     const TINYBLOB = new ColumnType(false, null, 'TINYBLOB');
     const TINYTEXT = new ColumnType(false, null, 'TINYTEXT');
-    const BLOB = new ColumnType(true, 65535, 'BLOB');
-    const TEXT = new ColumnType(true, 65535, 'TEXT');
+    const BLOB = new ColumnType(true, 65535, 'BLOB', false);
+    const TEXT = new ColumnType(true, 65535, 'TEXT', true);
     const MEDIUMBLOB = new ColumnType(false, null, 'MEDIUMBLOB');
     const MEDIUMTEXT = new ColumnType(false, null, 'MEDIUMTEXT');
     const LONGBLOB = new ColumnType(false, null, 'LONGBLOB');
     const LONGTEXT = new ColumnType(false, null, 'LONGTEXT');
-    const ENUM = new ColumnType(true, 65535, 'ENUM');
-    const SET = new ColumnType(true, 65535, 'SET');
+    const ENUM = new ColumnType(true, 65535, 'ENUM', true);
+    const SET = new ColumnType(true, 65535, 'SET', true);
     const DATE = new ColumnType(false, null, 'DATE');
-    const TIME = new ColumnType(true, 6, 'TIME');
-    const DATETIME = new ColumnType(true, 6, 'DATETIME');
-    const TIMESTAMP = new ColumnType(true, 6, 'TIMESTAMP');
+    const TIME = new ColumnType(true, 6, 'TIME', true);
+    const DATETIME = new ColumnType(true, 6, 'DATETIME', true);
+    const TIMESTAMP = new ColumnType(true, 6, 'TIMESTAMP', true);
     const YEAR = new ColumnType(false, null, 'YEAR');
     const JSON = new ColumnType(false, null, 'JSON');
     const DATETIME2 = new ColumnType(false, null, 'DATETIME2');
@@ -2450,9 +2453,9 @@ function inputChangeEventListener(input) {
     const SMALLDATETIME = new ColumnType(false, null, 'SMALLDATETIME');
     const MONEY = new ColumnType(false, null, 'MONEY');
     const SMALLMONEY = new ColumnType(false, null, 'SMALLMONEY');
-    const NCHAR = new ColumnType(true, 4000, 'NCHAR');
-    const NVARCHAR = new ColumnType(true, 4000, 'NVARCHAR');
-    const VARCHAR2 = new ColumnType(true, 4000, 'VARCHAR2');
+    const NCHAR = new ColumnType(true, 4000, 'NCHAR', false);
+    const NVARCHAR = new ColumnType(true, 4000, 'NVARCHAR', false);
+    const VARCHAR2 = new ColumnType(true, 4000, 'VARCHAR2', false);
     const NTEXT = new ColumnType(false, null, 'NTEXT');
     const IMAGE = new ColumnType(false, null, 'IMAGE');
     const CURSOR = new ColumnType(false, null, 'CURSOR');
@@ -2638,7 +2641,8 @@ function inputChangeEventListener(input) {
                         });
                     }, 500);
                     inspection_check = true;
-                } else if (number === undefined && (!item.size_available || item.name === 'INT')) {
+                } else if (number === undefined && (!item.size_available || (item.size_available && item.no_size_available))) {
+                    table_row.size = null;
                     console.log('업데이트 가능 input timer 끝나면 업데이트');
                     comment_type_input_timer = setTimeout(function () {
                         apiUpdateTableRow(getURLParamByPrevAndNext('database', 'detail'), table_row_element.dataset.tableId, table_row, () => {
