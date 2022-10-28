@@ -236,13 +236,13 @@ public class QueryMaker {
             } else {
                 // PK 입력
                 if(!primaryKeyColumns.isEmpty()) {
-                    builder.append("<br>&nbsp;&nbsp;&nbsp;&nbsp;PRIMARY KEY(");
+                    builder.append(",<br>&nbsp;&nbsp;&nbsp;&nbsp;PRIMARY KEY(");
                     for(Column pkColumn : primaryKeyColumns) {
                         builder.append(pkColumn.getName());
                         if(!pkColumn.equals(primaryKeyColumns.get(primaryKeyColumns.size() - 1))) {
-                            builder.append(", ");
+                            builder.append(",");
                         } else {
-                            builder.append(")<br>");
+                            builder.append(")");
                         }
                     }
                 }
