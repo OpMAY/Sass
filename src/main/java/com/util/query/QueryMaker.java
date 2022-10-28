@@ -12,6 +12,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.*;
+import java.util.stream.Stream;
 
 @Slf4j
 public class QueryMaker {
@@ -137,32 +138,66 @@ public class QueryMaker {
     private List<String> reformatTableListOnRelation(Map<String, List<String>> relationMap) {
         log.info("relationMap : {}", relationMap);
 
-        List<String> temp = tableList;
-        for (String tableId : tableList) {
-            log.info("targetId : {}", tableId);
+        for (int i = 0; i < tableList.size(); i++) {
+            log.info("targetId : {}, i : {}", tableList.get(i), i);
+            String tableId = tableList.get(i);
             if (relationMap.containsKey(tableId)) {
                 log.info("contained -> {}", tableId);
                 List<String> connectedTableList = relationMap.get(tableId);
-                int thisTableIdIndex = tableList.indexOf(tableId);
-                int biggestIndex = 0;
-                for (String str : connectedTableList) {
-                    if (tableList.indexOf(str) >= biggestIndex) {
-                        biggestIndex = tableList.indexOf(str);
+                int connected_table_list_size = connectedTableList.size();
+                int count = 0;
+                for (int j = 0; j < i; j++) {
+                    for (String connectedTable : connectedTableList) {
+                        if (connectedTable.equals(tableList.get(j))) {
+                            count = count + 1;
+                            log.info("count break");
+                            break;
+                        }
+                    }
+                    log.info("j : {}", j);
+                    if (count == connected_table_list_size) {
+                        log.info("same break");
+                        break;
                     }
                 }
 
-                log.info("this : {}, biggest : {}", thisTableIdIndex, biggestIndex);
-
-
-                if (thisTableIdIndex < biggestIndex) {
-                    log.info("before swap : {}", temp);
-                    Collections.swap(temp, thisTableIdIndex, biggestIndex);
-                    log.info("after swap : {}", temp);
+                if (count < connected_table_list_size) {
+                    log.info("in before : {}", tableList);
+                    tableList.add(tableId);
+                    tableList.remove(i);
+                    log.info("in after : {}", tableList);
+                    i = i - 1;
                 }
             }
         }
+        log.info("tableList : {}", tableList);
+//        for (String tableId : tableList) {
+//            log.info("targetId : {}", tableId);
+//            if (relationMap.containsKey(tableId)) {
+//                log.info("contained -> {}", tableId);
+//                List<String> connectedTableList = relationMap.get(tableId);
+//                int thisTableIdIndex = tableList.indexOf(tableId);
+//                int biggestIndex = 0;
+//                for (String str : connectedTableList) {
+//                    if (tableList.indexOf(str) >= biggestIndex) {
+//                        biggestIndex = tableList.indexOf(str);
+//                    }
+//                }
+//
+//                log.info("this : {}, biggest : {}", thisTableIdIndex, biggestIndex);
+//
+//
+//                if (thisTableIdIndex < biggestIndex) {
+//                    log.info("before swap : {}", temp);
+//                    temp.add(biggestIndex + 1, temp.get(thisTableIdIndex));
+//                    log.info("Added : {}", temp);
+//                    temp.remove(thisTableIdIndex);
+//                    log.info("removed : {}", temp);
+////                    Collections.swap(temp, thisTableIdIndex, biggestIndex);
+//                }
+//            }
+//        }
 
-        log.info("result => {}", tableList);
         return tableList;
     }
 
@@ -229,17 +264,17 @@ public class QueryMaker {
             builder.append(column.isNullable() ? " NULL" : " NOT NULL");
             builder.append(column.isAuto_increment() ? autoIncrementStatement : "");
             builder.append(column.getComment() != null && column.getComment().trim().length() > 0 ? " COMMENT '" + column.getComment() + "'" : "");
-            if(column.isPk()) primaryKeyColumns.add(column);
+            if (column.isPk()) primaryKeyColumns.add(column);
 //            builder.append(column.isPk() ? " PRIMARY KEY" : "");
             if (!column.equals(columnList.get(columnList.size() - 1))) {
                 builder.append(",<br>");
             } else {
                 // PK 입력
-                if(!primaryKeyColumns.isEmpty()) {
+                if (!primaryKeyColumns.isEmpty()) {
                     builder.append(",<br>&nbsp;&nbsp;&nbsp;&nbsp;PRIMARY KEY(");
-                    for(Column pkColumn : primaryKeyColumns) {
+                    for (Column pkColumn : primaryKeyColumns) {
                         builder.append(pkColumn.getName());
-                        if(!pkColumn.equals(primaryKeyColumns.get(primaryKeyColumns.size() - 1))) {
+                        if (!pkColumn.equals(primaryKeyColumns.get(primaryKeyColumns.size() - 1))) {
                             builder.append(",");
                         } else {
                             builder.append(")");
@@ -248,13 +283,10 @@ public class QueryMaker {
                 }
                 // 외래키 입력
                 if (nTable.isHas_foreign_key()) {
-                    log.info("{}", 1);
                     List<Relation> relationList = dataBase.getRelations();
                     // 해당 테이블에서 Relation 찾기
                     for (Relation relation : relationList) {
-                        log.info("{}", 2);
                         if (relation.getMain_table().equals(nTable.getId())) {
-                            log.info("{}", 3);
                             // TODO SQL로 변경
                             String nowColumnName = allColumnMap.get(relation.getMain_column()).getName();
                             Table targetTable = tableMap.get(relation.getTarget_table());
@@ -271,7 +303,7 @@ public class QueryMaker {
             }
         }
         builder.append("<br>);<br><br>");
-        if(dataBase.getDatabase_type().equals(DataBaseType.MSSQL)) {
+        if (dataBase.getDatabase_type().equals(DataBaseType.MSSQL)) {
             builder.append("GO<br>");
         }
     }
