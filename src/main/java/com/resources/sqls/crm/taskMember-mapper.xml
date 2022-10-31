@@ -3,12 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.crm.TaskMemberMapper">
-    <resultMap id="User" type="com.model.User">
+    <resultMap id="CompanyProfileMember" type="com.model.company.CompanyProfileMember">
         <result column="profile_img" property="profile_img" javaType="com.model.common.MFile"
                 typeHandler="com.middleware.JsonObjectTypeHandler"/>
     </resultMap>
-    <select id="getTaskMembers" resultType="User" resultMap="User">
-        select u.*
+    <select id="getTaskMembers" resultType="CompanyProfileMember" resultMap="CompanyProfileMember">
+        select cm.no, u.name, u.profile_img
         from task_member
                  left join company_member cm on task_member.member_no = cm.no
                  left join user u on cm.user_no = u.no
@@ -20,4 +20,12 @@
         from task_member
         WHERE task_id = #{original_task};
     </insert>
+    <select id="getAvailableMembers" resultType="CompanyProfileMember" resultMap="CompanyProfileMember">
+        select company_member.no, u.name, u.profile_img
+        from company_member
+                 left join user u on company_member.user_no = u.no
+        WHERE company_member.no NOT IN (select member_no from task_member WHERE task_id = #{task_id})
+          AND company_no =
+              (select company_no from project WHERE (select project_no from task WHERE task.id = #{task_id}))
+    </select>
 </mapper>

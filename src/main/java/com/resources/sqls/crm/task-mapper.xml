@@ -68,4 +68,9 @@
         VALUES (#{id}, #{board_id}, #{project_no}, #{start_date}, #{end_date}, #{title}, #{description},
                 #{_order}, now(), now())
     </insert>
+    <select id="getTaskById" resultType="Task">
+        select *
+        from task
+        WHERE id = #{task_id}
+    </select>
 </mapper>

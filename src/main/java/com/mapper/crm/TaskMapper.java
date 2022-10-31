@@ -22,4 +22,6 @@ public interface TaskMapper {
     void createTask(Task task);
 
     void copyTask(Task task);
+
+    Task getTaskById(String task_id);
 }

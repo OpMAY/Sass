@@ -3,6 +3,7 @@ package com.dao;
 import com.mapper.CompanyMemberMapper;
 import com.model.company.Company;
 import com.model.company.CompanyMember;
+import com.model.company.CompanyProfileMember;
 import com.model.company.CompanyRole;
 import com.model.grant.ROLE;
 import org.apache.ibatis.session.SqlSession;
@@ -64,5 +65,9 @@ public class CompanyMemberDao {
 
     public List<CompanyMember> getCompanyMemberList(int companyNo) {
         return mapper.getCompanyMemberList(companyNo);
+    }
+
+    public List<CompanyProfileMember> getCompanyMemberTagList(int company_no) {
+        return mapper.getCompanyMemberTagList(company_no);
     }
 }

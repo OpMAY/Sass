@@ -3,4 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.crm.SubTaskMapper">
+    <select id="getSubtasksByTaskId" resultType="SubTask">
+        select *
+        from subtask
+        WHERE task_id = #{task_id}
+    </select>
 </mapper>

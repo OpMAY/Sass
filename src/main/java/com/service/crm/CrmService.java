@@ -4,6 +4,7 @@ import com.dao.CompanyDao;
 import com.dao.CompanyMemberDao;
 import com.dao.crm.*;
 import com.model.User;
+import com.model.company.CompanyProfileMember;
 import com.model.crm.Board;
 import com.model.crm.Project;
 import com.model.crm.Task;
@@ -62,6 +63,10 @@ public class CrmService {
         // 쿼리로 한 번에 처리하는 것은 너무 비효율적
         // TODO 트래픽 발생 시 속도 부하 시 일부는 쿼리로 처리하는 것도 고려
         return projectDao.getCompanyProjects(company_no);
+    }
+
+    public Project getProjectDashBoardData(int project_no) {
+        return fillContentOnProjectModel(projectDao.getProjectByNo(project_no));
     }
 
     /**
@@ -221,7 +226,7 @@ public class CrmService {
     public ResponseEntity copyProject(int project_no) {
         Message message = new Message();
         Date start_time = Time.LongTimeStamp(0);
-        log.info("프로젝트 복사 시작 : {}", start_time);
+        log.debug("프로젝트 복사 시작 : {}", start_time);
         // 기존 Project 요소들
         Project project = projectDao.getProjectByNo(project_no);
         // 1. Project Set
@@ -245,8 +250,8 @@ public class CrmService {
 
         // 2. Board Copy
         Date project_done_time = Time.LongTimeStamp(0);
-        log.info("==== Project 객체 복사 완료 : {}", project_done_time);
-        log.info("==== 소요 시간 : {}초", Time.getDateSecondDiff(project_done_time, start_time));
+        log.debug("==== Project 객체 복사 완료 : {}", project_done_time);
+        log.debug("==== 소요 시간 : {}초", Time.getDateSecondDiff(start_time, project_done_time));
         // GET original Boards
         List<Board> boards = boardDao.getProjectBoards(project_no);
         for (Board board : boards) {
@@ -257,7 +262,7 @@ public class CrmService {
         for (Board board : boards) {
             copyBoard(board);
         }
-        log.info("Board 및 Task 복사 완료, 소요시간 : {}초", Time.getDateSecondDiff(Time.LongTimeStamp(0), start_time));
+        log.debug("Board 및 Task 복사 완료, 소요시간 : {}초", Time.getDateSecondDiff(start_time, Time.LongTimeStamp(0)));
 
         message.put("status", true);
         message.put("project", copied_project);
@@ -309,8 +314,24 @@ public class CrmService {
         return new ResponseEntity<>(DefaultRes.res(OK, message, true), OK);
     }
 
+    /**
+     * copyBoard
+     *
+     * @param original_board Board
+     * @return Board
+     *
+     * 보드(Board)를 복사하는 함수
+     * - 보드 내의 Task까지 모두 복사
+     * # 예외처리
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     * @see CrmService#copyProject
+     * -> 해당 주석에 상세히 작성함
+     * **/
     @Transactional
     public Board copyBoard(Board original_board) {
+        Date start_time = Time.LongTimeStamp(0);
+        log.debug("Board 복사 시작 : {}", start_time);
         // 복사할 보드 생성
         Board copied_board = new Board();
         copied_board.setId(TokenGenerator.RandomToken(8));
@@ -329,11 +350,29 @@ public class CrmService {
             copyTask(task);
         }
 
+        log.debug("Board 복사 완료 : {}초 소요", Time.getDateSecondDiff(start_time, Time.LongTimeStamp(0)));
         return copied_board;
     }
 
+    /**
+     * copyTask
+     *
+     * @param original_task Task
+     * @return Task
+     *
+     * 업무(task)를 복사하는 함수
+     * - 업무에 엮인 담당자까지 복사
+     * # 예외처리
+     * - task_id 중복
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+      @see CrmService#copyProject
+      -> 해당 주석에 상세히 작성함
+     * **/
     @Transactional
     public Task copyTask(Task original_task) {
+        Date start_time = Time.LongTimeStamp(0);
+        log.debug("Task 복사 시작 : {}", start_time);
         // 복사할 Task 생성
         Task copied_task = new Task();
         copied_task.setId(TokenGenerator.RandomToken(8));
@@ -354,7 +393,82 @@ public class CrmService {
         if (!taskDao.getBoardTasks(original_task.getBoard_id()).isEmpty()) {
             taskMemberDao.copyTask(original_task.getId(), copied_task.getId());
         }
+        log.debug("Task 복사 완료 : {}초 소요", Time.getDateSecondDiff(start_time, Time.LongTimeStamp(0)));
         return copied_task;
+    }
+
+    /**
+     * createTask
+     *
+     * @param task Task
+     * @return ResponseEntity(REST)
+     *
+     * 업무(task)를 만드는 함수
+     * # 예외처리
+     * - task_id 중복
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     * **/
+    @Transactional
+    public ResponseEntity createTask(Task task) {
+        Message message = new Message();
+        if(taskDao.checkTokenIdAbleToUse(task.getId())) {
+            taskDao.createTask(task);
+            message.put("status", true);
+            message.put("task", task);
+        } else {
+            message.put("status", false);
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * getTask
+     *
+     * @param task_id String
+     * @return ResponseEntity(REST)
+     *
+     * 업무(task) 상세를 호출하는 함수
+     * 하위 업무, 담당자 모두 세팅된 값
+     * # 예외처리
+     * - 없거나 삭제된 task O
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     * **/
+    public ResponseEntity getTask(String task_id) {
+        Message message = new Message();
+        Task task = taskDao.getTaskById(task_id);
+        // TODO 예외처리
+        if(task == null) {
+            message.put("status", false);
+            message.put("error_message", "해당 업무를 불러올 수 없습니다. 업무 리스트를 최신화 해주세요.");
+        } else {
+            // task 요소 SET
+            task.setCollaborators(taskMemberDao.getTaskMembers(task.getId()));
+            task.setSubTasks(subTaskDao.getSubtasksByTaskId(task.getId()));
+            message.put("status", true);
+            message.put("task", task);
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * getTaskAvailableMembers
+     *
+     * @param task_id String
+     * @return ResponseEntity(REST)
+     *
+     * 작업 내에 현재 담당자로 선택할 수 있는 팀원 목록을 불러오는 함수
+     * CompanyProfileMember의 no는 CompanyMember.no를 칭함
+     * # 예상 예외 처리
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     * **/
+    public ResponseEntity getTaskAvailableMembers(String task_id) {
+        Message message = new Message();
+        message.put("status", true);
+        message.put("members", taskMemberDao.getAvailableMembers(task_id));
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
 
 
@@ -374,7 +488,7 @@ public class CrmService {
             List<Task> tasks = taskDao.getBoardTasks(board.getId());
             for (Task task : tasks) {
                 // task 내에 담당자 set
-                List<User> members = taskMemberDao.getTaskMembers(task.getId());
+                List<CompanyProfileMember> members = taskMemberDao.getTaskMembers(task.getId());
                 task.setCollaborators(members);
             }
             board.setTaskList(tasks);

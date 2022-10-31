@@ -50,4 +50,8 @@ public class TaskDao {
     public void copyTask(Task task) {
         mapper.copyTask(task);
     }
+
+    public Task getTaskById(String task_id) {
+        return mapper.getTaskById(task_id);
+    }
 }
