@@ -1,7 +1,11 @@
 package com.model.crm;
 
+import com.model.User;
 import com.model.common.Time;
 import lombok.Data;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class Task extends Time {
@@ -14,4 +18,10 @@ public class Task extends Time {
     private String title;
     private String description;
     private int _order;
+    private LocalDateTime completed_datetime;
+
+    private List<User> collaborators;
+    private int sub_task_count;
+
+    private String project_name;
 }

@@ -3,4 +3,21 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.crm.TaskMemberMapper">
+    <resultMap id="User" type="com.model.User">
+        <result column="profile_img" property="profile_img" javaType="com.model.common.MFile"
+                typeHandler="com.middleware.JsonObjectTypeHandler"/>
+    </resultMap>
+    <select id="getTaskMembers" resultType="User" resultMap="User">
+        select u.*
+        from task_member
+                 left join company_member cm on task_member.member_no = cm.no
+                 left join user u on cm.user_no = u.no
+        WHERE task_id = #{task_id}
+    </select>
+    <insert id="copyTask">
+        insert into task_member (task_id, member_no)
+        select #{new_task}, member_no
+        from task_member
+        WHERE task_id = #{original_task};
+    </insert>
 </mapper>

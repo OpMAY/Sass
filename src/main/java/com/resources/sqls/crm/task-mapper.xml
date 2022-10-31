@@ -3,4 +3,69 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.crm.TaskMapper">
+    <select id="getBoardTasks" resultType="Task">
+        select id,
+               board_id,
+               project_no,
+               start_date,
+               end_date,
+               complete,
+               title,
+               _order,
+               (select COUNT(*) from subtask WHERE task_id = task.id) as sub_task_count
+        from task
+        WHERE board_id = #{board_id}
+        ORDER BY _order
+    </select>
+    <select id="checkTokenIdAbleToUse" resultType="_boolean">
+        select !EXISTS(select * from task WHERE id = #{token_id})
+    </select>
+    <select id="getMemberToDoTasks" resultType="Task">
+        select *
+        from task t
+                 left join task_member tm on t.id = tm.task_id
+        WHERE complete = false
+          AND tm.member_no = #{member_no}
+        ORDER BY reg_datetime, end_date
+    </select>
+    <select id="getMemberCompletedTasks" resultType="Task">
+        select *
+        from task t
+                 left join task_member tm on t.id = tm.task_id
+        WHERE complete = true
+          AND tm.member_no = #{member_no}
+        ORDER BY reg_datetime, completed_datetime
+    </select>
+    <select id="getMemberExpiredTasks" resultType="Task">
+        select *
+        from task t
+                 left join task_member tm on t.id = tm.task_id
+        WHERE complete = false
+          AND end_date <![CDATA[<]]> CURDATE()
+          AND tm.member_no = #{member_no}
+        ORDER BY reg_datetime, end_date
+    </select>
+    <update id="changeTaskStatus">
+        update task
+        SET complete           = !complete,
+            completed_datetime = IF(complete, now(), null)
+        WHERE id = #{task_id}
+    </update>
+    <select id="checkTaskCompleted" resultType="_boolean">
+        select complete
+        from task
+        WHERE id = #{task_id}
+    </select>
+    <insert id="createTask">
+        insert into task(id, board_id, project_no, start_date, end_date, title, description, _order,
+                         reg_datetime, updated_datetime)
+        VALUES (#{id}, #{board_id}, #{project_no}, #{start_date}, #{end_date}, #{title}, #{description},
+                #{_order}, now(), now())
+    </insert>
+    <insert id="copyTask">
+        insert into task(id, board_id, project_no, start_date, end_date, title, description, _order,
+                         reg_datetime, updated_datetime)
+        VALUES (#{id}, #{board_id}, #{project_no}, #{start_date}, #{end_date}, #{title}, #{description},
+                #{_order}, now(), now())
+    </insert>
 </mapper>

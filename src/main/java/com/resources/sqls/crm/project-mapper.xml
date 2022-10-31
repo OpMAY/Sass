@@ -3,4 +3,39 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.crm.ProjectMapper">
+    <select id="getCompanyProjects" resultType="Project">
+        select *
+        from project
+        WHERE company_no = #{company_no}
+    </select>
+    <insert id="createNewProject" useGeneratedKeys="true" keyProperty="no">
+        insert into project(company_no, name, reg_datetime, updated_datetime)
+        VALUES (#{company_no}, #{name}, NOW(), NOW())
+    </insert>
+    <select id="checkProjectNameDuplicate" resultType="_boolean">
+        select EXISTS(select * from project WHERE name = #{name} AND company_no = #{company_no})
+    </select>
+    <select id="getProjectByNo" resultType="Project">
+        select *
+        from project
+        WHERE no = #{no}
+    </select>
+    <delete id="deleteProject">
+        delete
+        from project
+        WHERE no = #{no}
+    </delete>
+    <update id="updateProject">
+        update project
+        SET name             = #{name},
+            updated_datetime = now()
+        WHERE no = #{no}
+    </update>
+    <select id="checkProjectNameDuplicateOnUpdate" resultType="_boolean">
+        select EXISTS(select * from project WHERE name = #{name} AND no != #{no})
+    </select>
+    <insert id="copyProject" keyProperty="no" useGeneratedKeys="true">
+        insert into project(company_no, name, reg_datetime, updated_datetime)
+        VALUES (#{company_no}, #{name}, NOW(), NOW())
+    </insert>
 </mapper>

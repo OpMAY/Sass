@@ -3,4 +3,21 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.crm.BoardMapper">
+    <select id="getProjectBoards" resultType="Board">
+        select *
+        from board
+        WHERE project_no = #{project_no}
+        ORDER BY _order
+    </select>
+    <select id="checkTokenIdAbleToUse" resultType="_boolean">
+        select !EXISTS(select * from board WHERE id = #{token_id})
+    </select>
+    <insert id="createBoard">
+        insert into board(id, project_no, name, _order, reg_datetime, updated_datetime)
+        VALUES (#{id}, #{project_no}, #{name}, #{_order}, now(), now())
+    </insert>
+    <insert id="copyBoard">
+        insert into board(id, project_no, name, _order, reg_datetime, updated_datetime)
+        VALUES (#{id}, #{project_no}, #{name}, #{_order}, now(), now())
+    </insert>
 </mapper>

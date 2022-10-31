@@ -191,4 +191,16 @@ public class Time {
         diffTime = diffTime / MONTH;
         return diffTime + "년 전";
     }
+
+    public static long getDateSecondDiff(Date date1, Date date2) {
+        return date2.getTime() - date1.getTime() / 1000;
+    }
+
+    public static long getDateMinuteDiff(Date date1, Date date2) {
+        return date2.getTime() - date1.getTime() / 60000;
+    }
+
+    public static long getDateHourDiff(Date date1, Date date2) {
+        return date2.getTime() - date1.getTime() / 3600000;
+    }
 }
