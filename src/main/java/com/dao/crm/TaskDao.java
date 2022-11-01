@@ -54,4 +54,21 @@ public class TaskDao {
     public Task getTaskById(String task_id) {
         return mapper.getTaskById(task_id);
     }
+
+    public void deleteTask(String task_id) {
+        mapper.deleteTask(task_id);
+    }
+
+    public void changeTaskName(String task_id, String name) {
+        mapper.changeTaskName(task_id, name);
+    }
+
+    public void moveTaskToOtherBoard(String id, String board_id) {
+        mapper.moveTaskToOtherBoard(id, board_id);
+    }
+
+    public void updateTaskOrder(String id, int order) {
+        mapper.updateTaskOrder(id, order);
+    }
+
 }

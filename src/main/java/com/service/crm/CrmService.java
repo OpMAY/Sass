@@ -319,7 +319,7 @@ public class CrmService {
      *
      * @param original_board Board
      * @return Board
-     *
+     * <p>
      * 보드(Board)를 복사하는 함수
      * - 보드 내의 Task까지 모두 복사
      * # 예외처리
@@ -327,7 +327,7 @@ public class CrmService {
      * - 권한 없음 -> Interceptor 처리?
      * @see CrmService#copyProject
      * -> 해당 주석에 상세히 작성함
-     * **/
+     **/
     @Transactional
     public Board copyBoard(Board original_board) {
         Date start_time = Time.LongTimeStamp(0);
@@ -359,16 +359,16 @@ public class CrmService {
      *
      * @param original_task Task
      * @return Task
-     *
+     * <p>
      * 업무(task)를 복사하는 함수
      * - 업무에 엮인 담당자까지 복사
      * # 예외처리
      * - task_id 중복
      * - 회사 데이터 없음 -> Interceptor 처리?
      * - 권한 없음 -> Interceptor 처리?
-      @see CrmService#copyProject
-      -> 해당 주석에 상세히 작성함
-     * **/
+     * @see CrmService#copyProject
+     * -> 해당 주석에 상세히 작성함
+     **/
     @Transactional
     public Task copyTask(Task original_task) {
         Date start_time = Time.LongTimeStamp(0);
@@ -402,7 +402,7 @@ public class CrmService {
      *
      * @param board Board
      * @return ResponseEntity(REST)
-     *
+     * <p>
      * 보드(Board)를 생성하는 함수
      * # 예외처리
      * - 토큰 null or 토큰 중복일 시 자체적으로 미중복 토큰을 생성하여 넣은 후 해당 값 rest로 반환
@@ -410,17 +410,17 @@ public class CrmService {
      * - project_no 세팅 안되어있을 때 에러 로그 및 return status false => 디버그용
      * - 회사 데이터 없음 -> Interceptor 처리?
      * - 권한 없음 -> Interceptor 처리?
-     * **/
+     **/
     @Transactional
     public ResponseEntity createBoard(Board board) {
         Message message = new Message();
         // Token 재검증
-        if(board.getProject_no() <= 0) {
+        if (board.getProject_no() <= 0) {
             message.put("status", false);
             message.put("error_message", "");
             log.debug("createBoard error : project_no 없음");
         } else {
-            if(board.getId() == null) {
+            if (board.getId() == null) {
                 board.setId(TokenGenerator.RandomToken(8));
             }
             while (!boardDao.checkTokenIdAbleToUse(board.getId())) {
@@ -441,19 +441,19 @@ public class CrmService {
      * changeBoardName
      *
      * @param board_id String
-     * @param name String
+     * @param name     String
      * @return ResponseEntity(REST)
-     *
+     * <p>
      * 보드(Board) 이름을 변경하는 함수
      * # 예외처리
      * - board 존재? O
      * - 회사 데이터 없음 -> Interceptor 처리?
      * - 권한 없음 -> Interceptor 처리?
-     * **/
+     **/
     @Transactional
     public ResponseEntity changeBoardName(String board_id, String name) {
         Message message = new Message();
-        if(boardDao.checkTokenIdAbleToUse(board_id)) {
+        if (boardDao.checkTokenIdAbleToUse(board_id)) {
             // board_id token 값이 있는지 check로 보드 존재하는지 check
             message.put("status", false);
             message.put("error_message", "이름을 변경하려는 보드가 존재하지 않습니다. (새로고침 요망)");
@@ -469,9 +469,9 @@ public class CrmService {
      * changeBoardOrder
      *
      * @param board_id String
-     * @param _order int
+     * @param _order   int
      * @return ResponseEntity(REST)
-     *
+     * <p>
      * 보드(Board)의 순서를 변경하는 함수
      * board_id 를 특정 순서로 옮긴다는 행위를 통해
      * 해당 프로젝트 내의 다른 보드들의 _order 값 까지 변동해주어야 해서 해당 로직도 함께 구축
@@ -483,20 +483,20 @@ public class CrmService {
      * - 프로젝트 내의 보드의 전체 갯수보다 _order 값이 클 경우는 오류 처리
      * - 회사 데이터 없음 -> Interceptor 처리?
      * - 권한 없음 -> Interceptor 처리?
-     * **/
+     **/
     @Transactional
     public ResponseEntity changeBoardOrder(String board_id, int _order) {
         Message message = new Message();
         Board board = boardDao.getBoardById(board_id);
         List<Board> boards = boardDao.getProjectBoards(board.getProject_no());
-        if(_order > boards.size()) {
+        if (_order > boards.size() || _order <= 0) {
             message.put("status", false);
             message.put("error_message", "잘못된 접근입니다.");
             log.debug("changeBoardOrder error : _order 의 값이 잘못되었습니다.");
         } else {
             boards.remove(board);
             boards.add(_order - 1, board);
-            for(int i = 0; i < boards.size(); i++) {
+            for (int i = 0; i < boards.size(); i++) {
                 Board this_board = boards.get(i);
                 this_board.set_order(i + 1);
                 boardDao.updateBoardOrder(this_board.getId(), this_board.get_order());
@@ -512,14 +512,14 @@ public class CrmService {
      *
      * @param board_id String
      * @return ResponseEntity(REST)
-     *
+     * <p>
      * 보드(Board)를 삭제하는 함수
      * board에 엮여진 task들 모두 함께 삭제 (FK로 자동 삭제)
      * # 예외 처리
      * - board 내에 task 있을 때 삭제 막기?
      * - 회사 데이터 없음 -> Interceptor 처리?
      * - 권한 없음 -> Interceptor 처리?
-     * **/
+     **/
     @Transactional
     public ResponseEntity deleteBoard(String board_id) {
         Message message = new Message();
@@ -533,17 +533,17 @@ public class CrmService {
      *
      * @param task Task
      * @return ResponseEntity(REST)
-     *
+     * <p>
      * 업무(task)를 만드는 함수
      * # 예외처리
      * - task_id 중복
      * - 회사 데이터 없음 -> Interceptor 처리?
      * - 권한 없음 -> Interceptor 처리?
-     * **/
+     **/
     @Transactional
     public ResponseEntity createTask(Task task) {
         Message message = new Message();
-        if(taskDao.checkTokenIdAbleToUse(task.getId())) {
+        if (taskDao.checkTokenIdAbleToUse(task.getId())) {
             taskDao.createTask(task);
             message.put("status", true);
             message.put("task", task);
@@ -554,23 +554,177 @@ public class CrmService {
     }
 
     /**
+     * changeTaskOrder
+     *
+     * @param task_id String
+     * @param _order   int
+     * @return ResponseEntity(REST)
+     * <p>
+     * 업무(Task)의 순서를 변경하는 함수
+     * task_id 를 특정 순서로 옮긴다는 행위를 통해
+     * 해당 프로젝트 내의 다른 보드들의 _order 값 까지 변동해주어야 해서 해당 로직도 함께 구축
+     * ==> changeBoardOrder와 같은 로직
+     * 로직 => (a, b, c, d, e) 중 e를 b(2)번 자리로 옮길 때 (a, e, b, c, d)에 맞게 뒤 _order 값도 조정
+     * TODO DB 값 기준으로 변경하기에 DB - Front 간 올바르게 동기화 되어야함 => WEBSOCKET 시
+     * DB 기준 Task 정렬을 반환하여 Front 가 최대한 DB와 동기화 될 수 있게 처리
+     * TODO 만일 현재 Front 기준으로 모두 처리하려면 Front의 정렬을 모두 받아서 그대로 반영해야함 => 함수 변경
+     * # 예외 처리
+     * - 보드 내의 업무의 전체 갯수보다 _order 값이 클 경우는 오류 처리
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity changeTaskOrder(String task_id, int _order) {
+        Message message = new Message();
+        Task task = taskDao.getTaskById(task_id);
+        List<Task> tasks = taskDao.getBoardTasks(task.getBoard_id());
+        if(_order > tasks.size() || _order <= 0) {
+            message.put("status", false);
+            message.put("error_message", "잘못된 접근입니다.");
+            log.debug("changeTaskOrder error : _order 의 값이 잘못되었습니다.");
+        } else {
+            tasks.remove(task);
+            tasks.add(_order - 1, task);
+            for(int i = 0; i < tasks.size(); i++) {
+                Task this_task = tasks.get(i);
+                this_task.set_order(i + 1);
+                taskDao.updateTaskOrder(this_task.getId(), this_task.get_order());
+            }
+            message.put("status", true);
+            message.put("tasks", tasks);
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+
+    /**
+     * changeTaskName
+     *
+     * @param task_id String
+     * @param name String
+     * @return ResponseEntity(REST)
+     * <p>
+     * 업무(Task)의 이름을 변경하는 함수
+     * # 예외 처리
+     * - 업무가 DB 존재하지 않을 떄 O
+     * - 이름이 null 일 떄 => Front js 에서 잡기 O
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity changeTaskName(String task_id, String name) {
+        Message message = new Message();
+        if (taskDao.getTaskById(task_id) == null) {
+            message.put("status", false);
+            message.put("error_message", "업무의 이름을 변경할 수 없습니다.");
+            log.debug("changeTaskName error : task from task_id null");
+        } else {
+            if (name == null) {
+                // Front 에서 접근 불가 처리 해야함
+                message.put("status", false);
+                message.put("error_message", "잘못된 접근입니다.");
+                log.debug("changeTaskName error : task name null");
+            } else {
+                taskDao.changeTaskName(task_id, name);
+                message.put("status", true);
+                message.put("name", name);
+            }
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+
+    /**
+     * deleteTask
+     *
+     * @param task_id String
+     * @return ResponseEntity(REST)
+     * <p>
+     * 업무(Task)를 삭제하는 함수
+     * task에 엮여진 관련 정보들 모두 함께 삭제 (FK로 자동 삭제)
+     * # 예외 처리
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity deleteTask(String task_id) {
+        Message message = new Message();
+        taskDao.deleteTask(task_id);
+        message.put("status", true);
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * moveTaskToOtherBoard
+     *
+     * @param task_id String
+     * @param board_id String
+     * @param _order int
+     * @return ResponseEntity(REST)
+     * <p>
+     * 업무(Task)를 다른 보드로 이동하는 함수
+     * 이동할 보드와 이동할 위치까지 모두 고려해야함
+     * # 예외 처리
+     * - DB에 이동할 target board가 존재하는지 O
+     * - DB에 이동할 task 가 존재하는지
+     * - 이동할 _order의 크기가 DB의 target Board 와 엮여진 size + 1 범위 내에 있는지
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity moveTaskToOtherBoard(String task_id, String board_id, int _order) {
+        Message message = new Message();
+        if (taskDao.getTaskById(task_id) == null) {
+            message.put("status", false);
+            message.put("error_message", "이동하려는 업무가 존재하지 않습니다. (새로고침 요망)");
+            log.debug("moveTaskToOtherBoard error : task from task_id null");
+        } else if (boardDao.getBoardById(board_id) == null) {
+            message.put("status", false);
+            message.put("error_message", "업무를 이동하려는 보드가 존재하지 않습니다. (새로고침 요망)");
+            log.debug("moveTaskToOtherBoard error : board from board_id null");
+        } else {
+            List<Task> tasks = taskDao.getBoardTasks(board_id);
+            if (_order > tasks.size() + 1 || _order <= 0) {
+                message.put("status", false);
+                message.put("error_message", "잘못된 접근입니다.");
+                log.debug("moveTaskToOtherBoard error : _order 가 기존 board의 (Tasks size + 1) 보다 크거나 0 이하임");
+            } else {
+                Task task = taskDao.getTaskById(task_id);
+                task.setBoard_id(board_id);
+                tasks.add(_order - 1, task);
+                for(int i = 0; i < tasks.size(); i++) {
+                    Task this_task = tasks.get(i);
+                    this_task.set_order(i + 1);
+                    if(this_task.equals(task)) {
+                        taskDao.moveTaskToOtherBoard(task.getId(), task.getBoard_id());
+                    }
+                    taskDao.updateTaskOrder(this_task.getId(), this_task.get_order());
+                }
+                message.put("status", true);
+                message.put("tasks", tasks);
+            }
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
      * getTask
      *
      * @param task_id String
      * @return ResponseEntity(REST)
-     *
+     * <p>
      * 업무(task) 상세를 호출하는 함수
      * 하위 업무, 담당자 모두 세팅된 값
      * # 예외처리
      * - 없거나 삭제된 task O
      * - 회사 데이터 없음 -> Interceptor 처리?
      * - 권한 없음 -> Interceptor 처리?
-     * **/
+     **/
     public ResponseEntity getTask(String task_id) {
         Message message = new Message();
         Task task = taskDao.getTaskById(task_id);
         // TODO 예외처리
-        if(task == null) {
+        if (task == null) {
             message.put("status", false);
             message.put("error_message", "해당 업무를 불러올 수 없습니다. 업무 리스트를 최신화 해주세요.");
         } else {
@@ -588,13 +742,13 @@ public class CrmService {
      *
      * @param task_id String
      * @return ResponseEntity(REST)
-     *
+     * <p>
      * 작업 내에 현재 담당자로 선택할 수 있는 팀원 목록을 불러오는 함수
      * CompanyProfileMember의 no는 CompanyMember.no를 칭함
      * # 예상 예외 처리
      * - 회사 데이터 없음 -> Interceptor 처리?
      * - 권한 없음 -> Interceptor 처리?
-     * **/
+     **/
     public ResponseEntity getTaskAvailableMembers(String task_id) {
         Message message = new Message();
         message.put("status", true);

@@ -73,4 +73,24 @@
         from task
         WHERE id = #{task_id}
     </select>
+    <delete id="deleteTask">
+        delete
+        from task
+        WHERE id = #{task_id}
+    </delete>
+    <update id="changeTaskName">
+        update task
+        SET title = #{name}
+        WHERE id = #{task_id}
+    </update>
+    <update id="moveTaskToOtherBoard">
+        update task
+        SET board_id = #{board_id}
+        WHERE id = #{id}
+    </update>
+    <update id="updateTaskOrder">
+        update task
+        SET _order = #{order}
+        WHERE id = #{id}
+    </update>
 </mapper>

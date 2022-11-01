@@ -1,6 +1,7 @@
 package com.mapper.crm;
 
 import com.model.crm.Task;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -24,4 +25,12 @@ public interface TaskMapper {
     void copyTask(Task task);
 
     Task getTaskById(String task_id);
+
+    void deleteTask(String task_id);
+
+    void changeTaskName(@Param("task_id") String task_id, @Param("name") String name);
+
+    void moveTaskToOtherBoard(@Param("id") String id, @Param("board_id") String board_id);
+
+    void updateTaskOrder(@Param("id") String id, @Param("order") int order);
 }
