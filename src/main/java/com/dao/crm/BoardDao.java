@@ -29,4 +29,20 @@ public class BoardDao {
     public void copyBoard(Board board) {
         mapper.copyBoard(board);
     }
+
+    public void changeBoardName(String board_id, String name) {
+        mapper.changeBoardName(board_id, name);
+    }
+
+    public void deleteBoard(String board_id) {
+        mapper.deleteBoard(board_id);
+    }
+
+    public Board getBoardById(String board_id) {
+        return mapper.getBoardById(board_id);
+    }
+
+    public void updateBoardOrder(String id, int order) {
+        mapper.updateBoardOrder(id, order);
+    }
 }

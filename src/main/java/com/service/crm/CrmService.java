@@ -398,6 +398,137 @@ public class CrmService {
     }
 
     /**
+     * createBoard
+     *
+     * @param board Board
+     * @return ResponseEntity(REST)
+     *
+     * 보드(Board)를 생성하는 함수
+     * # 예외처리
+     * - 토큰 null or 토큰 중복일 시 자체적으로 미중복 토큰을 생성하여 넣은 후 해당 값 rest로 반환
+     * - 순서에 대한 정의는 함수 내 주석 참조
+     * - project_no 세팅 안되어있을 때 에러 로그 및 return status false => 디버그용
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     * **/
+    @Transactional
+    public ResponseEntity createBoard(Board board) {
+        Message message = new Message();
+        // Token 재검증
+        if(board.getProject_no() <= 0) {
+            message.put("status", false);
+            message.put("error_message", "");
+            log.debug("createBoard error : project_no 없음");
+        } else {
+            if(board.getId() == null) {
+                board.setId(TokenGenerator.RandomToken(8));
+            }
+            while (!boardDao.checkTokenIdAbleToUse(board.getId())) {
+                board.setId(TokenGenerator.RandomToken(8));
+            }
+
+            // DB 기준 마지막 order 로 추가
+            // 만약 보드 기준 왼쪽 or 오른쪽에 생성하기 기능이 있을 시 아래 한 줄 주석 처리
+            board.set_order(boardDao.getProjectBoards(board.getProject_no()).size() + 1);
+            boardDao.createBoard(board);
+            message.put("status", true);
+            message.put("board", board);
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * changeBoardName
+     *
+     * @param board_id String
+     * @param name String
+     * @return ResponseEntity(REST)
+     *
+     * 보드(Board) 이름을 변경하는 함수
+     * # 예외처리
+     * - board 존재? O
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     * **/
+    @Transactional
+    public ResponseEntity changeBoardName(String board_id, String name) {
+        Message message = new Message();
+        if(boardDao.checkTokenIdAbleToUse(board_id)) {
+            // board_id token 값이 있는지 check로 보드 존재하는지 check
+            message.put("status", false);
+            message.put("error_message", "이름을 변경하려는 보드가 존재하지 않습니다. (새로고침 요망)");
+        } else {
+            boardDao.changeBoardName(board_id, name);
+            message.put("status", true);
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+
+    /**
+     * changeBoardOrder
+     *
+     * @param board_id String
+     * @param _order int
+     * @return ResponseEntity(REST)
+     *
+     * 보드(Board)의 순서를 변경하는 함수
+     * board_id 를 특정 순서로 옮긴다는 행위를 통해
+     * 해당 프로젝트 내의 다른 보드들의 _order 값 까지 변동해주어야 해서 해당 로직도 함께 구축
+     * 로직 => (a, b, c, d, e) 중 e를 b(2)번 자리로 옮길 때 (a, e, b, c, d)에 맞게 뒤 _order 값도 조정
+     * TODO DB 값 기준으로 변경하기에 DB - Front 간 올바르게 동기화 되어야함 => WEBSOCKET 시
+     * DB 기준 Board 정렬을 반환하여 Front 가 최대한 DB와 동기화 될 수 있게 처리
+     * TODO 만일 현재 Front 기준으로 모두 처리하려면 Front의 정렬을 모두 받아서 그대로 반영해야함 => 함수 변경
+     * # 예외 처리
+     * - 프로젝트 내의 보드의 전체 갯수보다 _order 값이 클 경우는 오류 처리
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     * **/
+    @Transactional
+    public ResponseEntity changeBoardOrder(String board_id, int _order) {
+        Message message = new Message();
+        Board board = boardDao.getBoardById(board_id);
+        List<Board> boards = boardDao.getProjectBoards(board.getProject_no());
+        if(_order > boards.size()) {
+            message.put("status", false);
+            message.put("error_message", "잘못된 접근입니다.");
+            log.debug("changeBoardOrder error : _order 의 값이 잘못되었습니다.");
+        } else {
+            boards.remove(board);
+            boards.add(_order - 1, board);
+            for(int i = 0; i < boards.size(); i++) {
+                Board this_board = boards.get(i);
+                this_board.set_order(i + 1);
+                boardDao.updateBoardOrder(this_board.getId(), this_board.get_order());
+            }
+            message.put("status", true);
+            message.put("boards", boards);
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * deleteBoard
+     *
+     * @param board_id String
+     * @return ResponseEntity(REST)
+     *
+     * 보드(Board)를 삭제하는 함수
+     * board에 엮여진 task들 모두 함께 삭제 (FK로 자동 삭제)
+     * # 예외 처리
+     * - board 내에 task 있을 때 삭제 막기?
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     * **/
+    @Transactional
+    public ResponseEntity deleteBoard(String board_id) {
+        Message message = new Message();
+        boardDao.deleteBoard(board_id);
+        message.put("status", true);
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
      * createTask
      *
      * @param task Task

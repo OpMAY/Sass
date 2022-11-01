@@ -20,4 +20,24 @@
         insert into board(id, project_no, name, _order, reg_datetime, updated_datetime)
         VALUES (#{id}, #{project_no}, #{name}, #{_order}, now(), now())
     </insert>
+    <update id="changeBoardName">
+        update board
+        SET name = #{name}
+        WHERE id = #{board_id}
+    </update>
+    <delete id="deleteBoard">
+        delete
+        from board
+        WHERE id = #{board_id}
+    </delete>
+    <select id="getBoardById" resultType="Board">
+        select *
+        from board
+        WHERE id = #{board_id}
+    </select>
+    <update id="updateBoardOrder">
+        update board
+        set _order = #{order}
+        where id = #{id};
+    </update>
 </mapper>
