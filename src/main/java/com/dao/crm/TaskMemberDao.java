@@ -3,6 +3,7 @@ package com.dao.crm;
 import com.mapper.crm.TaskMemberMapper;
 import com.model.User;
 import com.model.company.CompanyProfileMember;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
@@ -25,5 +26,17 @@ public class TaskMemberDao {
 
     public List<CompanyProfileMember> getAvailableMembers(String task_id) {
         return mapper.getAvailableMembers(task_id);
+    }
+
+    public boolean isMemberOnTask(String task_id, int member_no) {
+        return mapper.isMemberOnTask(task_id, member_no);
+    }
+
+    public void addTaskMember(String task_id, int member_no) {
+        mapper.addTaskMember(task_id, member_no);
+    }
+
+    public void removeTaskMember(String task_id, int member_no) {
+        mapper.removeTaskMember(task_id, member_no);
     }
 }

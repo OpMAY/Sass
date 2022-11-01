@@ -43,6 +43,11 @@ public class Time {
         return to_dateFormat.format(target_date);
     }
 
+    public static Date DateStringToDate(String date, String format) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        return formatter.parse(date);
+    }
+
     public static Long LocalDataTimeToLong(LocalDateTime datetime) {
         System.out.println("year : " + datetime.getYear());
         System.out.println("month : " + (datetime.getMonthValue() - 1));

@@ -4,9 +4,11 @@ import com.dao.CompanyDao;
 import com.dao.CompanyMemberDao;
 import com.dao.crm.*;
 import com.model.User;
+import com.model.company.CompanyMember;
 import com.model.company.CompanyProfileMember;
 import com.model.crm.Board;
 import com.model.crm.Project;
+import com.model.crm.SubTask;
 import com.model.crm.Task;
 import com.model.crm.state.TASK_STATUS_TYPE;
 import com.response.DefaultRes;
@@ -284,9 +286,16 @@ public class CrmService {
     @Transactional
     public ResponseEntity changeTaskStatus(String task_id) {
         Message message = new Message();
-        taskDao.changeTaskStatus(task_id);
-        boolean complete = taskDao.checkTaskCompleted(task_id);
-        message.put("complete", complete);
+        if (taskDao.getTaskById(task_id) == null) {
+            message.put("status", false);
+            message.put("error_message", "잘못된 접근입니다.");
+            log.debug("changeTaskStatus error : task가 존재하지 않습니다.");
+        } else {
+            message.put("status", true);
+            taskDao.changeTaskStatus(task_id);
+            boolean complete = taskDao.checkTaskCompleted(task_id);
+            message.put("complete", complete);
+        }
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
 
@@ -308,6 +317,8 @@ public class CrmService {
             message.put("status", taskDao.checkTokenIdAbleToUse(token_id));
         } else if (type.equals("board")) {
             message.put("status", boardDao.checkTokenIdAbleToUse(token_id));
+        } else if (type.equals("subtask")) {
+            message.put("status", subTaskDao.checkTokenIdAbleToUse(token_id));
         } else {
             return new ResponseEntity<>(DefaultRes.res(HttpStatus.BAD_REQUEST), OK);
         }
@@ -557,7 +568,7 @@ public class CrmService {
      * changeTaskOrder
      *
      * @param task_id String
-     * @param _order   int
+     * @param _order  int
      * @return ResponseEntity(REST)
      * <p>
      * 업무(Task)의 순서를 변경하는 함수
@@ -578,14 +589,14 @@ public class CrmService {
         Message message = new Message();
         Task task = taskDao.getTaskById(task_id);
         List<Task> tasks = taskDao.getBoardTasks(task.getBoard_id());
-        if(_order > tasks.size() || _order <= 0) {
+        if (_order > tasks.size() || _order <= 0) {
             message.put("status", false);
             message.put("error_message", "잘못된 접근입니다.");
             log.debug("changeTaskOrder error : _order 의 값이 잘못되었습니다.");
         } else {
             tasks.remove(task);
             tasks.add(_order - 1, task);
-            for(int i = 0; i < tasks.size(); i++) {
+            for (int i = 0; i < tasks.size(); i++) {
                 Task this_task = tasks.get(i);
                 this_task.set_order(i + 1);
                 taskDao.updateTaskOrder(this_task.getId(), this_task.get_order());
@@ -601,7 +612,7 @@ public class CrmService {
      * changeTaskName
      *
      * @param task_id String
-     * @param name String
+     * @param name    String
      * @return ResponseEntity(REST)
      * <p>
      * 업무(Task)의 이름을 변경하는 함수
@@ -657,9 +668,9 @@ public class CrmService {
     /**
      * moveTaskToOtherBoard
      *
-     * @param task_id String
+     * @param task_id  String
      * @param board_id String
-     * @param _order int
+     * @param _order   int
      * @return ResponseEntity(REST)
      * <p>
      * 업무(Task)를 다른 보드로 이동하는 함수
@@ -692,10 +703,10 @@ public class CrmService {
                 Task task = taskDao.getTaskById(task_id);
                 task.setBoard_id(board_id);
                 tasks.add(_order - 1, task);
-                for(int i = 0; i < tasks.size(); i++) {
+                for (int i = 0; i < tasks.size(); i++) {
                     Task this_task = tasks.get(i);
                     this_task.set_order(i + 1);
-                    if(this_task.equals(task)) {
+                    if (this_task.equals(task)) {
                         taskDao.moveTaskToOtherBoard(task.getId(), task.getBoard_id());
                     }
                     taskDao.updateTaskOrder(this_task.getId(), this_task.get_order());
@@ -734,6 +745,288 @@ public class CrmService {
             message.put("status", true);
             message.put("task", task);
         }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+
+    /**
+     * addTaskMember
+     *
+     * @param task_id   String
+     * @param member_no int
+     * @return ResponseEntity(REST)
+     * <p>
+     * 작업에 멤버를 담당자로 등록하는 함수
+     * CompanyProfileMember의 no는 CompanyMember.no를 칭함 => no = member_no
+     * # 예상 예외 처리
+     * - 이미 해당 Task에 담당자로 등록됐는지
+     * - 해당 멤버가 해당 Task의 그룹 멤버가 맞는지
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity addTaskMember(String task_id, int member_no) {
+        Message message = new Message();
+        Task task = taskDao.getTaskById(task_id);
+        Project project = projectDao.getProjectByNo(task.getProject_no());
+        if (!companyMemberDao.checkMemberIsCompanyMember(member_no, project.getCompany_no())) {
+            message.put("status", false);
+            message.put("error_message", "담당자로 등록할 수 없는 멤버입니다.");
+            log.debug("addTaskMember error : member_no에 해당하는 멤버가 없거나, project의 회사와 맞지않는 멤버");
+        } else if (taskMemberDao.isMemberOnTask(task_id, member_no)) {
+            message.put("status", false);
+            message.put("error_message", "이미 담당자로 등록되어 있는 멤버입니다..");
+            log.debug("addTaskMember error : 이미 등록되어있음, 동기화 오류");
+        } else {
+            taskMemberDao.addTaskMember(task_id, member_no);
+            message.put("status", true);
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * removeTaskMember
+     *
+     * @param task_id   String
+     * @param member_no int
+     * @return ResponseEntity(REST)
+     * <p>
+     * 작업에 멤버로 등록된 담당자를 삭제하는 함수
+     * CompanyProfileMember의 no는 CompanyMember.no를 칭함 => no = member_no
+     * # 예상 예외 처리
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity removeTaskMember(String task_id, int member_no) {
+        Message message = new Message();
+        taskMemberDao.removeTaskMember(task_id, member_no);
+        message.put("status", true);
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * changeTaskStartDate
+     *
+     * @param task_id    String
+     * @param start_date int
+     * @return ResponseEntity(REST)
+     * <p>
+     * 작업의 시작 일자를 변경하는 함수
+     * # 예상 예외 처리
+     * - DB에 저장되어 있는 종료 일자가 시작 일자보다 이전일 경우 종료 일자 => null
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity changeTaskStartDate(String task_id, String start_date) {
+        Message message = new Message();
+        if (taskDao.getTaskById(task_id) == null) {
+            message.put("status", false);
+            message.put("error_message", "해당 업무를 불러올 수 없습니다. 업무 리스트를 최신화 해주세요.");
+        } else {
+            Task task = taskDao.getTaskById(task_id);
+            String date_default_format = "yyyy.MM.dd";
+            try {
+                Date s_date = Time.DateStringToDate(start_date, date_default_format);
+                Date e_date = Time.DateStringToDate(task.getEnd_date(), date_default_format);
+                message.put("status", true);
+                if(e_date.before(s_date)) {
+                    // DB에 저장되어 있는 종료 일자가 시작 일자보다 이전일 경우 종료 일자 => null
+                    taskDao.updateTaskEndDate(task_id, null);
+                    message.put("end_date", null);
+                }
+                taskDao.updateTaskStartDate(task_id, start_date);
+            } catch (Exception e) {
+                e.printStackTrace();
+                message.put("status", false);
+                message.put("error_message", "서버 내부 에러");
+            }
+        }
+        message.put("status", true);
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * changeTaskEndDate
+     *
+     * @param task_id  String
+     * @param end_date int
+     * @return ResponseEntity(REST)
+     * <p>
+     * 작업의 종료 일자를 변경하는 함수
+     * # 예상 예외 처리
+     * - DB에 저장되어 있는 시작 일자가 종료 일자보다 이후일 경우 시작 일자 => null
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity changeTaskEndDate(String task_id, String end_date) {
+        Message message = new Message();
+        if (taskDao.getTaskById(task_id) == null) {
+            message.put("status", false);
+            message.put("error_message", "해당 업무를 불러올 수 없습니다. 업무 리스트를 최신화 해주세요.");
+        } else {
+            Task task = taskDao.getTaskById(task_id);
+            String date_default_format = "yyyy.MM.dd";
+            try {
+                Date start_date = Time.DateStringToDate(task.getStart_date(), date_default_format);
+                Date e_date = Time.DateStringToDate(end_date, date_default_format);
+                message.put("status", true);
+                if(start_date.after(e_date)) {
+                    // DB에 저장되어 있는 시작 일자가 종료 일자보다 이후일 경우 시작 일자 => null
+                    taskDao.updateTaskStartDate(task_id, null);
+                    message.put("start_date", null);
+                }
+                taskDao.updateTaskEndDate(task_id, end_date);
+            } catch (Exception e) {
+                e.printStackTrace();
+                message.put("status", false);
+                message.put("error_message", "서버 내부 에러");
+            }
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * changeTaskDescription
+     *
+     * @param task_id     String
+     * @param description int
+     * @return ResponseEntity(REST)
+     * <p>
+     * 작업의 내용을 변경하는 함수
+     * # 예상 예외 처리
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity changeTaskDescription(String task_id, String description) {
+        Message message = new Message();
+        if (taskDao.getTaskById(task_id) == null) {
+            message.put("status", false);
+            message.put("error_message", "해당 업무를 불러올 수 없습니다. 업무 리스트를 최신화 해주세요.");
+        } else {
+            taskDao.changeTaskDescription(task_id, description);
+            message.put("status", true);
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * changeSubTaskStatus
+     *
+     * @param sub_task_id String
+     * @return ResponseEntity(REST)
+     * <p>
+     * subtask 상태 변화 함수
+     * DB 기준으로 반대로 변경 뒤 변경된 상태를 return
+     * # 예상 예외 처리
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity changeSubTaskStatus(String sub_task_id) {
+        Message message = new Message();
+        if (subTaskDao.getSubtaskById(sub_task_id) == null) {
+            message.put("status", false);
+            message.put("error_message", "존재하지 않는 하위 업무입니다.");
+            log.debug("changeSubTaskStatus error : subTask.id에 맞는 subtask 없음");
+        } else {
+            subTaskDao.changeSubTaskStatus(sub_task_id);
+            boolean complete = subTaskDao.checkSubTaskCompleted(sub_task_id);
+            message.put("status", true);
+            message.put("complete", complete);
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * changeSubTaskName
+     *
+     * @param sub_task_id String
+     * @param name        String
+     * @return ResponseEntity(REST)
+     * <p>
+     * subtask 이름 변경 함수
+     * # 예상 예외 처리
+     * @see CrmService#addSubTask => 이름 예외 처리와 같음
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity changeSubTaskName(String sub_task_id, String name) {
+        Message message = new Message();
+        if (subTaskDao.getSubtaskById(sub_task_id) == null) {
+            message.put("status", false);
+            message.put("error_message", "존재하지 않는 하위 업무입니다.");
+            log.debug("changeSubTaskName error : subTask.id에 맞는 subtask 없음");
+        } else if (name == null || name.length() <= 0) {
+            // TODO js 단에서 inspection 후 해당 구문 삭제
+            message.put("status", false);
+            message.put("error_message", "하위 업무의 title이 지정되지 않았습니다.");
+            log.debug("changeSubTaskName error : subTask.title 필요 -> js 단에서 inspection 후 해당 구문 삭제");
+        } else {
+            subTaskDao.changeSubTaskName(sub_task_id, name);
+            message.put("status", true);
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * addSubTask
+     *
+     * @param subTask String
+     * @return ResponseEntity(REST)
+     * <p>
+     * 하위 업무 추가 함수
+     * # 예상 예외 처리
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity addSubTask(SubTask subTask) {
+        Message message = new Message();
+        if (taskDao.getTaskById(subTask.getTask_id()) == null) {
+            message.put("status", false);
+            message.put("error_message", "업무가 존재하지 않아 하위 업무를 생성할 수 없습니다.");
+            log.debug("addSubTask error : subTask.taskId에 맞는 task 없음");
+        } else if (subTask.getTitle() == null || subTask.getTitle().length() <= 0) {
+            // TODO js 단에서 inspection 후 해당 구문 삭제
+            message.put("status", false);
+            message.put("error_message", "하위 업무의 title이 지정되지 않았습니다.");
+            log.debug("addSubTask error : subTask.title 필요 -> js 단에서 inspection 후 해당 구문 삭제");
+        } else {
+            if (subTask.getId() == null) {
+                subTask.setId(TokenGenerator.RandomToken(8));
+            }
+            while (!subTaskDao.checkTokenIdAbleToUse(subTask.getId())) {
+                subTask.setId(TokenGenerator.RandomToken(8));
+            }
+            subTaskDao.addSubTask(subTask);
+            subTask = subTaskDao.getSubtaskById(subTask.getId());
+            message.put("status", true);
+            message.put("subTask", subTask);
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * removeSubTask
+     *
+     * @param sub_task_id String
+     * @return ResponseEntity(REST)
+     * <p>
+     * 하위 업무 삭제 함수
+     * # 예상 예외 처리
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity removeSubTask(String sub_task_id) {
+        Message message = new Message();
+        subTaskDao.removeSubTask(sub_task_id);
+        message.put("status", true);
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
 

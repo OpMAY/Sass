@@ -70,4 +70,12 @@ public class CompanyMemberDao {
     public List<CompanyProfileMember> getCompanyMemberTagList(int company_no) {
         return mapper.getCompanyMemberTagList(company_no);
     }
+
+    public CompanyMember getCompanyMemberInfoByMemberNo(int member_no) {
+        return mapper.getCompanyMemberInfoByMemberNo(member_no);
+    }
+
+    public boolean checkMemberIsCompanyMember(int member_no, int company_no) {
+        return mapper.checkMemberIsCompanyMember(member_no, company_no);
+    }
 }

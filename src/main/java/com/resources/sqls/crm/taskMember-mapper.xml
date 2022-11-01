@@ -28,4 +28,17 @@
           AND company_no =
               (select company_no from project WHERE (select project_no from task WHERE task.id = #{task_id}))
     </select>
+    <select id="isMemberOnTask" resultType="_boolean">
+        select EXISTS(select * from task_member WHERE task_id = #{task_id} AND member_no = #{member_no})
+    </select>
+    <insert id="addTaskMember">
+        insert into task_member (task_id, member_no)
+        VALUES (#{task_id}, #{member_no})
+    </insert>
+    <delete id="deleteTaskMember">
+        delete
+        from task_member
+        WHERE task_id = #{task_id}
+          AND member_no = #{member_no}
+    </delete>
 </mapper>

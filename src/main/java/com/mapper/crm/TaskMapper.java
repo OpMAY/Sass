@@ -33,4 +33,10 @@ public interface TaskMapper {
     void moveTaskToOtherBoard(@Param("id") String id, @Param("board_id") String board_id);
 
     void updateTaskOrder(@Param("id") String id, @Param("order") int order);
+
+    void changeTaskDescription(@Param("task_id") String task_id, @Param("description") String description);
+
+    void updateTaskStartDate(@Param("task_id") String task_id, @Param("start_date") String start_date);
+
+    void updateTaskEndDate(@Param("task_id") String task_id, @Param("end_date") String end_date);
 }

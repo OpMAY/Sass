@@ -71,4 +71,15 @@ public class TaskDao {
         mapper.updateTaskOrder(id, order);
     }
 
+    public void changeTaskDescription(String task_id, String description) {
+        mapper.changeTaskDescription(task_id, description);
+    }
+
+    public void updateTaskStartDate(String task_id, String start_date) {
+        mapper.updateTaskStartDate(task_id, start_date);
+    }
+
+    public void updateTaskEndDate(String task_id, String end_date) {
+        mapper.updateTaskEndDate(task_id, end_date);
+    }
 }

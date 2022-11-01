@@ -35,4 +35,8 @@ public interface CompanyMemberMapper {
     List<CompanyMember> getCompanyMemberList(int companyNo);
 
     List<CompanyProfileMember> getCompanyMemberTagList(int company_no);
+
+    CompanyMember getCompanyMemberInfoByMemberNo(int member_no);
+
+    boolean checkMemberIsCompanyMember(@Param("member_no") int member_no, @Param("company_no") int company_no);
 }
