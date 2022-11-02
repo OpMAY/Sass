@@ -46,6 +46,8 @@ public class CrmPlugRestController {
     private final FileUploadUtility uploadUtility;
 
     // Project
+
+    // TODO 20221102 1번 - 지우
     @RequestMapping(value = "/projects", method = GET)
     public ResponseEntity getProjects(HttpServletRequest request) {
         Message message = new Message();
@@ -67,6 +69,7 @@ public class CrmPlugRestController {
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
+    // TODO 20221102 2번 - 우식, 지우
     @RequestMapping(value = "/project/{hash}/data", method = GET)
     public ResponseEntity getProjectDetailData(@PathVariable String hash) throws Exception {
         Message message = new Message();
@@ -76,6 +79,7 @@ public class CrmPlugRestController {
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
+    // TODO 20221102 3번 - 지우
     @RequestMapping(value = "/member/tasks", method = GET)
     public ResponseEntity getMemberTasks(@RequestParam("type") TASK_STATUS_TYPE type, HttpServletRequest request) {
         Message message = new Message();
@@ -98,35 +102,42 @@ public class CrmPlugRestController {
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
+    // TODO 20221102 4번 - 지우
     @RequestMapping(value = "/create/project", method = POST)
     public ResponseEntity createProject(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         Project project = (Project) body.get("project");
         return crmService.createNewProject(project);
     }
 
+    // TODO 20221102 5번 - 우식
     @RequestMapping(value = "/delete/project/{hash}", method = POST)
     public ResponseEntity deleteProject(HttpServletRequest request, @PathVariable String hash) throws Exception {
         int project_no = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
         return crmService.deleteProject(project_no);
     }
 
+    // TODO 20221102 6번 - 지우
     @RequestMapping(value = "/update/project", method = POST)
-    public ResponseEntity deleteProject(HttpServletRequest request, @RequestBody Map<String, Object> body) throws Exception {
+    public ResponseEntity updateProject(HttpServletRequest request, @RequestBody Map<String, Object> body) throws Exception {
         Project project = (Project) body.get("project");
         return crmService.updateProject(project);
     }
 
+    // TODO 20221102 7번 - 우식
     @RequestMapping(value = "/copy/project/{hash}", method = POST)
     public ResponseEntity copyProject(HttpServletRequest request, @PathVariable String hash) throws Exception {
         int project_no = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
         return crmService.copyProject(project_no);
     }
 
+    // TODO 20221102 8번 - 우식
     @RequestMapping(value = "/token/validate/{token}/{type}", method = GET)
     public ResponseEntity checkTokenIdDuplicate(@PathVariable String token, @PathVariable String type) {
         return crmService.checkTokenIdDuplicate(token, type);
     }
 
+
+    // TODO 20221102 9번 - 우식
     // Board
     @RequestMapping(value = "/copy/board/{board_id}", method = POST)
     public ResponseEntity copyBoard(HttpServletRequest request, @PathVariable String board_id) {
@@ -143,12 +154,14 @@ public class CrmPlugRestController {
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
+    // TODO 20221102 10번 - 지우
     @RequestMapping(value = "/create/board", method = POST)
     public ResponseEntity createBoard(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         Board board = (Board) body.get("board");
         return crmService.createBoard(board);
     }
 
+    // TODO 20221102 11번 - 우식
     @RequestMapping(value = "/update/board/name", method = POST)
     public ResponseEntity changeBoardName(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         String board_id = (String) body.get("id");
@@ -156,6 +169,7 @@ public class CrmPlugRestController {
         return crmService.changeBoardName(board_id, name);
     }
 
+    // TODO 20221102 12번 - 우식
     @RequestMapping(value = "/update/board/order", method = POST)
     public ResponseEntity changeBoardOrder(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         String board_id = (String) body.get("id");
@@ -163,17 +177,21 @@ public class CrmPlugRestController {
         return crmService.changeBoardOrder(board_id, _order);
     }
 
+    // TODO 20221102 13번 - 우식
     @RequestMapping(value = "/delete/board/{board_id}", method = POST)
     public ResponseEntity deleteBoard(HttpServletRequest request, @PathVariable String board_id) {
         return crmService.deleteBoard(board_id);
     }
 
+
+    // TODO 20221102 14번 - 우식
     // Task
     @RequestMapping(value = "/update/task/{task_id}/status", method = POST)
     public ResponseEntity updateTaskStatus(HttpServletRequest request, @PathVariable String task_id) {
         return crmService.changeTaskStatus(task_id);
     }
 
+    // TODO 20221102 15번 - 우식
     @RequestMapping(value = "/copy/task/{task_id}", method = POST)
     public ResponseEntity copyTask(HttpServletRequest request, @PathVariable String task_id) {
         Message message = new Message();
@@ -189,12 +207,14 @@ public class CrmPlugRestController {
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
+    // TODO 20221102 16번 - 지우
     @RequestMapping(value = "/create/task", method = POST)
     public ResponseEntity createTask(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         Task task = (Task) body.get("task");
         return crmService.createTask(task);
     }
 
+    // TODO 20221102 17번 - 우식
     @RequestMapping(value = "/update/task/order", method = POST)
     public ResponseEntity changeTaskOrder(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         String task_id = (String) body.get("id");
@@ -202,6 +222,7 @@ public class CrmPlugRestController {
         return crmService.changeTaskOrder(task_id, _order);
     }
 
+    // TODO 20221102 18번 - 우식
     @RequestMapping(value = "/update/task/name", method = POST)
     public ResponseEntity changeTaskName(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         String task_id = (String) body.get("id");
@@ -209,11 +230,13 @@ public class CrmPlugRestController {
         return crmService.changeTaskName(task_id, name);
     }
 
+    // TODO 20221102 19번 - 우식
     @RequestMapping(value = "/delete/task/{task_id}", method = POST)
     public ResponseEntity deleteTask(HttpServletRequest request, @PathVariable String task_id) {
         return crmService.deleteTask(task_id);
     }
 
+    // TODO 20221102 20번 - 우식
     @RequestMapping(value = "/update/task/move", method = POST)
     public ResponseEntity moveTaskToOtherBoard(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         String task_id = (String) body.get("task_id");
@@ -222,11 +245,13 @@ public class CrmPlugRestController {
         return crmService.moveTaskToOtherBoard(task_id, board_id, _order);
     }
 
+    // TODO 20221102 21번 - 우식, 지우
     @RequestMapping(value = "/get/task/{task_id}", method = GET)
     public ResponseEntity getTaskDetail(HttpServletRequest request, @PathVariable String task_id) {
         return crmService.getTask(task_id);
     }
 
+    // TODO 20221102 22번 - 지우
     @RequestMapping(value = "/update/task/member/add", method = POST)
     public ResponseEntity addTaskMember(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         String task_id = (String) body.get("id");
@@ -234,6 +259,7 @@ public class CrmPlugRestController {
         return crmService.addTaskMember(task_id, member_no);
     }
 
+    // TODO 20221102 23번 - 지우
     @RequestMapping(value = "/update/task/member/remove", method = POST)
     public ResponseEntity removeTaskMember(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         String task_id = (String) body.get("id");
@@ -241,6 +267,7 @@ public class CrmPlugRestController {
         return crmService.removeTaskMember(task_id, member_no);
     }
 
+    // TODO 20221102 24번 - 우식
     @RequestMapping(value = "/update/task/start_date", method = POST)
     public ResponseEntity changeTaskStartDate(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         String task_id = (String) body.get("id");
@@ -248,6 +275,7 @@ public class CrmPlugRestController {
         return crmService.changeTaskStartDate(task_id, start_date);
     }
 
+    // TODO 20221102 25번 - 우식
     @RequestMapping(value = "/update/task/end_date", method = POST)
     public ResponseEntity changeTaskEndDate(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         String task_id = (String) body.get("id");
@@ -255,6 +283,7 @@ public class CrmPlugRestController {
         return crmService.changeTaskStartDate(task_id, end_date);
     }
 
+    // TODO 20221102 26번 - 우식
     @RequestMapping(value = "/update/task/description", method = POST)
     public ResponseEntity changeTaskDescription(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         String task_id = (String) body.get("id");
@@ -262,6 +291,7 @@ public class CrmPlugRestController {
         return crmService.changeTaskDescription(task_id, description);
     }
 
+    // TODO 20221102 27번 - 지우
     @RequestMapping(value = "/update/task/{task_id}/thumbnail", method = POST)
     public ResponseEntity changeTaskThumbnail(HttpServletRequest request, @PathVariable String task_id, @RequestBody MultipartFile file) {
         if (file.getSize() > 0) {
@@ -273,11 +303,13 @@ public class CrmPlugRestController {
         }
     }
 
-    @RequestMapping(value = "/update/task/subtask/{subtask_id}/status/", method = POST)
+    // TODO 20221102 28번 - 우식
+    @RequestMapping(value = "/update/task/subtask/{subtask_id}/status", method = POST)
     public ResponseEntity changeSubTaskStatus(HttpServletRequest request, @PathVariable String subtask_id) {
         return crmService.changeSubTaskStatus(subtask_id);
     }
 
+    // TODO 20221102 29번 - 우식
     @RequestMapping(value = "/update/task/subtask/name", method = POST)
     public ResponseEntity changeSubTaskName(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         String subtask_id = (String) body.get("id");
@@ -286,27 +318,32 @@ public class CrmPlugRestController {
     }
 
 
+    // TODO 20221102 30번 - 지우
     @RequestMapping(value = "/create/subtask", method = POST)
     public ResponseEntity addSubTask(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         SubTask subTask = (SubTask) body.get("subtask");
         return crmService.addSubTask(subTask);
     }
 
+    // TODO 20221102 31번 - 우식
     @RequestMapping(value = "/delete/subtask/{subtask_id}", method = POST)
     public ResponseEntity deleteSubTask(HttpServletRequest request, @PathVariable String subtask_id) {
         return crmService.removeSubTask(subtask_id);
     }
 
+    // TODO 20221102 32번 - 지우
     @RequestMapping(value = "/get/task/{task_id}/members/available", method = GET)
     public ResponseEntity getTaskAvailableMembers(HttpServletRequest request, @PathVariable String task_id) {
         return crmService.getTaskAvailableMembers(task_id);
     }
 
+    // TODO 20221102 33번 - 지우
     @RequestMapping(value = "/get/task/{task_id}/comments", method = GET)
     public ResponseEntity getTaskComments(HttpServletRequest request, @PathVariable String task_id) {
         return crmService.getTaskComments(task_id);
     }
 
+    // TODO 20221102 34번 - 지우
     @RequestMapping(value = "/create/task/comment", method = POST)
     public ResponseEntity addTaskComment(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         Message message = new Message();
@@ -330,6 +367,7 @@ public class CrmPlugRestController {
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
+    // TODO 20221102 35번 - 우식
     @RequestMapping(value = "/delete/comment/{comment_no}", method = POST)
     public ResponseEntity deleteTaskComment(HttpServletRequest request, @PathVariable Integer comment_no) {
         Message message = new Message();
@@ -351,17 +389,20 @@ public class CrmPlugRestController {
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
+    // TODO 20221102 36번 - 지우
     @RequestMapping(value = "/get/task/{task_id}/files", method = GET)
     public ResponseEntity getTaskFiles(HttpServletRequest request, @PathVariable String task_id) {
         return crmService.getTaskFiles(task_id);
     }
 
+    // TODO 20221102 37번 - 지우
     @RequestMapping(value = "/get/project/{hash}/files", method = GET)
     public ResponseEntity getProjectFiles(HttpServletRequest request, @PathVariable String hash) throws Exception {
         int project_no = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
         return crmService.getProjectFiles(project_no);
     }
 
+    // TODO 20221102 38번 -
     @RequestMapping(value = "/delete/file/{file_no}", method = POST)
     public ResponseEntity deleteFile(HttpServletRequest request, @PathVariable int file_no) {
         return crmService.deleteFile(file_no);
