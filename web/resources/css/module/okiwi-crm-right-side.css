@@ -333,10 +333,16 @@
 
 .right-side-inner .tab-content ._content-container-remover {
     position: absolute;
-    top: -16px;
-    right: 16px;
+    top: calc(304px - 24px);
+    right: 24px;
     color: var(--brand-red);
     cursor: pointer;
+    transition: top .5s;
+}
+
+.right-side-inner .tab-content ._content-container-remover.is-hide {
+    top: -12px;
+    transition: top .5s;
 }
 
 .right-side-inner .tab-content ._subtasks::-webkit-scrollbar {

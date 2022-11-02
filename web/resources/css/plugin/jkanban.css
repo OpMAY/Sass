@@ -243,25 +243,32 @@
     margin-top: 12px;
 }
 
+.kanban-item .kanban-sub-item-container .kanban-sub-item > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
 .kanban-item .kanban-sub-item-container .kanban-sub-item {
     border-bottom: 1px solid #E6E6E6;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     position: relative;
+    display: flex;
 }
 
 .kanban-item .kanban-sub-item-container .kanban-sub-item:last-child {
     border-bottom: none;
 }
 
-.kanban-item .kanban-sub-item-container .kanban-sub-item.complete ._title {
+.kanban-item .kanban-sub-item-container .kanban-sub-item.active ._title {
     color: #F06A6A;
 }
 
-.kanban-item .kanban-sub-item-container .kanban-sub-item ._profile {
-    width: 24px;
-    height: 24px;
-    border-radius: 16px;
+.kanban-item .kanban-sub-item-container .kanban-sub-item.active .checkbox {
+    background-color: var(--brand-red);
+}
+
+.kanban-item .kanban-sub-item-container .kanban-sub-item .checkbox {
     position: absolute;
     right: 0;
     top: 50%;

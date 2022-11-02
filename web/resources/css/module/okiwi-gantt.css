@@ -41,12 +41,14 @@
 }
 
 .gantt-container .accordion.board-container > .card > .card-header button:hover .dropright {
-    display: block;
+    opacity: 1;
+    transition: opacity .5s;
 }
 
 .gantt-container .accordion.board-container > .card > .card-header button .dropright {
     margin-left: auto;
-    display: none;
+    opacity: 0;
+    transition: opacity .5s;
 }
 
 .gantt-container .accordion.board-container > .card > .card-header button .dropright > div {
@@ -67,12 +69,26 @@
     border-bottom: var(--border-1px) var(--gray-high-medium);
     background-color: transparent;
 }
+.gantt-container .accordion.board-container > .card > .card-header button.collapsed .dropdown {
+    transform: rotate(0);
+    transition: transform .5s;
+}
+.gantt-container .accordion.board-container > .card > .card-header button .dropdown {
+    width: 16px;
+    height: 16px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url(../../../resources/assets/images/icon/crm/dropdown-icon.svg);
+    margin-right: 8px;
+    transform: rotate(-180deg);
+    transition: transform .5s;
+}
 
 .gantt-container .accordion.board-container > .card > .card-header button .title {
-    width: calc(100% - 32px);
+    width: 100%;
     word-break: break-all;
     position: relative;
-    display: block;
     color: black;
     line-height: 32px;
     overflow: hidden;
@@ -99,12 +115,18 @@
     font-size: 14px;
 }
 
+.gantt-container .accordion.board-container > .card > .board-collapse .card-body > ul > li svg {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 8px;
+}
+
 .gantt-container .accordion.board-container > .card > .board-collapse .card-body > ul > li.is-checked .title {
     color: #F06A6A;
 }
 
 .gantt-container .accordion.board-container > .card > .board-collapse .card-body > ul > li .title {
-    width: calc(100% - 32px);
+    width: 100%;
     word-break: break-all;
     font-size: 14px;
     position: relative;
@@ -132,12 +154,15 @@
 }
 
 .gantt-container .accordion.board-container > .card > .board-collapse .card-body > ul > li .dropright {
-    display: none;
     margin-left: auto;
+    opacity: 0;
+    transition: opacity .5s;
 }
 
 .gantt-container .accordion.board-container > .card > .board-collapse .card-body > ul > li:hover .dropright {
     display: flex;
+    opacity: 1;
+    transition: opacity .5s;
 }
 
 .gantt-container .accordion.board-container > .card > .board-collapse .card-body > ul > li .dropright > div {
@@ -159,11 +184,13 @@
 .gantt-container ._gantt-board ._title {
     /* padding: 51px 20px 51px 20px; */
     font-weight: bold;
-    height: 127px;
+    height: 91px;
     margin-top: auto;
     margin-bottom: auto;
-    line-height: 127px;
-    text-align: center;
+    line-height: 91px;
+    text-align: left;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .gantt-container ._gantt-board ._board-add {
@@ -207,7 +234,7 @@
     background-color: white;
     /*width: calc(((12px + 12px + 20px) * 30) * 12);*/
     text-align: center;
-    padding: 8px 16px;
+    padding: 0px 16px;
     font-weight: bold;
     color: #F06A6A;
     border-bottom: 1px solid var(--gray-high-medium);
@@ -224,7 +251,7 @@
     background-color: white;
     display: inline-block;
     text-align: left;
-    padding: 10px 16px;
+    padding: 0 16px;
     /*min-width: calc((12px + 12px + 20px) * 30);*/
     font-weight: bold;
     color: #F06A6A;
@@ -233,8 +260,8 @@
 
 ._gantt-timeline ._gantt-header ._month > div > span {
     position: sticky;
-    left: 12px;
-    right: 12px;
+    left: 16px;
+    right: 16px;
     display: inline-block;
 }
 

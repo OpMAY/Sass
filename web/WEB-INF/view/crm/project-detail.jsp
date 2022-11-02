@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"
+         language="java" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -61,7 +62,8 @@
           href="/resources/css/base/element.css">
     <link rel="stylesheet"
           href="/resources/css/base/crm/element.css">
-    <link rel="stylesheet" href="/resources/css/module/modal.css">
+    <link rel="stylesheet"
+          href="/resources/css/module/modal.css">
     <title>Okiwi CRM Workspace</title>
 </head>
 <body>
