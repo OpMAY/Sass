@@ -43,6 +43,11 @@ public class Time {
         return to_dateFormat.format(target_date);
     }
 
+    public static Date DateStringToDate(String date, String format) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        return formatter.parse(date);
+    }
+
     public static Long LocalDataTimeToLong(LocalDateTime datetime) {
         System.out.println("year : " + datetime.getYear());
         System.out.println("month : " + (datetime.getMonthValue() - 1));
@@ -190,5 +195,17 @@ public class Time {
 
         diffTime = diffTime / MONTH;
         return diffTime + "년 전";
+    }
+
+    public static long getDateSecondDiff(Date date1, Date date2) {
+        return date2.getTime() - date1.getTime() / 1000;
+    }
+
+    public static long getDateMinuteDiff(Date date1, Date date2) {
+        return date2.getTime() - date1.getTime() / 60000;
+    }
+
+    public static long getDateHourDiff(Date date1, Date date2) {
+        return date2.getTime() - date1.getTime() / 3600000;
     }
 }

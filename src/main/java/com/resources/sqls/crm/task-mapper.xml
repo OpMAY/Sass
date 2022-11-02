@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.crm.TaskMapper">
+    <select id="getBoardTasks" resultType="Task">
+        select id,
+               board_id,
+               project_no,
+               start_date,
+               end_date,
+               complete,
+               title,
+               _order,
+               (select COUNT(*) from subtask WHERE task_id = task.id) as sub_task_count
+        from task
+        WHERE board_id = #{board_id}
+        ORDER BY _order
+    </select>
+    <select id="checkTokenIdAbleToUse" resultType="_boolean">
+        select !EXISTS(select * from task WHERE id = #{token_id})
+    </select>
+    <select id="getMemberToDoTasks" resultType="Task">
+        select *
+        from task t
+                 left join task_member tm on t.id = tm.task_id
+        WHERE complete = false
+          AND tm.member_no = #{member_no}
+        ORDER BY reg_datetime, end_date
+    </select>
+    <select id="getMemberCompletedTasks" resultType="Task">
+        select *
+        from task t
+                 left join task_member tm on t.id = tm.task_id
+        WHERE complete = true
+          AND tm.member_no = #{member_no}
+        ORDER BY reg_datetime, completed_datetime
+    </select>
+    <select id="getMemberExpiredTasks" resultType="Task">
+        select *
+        from task t
+                 left join task_member tm on t.id = tm.task_id
+        WHERE complete = false
+          AND end_date <![CDATA[<]]> CURDATE()
+          AND tm.member_no = #{member_no}
+        ORDER BY reg_datetime, end_date
+    </select>
+    <update id="changeTaskStatus">
+        update task
+        SET complete           = !complete,
+            completed_datetime = IF(complete, now(), null),
+            updated_datetime   = now()
+        WHERE id = #{task_id}
+    </update>
+    <select id="checkTaskCompleted" resultType="_boolean">
+        select complete
+        from task
+        WHERE id = #{task_id}
+    </select>
+    <insert id="createTask">
+        insert into task(id, board_id, project_no, start_date, end_date, title, description, _order,
+                         reg_datetime, updated_datetime)
+        VALUES (#{id}, #{board_id}, #{project_no}, #{start_date}, #{end_date}, #{title}, #{description},
+                #{_order}, now(), now())
+    </insert>
+    <insert id="copyTask">
+        insert into task(id, board_id, project_no, start_date, end_date, title, description, _order,
+                         reg_datetime, updated_datetime)
+        VALUES (#{id}, #{board_id}, #{project_no}, #{start_date}, #{end_date}, #{title}, #{description},
+                #{_order}, now(), now())
+    </insert>
+    <select id="getTaskById" resultType="Task">
+        select *
+        from task
+        WHERE id = #{task_id}
+    </select>
+    <delete id="deleteTask">
+        delete
+        from task
+        WHERE id = #{task_id}
+    </delete>
+    <update id="changeTaskName">
+        update task
+        SET title            = #{name},
+            updated_datetime = now()
+        WHERE id = #{task_id}
+    </update>
+    <update id="moveTaskToOtherBoard">
+        update task
+        SET board_id         = #{board_id},
+            updated_datetime = now()
+        WHERE id = #{id}
+    </update>
+    <update id="updateTaskOrder">
+        update task
+        SET _order           = #{order},
+            updated_datetime = now()
+        WHERE id = #{id}
+    </update>
+    <update id="changeTaskDescription">
+        update task
+        SET description      = #{description},
+            updated_datetime = now()
+        WHERE id = #{task_id}
+    </update>
+    <update id="updateTaskStartDate">
+        update task
+        SET start_date      = #{start_date},
+            updated_datetime = now()
+        WHERE id = #{task_id}
+    </update>
+    <update id="updateTaskEndDate">
+        update task
+        SET end_date      = #{end_date},
+            updated_datetime = now()
+        WHERE id = #{task_id}
+    </update>
+</mapper>
