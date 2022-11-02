@@ -79,7 +79,7 @@
                     },
                     dragendEl: function (el) {
                     },
-                    dropEl: function (el, target, source, sibling) {
+                    dropEl: function (self, el, target, source, sibling) {
                     },
                     dragBoard: function (el, source) {
                     },
@@ -105,6 +105,9 @@
                 }
 
                 this.__getCanMove = function (handle) {
+                    if (handle.classList.contains('kanban-add-task')) {
+                        return false;
+                    }
                     if (!self.options.itemHandleOptions.enabled) {
                         return !!self.options.dragItems
                     }
@@ -112,7 +115,6 @@
                     if (self.options.itemHandleOptions.handleClass) {
                         return handle.classList.contains(self.options.itemHandleOptions.handleClass)
                     }
-
                     return handle.classList.contains('item_handle')
                 }
 
@@ -161,18 +163,17 @@
                         self.drake = self
                             .dragula(self.boardContainer, {
                                 moves: function (el, source, handle, sibling) {
-                                    return self.__getCanMove(handle)
+                                    return self.__getCanMove(handle);
                                 },
-                                revertOnSpill: true
-                            })
-                            .on('cancel', function (el, container, source) {
+                                revertOnSpill: true,
+                            }).on('cancel', function (el, container, source) {
                                 self.enableAllBoards()
                             })
                             .on('drag', function (el, source) {
                                 var elClass = el.getAttribute('class')
                                 if (elClass !== '' && elClass.indexOf('not-draggable') > -1) {
-                                    self.drake.cancel(true)
-                                    return
+                                    self.drake.cancel(true);
+                                    return false;
                                 }
 
                                 el.classList.add('is-moving')
@@ -200,9 +201,10 @@
                                     el.dragendfn(el)
                             })
                             .on('drop', function (el, target, source, sibling) {
-                                self.enableAllBoards()
+                                self.enableAllBoards();
 
                                 var boardJSON = __findBoardJSON(source.parentNode.dataset.id)
+
                                 if (boardJSON.dragTo !== undefined) {
                                     if (
                                         boardJSON.dragTo.indexOf(target.parentNode.dataset.id) === -1 &&
@@ -212,13 +214,14 @@
                                     }
                                 }
                                 if (el !== null) {
-                                    var result = self.options.dropEl(el, target, source, sibling)
+                                    var result = self.options.dropEl(self, el, target, source, sibling)
                                     if (result === false) {
                                         self.drake.cancel(true)
                                     }
                                     el.classList.remove('is-moving')
-                                    if (typeof el.dropfn === 'function')
+                                    if (typeof el.dropfn === 'function') {
                                         el.dropfn(el, target, source, sibling)
+                                    }
                                 }
                             })
                     }
@@ -233,13 +236,23 @@
                     }
                 }
 
+                this.addTaskAndElement = function (boardId, element) {
+                    self.addElement(boardId, element);
+                }
+
                 this.addElement = function (boardID, element, position) {
                     if (typeof position === 'undefined') {
                         position = -1
                     }
-                    console.log('self.element', self.element);
                     let board = self.element.querySelector(`[data-id="${boardID}"] .kanban-drag`);
-                    let refElement = board.childNodes[position]
+                    let childNodes = board.childNodes;
+                    let footerNode;
+                    for (let i = 0; i < childNodes.length; i++) {
+                        if (childNodes[i].dataset.eid === undefined || childNodes[i].dataset.eid === null) {
+                            footerNode = childNodes[i];
+                        }
+                    }
+                    let refElement = board.childNodes[position];
                     let nodeItem = document.createElement('div')
                     nodeItem.classList.add('kanban-item')
                     if (typeof element.id !== 'undefined' && element.id !== '') {
@@ -261,21 +274,27 @@
                     __onclickHandler(nodeItem)
                     __onContextHandler(nodeItem)
 
+                    let boardJSON = __findBoardJSON(boardID);
+
+                    boardJSON.item.push(element);
+
                     //체크박스 클릭 이벤트
                     nodeItem.querySelector('.checkbox').addEventListener('click', function (e) {
                         e.preventDefault();
                         e.stopPropagation();
-                        if (!this.classList.contains('active')) {
-                            this.classList.add('active');
-                        } else {
-                            this.classList.remove('active');
-                        }
+                        self.options.check(self, this);
                     });
-
+                    //컨텍스트 메뉴(태스크 메뉴) 클릭 이벤트
+                    nodeItem.querySelector('.dropright').addEventListener('click', function (e) {
+                        let item = this.closest('.kanban-item');
+                        item.dispatchEvent(new Event('contextmenu'));
+                        e.stopPropagation();
+                        e.preventDefault();
+                    });
                     if (self.options.itemHandleOptions.enabled) {
                         nodeItem.style.cursor = 'default'
                     }
-                    board.insertBefore(nodeItem, refElement)
+                    board.insertBefore(nodeItem, footerNode);
                     return self
                 }
 
@@ -403,16 +422,20 @@
                             nodeItem.querySelector('.checkbox').addEventListener('click', function (e) {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                if (!this.classList.contains('active')) {
-                                    this.classList.add('active');
-                                } else {
-                                    this.classList.remove('active');
-                                }
+                                self.options.check(self, this);
+                            });
+                            //컨텍스트 메뉴(태스크 메뉴) 클릭 이벤트
+                            nodeItem.querySelector('.dropright').addEventListener('click', function (e) {
+                                let item = this.closest('.kanban-item');
+                                item.dispatchEvent(new Event('contextmenu'));
+                                e.preventDefault();
+                                e.stopPropagation();
                             });
                             contentBoard.appendChild(nodeItem);
                         }
                         //footer board
                         var footerBoard = document.createElement('footer')
+                        footerBoard.classList.add('not-draggable');
                         // if add button is true, add button to the board
                         if (addButton) {
                             let btn = document.createElement('button');
@@ -421,6 +444,10 @@
                                 'class',
                                 buttonClass ? buttonClass : 'kanban-title-button btn btn-default btn-xs'
                             )
+                            $(btn).append(`<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M7 0C7.23206 0 7.45462 0.0921874 7.61872 0.256282C7.78281 0.420376 7.875 0.642936 7.875 0.875V6.125H13.125C13.3571 6.125 13.5796 6.21719 13.7437 6.38128C13.9078 6.54538 14 6.76794 14 7C14 7.23206 13.9078 7.45462 13.7437 7.61872C13.5796 7.78281 13.3571 7.875 13.125 7.875H7.875V13.125C7.875 13.3571 7.78281 13.5796 7.61872 13.7437C7.45462 13.9078 7.23206 14 7 14C6.76794 14 6.54538 13.9078 6.38128 13.7437C6.21719 13.5796 6.125 13.3571 6.125 13.125V7.875H0.875C0.642936 7.875 0.420376 7.78281 0.256282 7.61872C0.0921874 7.45462 0 7.23206 0 7C0 6.76794 0.0921874 6.54538 0.256282 6.38128C0.420376 6.21719 0.642936 6.125 0.875 6.125H6.125V0.875C6.125 0.642936 6.21719 0.420376 6.38128 0.256282C6.54538 0.0921874 6.76794 0 7 0Z" fill="#F06A6A"/>
+                                           </svg>
+                                           `);
                             btn.appendChild(t);
                             //var buttonHtml = '<button class="kanban-title-button btn btn-default btn-xs">'+buttonContent+'</button>'
                             if (buttonFooter) {
@@ -431,9 +458,9 @@
                             __onAddButtonClickHandler(btn, board.id);
                         }
                         //board assembly
-                        boardNode.appendChild(headerBoard)
-                        boardNode.appendChild(contentBoard)
-                        boardNode.appendChild(footerBoard)
+                        boardNode.appendChild(headerBoard);
+                        contentBoard.appendChild(footerBoard);
+                        boardNode.appendChild(contentBoard);
                         //board add
                         if (addOption.baseId !== undefined && addOption.baseId !== null) {
                             let findBoard = self.findBoard(addOption.baseId);
@@ -445,6 +472,75 @@
                         } else {
                             self.container.appendChild(boardNode);
                         }
+                    }
+
+                    if ($(".kanban-board[data-id='add-board']").length === 0) {
+                        if (!self.options.responsivePercentage) {
+                            //add width to container
+                            if (self.container.style.width === '') {
+                                self.container.style.width =
+                                    parseInt(boardWidth) + parseInt(self.options.gutter) * 2 + 'px'
+                            } else {
+                                self.container.style.width =
+                                    parseInt(self.container.style.width) +
+                                    parseInt(boardWidth) +
+                                    parseInt(self.options.gutter) * 2 +
+                                    'px'
+                            }
+                        }
+                        let addBoardOption = self.options.addBoardOption;
+                        var board = {
+                            'id': addBoardOption.id,
+                            'title': addBoardOption.title,
+                            'item': [],
+                            'board_class': addBoardOption.class
+                        };
+                        var boardNode = document.createElement('div')
+                        boardNode.dataset.id = board.id
+                        boardNode.dataset.order = self.container.childNodes.length + 1;
+                        boardNode.setAttribute('class', board.board_class);
+                        boardNode.classList.add('kanban-board', 'add-board');
+                        //set style
+                        if (self.options.responsivePercentage) {
+                            boardNode.style.width = boardWidth + '%'
+                        } else {
+                            boardNode.style.width = boardWidth
+                        }
+                        boardNode.style.marginLeft = self.options.gutter
+                        boardNode.style.marginRight = self.options.gutter
+                        // header board
+                        var headerBoard = document.createElement('header')
+                        if (board.class !== '' && board.class !== undefined)
+                            var allClasses = board.class.split(',')
+                        else allClasses = []
+                        headerBoard.classList.add('kanban-board-header')
+                        allClasses.map(function (value) {
+                            // Remove empty spaces
+                            value = value.replace(/^[ ]+/g, '')
+                            headerBoard.classList.add(value)
+                        })
+                        headerBoard.innerHTML = `<div class="kanban-title-board">${board.title}</div>`;
+                        //add drag to array for dragula
+                        boardNode.appendChild(headerBoard)
+                        //board add
+                        self.container.appendChild(boardNode)
+                        //add Event
+                        boardNode.querySelector('.kanban-add-board').addEventListener('click', function (event) {
+                            self.options.addBoardOption.onClick(self);
+                            event.preventDefault();
+                            event.stopPropagation();
+                        });
+                    } else {
+                        var board = boards[0];
+                        var empty;
+                        for (var i = 0; i < self.container.childNodes.length; i++) {
+                            if (self.container.childNodes[i].dataset.id === 'add-board') {
+                                empty = self.container.childNodes[i];
+                                self.container.childNodes[i].remove();
+                            }
+                        }
+                        self.container.appendChild(empty);
+                        __updateBoardsOrder();
                     }
                     return self
                 }
@@ -459,7 +555,7 @@
 
                 this.createHeaderBoardElement = function (board) {
                     return `<div class="kanban-title-board">
-                              <div class="_title">${board.title}</div>
+                              <div class="_title" data-toggle="tooltip" data-placement="bottom" title="${board.title}">${board.title}</div>
                             </div>
                             <div class="kanban-percent _percent">${board.percent}%</div>
                             <div class="kanban-board-option _option">
@@ -467,17 +563,17 @@
                                 <div data-toggle="dropdown"
                                      aria-expanded="false">
                                   <img class="img-fluid"
-                                       src="/web/resources/assets/images/icon/board_options.svg"/>
+                                       src="/resources/assets/images/icon/board_options.svg"/>
                                 </div>
                                 <div class="dropdown-menu">
                                   <a class="dropdown-item _modify" data-type="_modify"
-                                     href="javascript:void(0)">Section Rename</a>
+                                     href="javascript:void(0)">보드 이름 수정</a>
                                   <a class="dropdown-item _delete" data-type="_delete"
-                                     href="javascript:void(0)">Section Delete</a>
+                                     href="javascript:void(0)">보드 삭제</a>
                                   <a class="dropdown-item _add_left" data-type="_add_left"
-                                     href="javascript:void(0)">Section Add Left</a>
+                                     href="javascript:void(0)">해당 보드 왼쪽에 추가</a>
                                   <a class="dropdown-item _add_right" data-type="_add_right"
-                                     href="javascript:void(0)">Section Add Right</a>
+                                     href="javascript:void(0)">해당 보드 오른쪽에 추가</a>
                                 </div>
                               </div>
                             </div>`;
@@ -527,11 +623,14 @@
                     nodeItem.querySelector('.checkbox').addEventListener('click', function (e) {
                         e.preventDefault();
                         e.stopPropagation();
-                        if (!this.classList.contains('active')) {
-                            this.classList.add('active');
-                        } else {
-                            this.classList.remove('active');
-                        }
+                        self.options.check(self, this);
+                    });
+                    //컨텍스트 메뉴(태스크 메뉴) 클릭 이벤트
+                    nodeItem.querySelector('.dropright').addEventListener('click', function (e) {
+                        let item = this.closest('.kanban-item');
+                        item.dispatchEvent(new Event('contextmenu'));
+                        e.stopPropagation();
+                        e.preventDefault();
                     });
                     return self
                 }
@@ -539,6 +638,21 @@
                 this.findElement = function (id) {
                     var el = self.element.querySelector('[data-eid="' + id + '"]')
                     return el
+                }
+
+                this.findBoardJSON = function (board_id) {
+                    let board = __findBoardJSON(board_id);
+                    return board;
+                }
+
+                this.findTaskJSON = function (board_id, task_id) {
+                    let board = __findBoardJSON(board_id);
+                    let task = board.item.find(function (task) {
+                        if (task.id === task_id) {
+                            return true;
+                        }
+                    });
+                    return task;
                 }
 
                 this.getBoardElements = function (id) {
@@ -557,6 +671,16 @@
                             el.remove()
                         } else {
                             el.parentNode.removeChild(el)
+                        }
+                    }
+                    return self
+                }
+                this.removeTask = function (board, task) {
+                    // remove thboard in options.boards
+                    for (var i = 0; i < board.item.length; i++) {
+                        if (board.item[i].id === task.id) {
+                            board.item.splice(i, 1);
+                            break
                         }
                     }
                     return self
@@ -724,20 +848,86 @@
                     }
                 }
 
+                function __createSubTasksHTML(subtasks) {
+                    if (subtasks !== null && subtasks !== undefined && subtasks != 0) {
+                        return `<div class="sub-task-count">
+                              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5.6 2.8V2H0.8V6H5.6V5.2C5.6 5.09391 5.64214 4.99217 5.71716 4.91716C5.79217 4.84214 5.89391 4.8 6 4.8H7.0344C7.14048 4.80002 7.2422 4.84218 7.3172 4.9172L7.8828 5.4828C7.95782 5.5578 7.99998 5.65952 8 5.7656V7.6C8 7.70609 7.95786 7.80783 7.88284 7.88284C7.80783 7.95786 7.70609 8 7.6 8H6C5.89391 8 5.79217 7.95786 5.71716 7.88284C5.64214 7.80783 5.6 7.70609 5.6 7.6V6.8H0.4C0.293913 6.8 0.192172 6.75786 0.117157 6.68284C0.0421427 6.60783 0 6.50609 0 6.4V0.4C0 0.293913 0.0421427 0.192172 0.117157 0.117157C0.192172 0.0421427 0.293913 0 0.4 0C0.506087 0 0.607828 0.0421427 0.682843 0.117157C0.757857 0.192172 0.8 0.293913 0.8 0.4V1.2H5.6V0.4C5.6 0.293913 5.64214 0.192172 5.71716 0.117157C5.79217 0.0421427 5.89391 0 6 0H7.0344C7.14048 2.2655e-05 7.2422 0.0421802 7.3172 0.1172L7.8828 0.6828C7.95782 0.757797 7.99998 0.859522 8 0.9656V2.8C8 2.90609 7.95786 3.00783 7.88284 3.08284C7.80783 3.15786 7.70609 3.2 7.6 3.2H6C5.89391 3.2 5.79217 3.15786 5.71716 3.08284C5.64214 3.00783 5.6 2.90609 5.6 2.8Z" fill="#222222"/>
+                              </svg>
+                              <span class="_count">${subtasks}</span>
+                            </div>`;
+                    } else {
+                        return ``;
+                    }
+                }
+
+                function __createProfileHTML(profiles) {
+                    let profiles_html = '';
+                    profiles.forEach(function (profile, index) {
+                        profiles_html += `<img data-toggle="tooltip" data-placement="bottom" title="${profile.name}" style="left: ${index * 24}px;" src="${profile.url}" data-label="${profile.name}">`;
+                    });
+                    return profiles_html;
+                }
+
+                function __buildItemSubCardInnerHTML(items) {
+                    let container = document.createElement('div');
+                    container.classList.add('kanban-sub-item-container');
+                    container.style.display = 'none';
+                    items?.forEach(function (item) {
+                        $(container).append(`<div class="kanban-sub-item ${item.complete === true ? 'complete' : ''}"
+                                                  data-id="${item.id}">
+                                               <span class="_title">${item.title}</span>
+                                               <span class="_time">${item.start_date} ~ ${item.end_date}</span>
+                                               <img class="_profile" data-toggle="tooltip" data-placement="bottom" title="${item.profiles[0].name}" src="${item.profiles[0].url}"/>
+                                             </div>`);
+                    });
+                    return container.outerHTML;
+                }
+
                 function __buildItemCardInnerHTML(item) {
-                    return `<div class="kanban-item-title">
-                                <h6 class="title">${item.title}</h6>
+                    if (item.cover !== undefined && item.cover !== null) {
+                        return `<div class="kanban-item-cover" style="background-image: url('${item.cover.url}')"></div><div class="kanban-item-title">
+                                <h6 class="title" data-toggle="tooltip" data-placement="bottom" title="${item.title}">${item.title}</h6>
                             </div>
                             <div class="kanban-item-task-info">
                                 <div class="left">
-                                    <img src="${item.profile}">
-                                    <div>
-                                        <span>${item.work}</span>
-                                    </div>
+                                    ${__createProfileHTML(item.profiles)}
                                 </div>
-                                <span class="time">${item.start_date} ~ ${item.end_date}</span>
+                                <div class="right text-right">
+                                  ${__createSubTasksHTML(item.subtasks !== undefined && item.subtasks !== null ? item.subtasks.length : void (0))}
+                                  <span class="time">${item.start_date.substring(2)} ~ ${item.end_date.substring(2)}</span>
+                                </div>
                             </div>
-                            <span class="checkbox"><i class="fas fa-check" aria-hidden="true"></i></span>`;
+                            <div class="btn-group dropright">
+                              <div>
+                                <img class="img-fluid"
+                                     src="/resources/assets/images/icon/board_options.svg">
+                              </div>
+                            </div>
+                            <span class="checkbox"><i class="fas fa-check" aria-hidden="true"></i></span>
+                            ${__buildItemSubCardInnerHTML(item.subtasks)}`;
+                    } else {
+                        return `<div class="kanban-item-title">
+                                <h6 class="title" data-toggle="tooltip" data-placement="bottom" title="${item.title}">${item.title}</h6>
+                            </div>
+                            <div class="kanban-item-task-info">
+                                <div class="left">
+                                    ${__createProfileHTML(item.profiles)}
+                                </div>
+                                <div class="right text-right">
+                                  ${__createSubTasksHTML(item.subtasks !== undefined && item.subtasks !== null ? item.subtasks.length : void (0))}
+                                  <span class="time">${item.start_date.substring(2)} ~ ${item.end_date.substring(2)}</span>
+                                </div>
+                            </div>
+                            <div class="btn-group dropright">
+                              <div>
+                                <img class="img-fluid"
+                                     src="/resources/assets/images/icon/board_options.svg">
+                              </div>
+                            </div>
+                            <span class="checkbox"><i class="fas fa-check" aria-hidden="true"></i></span>
+                            ${__buildItemSubCardInnerHTML(item.subtasks)}`;
+                    }
                 }
 
                 //init plugin
@@ -1176,8 +1366,7 @@
                     function grab(e) {
                         _moveX = e.clientX;
                         _moveY = e.clientY;
-
-                        var ignore = whichMouseButton(e) !== 1 || e.metaKey || e.ctrlKey;
+                        var ignore = whichMouseButton(e) !== 1 || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
                         if (ignore) {
                             return; // we only care about honest-to-god left clicks and touch events
                         }
@@ -1462,6 +1651,7 @@
                             _lastDropTarget = dropTarget;
                             over();
                         }
+
                         var parent = getParent(item);
                         if (dropTarget === _source && _copy && !o.copySortSource) {
                             if (parent) {
@@ -1488,8 +1678,15 @@
                             reference !== nextEl(item)
                         ) {
                             _currentSibling = reference;
-                            dropTarget.insertBefore(item, reference);
-                            drake.emit('shadow', item, dropTarget, _source);
+                            if (reference !== null && reference !== undefined) {
+                                dropTarget.insertBefore(item, reference);
+                                drake.emit('shadow', item, dropTarget, _source);
+                            } else {
+                                //reference null cancel
+                                /*reference = dropTarget.querySelector('footer');
+                                dropTarget.insertBefore(item, reference);
+                                drake.emit('shadow', item, dropTarget, _source);*/
+                            }
                         }
 
                         function moved(type) {

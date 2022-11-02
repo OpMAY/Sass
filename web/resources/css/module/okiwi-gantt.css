@@ -1,0 +1,434 @@
+#gantt-context-menu .list-group .list-group-item {
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.gantt-container {
+    display: flex;
+    position: relative;
+}
+
+.gantt-container .accordion.board-container > .card {
+    border: none;
+    margin: 0;
+    outline: 1px solid var(--gray-high-medium);
+    border-radius: 0;
+}
+
+.gantt-container .accordion.board-container > .card > .card-header {
+    padding: 0;
+    background-color: white;
+    border: none;
+    margin-bottom: 0;
+}
+
+.gantt-container .accordion.board-container > .card > .card-header button {
+    color: var(--gray-dark-low);
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    border: none;
+    border-radius: 0;
+    display: flex;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.gantt-container .accordion.board-container > .card > .card-header button > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.gantt-container .accordion.board-container > .card > .card-header button:hover .dropright {
+    display: block;
+}
+
+.gantt-container .accordion.board-container > .card > .card-header button .dropright {
+    margin-left: auto;
+    display: none;
+}
+
+.gantt-container .accordion.board-container > .card > .card-header button .dropright > div {
+    width: 20px;
+    padding-left: 8px;
+    padding-right: 8px;
+    cursor: pointer;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.gantt-container .accordion.board-container > .card > .card-header button .title input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    padding: 4px;
+    border-bottom: var(--border-1px) var(--gray-high-medium);
+    background-color: transparent;
+}
+
+.gantt-container .accordion.board-container > .card > .card-header button .title {
+    width: calc(100% - 32px);
+    word-break: break-all;
+    position: relative;
+    display: block;
+    color: black;
+    line-height: 32px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+    display: -webkit-box;
+    white-space: normal;
+}
+
+.gantt-container .accordion.board-container > .card > .board-collapse .card-body {
+    padding: 0;
+}
+
+.gantt-container .accordion.board-container > .card > .board-collapse .card-body > ul > li {
+    height: 48px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    line-height: 32px;
+    font-size: 14px;
+}
+
+.gantt-container .accordion.board-container > .card > .board-collapse .card-body > ul > li.is-checked .title {
+    color: #F06A6A;
+}
+
+.gantt-container .accordion.board-container > .card > .board-collapse .card-body > ul > li .title {
+    width: calc(100% - 32px);
+    word-break: break-all;
+    font-size: 14px;
+    position: relative;
+    display: block;
+    font-weight: 500;
+    color: black;
+    line-height: 32px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+    display: -webkit-box;
+}
+
+.gantt-container .accordion.board-container > .card > .board-collapse .card-body > ul > li .title input {
+    font-size: 14px;
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    padding: 4px;
+    border-bottom: var(--border-1px) var(--gray-high-medium);
+    background-color: transparent;
+}
+
+.gantt-container .accordion.board-container > .card > .board-collapse .card-body > ul > li .dropright {
+    display: none;
+    margin-left: auto;
+}
+
+.gantt-container .accordion.board-container > .card > .board-collapse .card-body > ul > li:hover .dropright {
+    display: flex;
+}
+
+.gantt-container .accordion.board-container > .card > .board-collapse .card-body > ul > li .dropright > div {
+    width: 20px;
+    padding-left: 8px;
+    padding-right: 8px;
+    cursor: pointer;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.gantt-container ._gantt-board {
+    min-width: 320px;
+    width: 320px;
+    max-width: 320px;
+    border-right: 1px solid var(--gray-high-medium);
+}
+
+.gantt-container ._gantt-board ._title {
+    /* padding: 51px 20px 51px 20px; */
+    font-weight: bold;
+    height: 127px;
+    margin-top: auto;
+    margin-bottom: auto;
+    line-height: 127px;
+    text-align: center;
+}
+
+.gantt-container ._gantt-board ._board-add {
+    color: #F06A6A;
+    padding: 0.75rem 1.25rem;
+    display: block;
+    position: relative;
+    font-size: 14px;
+}
+
+.gantt-container ._gantt-timeline {
+    max-width: 100%;
+    overflow-x: auto;
+    width: 100%;
+    position: relative;
+    overflow-y: hidden;
+}
+
+._gantt-timeline ._gantt-header {
+    display: block;
+    position: relative;
+    height: 100%;
+}
+
+._gantt-timeline ._gantt-header ._year {
+    width: max-content;
+}
+
+._gantt-timeline ._gantt-header ._year,
+._gantt-timeline ._gantt-header ._month,
+._gantt-timeline ._gantt-header ._date {
+    display: flex;
+    background-color: white;
+}
+
+._gantt-timeline ._gantt-header ._date {
+    position: relative;
+}
+
+._gantt-timeline ._gantt-header ._year > div {
+    background-color: white;
+    /*width: calc(((12px + 12px + 20px) * 30) * 12);*/
+    text-align: center;
+    padding: 8px 16px;
+    font-weight: bold;
+    color: #F06A6A;
+    border-bottom: 1px solid var(--gray-high-medium);
+}
+
+._gantt-timeline ._gantt-header ._year > div > span {
+    position: sticky;
+    left: 12px;
+    right: 12px;
+    display: inline-block;
+}
+
+._gantt-timeline ._gantt-header ._month > div {
+    background-color: white;
+    display: inline-block;
+    text-align: left;
+    padding: 10px 16px;
+    /*min-width: calc((12px + 12px + 20px) * 30);*/
+    font-weight: bold;
+    color: #F06A6A;
+    border: none;
+}
+
+._gantt-timeline ._gantt-header ._month > div > span {
+    position: sticky;
+    left: 12px;
+    right: 12px;
+    display: inline-block;
+}
+
+._gantt-timeline ._gantt-header ._date > div {
+    background-color: white;
+    min-width: 44px;
+    padding: 8px 12px;
+    text-align: center;
+    display: inline-block;
+    border-top: 1px solid var(--gray-high-medium);
+    border-bottom: 1px solid var(--gray-high-medium);
+    position: relative;
+}
+
+._gantt-timeline ._gantt-header ._date > div.active {
+    color: white;
+    background-color: rgb(240, 106, 106);
+}
+
+._gantt-timeline ._gantt-header ._date > div > span.weekend {
+    position: absolute;
+    width: 100%;
+    height: 99999px;
+    background-color: rgba(0, 0, 0, 0.05);
+    left: 0;
+    top: 0;
+}
+
+._gantt-timeline ._gantt-header ._date > div.active > span.current {
+    position: absolute;
+    width: 4px;
+    height: 99999px;
+    background-color: rgb(240, 106, 106);
+    left: 50%;
+    transform: translate(-50%, 0);
+    top: 42px;
+    z-index: 999;
+}
+
+._gantt-timeline ._gantt-header ._date > div > span {
+    display: inline-block;
+}
+
+._gantt-timeline ._gantt-header ._content {
+    height: calc(100% - 127px);
+    position: relative;
+    background-repeat: repeat;
+    background-position-y: -0.5px;
+    overflow-y: hidden;
+    background-image: url('/resources/assets/images/sample/background/gantt-background.svg');
+}
+
+.gantt-task {
+    background-color: white;
+    position: absolute;
+    cursor: pointer;
+    border: 1px solid var(--gray-high-medium);
+}
+
+.gantt-task.day.one {
+    width: 0px !important;
+    border: 1px solid transparent;
+}
+
+.gantt-task.day.two {
+    width: 54px !important;
+}
+
+.gantt-task.day:not(.one):hover {
+    width: 246px !important;
+    transition: width 0.5s;
+}
+
+.gantt-task.day:not(.one):hover .gantt-inner-container .gantt-info > .task-title {
+    width: calc(100% - 72px) !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+}
+
+.gantt-task.day.one .gantt-inner-container .gantt-info > .task-title {
+    text-overflow: ellipsis;
+    overflow: initial;
+    width: 156px;
+    display: flex;
+}
+
+.gantt-task .gantt-inner-container .gantt-info > .task-title > .title {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.gantt-task.day.third .gantt-inner-container .gantt-info > .task-title > .title,
+.gantt-task.day.two .gantt-inner-container .gantt-info > .task-title > .title,
+.gantt-task.day.one .gantt-inner-container .gantt-info > .task-title > .title {
+    width: fit-content;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.gantt-task.day.third .gantt-inner-container .gantt-info > .task-title > .title {
+    width: 100%;
+}
+
+.gantt-task.day.two .gantt-inner-container .gantt-info {
+    overflow: hidden;
+}
+
+.gantt-task .gantt-inner-container {
+    position: relative;
+    display: flex;
+    height: 40px;
+}
+
+.gantt-task .gantt-inner-container .gantt-info {
+    color: black;
+    font-weight: bold;
+    padding: 8px;
+    margin-top: auto;
+    margin-bottom: auto;
+    white-space: nowrap;
+    display: flex;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.gantt-task .gantt-inner-container .gantt-info > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.gantt-task .gantt-inner-container .gantt-info > img {
+    border-radius: 50%;
+}
+
+.gantt-task .gantt-inner-container .gantt-info .divider {
+    width: auto;
+    padding-left: 2px;
+    height: 100%;
+    background-color: black;
+    margin-right: 8px;
+}
+
+.gantt-task.is-checked .gantt-inner-container .gantt-info .divider {
+    background-color: #F06A6A;
+}
+
+.gantt-task .gantt-inner-container .gantt-info > .task-title {
+    font-weight: 500;
+    font-size: 14px;
+    color: black;
+    margin-left: 8px;
+    margin-right: 8px;
+    width: calc(100% - 72px);
+    text-overflow: ellipsis;
+    display: flex;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.gantt-task.is-checked .gantt-inner-container .gantt-info > .task-title {
+    color: #F06A6A;
+}
+
+.gantt-task .checkbox {
+    cursor: pointer;
+    border-radius: 20px;
+    background-color: #e6e6e6;
+    font-size: 12px;
+    transition: all .25s;
+    margin-left: auto;
+    padding: 2px 12px;
+}
+
+.gantt-task .checkbox i {
+    color: white;
+}
+
+.gantt-task .checkbox:hover, .gantt-task .checkbox.active {
+    background-color: #F06A6A;
+    color: white;
+    transition: all .25s;
+}
+
+.gantt-task.is-checked .checkbox {
+    background-color: #F06A6A;
+    color: white;
+}

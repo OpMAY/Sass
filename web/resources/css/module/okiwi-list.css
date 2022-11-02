@@ -1,0 +1,197 @@
+.list-container .list-table {
+}
+
+.list-container .list-table thead {
+}
+
+.list-container .list-table tbody {
+    border-top: 1px solid #EEEEEE;
+}
+
+.list-container .list-table tbody tr {
+    cursor: pointer;
+}
+
+.list-container .list-table tbody tr:not(:first-child) {
+    border-top: 1px solid #EEEEEE;
+}
+
+.list-container .list-table thead tr th:not(:first-child) {
+    text-align: center;
+    width: 90px;
+}
+
+.list-container .list-table .list-td > div {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.list-container .list-table .list-td {
+    display: flex;
+    margin-top: auto;
+    margin-bottom: auto;
+    height: 30px;
+}
+
+.list-container .list-table ._board td:not(:first-child) > .list-td > div {
+    margin: auto;
+}
+
+.list-container .list-table ._board ._percent,
+.list-container .list-table ._board ._name {
+    display: flex;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-weight: bold;
+}
+
+.list-container .list-table ._board.is-active ._percent {
+    color: #F06A6A;
+}
+
+.list-container .list-table ._task-add,
+.list-container .list-table ._board-add {
+    cursor: pointer;
+}
+
+.list-container .list-table ._board-add .list-td div,
+.list-container .list-table ._task-add .list-td div {
+    color: #F06A6A;
+}
+
+.list-container .list-table ._task-add td:first-child,
+.list-container .list-table ._task td:first-child {
+    padding-left: 28px;
+}
+
+.list-container .list-table ._task td {
+    border-right: 1px solid #EEEEEE;
+}
+
+.list-container .list-table ._task td:last-child {
+    border-right: none;
+}
+
+.list-container .list-table ._task td:not(:first-child) > .list-td > .checkbox,
+.list-container .list-table ._task td:not(:first-child) > .list-td > div {
+    margin: auto;
+}
+
+.list-container .checkbox {
+    cursor: pointer;
+    border-radius: 20px;
+    background-color: #e6e6e6;
+    font-size: 12px;
+    width: 26px;
+    height: 26px;
+    position: relative;
+}
+
+.list-container .checkbox i {
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.list-container ._task .checkbox:hover,
+.list-container ._task.is-checked .checkbox {
+    background-color: #F06A6A;
+}
+
+.list-container .checkbox.active {
+    background-color: #F06A6A;
+    color: white;
+}
+
+.list-container .list-table .list-td > div._name {
+    width: auto;
+}
+
+.list-container .list-table .list-td > div._name input {
+    min-width: 180px;
+    max-width: 100%;
+    border: none;
+    outline: none;
+    padding: 4px;
+    border-bottom: var(--border-1px) var(--gray-high-medium);
+    background-color: transparent;
+}
+
+.list-container ._task.is-checked ._name {
+    color: #F06A6A;
+}
+
+.list-container ._task ._divider {
+    width: 4px;
+    height: 100%;
+    background-color: #EEEEEE;
+    border-radius: 4px;
+    margin-right: 8px;
+}
+
+.list-container ._task.is-checked ._divider {
+    background-color: #F06A6A;
+}
+
+.list-container .list-table .list-td > div._dropdown {
+    width: 16px;
+    height: 16px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('../../../resources/assets/images/icon/crm/dropdown-icon.svg');
+    margin-right: 8px;
+}
+
+.list-container .list-table .is-close .list-td > div._dropdown {
+    transform: rotate(180deg);
+}
+
+.list-container .list-table .list-td > div._start,
+.list-container .list-table .list-td > div._end {
+    white-space: nowrap;
+}
+
+.list-container .list-table .list-td > div.dropright {
+    display: none;
+}
+
+.list-container .list-table tr .list-td > div.dropright {
+    display: none;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.list-container .list-table tr:hover .list-td > div.dropright {
+    display: block;
+}
+
+.list-container .list-table tr .list-td > div._details {
+    cursor: pointer;
+}
+
+.list-container .list-table tr:hover .list-td > div._details {
+    color: #F06A6A;
+}
+
+.list-container .list-table tr:hover .list-td > div._details * {
+    stroke: #F06A6A;
+}
+
+.list-container .list-table tr .list-td > div.dropright > div {
+    width: 20px;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.list-container .list-table tr .list-td > div.dropright .dropdown-menu {
+    width: auto !important;
+}
+
+.list-container .list-table tr .list-td > div.dropright.show {
+    display: block !important;
+}
