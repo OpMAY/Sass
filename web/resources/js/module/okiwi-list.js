@@ -318,6 +318,7 @@ const removeBoardListById = (board_id) => {
     board.remove();
 }
 
+//TODO 20221102 - 14번 - 우식
 function taskListCheckboxClickEventListener(event) {
     console.log('taskListCheckboxClickEventListener', this);
     let task = this.closest('._task[data-id][data-board-id]');
@@ -350,6 +351,7 @@ function boardListDropdownClickEventListener(event) {
     }
 }
 
+//TODO 20221102 - 16번 - 지우
 function taskAddListClickEventListener(event) {
     console.log('taskAddListClickEventListener', this);
     let task_add_list = this;
@@ -373,6 +375,7 @@ function taskAddListClickEventListener(event) {
     updateListPercents();
 }
 
+//TODO 20221102 - 10번 - 지우 - class 및 percent back-end에서 넣기
 function boardAddListClickEventListener(event) {
     console.log('boardAddListClickEventListener', this);
     let board_add_list = this;
@@ -391,6 +394,7 @@ function boardAddListClickEventListener(event) {
     board_add_list.before(task_add_element);
 }
 
+//TODO 20221102 - 13번 - 우식
 function boardListOptionClickEventListener(event) {
     console.log('boardListOptionClickEventListener', this);
     if (this.classList.contains('_modify')) {
@@ -413,6 +417,8 @@ function boardListOptionClickEventListener(event) {
     }
 }
 
+//TODO 20221102 - 18번 - 우식
+//TODO 20221102 - 11번 - 우식
 function listWritableInputKeyUpEventListener(event) {
     if (event.key === 'Escape'.toLowerCase() || event.code === 'Escape'.toLowerCase() || event.keyCode === 27) {
         listWritableInputKeyUpUpdateEventListener(event, this, true);
@@ -435,6 +441,9 @@ const listWritableInputKeyUpUpdateEventListener = (event, input, is_close) => {
     event.preventDefault();
 }
 
+//TODO 20221102 - 14번 - 우식
+//TODO 20221102 - 15번 - 우식
+//TODO 20221102 - 19번 - 우식
 function contextListMenuClickEventListener(event) {
     console.log('contextListMenuClickEventListener', this);
     let menu = this.closest('#list-context-menu');

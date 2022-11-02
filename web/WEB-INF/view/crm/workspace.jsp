@@ -699,6 +699,13 @@
             (event) {
             rightTaskOpen(this.dataset.id);
         });
+
+        //TODO 20221102 - 1번 - 지우
+        //TODO 20221102 - 3번 - 지우
+        //TODO 20221102 - 4번 - 지우
+        //TODO 20221102 - 5번 - 우식
+        //TODO 20221102 - 6번 - 지우
+        //TODO 20221102 - 7번 - 우식
     });
 </script>
 </body>

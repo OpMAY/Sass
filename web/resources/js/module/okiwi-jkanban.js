@@ -71,6 +71,11 @@ function optionDropdownHideEventListener(event) {
     }
 }
 
+//TODO 20221102 - 27번 - 지우
+//TODO 20221102 - 27번 - 지우
+//TODO 20221102 - 14번 - 우식
+//TODO 20221102 - 15번 - 우식
+//TODO 20221102 - 19번 - 우식
 function contextMenuClickEventListener(event) {
     let menu = this.closest('#context-menu');
     let taskId = menu.dataset.taskId;
@@ -152,6 +157,7 @@ function contextMenuClickEventListener(event) {
     event.preventDefault();
 };
 
+//TODO 20221102 - 14번 - 우식
 const checkboxClickEventListener = (kanban, el) => {
     let boardId = el.closest('.kanban-board[data-id]').dataset.id;
     let taskId = el.closest('.kanban-item').dataset.eid;
@@ -166,6 +172,8 @@ const checkboxClickEventListener = (kanban, el) => {
     const board = kanban.findBoardJSON(boardId);
     updatePercent(kanban, board);
 }
+
+//TODO 20221102 - 28번 - 우식
 const kanbanClickSubTaskEventListener = (el) => {
     console.log('kanbanClickSubTaskEventListener', el);
     let boardId = el.closest('.kanban-board[data-id]').dataset.id;
@@ -252,6 +260,7 @@ const openContextMenu = (menu, board_id, task_id, position) => {
     menu.style.display = 'block';
 };
 
+//TODO 20221102 - 12번, 20번 - 우식
 const kanbanDragTaskEventListener = (el, source) => {
     const prev_board = source;
     const prev_task = el;
@@ -260,10 +269,12 @@ const kanbanDragTaskEventListener = (el, source) => {
     //console.log('dragEl', 'prev_board', prev_board, 'prev_task', prev_task);
 };
 
+//TODO 20221102 - 12번, 20번 - 우식
 const kanbanDragEndTaskEventListener = (el) => {
     //console.log('dragendEl', el);
 };
 
+//TODO 20221102 - 12번, 20번 - 우식
 const kanbanDropTaskEventListener = (self, el, target, source, sibling) => {
     let source_board_element = source.closest('.kanban-board[data-id]');
     let target_board_element = target.closest('.kanban-board[data-id]');
@@ -281,6 +292,7 @@ const kanbanDropTaskEventListener = (self, el, target, source, sibling) => {
     updatePercents(self);
 };
 
+//TODO 20221102 - 12번 - 우식
 const kanbanDragBoardEventListener = (el, source) => {
     //console.log('dragBoard', el, source);
     kanban.options.board_dragging = true;
@@ -288,10 +300,12 @@ const kanbanDragBoardEventListener = (el, source) => {
     closeContextMenu(context_menu);
 };
 
+//TODO 20221102 - 12번 - 우식
 const kanbanDragEndBoardEventListener = (el) => {
     //console.log('dragendBoard', el);
 };
 
+//TODO 20221102 - 12번 - 우식
 const kanbanDropBoardEventListener = (el, target, source, sibling) => {
     kanban.options.board_dragging = false;
 }
@@ -321,6 +335,7 @@ const kanbanUpdateBoardEventListener = (selected_option, board, boardId) => {
     }
 };
 
+//TODO 20221102 - 16번 - 지우
 const kanbanAddTaskEventListener = (el, boardId) => {
     const task = {
         id: tokenGenerator(6), title: tokenGenerator(8), complete: false, profiles: [{
@@ -337,6 +352,7 @@ const kanbanAddTaskEventListener = (el, boardId) => {
     closeContextMenu(context_menu);
 };
 
+//TODO 20221102 - 13번 - 우식
 const removeBoard = (kanban, boardId) => {
     kanban.removeBoard(boardId);
 };
@@ -370,6 +386,7 @@ const createBoardTitleElement = (value) => {
     return `<div class="_title">${value}</div>`;
 };
 
+//TODO 20221102 - 18번 - 우식
 function taskTitleUpdateClickEventListener(e, is_close) {
     e.preventDefault();
     let task = e.target.closest('.kanban-item[data-eid]');
@@ -389,6 +406,7 @@ function taskTitleUpdateClickEventListener(e, is_close) {
     item_task.title = `${value}`;
 }
 
+//TODO 20221102 - 11번 - 우식
 function boardTitleUpdateClickEventListener(e, is_close) {
     e.preventDefault();
     let board;
@@ -466,6 +484,7 @@ function boardInputKeyUpEventListener(event) {
     }
 };
 
+//TODO 20221102 - 10번 - 지우
 const addBoards = (kanban, direction, boardId, boards) => {
     switch (direction) {
         case 'prepend':

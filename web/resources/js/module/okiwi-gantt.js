@@ -54,6 +54,7 @@ const createGantt = (_boards, gantt_container) => {
     $('#gantt-board-option-menu').on('click', '.list-group a', ganttBoardOptionMenuClickEventListener);
 };
 
+//TODO 20221102 - 13번 - 우식
 function ganttBoardOptionMenuClickEventListener(event) {
     let menu = this.closest('#gantt-board-option-menu');
     let boardId = menu.dataset.boardId;
@@ -86,6 +87,9 @@ function ganttBoardOptionMenuClickEventListener(event) {
     closeGanttContextMenu(menu);
 };
 
+//TODO 20221102 - 14번 - 우식
+//TODO 20221102 - 15번 - 우식
+//TODO 20221102 - 19번 - 우식
 function ganttContextMenuClickEventListener(event) {
     let menu = this.closest('#gantt-context-menu');
     let taskId = menu.dataset.taskId;
@@ -176,6 +180,7 @@ function ganttBoardWritableElementInputKeyUpEventListener(event) {
     }
 };
 
+//TODO 20221102 - 11번 - 우식
 function ganttBoardWritableElementInputKeyUpUpdateListener(e, is_close) {
     let container = document.querySelector('.gantt-container');
     let gantt_board = e.target.closest('.card-header[data-id]');
@@ -201,6 +206,7 @@ function ganttBoardItemWritableElementInputKeyUpEventListener(event) {
     }
 };
 
+//TODO 20221102 - 18번 - 우식
 function ganttBoardItemWritableElementInputKeyUpUpdateListener(e, is_close) {
     let container = document.querySelector('.gantt-container');
     let gantt_board_task = e.target.closest('.list-group-item[id]');
@@ -269,7 +275,6 @@ const closeGanttContextMenu = (menu) => {
     menu.removeAttribute('data-task-id');
     menu.style.display = 'none';
 }
-
 
 const openBoardOptionMenu = (menu, board_id, position) => {
     console.log(menu, board_id, position);
@@ -341,6 +346,7 @@ const createGanttLeftSide = (boards) => {
     return gantt_left_side;
 };
 
+//TODO 20221102 - 10번 - 지우
 function boardAddClickEventListener(event) {
     console.log(event, this);
     let last_index = document.querySelector('.gantt-container ._gantt-board #gantt-accordion .card:last-child .card-header[data-index]').dataset.index;
@@ -491,6 +497,7 @@ const createGanttBoardTaskElement = (task) => {
     return li;
 }
 
+//TODO 20221102 - 16번 - 지우
 function addTaskClickEventListener(event) {
     let task_id = tokenGenerator(6);
     let current_date = new Date().toISOString().slice(0, 10);
@@ -527,6 +534,7 @@ function addTaskClickEventListener(event) {
     inserted_task_element.querySelector('.checkbox').addEventListener('click', ganttTaskCheckboxClickEventListener);
 }
 
+//TODO 20221102 - 14번 - 우식
 function ganttTaskCheckboxClickEventListener(event) {
     let is_checked = false;
     let container = document.querySelector('.gantt-container');

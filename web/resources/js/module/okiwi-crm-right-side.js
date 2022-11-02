@@ -183,6 +183,7 @@ const rightTaskFilesClear = () => {
     });
 }
 
+//TODO 20221102 - 21번 - 지우, 우식
 const rightTaskReInitialize = (task_id) => {
     console.log('rightTaskReInitialize', task_id);
     let task = {
@@ -244,6 +245,8 @@ const rightTaskReInitialize = (task_id) => {
     rightTaskInit(task);
 }
 
+//TODO 20221102 - 36번 - 지우
+//TODO 20221102 - 34번 - 지우
 const rightTaskInit = (task) => {
     console.log('rightTaskInit');
     RIGHT_TASK_CONTAINER.setAttribute('data-id', task.id);
@@ -371,6 +374,7 @@ const rightTaskFilesInit = (files) => {
     initializeFiles({container, files});
 }
 
+//TODO 20221102 - 19번 - 우식
 function rightTaskDeleteClickEventListener(event) {
     console.log('deleteOptionClickEventListener', this);
     let task_id = this.closest('[data-id]').dataset.id;
@@ -392,6 +396,7 @@ function rightTaskTitleKeyupEventListener(event) {
     console.log('rightTaskTitleKeyupEventListener', this);
 }
 
+//TODO 20221102 - 18번 - 우식
 function rightTaskTitleInputEventListener(event) {
     console.log('rightTaskTitleInputEventListener', this);
     let title = this;
@@ -399,6 +404,7 @@ function rightTaskTitleInputEventListener(event) {
     console.log(task_id, title.value);
 }
 
+//TODO 20221102 - 14번 - 우식
 function rightTaskCheckboxClickEventListener(event) {
     console.log('rightTaskCheckboxClickEventListener', this);
     let task_id = this.closest('[data-id]').dataset.id;
@@ -414,6 +420,7 @@ function rightTaskCheckboxClickEventListener(event) {
     event.stopPropagation();
 }
 
+//TODO 20221102 - 28 - 우식
 function rightSubtaskCheckboxClickEventListener(event) {
     console.log('rightTaskCheckboxClickEventListener', this);
     let subtask = this.closest('[data-id]');
@@ -430,6 +437,7 @@ function rightSubtaskCheckboxClickEventListener(event) {
     event.stopPropagation();
 }
 
+//TODO 20221102 - 31번 - 우식
 function rightSubtaskCloseClickEventListener(event) {
     console.log('rightSubtaskCloseClickEventListener', this);
     let subtask = this.closest('[data-id]');
@@ -438,6 +446,7 @@ function rightSubtaskCloseClickEventListener(event) {
     subtask.remove();
 }
 
+//TODO 20221102 - 24번 - 우식
 function rightTaskStartDatePickerChangeEventListener(event) {
     console.log('rightTaskStartDatePickerChangeEventListener', this);
     // `e` here contains the extra attributes
@@ -447,12 +456,14 @@ function rightTaskStartDatePickerChangeEventListener(event) {
     event.stopPropagation();
 }
 
+//TODO 20221102 - 25번 - 우식
 function rightTaskEndDatePickerChangeEventListener(event) {
     console.log('rightTaskEndDatePickerChangeEventListener', this);
     event.preventDefault();
     event.stopPropagation();
 }
 
+//TODO 20221102 - 32번 - 지우
 const rightTaskUserAssignDropdownUpdateItems = (event) => {
     console.log('rightTaskUserAssignDropdownUpdateItems', event, this);
     let profiles = [
@@ -488,6 +499,7 @@ const rightTaskUserAssignDropdownClearItems = (event) => {
     });
 }
 
+//TODO 20221102 - 23번 - 지우
 function rightTaskUserAssignDeleteClickEventListener(event) {
     console.log('rightTaskUserAssignDeleteClickEventListener', this);
     let user_item = this.closest('.user-item');
@@ -498,6 +510,7 @@ function rightTaskUserAssignDeleteClickEventListener(event) {
     event.stopPropagation();
 }
 
+//TODO 20221102 - 22번 - 지우
 function rightTaskUserAssignAddClickEventListener(event) {
     console.log('rightTaskUserAssignAddClickEventListener', this);
     let user_no = this.dataset.no;
@@ -526,6 +539,7 @@ function rightTaskContentKeyupEventListener(event) {
     console.log('rightTaskContentKeyupEventListener', this);
 }
 
+//TODO 20221102 - 26번 - 우식
 function rightTaskContentInputEventListener(event) {
     console.log('rightTaskContentInputEventListener', this);
     let task_id = this.closest('[data-id]').dataset.id;
@@ -533,6 +547,7 @@ function rightTaskContentInputEventListener(event) {
     console.log(task_id, content.innerHTML);
 }
 
+//TODO 20221102 - 30번 - 지우
 function rightTaskSubTaskAddClickEventListener(event) {
     console.log('rightTaskSubTaskAddClickEventListener', this);
     let current_date = new Date().toISOString().slice(0, 10);
@@ -557,6 +572,7 @@ function rightTaskSubTaskAddClickEventListener(event) {
     subtask_add.before(createRightSubtaskItem(subtask));
 }
 
+//TODO 20221102 - 40번 - 지우
 function rightTaskDownloadClickEventListener(event) {
     console.log('rightTaskDownloadClickEventListener', this);
 }
@@ -587,6 +603,7 @@ function rightTaskCommentInputEventListener(event) {
     console.log('rightTaskCommentInputEventListener', this);
 }
 
+//TODO 20221102 - 34번 - 지우
 function rightTaskCommentWriteEventListener(event) {
     console.log('rightTaskCommentWriteEventListener', this);
     let task_id = this.closest('[data-id]').dataset.id;
@@ -623,6 +640,7 @@ function rightTaskMessageFileUploadEventListener(event) {
     event.stopPropagation();
 }
 
+//TODO 20221102 - 39번 - 지우
 function rightTaskMessageFileChangeEventListener(event) {
     console.log('rightTaskMessageFileChangeEventListener', this, event);
     let comments_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._comments');
@@ -679,7 +697,6 @@ function debounce(callback, limit = 100) {
         }, limit);
     };
 }
-
 
 const createRightTaskAssignItem = (profile) => {
     const __buildRightTaskAssignInnerHTML = (profile) => {
