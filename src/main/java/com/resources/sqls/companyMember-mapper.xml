@@ -96,4 +96,10 @@
         from company_member
         WHERE no = #{member_no}
     </select>
+    <select id="getCompanyMemberTagList" resultType="CompanyProfileMember" resultMap="CompanyProfileMember">
+        select company_member.no, u.name, u.profile_img
+        from company_member
+                 left join user u on company_member.user_no = u.no
+        WHERE company_member.no = #{member_no}
+    </select>
 </mapper>

@@ -78,4 +78,8 @@ public class CompanyMemberDao {
     public boolean checkMemberIsCompanyMember(int member_no, int company_no) {
         return mapper.checkMemberIsCompanyMember(member_no, company_no);
     }
+
+    public CompanyProfileMember getCompanyMemberProfile(int member_no) {
+        return mapper.getCompanyMemberProfile(member_no);
+    }
 }

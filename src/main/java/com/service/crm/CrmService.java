@@ -3,13 +3,9 @@ package com.service.crm;
 import com.dao.CompanyDao;
 import com.dao.CompanyMemberDao;
 import com.dao.crm.*;
-import com.model.User;
-import com.model.company.CompanyMember;
 import com.model.company.CompanyProfileMember;
-import com.model.crm.Board;
-import com.model.crm.Project;
-import com.model.crm.SubTask;
-import com.model.crm.Task;
+import com.model.crm.*;
+import com.model.crm.file.TaskFile;
 import com.model.crm.state.TASK_STATUS_TYPE;
 import com.response.DefaultRes;
 import com.response.Message;
@@ -23,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -831,7 +827,7 @@ public class CrmService {
                 Date s_date = Time.DateStringToDate(start_date, date_default_format);
                 Date e_date = Time.DateStringToDate(task.getEnd_date(), date_default_format);
                 message.put("status", true);
-                if(e_date.before(s_date)) {
+                if (e_date.before(s_date)) {
                     // DB에 저장되어 있는 종료 일자가 시작 일자보다 이전일 경우 종료 일자 => null
                     taskDao.updateTaskEndDate(task_id, null);
                     message.put("end_date", null);
@@ -873,7 +869,7 @@ public class CrmService {
                 Date start_date = Time.DateStringToDate(task.getStart_date(), date_default_format);
                 Date e_date = Time.DateStringToDate(end_date, date_default_format);
                 message.put("status", true);
-                if(start_date.after(e_date)) {
+                if (start_date.after(e_date)) {
                     // DB에 저장되어 있는 시작 일자가 종료 일자보다 이후일 경우 시작 일자 => null
                     taskDao.updateTaskStartDate(task_id, null);
                     message.put("start_date", null);
@@ -1046,6 +1042,170 @@ public class CrmService {
         Message message = new Message();
         message.put("status", true);
         message.put("members", taskMemberDao.getAvailableMembers(task_id));
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * getTaskComments
+     *
+     * @param task_id String
+     * @return ResponseEntity(REST)
+     * <p>
+     * 현재 업무에 작성된 댓글 목록 호출
+     * - profile => MFile
+     * # 예상 예외 처리
+     * - 업무 데이터 없을 떄
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    public ResponseEntity getTaskComments(String task_id) {
+        Message message = new Message();
+        if (taskDao.getTaskById(task_id) == null) {
+            message.put("status", false);
+            message.put("error_message", "해당 업무의 댓글 목록을 불러올 수 없습니다. 업무 리스트를 최신화 해주세요.");
+        } else {
+            List<TaskComment> comments = taskCommentDao.getTaskComments(task_id);
+            for (TaskComment comment : comments) {
+                comment.setDate(comment.getReg_datetime().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")));
+                comment.setProfile(companyMemberDao.getCompanyMemberProfile(comment.getMember_no()));
+            }
+        }
+        message.put("status", true);
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+
+    /**
+     * addComment
+     *
+     * @param comment String
+     * @return ResponseEntity(REST)
+     * <p>
+     * 현재 업무에 작성된 댓글 목록 호출
+     * TODO add taskCommentFile =>
+     * - 1. task file로 넣고 comment에 엮을 지 /
+     * - 2. taskCommentFile의 객체로 둘지 결정
+     * - 만일 getProjectFiles(), getTaskFiles()에서 보여져야 한다면 1번, 아니면 2번
+     * # 예상 예외 처리
+     * - 업무 데이터 없을 떄
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity addComment(TaskComment comment) {
+        Message message = new Message();
+        if (taskDao.getTaskById(comment.getTask_id()) == null) {
+            message.put("status", false);
+            message.put("error_message", "해당 업무의 댓글 목록을 불러올 수 없습니다. 업무 리스트를 최신화 해주세요.");
+        } else {
+
+//            switch (comment.getType()) {
+//                case TEXT:
+//                case MENTION:
+//                    break;
+//                case FILE:
+//            }
+            taskCommentDao.addComment(comment);
+            comment = taskCommentDao.getTaskCommentByNo(comment.getNo());
+            // TODO 몇분 전?
+            comment.setDate(comment.getReg_datetime().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")));
+            comment.setProfile(companyMemberDao.getCompanyMemberProfile(comment.getMember_no()));
+            message.put("comment", comment);
+            message.put("status", true);
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * deleteComment
+     *
+     * @param comment_no int
+     * @return ResponseEntity(REST)
+     * <p>
+     * 댓글 삭제
+     * # 예상 예외 처리
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity deleteComment(int comment_no) {
+        Message message = new Message();
+        taskCommentDao.deleteComment(comment_no);
+        message.put("status", true);
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * getTaskFiles
+     *
+     * @param task_id String
+     * @return ResponseEntity(REST)
+     * <p>
+     * 현재 업무에 작성된 파일 목록 호출
+     * - 날짜 내림차순 정렬
+     * # 예상 예외 처리
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    public ResponseEntity getTaskFiles(String task_id) {
+        Message message = new Message();
+        if (taskDao.getTaskById(task_id) == null) {
+            message.put("status", false);
+            message.put("error_message", "해당 업무의 파일 목록을 불러올 수 없습니다. 업무 리스트를 최신화 해주세요.");
+        } else {
+            List<TaskFile> files = taskFileDao.getTaskFiles(task_id);
+            for (TaskFile file : files) {
+                file.setDate(file.getReg_datetime().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")));
+            }
+            message.put("status", true);
+            message.put("files", files);
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * getProjectFiles
+     *
+     * @param project_no int
+     * @return ResponseEntity(REST)
+     * <p>
+     * 현재 프로젝트에 작성된 파일 목록 호출
+     * - 날짜 내림차순 정렬
+     * # 예상 예외 처리
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    public ResponseEntity getProjectFiles(int project_no) {
+        Message message = new Message();
+
+        List<TaskFile> files = taskFileDao.getProjectFiles(project_no);
+        for (TaskFile file : files) {
+            file.setDate(file.getReg_datetime().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")));
+        }
+        message.put("status", true);
+        message.put("files", files);
+
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
+     * deleteFile
+     *
+     * @param file_no int
+     * @return ResponseEntity(REST)
+     * <p>
+     * 업무 내 등록된 파일 삭제
+     * # 예상 예외 처리
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity deleteFile(int file_no) {
+        Message message = new Message();
+
+        taskFileDao.deleteFile(file_no);
+        message.put("status", true);
+
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
 

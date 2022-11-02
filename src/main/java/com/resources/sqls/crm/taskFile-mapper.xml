@@ -3,4 +3,25 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.crm.TaskFileMapper">
+    <resultMap id="TaskFile" type="com.model.crm.file.TaskFile">
+        <result column="file" property="file" typeHandler="com.middleware.JsonObjectTypeHandler"
+                javaType="com.model.common.MFile"/>
+    </resultMap>
+    <select id="getTaskFiles" resultType="TaskFile" resultMap="TaskFile">
+        select *
+        from task_file
+        WHERE task_id = #{task_id}
+        ORDER BY reg_datetime DESC
+    </select>
+    <select id="getProjectFiles" resultType="TaskFile" resultMap="TaskFile">
+        select *
+        from task_file
+        WHERE task_id IN (select task_id from task WHERE project_no = #{project_no})
+        ORDER BY reg_datetime DESC
+    </select>
+    <delete id="deleteFile">
+        delete
+        from task_file
+        WHERE no = #{no}
+    </delete>
 </mapper>

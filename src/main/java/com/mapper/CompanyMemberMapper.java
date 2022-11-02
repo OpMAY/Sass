@@ -39,4 +39,6 @@ public interface CompanyMemberMapper {
     CompanyMember getCompanyMemberInfoByMemberNo(int member_no);
 
     boolean checkMemberIsCompanyMember(@Param("member_no") int member_no, @Param("company_no") int company_no);
+
+    CompanyProfileMember getCompanyMemberProfile(int member_no);
 }
