@@ -1,6 +1,7 @@
 package com.dao.crm;
 
 import com.mapper.crm.TaskMapper;
+import com.model.common.MFile;
 import com.model.crm.Task;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
@@ -81,5 +82,9 @@ public class TaskDao {
 
     public void updateTaskEndDate(String task_id, String end_date) {
         mapper.updateTaskEndDate(task_id, end_date);
+    }
+
+    public void changeTaskThumbnail(String task_id, MFile thumbnail) {
+        mapper.changeTaskThumbnail(task_id, thumbnail);
     }
 }

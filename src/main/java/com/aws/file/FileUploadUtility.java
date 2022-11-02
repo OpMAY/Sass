@@ -5,6 +5,9 @@ import com.model.common.MFile;
 import com.util.Constant;
 import com.util.Folder;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,11 +18,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 
 @Slf4j
@@ -49,6 +52,27 @@ public class FileUploadUtility {
 
     public MFile uploadFile(MultipartFile file, String cdn_path) {
         try {
+            if (file == null || file.getSize() == 0) {
+                return null;
+            }
+            log.info(upload_path);
+            Folder.mkdirs(upload_path);
+            String saved_name = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            File target = new File(upload_path, saved_name);
+            FileCopyUtils.copy(file.getBytes(), target);
+
+            saved_name = fileUploadStrategy.getFileName(saved_name, cdn_path, target);
+
+            return new MFile(file, saved_name);
+        } catch (IOException e) {
+            log.error("ex : IOException");
+            return null;
+        }
+    }
+
+    public MFile uploadFile(File origin_file, String cdn_path) {
+        try {
+            MultipartFile file = fileToMultipartFile(origin_file);
             if (file == null || file.getSize() == 0) {
                 return null;
             }
@@ -109,5 +133,22 @@ public class FileUploadUtility {
 
     public void localMultiPartDelete(PartFile part_file_data) {
         Folder.deleteFile(upload_path + part_file_data.getFile_name());
+    }
+
+    private MultipartFile fileToMultipartFile(File file) throws IOException {
+        FileItem fileItem = new DiskFileItem("mainFile", Files.probeContentType(file.toPath()), false, file.getName(), (int) file.length(), file.getParentFile());
+
+        try {
+            InputStream input = new FileInputStream(file);
+            OutputStream os = fileItem.getOutputStream();
+            IOUtils.copy(input, os);
+            // Or faster..
+            // IOUtils.copy(new FileInputStream(file), fileItem.getOutputStream());
+        } catch (IOException ex) {
+            // do something.
+        }
+
+        MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+        return multipartFile;
     }
 }

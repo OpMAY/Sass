@@ -82,4 +82,8 @@ public class CompanyMemberDao {
     public CompanyProfileMember getCompanyMemberProfile(int member_no) {
         return mapper.getCompanyMemberProfile(member_no);
     }
+
+    public CompanyMember getUserMemberInfo(int user_no, int company_no) {
+        return mapper.getUserMemberInfo(user_no, company_no);
+    }
 }

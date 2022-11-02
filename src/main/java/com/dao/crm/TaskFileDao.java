@@ -26,4 +26,8 @@ public class TaskFileDao {
     public void deleteFile(int file_no) {
         mapper.deleteFile(file_no);
     }
+
+    public void insertTaskFile(TaskFile file) {
+        mapper.insertTaskFile(file);
+    }
 }

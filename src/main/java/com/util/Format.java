@@ -3,6 +3,8 @@ package com.util;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
@@ -233,5 +235,14 @@ public class Format {
         log.info(nf.format(n)); // 출력값 : ￦12,345.68
     }
 
+    public static String getURIFromUrl(String url_string) {
+        try {
+            URL url = new URL(url_string);
+            return url.getPath();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
 }

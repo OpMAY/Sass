@@ -1,13 +1,369 @@
 package com.restcontroller.crm;
 
+import com.api.businessRegistration.Response;
+import com.aws.file.FileUploadUtility;
+import com.dao.CompanyDao;
+import com.dao.CompanyMemberDao;
+import com.dao.crm.BoardDao;
+import com.dao.crm.TaskDao;
+import com.model.common.MFile;
+import com.model.company.Company;
+import com.model.company.CompanyMember;
+import com.model.crm.*;
+import com.model.crm.state.TASK_STATUS_TYPE;
+import com.response.DefaultRes;
+import com.response.Message;
+import com.service.CompanyService;
+import com.service.crm.CrmService;
+import com.util.Constant;
+import com.util.Encryption.EncryptionService;
+import com.util.Encryption.JWTEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/crm")
 public class CrmPlugRestController {
+    private final CompanyDao companyDao;
+    private final CompanyMemberDao companyMemberDao;
+    private final CompanyService companyService;
+    private final CrmService crmService;
+    private final EncryptionService encryptionService;
+    private final BoardDao boardDao;
+    private final TaskDao taskDao;
+    private final FileUploadUtility uploadUtility;
+
+    // Project
+    @RequestMapping(value = "/projects", method = GET)
+    public ResponseEntity getProjects(HttpServletRequest request) {
+        Message message = new Message();
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
+        if (userNo != null) {
+            Company company = companyMemberDao.getUserCompany(userNo);
+            if (company != null) {
+                message.put("status", true);
+                message.put("projects", crmService.getCompanyProjects(company.getNo()));
+            } else {
+                message.put("status", false);
+                message.put("error_message", "데이터를 불러올 수 없습니다.");
+            }
+        } else {
+            message.put("status", false);
+            message.put("error_message", "데이터를 불러올 수 없습니다.");
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/project/{hash}/data", method = GET)
+    public ResponseEntity getProjectDetailData(@PathVariable String hash) throws Exception {
+        Message message = new Message();
+        int project_no = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
+        message.put("status", true);
+        message.put("data", crmService.getProjectDashBoardData(project_no));
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/member/tasks", method = GET)
+    public ResponseEntity getMemberTasks(@RequestParam("type") TASK_STATUS_TYPE type, HttpServletRequest request) {
+        Message message = new Message();
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
+        if (userNo != null) {
+            Company company = companyMemberDao.getUserCompany(userNo);
+            if (company != null) {
+                CompanyMember companyMember = companyMemberDao.getUserMemberInfo(userNo, company.getNo());
+                message.put("tasks", crmService.getMemberTasks(companyMember.getNo(), type));
+                message.put("status", true);
+            } else {
+                message.put("status", false);
+                message.put("error_message", "데이터를 불러올 수 없습니다.");
+            }
+        } else {
+            message.put("status", false);
+            message.put("error_message", "데이터를 불러올 수 없습니다.");
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/create/project", method = POST)
+    public ResponseEntity createProject(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        Project project = (Project) body.get("project");
+        return crmService.createNewProject(project);
+    }
+
+    @RequestMapping(value = "/delete/project/{hash}", method = POST)
+    public ResponseEntity deleteProject(HttpServletRequest request, @PathVariable String hash) throws Exception {
+        int project_no = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
+        return crmService.deleteProject(project_no);
+    }
+
+    @RequestMapping(value = "/update/project", method = POST)
+    public ResponseEntity deleteProject(HttpServletRequest request, @RequestBody Map<String, Object> body) throws Exception {
+        Project project = (Project) body.get("project");
+        return crmService.updateProject(project);
+    }
+
+    @RequestMapping(value = "/copy/project/{hash}", method = POST)
+    public ResponseEntity copyProject(HttpServletRequest request, @PathVariable String hash) throws Exception {
+        int project_no = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
+        return crmService.copyProject(project_no);
+    }
+
+    @RequestMapping(value = "/token/validate/{token}/{type}", method = GET)
+    public ResponseEntity checkTokenIdDuplicate(@PathVariable String token, @PathVariable String type) {
+        return crmService.checkTokenIdDuplicate(token, type);
+    }
+
+    // Board
+    @RequestMapping(value = "/copy/board/{board_id}", method = POST)
+    public ResponseEntity copyBoard(HttpServletRequest request, @PathVariable String board_id) {
+        Message message = new Message();
+        Board board = boardDao.getBoardById(board_id);
+        if (board != null) {
+            Board copied_board = crmService.copyBoard(board);
+            message.put("copied_board", copied_board);
+            message.put("status", true);
+        } else {
+            message.put("status", false);
+            message.put("error_message", "복사할 대상 보드가 존재하지 않습니다.");
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/create/board", method = POST)
+    public ResponseEntity createBoard(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        Board board = (Board) body.get("board");
+        return crmService.createBoard(board);
+    }
+
+    @RequestMapping(value = "/update/board/name", method = POST)
+    public ResponseEntity changeBoardName(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        String board_id = (String) body.get("id");
+        String name = (String) body.get("name");
+        return crmService.changeBoardName(board_id, name);
+    }
+
+    @RequestMapping(value = "/update/board/order", method = POST)
+    public ResponseEntity changeBoardOrder(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        String board_id = (String) body.get("id");
+        Integer _order = (Integer) body.get("order");
+        return crmService.changeBoardOrder(board_id, _order);
+    }
+
+    @RequestMapping(value = "/delete/board/{board_id}", method = POST)
+    public ResponseEntity deleteBoard(HttpServletRequest request, @PathVariable String board_id) {
+        return crmService.deleteBoard(board_id);
+    }
+
+    // Task
+    @RequestMapping(value = "/update/task/{task_id}/status", method = POST)
+    public ResponseEntity updateTaskStatus(HttpServletRequest request, @PathVariable String task_id) {
+        return crmService.changeTaskStatus(task_id);
+    }
+
+    @RequestMapping(value = "/copy/task/{task_id}", method = POST)
+    public ResponseEntity copyTask(HttpServletRequest request, @PathVariable String task_id) {
+        Message message = new Message();
+        Task task = taskDao.getTaskById(task_id);
+        if (task != null) {
+            Task copied_task = crmService.copyTask(task);
+            message.put("copied_task", copied_task);
+            message.put("status", true);
+        } else {
+            message.put("status", false);
+            message.put("error_message", "복사할 대상 업무가 존재하지 않습니다.");
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/create/task", method = POST)
+    public ResponseEntity createTask(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        Task task = (Task) body.get("task");
+        return crmService.createTask(task);
+    }
+
+    @RequestMapping(value = "/update/task/order", method = POST)
+    public ResponseEntity changeTaskOrder(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        String task_id = (String) body.get("id");
+        Integer _order = (Integer) body.get("order");
+        return crmService.changeTaskOrder(task_id, _order);
+    }
+
+    @RequestMapping(value = "/update/task/name", method = POST)
+    public ResponseEntity changeTaskName(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        String task_id = (String) body.get("id");
+        String name = (String) body.get("name");
+        return crmService.changeTaskName(task_id, name);
+    }
+
+    @RequestMapping(value = "/delete/task/{task_id}", method = POST)
+    public ResponseEntity deleteTask(HttpServletRequest request, @PathVariable String task_id) {
+        return crmService.deleteTask(task_id);
+    }
+
+    @RequestMapping(value = "/update/task/move", method = POST)
+    public ResponseEntity moveTaskToOtherBoard(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        String task_id = (String) body.get("task_id");
+        String board_id = (String) body.get("board_id");
+        Integer _order = (Integer) body.get("order");
+        return crmService.moveTaskToOtherBoard(task_id, board_id, _order);
+    }
+
+    @RequestMapping(value = "/get/task/{task_id}", method = GET)
+    public ResponseEntity getTaskDetail(HttpServletRequest request, @PathVariable String task_id) {
+        return crmService.getTask(task_id);
+    }
+
+    @RequestMapping(value = "/update/task/member/add", method = POST)
+    public ResponseEntity addTaskMember(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        String task_id = (String) body.get("id");
+        Integer member_no = (Integer) body.get("member_no");
+        return crmService.addTaskMember(task_id, member_no);
+    }
+
+    @RequestMapping(value = "/update/task/member/remove", method = POST)
+    public ResponseEntity removeTaskMember(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        String task_id = (String) body.get("id");
+        Integer member_no = (Integer) body.get("member_no");
+        return crmService.removeTaskMember(task_id, member_no);
+    }
+
+    @RequestMapping(value = "/update/task/start_date", method = POST)
+    public ResponseEntity changeTaskStartDate(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        String task_id = (String) body.get("id");
+        String start_date = (String) body.get("date");
+        return crmService.changeTaskStartDate(task_id, start_date);
+    }
+
+    @RequestMapping(value = "/update/task/end_date", method = POST)
+    public ResponseEntity changeTaskEndDate(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        String task_id = (String) body.get("id");
+        String end_date = (String) body.get("date");
+        return crmService.changeTaskStartDate(task_id, end_date);
+    }
+
+    @RequestMapping(value = "/update/task/description", method = POST)
+    public ResponseEntity changeTaskDescription(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        String task_id = (String) body.get("id");
+        String description = (String) body.get("description");
+        return crmService.changeTaskDescription(task_id, description);
+    }
+
+    @RequestMapping(value = "/update/task/{task_id}/thumbnail", method = POST)
+    public ResponseEntity changeTaskThumbnail(HttpServletRequest request, @PathVariable String task_id, @RequestBody MultipartFile file) {
+        if (file.getSize() > 0) {
+            log.info("{},{},{},{}", file.getName(), file.getSize(), file.getOriginalFilename(), file.getContentType());
+            MFile mFile = uploadUtility.uploadFile(file, Constant.CDN_PATH.TASK_THUMBNAIL);
+            return crmService.changeTaskThumbnail(task_id, mFile);
+        } else {
+            return new ResponseEntity(DefaultRes.res(HttpStatus.BAD_REQUEST), HttpStatus.OK);
+        }
+    }
+
+    @RequestMapping(value = "/update/task/subtask/{subtask_id}/status/", method = POST)
+    public ResponseEntity changeSubTaskStatus(HttpServletRequest request, @PathVariable String subtask_id) {
+        return crmService.changeSubTaskStatus(subtask_id);
+    }
+
+    @RequestMapping(value = "/update/task/subtask/name", method = POST)
+    public ResponseEntity changeSubTaskName(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        String subtask_id = (String) body.get("id");
+        String name = (String) body.get("name");
+        return crmService.changeSubTaskName(subtask_id, name);
+    }
+
+
+    @RequestMapping(value = "/create/subtask", method = POST)
+    public ResponseEntity addSubTask(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        SubTask subTask = (SubTask) body.get("subtask");
+        return crmService.addSubTask(subTask);
+    }
+
+    @RequestMapping(value = "/delete/subtask/{subtask_id}", method = POST)
+    public ResponseEntity deleteSubTask(HttpServletRequest request, @PathVariable String subtask_id) {
+        return crmService.removeSubTask(subtask_id);
+    }
+
+    @RequestMapping(value = "/get/task/{task_id}/members/available", method = GET)
+    public ResponseEntity getTaskAvailableMembers(HttpServletRequest request, @PathVariable String task_id) {
+        return crmService.getTaskAvailableMembers(task_id);
+    }
+
+    @RequestMapping(value = "/get/task/{task_id}/comments", method = GET)
+    public ResponseEntity getTaskComments(HttpServletRequest request, @PathVariable String task_id) {
+        return crmService.getTaskComments(task_id);
+    }
+
+    @RequestMapping(value = "/create/task/comment", method = POST)
+    public ResponseEntity addTaskComment(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        Message message = new Message();
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
+        if (userNo != null) {
+            Company company = companyMemberDao.getUserCompany(userNo);
+            if (company != null) {
+                CompanyMember companyMember = companyMemberDao.getUserMemberInfo(userNo, company.getNo());
+                TaskComment comment = (TaskComment) body.get("comment");
+                comment.setMember_no(companyMember.getNo());
+                return crmService.addComment(comment);
+            } else {
+                message.put("status", false);
+                message.put("error_message", "회사 데이터를 불러올 수 없습니다.");
+            }
+        } else {
+            message.put("status", false);
+            message.put("error_message", "유저 데이터를 불러올 수 없습니다.");
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/delete/comment/{comment_no}", method = POST)
+    public ResponseEntity deleteTaskComment(HttpServletRequest request, @PathVariable Integer comment_no) {
+        Message message = new Message();
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
+        if (userNo != null) {
+            Company company = companyMemberDao.getUserCompany(userNo);
+            if (company != null) {
+                CompanyMember companyMember = companyMemberDao.getUserMemberInfo(userNo, company.getNo());
+                return crmService.deleteComment(companyMember.getNo(), comment_no);
+            } else {
+                message.put("status", false);
+                message.put("error_message", "회사 데이터를 불러올 수 없습니다.");
+            }
+        } else {
+            message.put("status", false);
+            message.put("error_message", "유저 데이터를 불러올 수 없습니다.");
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/get/task/{task_id}/files", method = GET)
+    public ResponseEntity getTaskFiles(HttpServletRequest request, @PathVariable String task_id) {
+        return crmService.getTaskFiles(task_id);
+    }
+
+    @RequestMapping(value = "/get/project/{hash}/files", method = GET)
+    public ResponseEntity getProjectFiles(HttpServletRequest request, @PathVariable String hash) throws Exception {
+        int project_no = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
+        return crmService.getProjectFiles(project_no);
+    }
+
+    @RequestMapping(value = "/delete/file/{file_no}", method = POST)
+    public ResponseEntity deleteFile(HttpServletRequest request, @PathVariable int file_no) {
+        return crmService.deleteFile(file_no);
+    }
 }
