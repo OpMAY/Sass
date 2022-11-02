@@ -1,0 +1,382 @@
+.checkbox {
+    margin-top: auto;
+    margin-bottom: auto;
+    cursor: pointer;
+    border-radius: 20px;
+    font-size: var(--font-12);
+    width: 24px;
+    height: 24px;
+    background-color: var(--gray-high-light);
+    position: relative;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.checkbox:hover,
+.checkbox.is-checked {
+    background-color: var(--brand-red);
+}
+
+.checkbox i {
+    color: var(--basic-white);
+    position: absolute;
+    top: 52%;
+    left: 48%;
+    transform: var(--translate-center);
+}
+
+.callout {
+    border: var(--border-1px) var(--gray-high-medium);
+    border-radius: var(--input-radius);
+    background-color: var(--gray-high-light);
+}
+
+.divider {
+    width: 100%;
+    height: 2px;
+    background-color: var(--gray-high-medium);
+}
+
+.recent-status-container {
+    border: var(--border-1px) var(--gray-high-medium);
+    border-radius: var(--button-radius);
+}
+
+.project-container {
+    margin-top: -15px;
+    margin-bottom: -15px;
+}
+
+.project > div {
+    cursor: pointer;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border: var(--border-1px) var(--gray-high-medium);
+    border-radius: var(--button-radius);
+    display: flex;
+}
+
+.project > div .emoji-container-pure {
+    font-size: 20px;
+    line-height: 20px;
+    width: 24px;
+    height: 24px;
+}
+
+.project > div .emoji-container {
+    font-size: 20px;
+    line-height: 20px;
+    position: absolute;
+    z-index: 2;
+    width: 24px;
+    height: 24px;
+    top: 3px;
+    left: -3px;
+    background-color: transparent;
+}
+
+.project > div .emoji-container.is-active {
+    background-color: white;
+}
+
+.project.add > div {
+    background-color: var(--brand-red);
+}
+
+.project.add > div ._name {
+    width: 100%;
+    color: var(--basic-white);
+}
+
+.project.add > div > svg {
+    margin-left: auto;
+}
+
+.project.edit > div {
+    background-color: var(--basic-white);
+}
+
+.project.edit > div ._name {
+    margin-right: 8px;
+}
+
+.project.edit > div ._name input:focus,
+.project.edit > div ._name input:active,
+.project.edit > div ._name input:focus-visible,
+.project.edit > div ._name input {
+    width: 100%;
+    border: none;
+    padding: 0;
+    color: var(--gray-dark-low);
+}
+
+.project > div > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.dropright {
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.dropright > div {
+    width: 20px;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.dropright .dropdown-menu {
+    padding: 8px 0;
+    width: auto !important;
+    min-width: auto;
+    margin-right: 0;
+    border: var(--border-1px) var(--gray-high-medium);
+    border-radius: 0;
+}
+
+.dropright .dropdown-menu .dropdown-item,
+.dropright .dropdown-menu .dropdown-item:focus {
+    padding: 8px 16px;
+    color: var(--gray-dark-low);
+    background-color: var(--basic-white);
+}
+
+.dropright .dropdown-menu .dropdown-item:hover {
+    color: var(--brand-red);
+    background-color: var(--basic-white);
+}
+
+#recent-tab {
+    border: none;
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+#recent-tab .nav-item {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.nav-tabs .nav-item .nav-link {
+    color: var(--gray-high-medium);
+    border: none;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: var(--gray-dark-low);
+}
+
+.nav-tabs .nav-item .nav-link {
+    padding: 15px;
+}
+
+.recent-status-container ul li {
+    cursor: pointer;
+    display: flex;
+    border-radius: 0 !important;
+    border-right: none;
+    border-left: none;
+    padding: 12px 24px;
+    border-top: none;
+    border-bottom: none;
+}
+
+.recent-status-container .tab-content ul li:first-child {
+    border-top: var(--border-1px) var(--gray-high-medium);
+}
+
+.recent-status-container .tab-content ul li:not(:first-child) {
+    border-top: var(--border-1px) var(--gray-high-medium);
+}
+
+.recent-status-container .tab-content ul li > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+
+.recent-status-container .tab-content ul li .checkbox {
+    cursor: pointer;
+    border-radius: 20px;
+    background-color: var(--gray-high-medium);
+    font-size: var(--font-12);
+    width: 24px;
+    height: 24px;
+    position: relative;
+    margin-right: 16px;
+}
+
+.recent-status-container .tab-content ul li .checkbox i {
+    color: var(--basic-white);
+    position: absolute;
+    top: 52%;
+    left: 58%;
+    transform: var(--translate-center);
+}
+
+.recent-status-container .tab-content ul li.is-checked .checkbox,
+.recent-status-container .tab-content ul li .checkbox:hover {
+    background-color: var(--brand-red);
+}
+
+.recent-status-container .tab-content ul li.add ._date {
+    display: flex;
+    color: var(--brand-red);
+}
+
+.recent-status-container .tab-content ul li.add ._date > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.recent-status-container .tab-content ul li.is-checked ._date {
+    color: var(--brand-red);
+}
+
+.recent-status-container .tab-content {
+    margin-left: -24px;
+    margin-right: -24px;
+    margin-bottom: -24px;
+}
+
+#_emoji-picker {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    opacity: 0;
+}
+
+#emoji-picker {
+    border: none;
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+    margin: 0;
+}
+
+#emoji-picker svg rect {
+    fill: var(--brand-red);
+}
+
+#emoji-picker svg path {
+    stroke: var(--basic-white);
+    fill: var(--basic-white);
+}
+
+.project-tab {
+    height: 61px;
+    display: flex;
+    padding-left: 0;
+    padding-right: 0;
+    border-bottom: var(--border-1px) var(--gray-high-medium);
+}
+
+.project-tab * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.project-tab .nav-tabs {
+    border-bottom: none;
+    margin-left: auto;
+}
+
+.project-tab .nav-tabs .nav-link {
+    margin-bottom: 0;
+    font-size: var(--font-16);
+    line-height: var(--line-24);
+    color: var(--gray-high-medium);
+}
+
+.project-tab .nav-tabs .nav-link.active {
+    font-weight: bold;
+    color: var(--gray-dark-low);
+}
+
+#l-content-wrapper.left-sidebar-type.sidebar-is-open .project-tab ._title {
+    display: flex;
+    margin-left: 32px;
+}
+
+#l-content-wrapper.left-sidebar-type .project-tab ._title {
+    display: flex;
+    margin-left: 64px;
+}
+
+.project-tab ._title * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.project-tab ._title ._icon {
+    margin-right: 16px;
+}
+
+#projectTabContent .status-container {
+    padding: 16px;
+    display: flex;
+    border-bottom: var(--border-1px) var(--gray-high-medium);
+}
+
+#projectTabContent .status-container > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#projectTabContent .status-container .progress {
+    height: 8px;
+    border-radius: 8px;
+    width: 100%;
+    background-color: var(--gray-high-light);
+}
+
+#projectTabContent .status-container .progress .progress-bar {
+    border-radius: 8px;
+    background-color: var(--brand-red);
+}
+
+#projectTabContent .status-container ._percent {
+    color: var(--brand-red);
+    margin-left: 16px;
+}
+
+#projectTabContent .status-container ._filter {
+    display: flex;
+    margin-left: 8px;
+}
+
+#projectTabContent .status-container ._filter > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#projectTabContent .status-container ._filter .dropright [data-toggle="dropdown"] {
+    width: auto;
+    display: flex;
+    white-space: nowrap;
+}
+
+#projectTabContent .status-container ._filter .dropright [data-toggle="dropdown"] > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#projectTabContent .status-container ._filter .dropright [data-toggle="dropdown"] > *:nth-child(2) {
+    margin-left: 4px;
+}
+
+#projectTabContent .module-container {
+    height: 100%;
+    max-height: calc(100vh - 50px - 61px - 57px);
+    min-height: calc(100vh - 50px - 61px - 57px);
+}
+
+.kanban-container button.btn {
+    font-weight: 500;
+}

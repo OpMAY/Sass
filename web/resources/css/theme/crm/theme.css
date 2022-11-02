@@ -1,0 +1,31 @@
+/*변수 지정*/
+:root {
+    /* Sample Theme Color */
+    --brand-red: #F06A6A;
+    --layout-background: #FFFFFF;
+    --layout-border: 10px;
+}
+
+::-webkit-scrollbar {
+    height: 5px;
+    width: 5px;
+    background-color: transparent; /* 또는 트랙에 추가한다 */
+}
+
+/* 썸(thumb) 추가 */
+::-webkit-scrollbar-thumb {
+    background: var(--brand-red);
+    border-radius: var(--button-radius);
+}
+
+/* Color Class */
+/* Suffix c- */
+.c-brand-red {
+    color: var(--brand-red);
+}
+
+/* Background Color Class */
+/* Suffix bg- */
+.bg-brand-red {
+    background-color: var(--brand-red);
+}

@@ -1,0 +1,48 @@
+.file-container {
+    padding: 24px 16px;
+}
+
+.file-container .date-item ._files {
+    flex-wrap: wrap;
+    display: flex;
+    margin: 8px -8px;
+}
+
+.file-container .file-item {
+    display: flex;
+    padding: 12px;
+    border: var(--border-1px) var(--gray-high-medium);
+    margin: 8px;
+}
+
+.file-container .file-item ._file-image {
+    width: 30px;
+    padding-top: 30px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-image: url(../../../resources/assets/images/sample/file-image.png);
+}
+
+.file-container .file-item * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.file-container .file-item ._file-info {
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.file-container .file-item ._file-info ._name {
+    max-width: 160px;
+    min-width: 100px;
+    width: fit-content;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.file-container .file-item ._download {
+    cursor: pointer;
+}

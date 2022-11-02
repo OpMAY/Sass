@@ -1,0 +1,622 @@
+.right-side-container {
+    position: fixed;
+    z-index: 9998;
+    width: 100%;
+    top: 50px;
+    right: 0;
+    height: calc(100vh - 50px);
+    background-color: rgba(34, 34, 34, 0.3);
+    display: flex;
+    opacity: 1;
+    transition: all 0.4s;
+}
+
+.right-side-container.is-close {
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+
+.right-side-container.is-close.is-closed {
+    display: none;
+}
+
+.right-side-container.is-close .right-side-inner {
+    right: -100%;
+    opacity: 0;
+    transition: all 0.4s;
+}
+
+.right-side-container .right-side-inner {
+    opacity: 1;
+    position: relative;
+    width: 768px;
+    background-color: var(--basic-white);
+    margin-left: auto;
+    height: 100%;
+    right: 0;
+    transition: all 0.4s;
+}
+
+.right-side-inner ._title,
+.right-side-inner ._header {
+    display: flex;
+    padding: 16px 24px;
+    border-bottom: var(--border-1px) var(--gray-high-medium);
+}
+
+.right-side-inner ._title *,
+.right-side-inner ._header * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.right-side-inner ._header ._back {
+    cursor: pointer;
+}
+
+.right-side-inner ._header ._delete {
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.right-side-inner ._header ._delete svg * {
+    fill: #F06A6A;
+}
+
+.right-side-inner ._title .checkbox {
+    margin-left: auto;
+}
+
+.right-side-inner ._title {
+    padding: 8px 16px;
+    padding-right: 24px;
+}
+
+.right-side-inner ._title ._name {
+    width: 100%;
+    margin-right: 16px;
+}
+
+.right-side-inner ._title ._name input {
+    cursor: pointer;
+    width: 100%;
+    padding: 8px;
+    border-radius: var(--input-radius);
+    border: var(--border-1px) transparent;
+}
+
+.right-side-inner ._title ._name input:active,
+.right-side-inner ._title ._name input:focus-visible,
+.right-side-inner ._title ._name input:hover {
+    border: var(--border-1px) var(--gray-high-light);
+}
+
+.right-side-inner ._title ._name input:focus {
+    border: var(--border-1px) var(--brand-red);
+}
+
+.right-side-inner input {
+    border: none;
+    margin: 0;
+    outline: none;
+    padding: 0;
+}
+
+.right-side-inner input:focus,
+.right-side-inner input:active,
+.right-side-inner input:focus-visible {
+    outline: none;
+    border: none;
+}
+
+.right-side-inner ._info {
+    padding: 24px;
+    border-bottom: var(--border-1px) var(--gray-high-medium);
+}
+
+.right-side-inner ._info ._type label {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.right-side-inner ._info ._type input {
+    cursor: pointer;
+    width: auto;
+    padding: 8px;
+    border: var(--border-1px) transparent;
+    border-radius: var(--input-radius);
+    max-width: 104px;
+}
+
+.right-side-inner ._info ._type input:active,
+.right-side-inner ._info ._type input:focus-visible,
+.right-side-inner ._info ._type input:hover {
+    border: var(--border-1px) var(--gray-high-light);
+}
+
+.right-side-inner ._info ._type input:focus {
+    border: var(--border-1px) var(--brand-red);
+}
+
+.right-side-inner ._info ._type._assign .user-item {
+    display: flex;
+}
+
+.right-side-inner ._info ._type._assign .user-item > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.right-side-inner ._info ._type._assign .user-item ._close {
+    display: flex;
+    cursor: pointer;
+    margin-left: 8px;
+    padding: 4px;
+}
+
+.right-side-inner ._info ._type._assign .user-item ._close:hover {
+    border-radius: var(--input-radius);
+    background-color: rgba(222, 222, 222, 0.2);
+}
+
+.right-side-inner ._info ._type._assign .user-item ._close > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.right-side-inner ._info ._type._assign .user-item ._user {
+    display: flex;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.right-side-inner ._info ._type._assign .user-item ._user:hover {
+    border-radius: var(--input-radius);
+    background-color: rgba(240, 106, 106, 0.1);
+}
+
+.right-side-inner ._info ._type._assign .user-item ._user > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.right-side-inner ._info ._type._assign .user-item ._profile {
+    width: 24px;
+    height: 24px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: 4px;
+    border-radius: 24px;
+}
+
+.right-side-inner .user-item-container .user-item:not(:last-child) {
+    margin-right: 8px;
+}
+
+.right-side-inner .user-item-container .user-item.add {
+    cursor: pointer;
+}
+
+.right-side-inner .user-item-container .user-item.add:hover svg circle {
+    fill: var(--brand-red);
+}
+
+.right-side-inner .user-item-container .user-item.add:hover svg path {
+    fill: var(--basic-white);
+}
+
+.right-side-inner ._info ._type._assign .user-item.add.dropright > div {
+    width: auto;
+    height: auto;
+}
+
+.right-side-inner ._info ._type._assign .user-item.add.dropright .dropdown-menu {
+}
+
+.right-side-inner ._info ._type._assign .user-item.add.dropright .dropdown-menu .dropdown-item {
+    display: flex;
+    width: auto;
+}
+
+.right-side-inner ._info ._type._assign .user-item.add.dropright .dropdown-menu .dropdown-item * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.right-side-inner ._info ._type._assign .user-item.add.dropright .dropdown-menu .dropdown-item ._dropdown-user {
+    display: flex;
+    width: 100%;
+}
+
+.right-side-inner ._info ._type._assign .user-item.add.dropright .dropdown-menu .dropdown-item ._dropdown-user * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.right-side-inner ._info ._type._assign .user-item.add.dropright .dropdown-menu .dropdown-item ._dropdown-user ._profile {
+    margin-right: 8px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.right-side-inner ._info ._type._assign .user-item.add.dropright .dropdown-menu .dropdown-item ._dropdown-user ._name {
+    width: 100%;
+}
+
+.right-side-inner ._tab {
+    padding: 0;
+}
+
+.right-side-inner ._tab .nav-tabs {
+    border: none;
+}
+
+.right-side-inner ._tab .nav-tabs .nav-item .nav-link {
+    margin-bottom: 0;
+}
+
+.right-side-inner ._tab .nav-tabs .nav-item.show .nav-link,
+.right-side-inner ._tab .nav-tabs .nav-link.active {
+    font-size: var(--font-16);
+    font-weight: 500;
+}
+
+.right-side-inner ._tab .tab-content {
+    border-top: var(--border-1px) var(--gray-high-medium);
+    padding-top: 24px;
+    padding-bottom: 24px;
+    height: calc(100vh - 400px);
+}
+
+.right-side-inner ._tab .tab-content .tab-pane {
+    height: 100%;
+}
+
+.right-side-inner ._tab .tab-content #task-comment {
+    height: 100%;
+}
+
+.content-editable-container.is-hide {
+    height: 0;
+    transition: height .5s;
+}
+
+.content-editable-container:hover {
+    cursor: text;
+}
+
+.content-editable-container[contenteditable=true]:empty:before {
+    content: attr(placeholder);
+    display: block;
+    color: var(--gray-high-medium);
+}
+
+.content-editable-container {
+    outline: none;
+    border: none;
+    overflow-y: auto;
+    word-break: break-word;
+    max-height: calc(100% - 160px - 24px);
+    height: 100%;
+    padding-left: 24px;
+    padding-right: 24px;
+    transition: height .5s;
+}
+
+.content-editable-container::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent; /* 또는 트랙에 추가한다 */
+}
+
+/* 썸(thumb) 추가 */
+.content-editable-container::-webkit-scrollbar-thumb {
+    background: var(--brand-red);
+}
+
+.content-editable-container.is-hide ~ ._subtasks {
+    max-height: 100% !important;
+    height: 100% !important;
+    margin-top: 0 !important;
+    border-top: none !important;
+    transition: all .5s;
+}
+
+.right-side-inner .tab-content ._subtasks {
+    border-top: var(--border-1px) var(--gray-high-medium);
+    max-height: 160px;
+    overflow-y: auto;
+    margin-top: 24px;
+    transition: all .5s;
+    position: relative;
+}
+
+.right-side-inner .tab-content ._content-container-remover {
+    position: absolute;
+    top: -16px;
+    right: 16px;
+    color: var(--brand-red);
+    cursor: pointer;
+}
+
+.right-side-inner .tab-content ._subtasks::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent; /* 또는 트랙에 추가한다 */
+}
+
+/* 썸(thumb) 추가 */
+.right-side-inner .tab-content ._subtasks::-webkit-scrollbar-thumb {
+    background: var(--brand-red);
+}
+
+.right-side-inner .tab-content .subtask-item ._title {
+    border-bottom: none;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.right-side-inner .tab-content .subtask-item ._title .checkbox {
+    margin-right: 8px;
+}
+
+.right-side-inner .tab-content .subtask-item ._title ._name {
+    margin-right: 0;
+}
+
+.right-side-inner .tab-content .subtask-item ._title ._name input {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.right-side-inner .tab-content .subtask-item.is-checked .checkbox {
+    background-color: var(--brand-red);
+}
+
+.right-side-inner .tab-content .subtask-item.is-checked ._name input {
+    color: var(--gray-dark-light);
+}
+
+.right-side-inner .tab-content .subtask-item:hover ._close {
+    display: flex;
+}
+
+.right-side-inner .tab-content .subtask-item ._close {
+    cursor: pointer;
+    margin-left: 8px;
+    padding: 4px;
+    display: none;
+}
+
+.right-side-inner .tab-content .subtask-item ._close:hover {
+    border-radius: var(--input-radius);
+    background-color: rgba(222, 222, 222, 0.2);
+}
+
+.right-side-inner .tab-content .subtask-item ._close > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.right-side-inner .tab-content .subtask-item.add {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.right-side-inner .tab-content ._comment-input-container {
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-top: 24px;
+    border-top: var(--border-1px) var(--gray-high-medium);
+}
+
+.right-side-inner .tab-content ._comment-input-container ._input-inner {
+    display: flex;
+}
+
+.right-side-inner .tab-content ._comment-input-container ._control-panel {
+    display: flex;
+    padding-top: 16px;
+    padding-bottom: 8px;
+}
+
+.right-side-inner .tab-content ._comment-input-container textarea {
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    resize: none;
+}
+
+.right-side-inner .tab-content ._comment-input-container textarea::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent; /* 또는 트랙에 추가한다 */
+}
+
+/* 썸(thumb) 추가 */
+.right-side-inner .tab-content ._comment-input-container textarea::-webkit-scrollbar-thumb {
+    background: var(--brand-red);
+}
+
+.right-side-inner .tab-content ._comment-input-container ._write {
+    margin-left: 16px;
+    margin-bottom: auto;
+    cursor: pointer;
+}
+
+.right-side-inner .tab-content ._comment-input-container ._control-panel ul {
+    list-style: none;
+    display: flex;
+    padding-inline-start: 0;
+    margin-block: initial;
+}
+
+.right-side-inner .tab-content ._comment-input-container ._control-panel ul li {
+    display: flex;
+    cursor: pointer;
+}
+
+.right-side-inner .tab-content ._comment-input-container ._control-panel ul li:hover svg * {
+    fill: var(--brand-red);
+}
+
+.right-side-inner .tab-content ._comment-input-container ._control-panel ul li:not(:last-child) {
+    margin-right: 16px;
+}
+
+.right-side-inner .tab-content ._comment-input-container ._control-panel ul li * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.right-side-inner .tab-content ._comment-input-container ._control-panel ._emoji {
+    position: relative;
+}
+
+.right-side-inner .tab-content ._comment-input-container ._control-panel ._emoji button {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.right-side-inner .tab-content ._comments {
+    height: 100%;
+    max-height: calc(100vh - 558px - 24px);
+    overflow-y: auto;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.right-side-inner .tab-content ._comments::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent; /* 또는 트랙에 추가한다 */
+}
+
+/* 썸(thumb) 추가 */
+.right-side-inner .tab-content ._comments::-webkit-scrollbar-thumb {
+    background: var(--brand-red);
+}
+
+.right-side-inner .tab-content ._comments .comment-item {
+    margin-bottom: 16px;
+    display: flex;
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._profile {
+    width: 36px;
+    height: 36px;
+    padding-left: 18px;
+    padding-right: 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-right: 16px;
+    border-radius: 50%;
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._info {
+    width: 100%;
+    border-bottom: none;
+    padding: 0;
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._info ._content {
+    margin-top: 4px;
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._user {
+    display: flex;
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._user * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._user ._date {
+    line-height: 1;
+    margin-left: 8px;
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._user ._title {
+    border-bottom: none;
+    padding: 0;
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._comment-file {
+    display: inline-block;
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._comment-file._file {
+    display: flex;
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._comment-file ._image {
+    width: 100%;
+    padding-top: 60%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: var(--input-radius);
+    border: var(--border-1px) var(--gray-high-medium);
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._comment-file._file ._file {
+    width: 30px;
+    padding-top: 30px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url('../../../resources/assets/images/sample/file-image.png');
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._comment-file._file ._file-info {
+    margin-left: 8px;
+    margin-top: 0;
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._comment-file ._file-info {
+    display: flex;
+    margin-top: 4px;
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._comment-file ._file-info * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._comment-file ._file-info ._name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 24px;
+}
+
+.right-side-inner .tab-content ._comments .comment-item ._comment-file ._file-info ._download {
+    margin-left: auto;
+    color: var(--brand-red);
+    cursor: pointer;
+}
+
+.right-side-inner .tab-content ._files-container {
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 24px;
+    padding-right: 24px;
+    max-height: 488px;
+    height: 100%;
+    overflow: auto;
+}
+
+.right-side-inner .tab-content ._files-container::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent; /* 또는 트랙에 추가한다 */
+}
+
+/* 썸(thumb) 추가 */
+.right-side-inner .tab-content ._files-container::-webkit-scrollbar-thumb {
+    background: var(--brand-red);
+}
