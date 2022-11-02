@@ -91,12 +91,12 @@
         from company_member
         WHERE no = #{member_no}
     </select>
-    <select id="checkMemberIsCompanyMember" resultType="">
+    <select id="checkMemberIsCompanyMember" resultType="_boolean">
         select company_no = #{company_no}
         from company_member
         WHERE no = #{member_no}
     </select>
-    <select id="getCompanyMemberTagList" resultType="CompanyProfileMember" resultMap="CompanyProfileMember">
+    <select id="getCompanyMemberProfile" resultType="CompanyProfileMember" resultMap="CompanyProfileMember">
         select company_member.no, u.name, u.profile_img
         from company_member
                  left join user u on company_member.user_no = u.no
