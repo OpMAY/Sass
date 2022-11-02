@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.crm.SubTaskMapper">
+    <select id="getSubtasksByTaskId" resultType="SubTask">
+        select *
+        from subtask
+        WHERE task_id = #{task_id}
+    </select>
+    <select id="checkTokenIdAbleToUse" resultType="_boolean">
+        select !EXISTS(select * from subtask WHERE id = #{id})
+    </select>
+    <insert id="addSubTask">
+        insert into subtask(id, task_id, title, complete, reg_datetime, updated_datetime)
+        VALUES (#{id}, #{task_id}, #{title}, false, now(), now())
+    </insert>
+    <select id="getSubtaskById" resultType="SubTask">
+        select *
+        from subtask
+        WHERE id = #{id}
+    </select>
+    <delete id="removeSubTask">
+        delete
+        from subtask
+        where id = #{sub_task_id};
+    </delete>
+    <update id="changeSubTaskStatus">
+        update subtask
+        SET complete         = !complete,
+            updated_datetime = now()
+        WHERE id = #{sub_task_id}
+    </update>
+    <update id="changeSubTaskName">
+        update subtask
+        SET title            = #{title},
+            updated_datetime = now()
+        WHERE id = #{sub_task_id}
+    </update>
+    <select id="checkSubTaskCompleted" resultType="_boolean">
+        select complete
+        from subtask
+        WHERE id = #{sub_task_id}
+    </select>
+</mapper>

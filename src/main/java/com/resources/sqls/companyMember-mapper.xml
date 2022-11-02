@@ -3,6 +3,10 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.CompanyMemberMapper">
+    <resultMap id="CompanyProfileMember" type="com.model.company.CompanyProfileMember">
+        <result column="profile_img" property="profile_img" javaType="com.model.common.MFile"
+                typeHandler="com.middleware.JsonObjectTypeHandler"/>
+    </resultMap>
     <select id="checkUserMemberOfCompany" resultType="_boolean">
         select EXISTS(select * from company_member WHERE user_no = #{userNo} AND company_no = #{companyNo})
     </select>
@@ -75,5 +79,27 @@
         from company_member
                  left join user u on company_member.user_no = u.no
         WHERE company_no = #{companyNo}
+    </select>
+    <select id="getCompanyMemberTagList" resultType="CompanyProfileMember" resultMap="CompanyProfileMember">
+        select company_member.no, u.name, u.profile_img
+        from company_member
+                 left join user u on company_member.user_no = u.no
+        WHERE company_member.company_no = #{company_no}
+    </select>
+    <select id="getCompanyMemberInfoByMemberNo" resultType="CompanyMember">
+        select *
+        from company_member
+        WHERE no = #{member_no}
+    </select>
+    <select id="checkMemberIsCompanyMember" resultType="">
+        select company_no = #{company_no}
+        from company_member
+        WHERE no = #{member_no}
+    </select>
+    <select id="getCompanyMemberTagList" resultType="CompanyProfileMember" resultMap="CompanyProfileMember">
+        select company_member.no, u.name, u.profile_img
+        from company_member
+                 left join user u on company_member.user_no = u.no
+        WHERE company_member.no = #{member_no}
     </select>
 </mapper>
