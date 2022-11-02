@@ -102,4 +102,10 @@
                  left join user u on company_member.user_no = u.no
         WHERE company_member.no = #{member_no}
     </select>
+    <select id="getUserMemberInfo" resultType="CompanyMember">
+        select *
+        from company_member
+        WHERE user_no = #{user_no}
+          AND company_no = #{company_no}
+    </select>
 </mapper>

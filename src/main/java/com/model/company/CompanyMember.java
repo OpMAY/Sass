@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class CompanyMember {
+    private int no;
     private int user_no;
     private int company_no;
     private ROLE role;

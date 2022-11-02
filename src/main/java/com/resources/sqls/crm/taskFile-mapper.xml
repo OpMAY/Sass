@@ -24,4 +24,8 @@
         from task_file
         WHERE no = #{no}
     </delete>
+    <insert id="insertTaskFile" keyProperty="no" useGeneratedKeys="true">
+        insert into task_file(task_id, file, updated_datetime, reg_datetime)
+        VALUES (#{task_id}, #{file, typeHandler=com.middleware.JsonObjectTypeHandler}, now(), now())
+    </insert>
 </mapper>

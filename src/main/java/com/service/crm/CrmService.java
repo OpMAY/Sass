@@ -1,24 +1,32 @@
 package com.service.crm;
 
+import com.aws.CDNService;
+import com.aws.file.FileUploadUtility;
+import com.aws.model.Download;
 import com.dao.CompanyDao;
 import com.dao.CompanyMemberDao;
 import com.dao.crm.*;
+import com.model.common.MFile;
 import com.model.company.CompanyProfileMember;
 import com.model.crm.*;
 import com.model.crm.file.TaskFile;
 import com.model.crm.state.TASK_STATUS_TYPE;
 import com.response.DefaultRes;
 import com.response.Message;
+import com.util.Constant;
 import com.util.Encryption.EncryptionService;
+import com.util.Format;
 import com.util.Time;
 import com.util.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +43,8 @@ import static org.springframework.http.HttpStatus.OK;
 @Slf4j
 @RequiredArgsConstructor
 public class CrmService {
+    @Value("{UPLOAD_PATH}")
+    private String upload_path;
     private final CompanyMemberDao companyMemberDao;
     private final CompanyDao companyDao;
     private final BoardDao boardDao;
@@ -48,6 +58,8 @@ public class CrmService {
     private final TaskMentionDao taskMentionDao;
     private final SubTaskDao subTaskDao;
     private final EncryptionService encryptionService;
+    private final FileUploadUtility fileUploadUtility;
+    private final CDNService cdnService;
 
     /**
      * getAllProjects
@@ -256,8 +268,9 @@ public class CrmService {
             board.setTaskList(taskDao.getBoardTasks(board.getId()));
         }
 
-        // Copy Boards
+        // Copy Boards -> include task
         for (Board board : boards) {
+            board.setProject_no(copied_project.getNo());
             copyBoard(board);
         }
         log.debug("Board 및 Task 복사 완료, 소요시간 : {}초", Time.getDateSecondDiff(start_time, Time.LongTimeStamp(0)));
@@ -354,6 +367,7 @@ public class CrmService {
 
         // 3. Task Copy
         for (Task task : original_board.getTaskList()) {
+            task.setBoard_id(copied_board.getId());
             copyTask(task);
         }
 
@@ -393,12 +407,38 @@ public class CrmService {
         copied_task.setStart_date(original_task.getStart_date());
         copied_task.setEnd_date(original_task.getEnd_date());
         copied_task.setDescription(original_task.getDescription());
+        copied_task.setComplete(original_task.isComplete());
         // TODO taskDao.createTask() 와 동일하지만 추후 수정 가능성을 위해 분할 - 해당 쿼리 수정 시 주석 삭제
         taskDao.copyTask(copied_task);
 
         // 기존 Task 에 엮여진 담당자들 복사할 Task에 엮기
-        if (!taskDao.getBoardTasks(original_task.getBoard_id()).isEmpty()) {
+        if (!taskMemberDao.getTaskMembers(original_task.getId()).isEmpty()) {
             taskMemberDao.copyTask(original_task.getId(), copied_task.getId());
+        }
+
+        // 기존 task에 엮여진 subtask
+        List<SubTask> subTasks = subTaskDao.getSubtasksByTaskId(original_task.getId());
+        for (SubTask subTask : subTasks) {
+            subTask.setTask_id(copied_task.getId());
+            subTask.setId(TokenGenerator.RandomToken(8));
+            while (!subTaskDao.checkTokenIdAbleToUse(subTask.getTask_id())) {
+                subTask.setId(TokenGenerator.RandomToken(8));
+            }
+            subTaskDao.addSubTask(subTask);
+        }
+
+        // 기존 task에 엮여진 file
+        List<TaskFile> files = taskFileDao.getTaskFiles(original_task.getId());
+        for (TaskFile file : files) {
+            file.setTask_id(copied_task.getId());
+            // TODO AWS COPY error? => fix
+            String url = file.getFile().getUrl();
+            String path = Format.getURIFromUrl(url);
+            String cdn_path = path.substring(path.lastIndexOf("/") - 1);
+            File f = cdnService.download(new Download(upload_path, cdn_path, file.getFile().getName()));
+            MFile result = fileUploadUtility.uploadFile(f, Constant.CDN_PATH.TASK_FILE);
+            file.setFile(result);
+            taskFileDao.insertTaskFile(file);
         }
         log.debug("Task 복사 완료 : {}초 소요", Time.getDateSecondDiff(start_time, Time.LongTimeStamp(0)));
         return copied_task;
@@ -910,6 +950,32 @@ public class CrmService {
     }
 
     /**
+     * changeTaskThumbnail
+     *
+     * @param task_id   String
+     * @param thumbnail MFile
+     * @return ResponseEntity(REST)
+     * <p>
+     * 작업의 내용을 변경하는 함수
+     * # 예상 예외 처리
+     * - 회사 데이터 없음 -> Interceptor 처리?
+     * - 권한 없음 -> Interceptor 처리?
+     **/
+    @Transactional
+    public ResponseEntity changeTaskThumbnail(String task_id, MFile thumbnail) {
+        Message message = new Message();
+        if (taskDao.getTaskById(task_id) == null) {
+            message.put("status", false);
+            message.put("error_message", "해당 업무를 불러올 수 없습니다. 업무 리스트를 최신화 해주세요.");
+        } else {
+            taskDao.changeTaskThumbnail(task_id, thumbnail);
+            message.put("status", true);
+            message.put("thumbnail", thumbnail);
+        }
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    /**
      * changeSubTaskStatus
      *
      * @param sub_task_id String
@@ -972,7 +1038,7 @@ public class CrmService {
     /**
      * addSubTask
      *
-     * @param subTask String
+     * @param subTask SubTask
      * @return ResponseEntity(REST)
      * <p>
      * 하위 업무 추가 함수
@@ -1124,14 +1190,21 @@ public class CrmService {
      * <p>
      * 댓글 삭제
      * # 예상 예외 처리
+     * - 내 댓글만 삭제
      * - 회사 데이터 없음 -> Interceptor 처리?
      * - 권한 없음 -> Interceptor 처리?
      **/
     @Transactional
-    public ResponseEntity deleteComment(int comment_no) {
+    public ResponseEntity deleteComment(int member_no, int comment_no) {
         Message message = new Message();
-        taskCommentDao.deleteComment(comment_no);
-        message.put("status", true);
+        TaskComment comment = taskCommentDao.getTaskCommentByNo(comment_no);
+        if (comment.getMember_no() != member_no) {
+            message.put("status", false);
+            message.put("error_message", "자신의 댓글만 삭제할 수 있습니다.");
+        } else {
+            taskCommentDao.deleteComment(comment_no);
+            message.put("status", true);
+        }
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
 

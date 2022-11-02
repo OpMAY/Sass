@@ -1,6 +1,7 @@
 package com.model.crm;
 
 import com.model.User;
+import com.model.common.MFile;
 import com.model.common.Time;
 import com.model.company.CompanyProfileMember;
 import lombok.Data;
@@ -13,6 +14,7 @@ public class Task extends Time {
     private String id;
     private String board_id;
     private int project_no;
+    private MFile thumbnail;
     private String start_date;
     private String end_date;
     private boolean complete;

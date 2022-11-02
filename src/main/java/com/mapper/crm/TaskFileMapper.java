@@ -10,4 +10,6 @@ public interface TaskFileMapper {
     List<TaskFile> getProjectFiles(int project_no);
 
     void deleteFile(int file_no);
+
+    void insertTaskFile(TaskFile file);
 }

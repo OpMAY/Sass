@@ -1,5 +1,6 @@
 package com.mapper.crm;
 
+import com.model.common.MFile;
 import com.model.crm.Task;
 import org.apache.ibatis.annotations.Param;
 
@@ -39,4 +40,6 @@ public interface TaskMapper {
     void updateTaskStartDate(@Param("task_id") String task_id, @Param("start_date") String start_date);
 
     void updateTaskEndDate(@Param("task_id") String task_id, @Param("end_date") String end_date);
+
+    void changeTaskThumbnail(@Param("task_id") String task_id, @Param("thumbnail") MFile thumbnail);
 }
