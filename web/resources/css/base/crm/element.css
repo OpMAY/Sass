@@ -20,8 +20,8 @@
 .checkbox i {
     color: var(--basic-white);
     position: absolute;
-    top: 52%;
-    left: 48%;
+    top: 50%;
+    left: 50%;
     transform: var(--translate-center);
 }
 
@@ -80,7 +80,10 @@
 }
 
 .project.add > div {
-    background-color: var(--brand-red);
+    border: none;
+    display: flex;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .project.add > div ._name {
@@ -89,7 +92,6 @@
 }
 
 .project.add > div > svg {
-    margin-left: auto;
 }
 
 .project.edit > div {
@@ -98,6 +100,7 @@
 
 .project.edit > div ._name {
     margin-right: 8px;
+    width: 100%;
 }
 
 .project.edit > div ._name input:focus,
@@ -108,6 +111,19 @@
     border: none;
     padding: 0;
     color: var(--gray-dark-low);
+}
+
+.project.edit > div .checkbox {
+    margin-left: auto;
+}
+
+.project.edit > div ._option:hover {
+    color: var(--brand-red);
+}
+
+.project.edit > div ._option {
+    margin-left: 16px;
+    color: var(--gray-high-medium);
 }
 
 .project > div > * {
@@ -192,6 +208,11 @@
     border-top: var(--border-1px) var(--gray-high-medium);
 }
 
+.recent-status-container .tab-content ul li:last-child {
+    border-bottom-left-radius: 0.25rem !important;
+    border-bottom-right-radius: 0.25rem !important;
+}
+
 .recent-status-container .tab-content ul li > * {
     margin-top: auto;
     margin-bottom: auto;
@@ -212,8 +233,8 @@
 .recent-status-container .tab-content ul li .checkbox i {
     color: var(--basic-white);
     position: absolute;
-    top: 52%;
-    left: 58%;
+    top: 50%;
+    left: 50%;
     transform: var(--translate-center);
 }
 

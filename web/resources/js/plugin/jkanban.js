@@ -89,6 +89,8 @@
                     },
                     click: function (el) {
                     },
+                    subTaskClick: function (el) {
+                    },
                     context: function (el, e) {
                     },
                     buttonClick: function (el, boardId) {
@@ -272,6 +274,7 @@
                     nodeItem.dropfn = element.drop
                     __appendCustomProperties(nodeItem, element)
                     __onclickHandler(nodeItem)
+                    __onSubTaskClickHandler(nodeItem.querySelectorAll('.kanban-sub-item .checkbox'));
                     __onContextHandler(nodeItem)
 
                     let boardJSON = __findBoardJSON(boardID);
@@ -413,6 +416,7 @@
                             __appendCustomProperties(nodeItem, itemKanban);
                             //add click handler of item
                             __onclickHandler(nodeItem);
+                            __onSubTaskClickHandler(nodeItem.querySelectorAll('.kanban-sub-item .checkbox'));
                             __onContextHandler(nodeItem);
                             if (self.options.itemHandleOptions.enabled) {
                                 nodeItem.style.cursor = 'default'
@@ -617,6 +621,7 @@
                     nodeItem.dropfn = element.drop
                     __appendCustomProperties(nodeItem, element)
                     __onclickHandler(nodeItem)
+                    __onSubTaskClickHandler(nodeItem.querySelectorAll('.kanban-sub-item .checkbox'));
                     __onContextHandler(nodeItem)
 
                     //체크박스 클릭 이벤트
@@ -743,6 +748,18 @@
                         self.options.click(this)
                         if (typeof this.clickfn === 'function') this.clickfn(this)
                     })
+                }
+
+                function __onSubTaskClickHandler(nodeItems, clickfn) {
+                    nodeItems.forEach(function (nodeItem) {
+                        nodeItem.addEventListener('click', function (e) {
+                            if (!self.options.propagationHandlers.includes('click')) e.preventDefault();
+                            self.options.subTaskClick(this.closest('.kanban-sub-item'));
+                            if (typeof this.clickfn === 'function') this.clickfn(this)
+                            e.preventDefault();
+                            e.stopPropagation();
+                        });
+                    });
                 }
 
                 function __onContextHandler(nodeItem, contextfn) {
@@ -874,11 +891,10 @@
                     container.classList.add('kanban-sub-item-container');
                     container.style.display = 'none';
                     items?.forEach(function (item) {
-                        $(container).append(`<div class="kanban-sub-item ${item.complete === true ? 'complete' : ''}"
+                        $(container).append(`<div class="kanban-sub-item ${item.complete === true ? 'active' : ''}"
                                                   data-id="${item.id}">
                                                <span class="_title">${item.title}</span>
-                                               <span class="_time">${item.start_date} ~ ${item.end_date}</span>
-                                               <img class="_profile" data-toggle="tooltip" data-placement="bottom" title="${item.profiles[0].name}" src="${item.profiles[0].url}"/>
+                                               <span class="checkbox"><i class="fas fa-check" aria-hidden="true"></i></span>
                                              </div>`);
                     });
                     return container.outerHTML;

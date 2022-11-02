@@ -2,10 +2,7 @@
 let kanban;
 const initializeKanban = (boards) => {
     const taskAddOption = {
-        enabled: true,
-        content: '업무 추가하기',
-        footer: true,
-        class: 'kanban-add-task btn btn-block',
+        enabled: true, content: '업무 추가하기', footer: true, class: 'kanban-add-task btn btn-block',
     };
     const addBoardOption = {
         title: `<button class="kanban-add-board btn btn-block">
@@ -13,20 +10,12 @@ const initializeKanban = (boards) => {
                      <path d="M7 0C7.23206 0 7.45462 0.0921874 7.61872 0.256282C7.78281 0.420376 7.875 0.642936 7.875 0.875V6.125H13.125C13.3571 6.125 13.5796 6.21719 13.7437 6.38128C13.9078 6.54538 14 6.76794 14 7C14 7.23206 13.9078 7.45462 13.7437 7.61872C13.5796 7.78281 13.3571 7.875 13.125 7.875H7.875V13.125C7.875 13.3571 7.78281 13.5796 7.61872 13.7437C7.45462 13.9078 7.23206 14 7 14C6.76794 14 6.54538 13.9078 6.38128 13.7437C6.21719 13.5796 6.125 13.3571 6.125 13.125V7.875H0.875C0.642936 7.875 0.420376 7.78281 0.256282 7.61872C0.0921874 7.45462 0 7.23206 0 7C0 6.76794 0.0921874 6.54538 0.256282 6.38128C0.420376 6.21719 0.642936 6.125 0.875 6.125H6.125V0.875C6.125 0.642936 6.21719 0.420376 6.38128 0.256282C6.54538 0.0921874 6.76794 0 7 0Z" fill="#F06A6A"></path>
                     </svg>
                     섹션 추가하기
-               </button>`,
-        id: 'add-board',
-        class: 'kanban-board add-board',
-        onClick: function (self) {
+               </button>`, id: 'add-board', class: 'kanban-board add-board', onClick: function (self) {
             boards = [{
-                id: tokenGenerator(8),
-                title: tokenGenerator(8),
-                class: 'class1, class2, class3',
-                percent: 0,
-                item: [],
+                id: tokenGenerator(8), title: tokenGenerator(8), class: 'class1, class2, class3', percent: 0, item: [],
             }];
             self.addBoards(boards, false, {
-                baseId: self.options.addBoardOption.id,
-                direction: 'prepend'
+                baseId: self.options.addBoardOption.id, direction: 'prepend'
             });
         }
     }
@@ -39,28 +28,18 @@ const initializeKanban = (boards) => {
         boards: boards,
         dragBoards: true,
         itemAddOptions: taskAddOption,
-        addBoardOption: addBoardOption,
-        // 태스크 체크박스 클릭 이벤트 리스너
-        check: checkboxClickEventListener,
-        // 태스크 클릭 이벤트
+        addBoardOption: addBoardOption, // 태스크 체크박스 클릭 이벤트 리스너
+        check: checkboxClickEventListener, // 태스크 클릭 이벤트
         click: kanbanClickTaskEventListener,
-        // 태스크 오른쪽 클릭 이벤트
-        context: kanbanContextTaskEventListener,
-        // 태스크 드래그 이벤트
-        dragEl: kanbanDragTaskEventListener,
-        // 태스크 드래그 종료 이벤트
-        dragendEl: kanbanDragEndTaskEventListener,
-        // 태스크 드랍 이벤트
-        dropEl: kanbanDropTaskEventListener,
-        // 태스크 추가 옵션
-        addTask: kanbanAddTaskEventListener,
-        // 보드 드래그 이벤트
-        dragBoard: kanbanDragBoardEventListener,
-        // 보드 드래그 종료 이벤트
-        dragendBoard: kanbanDragEndBoardEventListener,
-        // 보드 드랍 이벤트
-        dropBoard: kanbanDropBoardEventListener,
-        // 보드 옵션 이벤트
+        subTaskClick: kanbanClickSubTaskEventListener, // 태스크 오른쪽 클릭 이벤트
+        context: kanbanContextTaskEventListener, // 태스크 드래그 이벤트
+        dragEl: kanbanDragTaskEventListener, // 태스크 드래그 종료 이벤트
+        dragendEl: kanbanDragEndTaskEventListener, // 태스크 드랍 이벤트
+        dropEl: kanbanDropTaskEventListener, // 태스크 추가 옵션
+        addTask: kanbanAddTaskEventListener, // 보드 드래그 이벤트
+        dragBoard: kanbanDragBoardEventListener, // 보드 드래그 종료 이벤트
+        dragendBoard: kanbanDragEndBoardEventListener, // 보드 드랍 이벤트
+        dropBoard: kanbanDropBoardEventListener, // 보드 옵션 이벤트
         updateBoard: kanbanUpdateBoardEventListener,
     });
     updatePercents(kanban);
@@ -110,10 +89,7 @@ function contextMenuClickEventListener(event) {
             let kanban_item_cover = task_element.querySelector('.kanban-item-cover');
             //TODO Fetch
             let image = {
-                url: URL.createObjectURL(this.files[0]),
-                size: 999,
-                name: 'test.png',
-                type: 'image/jpeg'
+                url: URL.createObjectURL(this.files[0]), size: 999, name: 'test.png', type: 'image/jpeg'
             };
             if (kanban_item_cover !== undefined && kanban_item_cover !== null) {
                 kanban_item_cover.style.backgroundImage = `url('${image.url}')`;
@@ -189,6 +165,21 @@ const checkboxClickEventListener = (kanban, el) => {
     }
     const board = kanban.findBoardJSON(boardId);
     updatePercent(kanban, board);
+}
+const kanbanClickSubTaskEventListener = (el) => {
+    console.log('kanbanClickSubTaskEventListener', el);
+    let boardId = el.closest('.kanban-board[data-id]').dataset.id;
+    let taskId = el.closest('.kanban-item').dataset.eid;
+    let task = kanban.findTaskJSON(boardId, taskId);
+    let subtask_id = el.dataset.id;
+    let subtask = findSubTask(task, subtask_id);
+    if (!el.classList.contains('active')) {
+        subtask.complete = true;
+        el.classList.add('active');
+    } else {
+        subtask.complete = false;
+        el.classList.remove('active');
+    }
 }
 
 const kanbanClickTaskEventListener = (el) => {
@@ -317,21 +308,13 @@ const kanbanUpdateBoardEventListener = (selected_option, board, boardId) => {
             break;
         case '_add_left':
             boards = [{
-                id: tokenGenerator(8),
-                title: tokenGenerator(8),
-                class: 'class1, class2, class3',
-                percent: 0,
-                item: [],
+                id: tokenGenerator(8), title: tokenGenerator(8), class: 'class1, class2, class3', percent: 0, item: [],
             }];
             addBoards(kanban, 'prepend', boardId, boards);
             break;
         case '_add_right':
             boards = [{
-                id: tokenGenerator(8),
-                title: tokenGenerator(8),
-                class: 'class1, class2, class3',
-                percent: 0,
-                item: [],
+                id: tokenGenerator(8), title: tokenGenerator(8), class: 'class1, class2, class3', percent: 0, item: [],
             }];
             addBoards(kanban, 'append', boardId, boards);
             break;
@@ -340,22 +323,11 @@ const kanbanUpdateBoardEventListener = (selected_option, board, boardId) => {
 
 const kanbanAddTaskEventListener = (el, boardId) => {
     const task = {
-        id: tokenGenerator(6),
-        title: tokenGenerator(8),
-        complete: false,
-        profiles: [
-            {
-                url: 'https://via.placeholder.com/30x30',
-                name: 'kimwoosik'
-            },
-            {
-                url: 'https://via.placeholder.com/30x30',
-                name: 'kimwoosik2'
-            }
-        ],
-        work: 0,
-        start_date: '2022-08-21',
-        end_date: '2022-08-30',
+        id: tokenGenerator(6), title: tokenGenerator(8), complete: false, profiles: [{
+            url: 'https://via.placeholder.com/30x30', name: 'kimwoosik'
+        }, {
+            url: 'https://via.placeholder.com/30x30', name: 'kimwoosik2'
+        }], work: 0, start_date: '2022-08-21', end_date: '2022-08-30',
     };
     kanban.addTaskAndElement(boardId, task);
 
@@ -534,4 +506,17 @@ const updatePercent = (kanban, board) => {
     board.percent = percent;
     let board_element = kanban.findBoard(board.id);
     board_element.querySelector('.kanban-percent').innerHTML = `${board.percent}%`;
+}
+
+const findSubTask = (task, subtask_id) => {
+    if (task.subtasks.length !== 0) {
+        return task.subtasks.filter(function (subtask) {
+            if (subtask.id === subtask_id) {
+                return true;
+            }
+            return false;
+        })[0];
+    } else {
+        throw new Error(`${task.id}, ${task.title} subtask is empty`);
+    }
 }

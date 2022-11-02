@@ -159,10 +159,10 @@
 .gantt-container ._gantt-board ._title {
     /* padding: 51px 20px 51px 20px; */
     font-weight: bold;
-    height: 127px;
+    height: 91px;
     margin-top: auto;
     margin-bottom: auto;
-    line-height: 127px;
+    line-height: 91px;
     text-align: center;
 }
 
@@ -207,7 +207,7 @@
     background-color: white;
     /*width: calc(((12px + 12px + 20px) * 30) * 12);*/
     text-align: center;
-    padding: 8px 16px;
+    padding: 0px 16px;
     font-weight: bold;
     color: #F06A6A;
     border-bottom: 1px solid var(--gray-high-medium);
@@ -224,7 +224,7 @@
     background-color: white;
     display: inline-block;
     text-align: left;
-    padding: 10px 16px;
+    padding: 0 16px;
     /*min-width: calc((12px + 12px + 20px) * 30);*/
     font-weight: bold;
     color: #F06A6A;
@@ -233,8 +233,8 @@
 
 ._gantt-timeline ._gantt-header ._month > div > span {
     position: sticky;
-    left: 12px;
-    right: 12px;
+    left: 16px;
+    right: 16px;
     display: inline-block;
 }
 

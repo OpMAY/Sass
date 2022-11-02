@@ -59,6 +59,12 @@
     color: #F06A6A;
 }
 
+.list-container .list-table ._task-add svg {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 8px;
+}
+
 .list-container .list-table ._task-add td:first-child,
 .list-container .list-table ._task td:first-child {
     padding-left: 28px;
@@ -143,10 +149,13 @@
     background-size: cover;
     background-image: url('../../../resources/assets/images/icon/crm/dropdown-icon.svg');
     margin-right: 8px;
+    transform: rotate(-180deg);
+    transition: transform .5s;
 }
 
 .list-container .list-table .is-close .list-td > div._dropdown {
-    transform: rotate(180deg);
+    transform: rotate(0);
+    transition: transform .5s;
 }
 
 .list-container .list-table .list-td > div._start,

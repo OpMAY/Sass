@@ -52,12 +52,12 @@ const initializeRightTask = () => {
             //Show
             icon.classList.remove('fa-eye-slash');
             icon.classList.add('fa-eye');
-            rightTaskShowContent();
+            rightTaskShowContent(this);
         } else {
             //Hide
             icon.classList.remove('fa-eye');
             icon.classList.add('fa-eye-slash');
-            rightTaskHideContent();
+            rightTaskHideContent(this);
         }
     });
     //TODO Click OutSide Close Event
@@ -68,16 +68,20 @@ const initializeRightTask = () => {
     });
 };
 
-const rightTaskShowContent = () => {
+const rightTaskShowContent = (icon) => {
     let content = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab .content-editable-container');
-    if (!content.classList.contains('is-hide'))
+    if (!content.classList.contains('is-hide')) {
         content.classList.add('is-hide');
+        icon.classList.add('is-hide');
+    }
 }
 
-const rightTaskHideContent = () => {
+const rightTaskHideContent = (icon) => {
     let content = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab .content-editable-container');
-    if (content.classList.contains('is-hide'))
+    if (content.classList.contains('is-hide')) {
         content.classList.remove('is-hide');
+        icon.classList.remove('is-hide');
+    }
 }
 
 const rightTaskClose = () => {
@@ -565,7 +569,7 @@ function rightTaskCommentKeydownEventListener(event) {
         event.preventDefault();
         event.stopPropagation();
     }
-    if ((event.key === 'Enter'.toLowerCase() || event.code === 'Enter'.toLowerCase() || event.keyCode === 13) && (event.altKey || event.shiftKey || event.ctrlKey)) {
+    if ((event.key === 'Enter'.toLowerCase() || event.code === 'Enter'.toLowerCase() || event.keyCode === 13) && !(event.altKey || event.shiftKey || event.ctrlKey)) {
         //TODO Enter Key
         event.preventDefault();
         event.stopPropagation();
