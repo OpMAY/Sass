@@ -73,9 +73,9 @@ function optionDropdownHideEventListener(event) {
 
 //TODO 20221102 - 27번 - 지우
 //TODO 20221102 - 27번 - 지우
-//TODO 20221102 - 14번 - 우식
-//TODO 20221102 - 15번 - 우식
-//TODO 20221102 - 19번 - 우식
+//TODO 20221102 - 14번 - 우식 check
+//TODO 20221102 - 15번 - 우식 check
+//TODO 20221102 - 19번 - 우식 check
 function contextMenuClickEventListener(event) {
     let menu = this.closest('#context-menu');
     let taskId = menu.dataset.taskId;
@@ -158,9 +158,12 @@ function contextMenuClickEventListener(event) {
         });
     } else if (this.classList.contains('_delete')) {
         //삭제
-        kanban.removeTask(board, task);
-        kanban.removeElement(taskId);
-        updatePercent(kanban, board);
+        apiDeleteTask(taskId).then((result) => {
+            console.log('apiDeleteTask', result);
+            kanban.removeTask(board, task);
+            kanban.removeElement(taskId);
+            updatePercent(kanban, board);
+        });
     } else if (this.classList.contains('_subtask') && this.classList.contains('_open')) {
         let task_element = kanban.findElement(taskId);
         task_element.querySelector('.kanban-sub-item-container').style.display = 'block';
@@ -206,11 +209,17 @@ const kanbanClickSubTaskEventListener = (el) => {
     let subtask_id = el.dataset.id;
     let subtask = findSubTask(task, subtask_id);
     if (!el.classList.contains('active')) {
-        subtask.complete = true;
-        el.classList.add('active');
+        apiChangeSubTaskStatus(subtask_id).then((result) => {
+            console.log('apiChangeSubTaskStatus', result);
+            subtask.complete = true;
+            el.classList.add('active');
+        });
     } else {
-        subtask.complete = false;
-        el.classList.remove('active');
+        apiChangeSubTaskStatus(subtask_id).then((result) => {
+            console.log('apiChangeSubTaskStatus', result);
+            subtask.complete = false;
+            el.classList.remove('active');
+        });
     }
 }
 
@@ -292,6 +301,7 @@ const openContextMenu = (menu, board_id, task_id, position) => {
     menu.style.display = 'block';
 };
 
+//TODO 17번 - 우식
 //TODO 20221102 - 12번, 20번 - 우식
 const kanbanDragTaskEventListener = (el, source) => {
     const prev_board = source;
@@ -301,25 +311,70 @@ const kanbanDragTaskEventListener = (el, source) => {
     //console.log('dragEl', 'prev_board', prev_board, 'prev_task', prev_task);
 };
 
+//TODO 17번 - 우식
 //TODO 20221102 - 12번, 20번 - 우식
 const kanbanDragEndTaskEventListener = (el) => {
     //console.log('dragendEl', el);
 };
 
+//TODO 17번 - 우식
 //TODO 20221102 - 12번, 20번 - 우식
 const kanbanDropTaskEventListener = (self, el, target, source, sibling) => {
+    console.log('kanbanDropTaskEventListener');
+    console.log('self', self);
+    console.log('el', el);
+    console.log('target', target);
+    console.log('source', source);
+    console.log('sibling', sibling);
     let source_board_element = source.closest('.kanban-board[data-id]');
     let target_board_element = target.closest('.kanban-board[data-id]');
 
     let source_board = self.findBoardJSON(source_board_element.dataset.id);
+    let target_board = self.findBoardJSON(target_board_element.dataset.id);
     let task = self.findTaskJSON(source_board.id, el.dataset.eid);
+    if (source_board.id === target_board.id) {
+        //TODO 같은 보드 안에서 Order Change 일때
+        let order = 1;
+        let check = false;
+        let items = target_board_element.querySelectorAll('.kanban-item');
+        items.forEach(function (item) {
+            if (item.dataset.eid === task.id) {
+                check = true;
+            } else {
+                if (!check)
+                    order++;
+            }
+        });
+        console.log(order);
+        apiChangeTaskOrder(task.id, order).then((result) => {
+            console.log('apiChangeTaskOrder', result);
+        });
+    } else {
+        //TODO 다른 보드 안에서 Order Change 일때
+        let order = 1;
+        let check = false;
+        let items = target_board_element.querySelectorAll('.kanban-item');
+        items.forEach(function (item) {
+            if (item.dataset.eid === task.id) {
+                check = true;
+            } else {
+                if (!check)
+                    order++;
+            }
+        });
+        console.log(order);
+        apiMoveTaskToOtherBoard(task.id, target_board.id, order).then((result) => {
+            console.log('apiMoveTaskToOtherBoard', result);
+        });
+    }
+
     source_board.item = source_board.item.filter(function (task) {
         if (el.dataset.eid === task.id) {
             return false;
         }
         return true;
     });
-    let target_board = self.findBoardJSON(target_board_element.dataset.id);
+    console.log(source_board, target_board);
     target_board.item.push(task);
     updatePercents(self);
 };
@@ -348,6 +403,7 @@ const kanbanDropBoardEventListener = (el, target, source, sibling) => {
     });
 }
 
+//TODO 13번 - 우식
 const kanbanUpdateBoardEventListener = (selected_option, board, boardId) => {
     //console.log('headerUpdate', board, boardId, selected_option);
     let boards;
@@ -439,11 +495,13 @@ function taskTitleUpdateClickEventListener(e, is_close) {
     } else {
         value = task_input.value;
     }
-    task_input.remove();
-    task_title_container.innerHTML = createTaskTitleElement(value);
-    task_title_container.setAttribute('title', value);
-    const item_task = kanban.findTaskJSON(board.dataset.id, task.dataset.eid);
-    item_task.title = `${value}`;
+    apiChangeTaskName(task.dataset.eid, value).then((result) => {
+        task_input.remove();
+        task_title_container.innerHTML = createTaskTitleElement(value);
+        task_title_container.setAttribute('title', value);
+        const item_task = kanban.findTaskJSON(board.dataset.id, task.dataset.eid);
+        item_task.title = `${value}`;
+    });
 }
 
 //TODO 20221102 - 11번 - 우식
