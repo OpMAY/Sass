@@ -42,5 +42,5 @@ public interface CompanyMemberMapper {
 
     CompanyProfileMember getCompanyMemberProfile(int member_no);
 
-    CompanyMember getUserMemberInfo(int user_no, int company_no);
+    CompanyMember getUserMemberInfo(@Param("user_no") int user_no, @Param("company_no") int company_no);
 }

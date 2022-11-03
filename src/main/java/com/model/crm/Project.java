@@ -11,4 +11,6 @@ public class Project extends Time {
     private int company_no;
     private String name;
     private List<Board> boardList;
+
+    private String hash_no;
 }

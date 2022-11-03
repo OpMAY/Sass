@@ -6,6 +6,7 @@ import com.dao.CompanyDao;
 import com.dao.CompanyMemberDao;
 import com.dao.crm.BoardDao;
 import com.dao.crm.TaskDao;
+import com.google.gson.Gson;
 import com.model.common.MFile;
 import com.model.company.Company;
 import com.model.company.CompanyMember;
@@ -20,6 +21,7 @@ import com.util.Encryption.EncryptionService;
 import com.util.Encryption.JWTEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +50,7 @@ public class CrmPlugRestController {
     // Project
 
     // TODO 20221102 1번 - 지우
-    @RequestMapping(value = "/projects", method = GET)
+    @RequestMapping(value = "/get/projects", method = GET)
     public ResponseEntity getProjects(HttpServletRequest request) {
         Message message = new Message();
         HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
@@ -80,7 +82,7 @@ public class CrmPlugRestController {
     }
 
     // TODO 20221102 3번 - 지우
-    @RequestMapping(value = "/member/tasks", method = GET)
+    @RequestMapping(value = "/get/member/tasks", method = GET)
     public ResponseEntity getMemberTasks(@RequestParam("type") TASK_STATUS_TYPE type, HttpServletRequest request) {
         Message message = new Message();
         HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
@@ -105,8 +107,26 @@ public class CrmPlugRestController {
     // TODO 20221102 4번 - 지우
     @RequestMapping(value = "/create/project", method = POST)
     public ResponseEntity createProject(HttpServletRequest request, @RequestBody Map<String, Object> body) {
-        Project project = (Project) body.get("project");
-        return crmService.createNewProject(project);
+        Message message = new Message();
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
+        if (userNo != null) {
+            Company company = companyMemberDao.getUserCompany(userNo);
+            if (company != null) {
+                JSONObject jsonObject = new JSONObject(body);
+                Project project = new Gson().fromJson(jsonObject.toString(), Project.class);
+                project.setCompany_no(company.getNo());
+                return crmService.createNewProject(project);
+            } else {
+                message.put("status", false);
+                message.put("error_message", "회사 데이터를 불러올 수 없습니다.");
+            }
+        } else {
+            message.put("status", false);
+            message.put("error_message", "유저 데이터를 불러올 수 없습니다.");
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+
     }
 
     // TODO 20221102 5번 - 우식
@@ -119,7 +139,8 @@ public class CrmPlugRestController {
     // TODO 20221102 6번 - 지우
     @RequestMapping(value = "/update/project", method = POST)
     public ResponseEntity updateProject(HttpServletRequest request, @RequestBody Map<String, Object> body) throws Exception {
-        Project project = (Project) body.get("project");
+        JSONObject jsonObject = new JSONObject(body.get("project"));
+        Project project = new Gson().fromJson(jsonObject.toString(), Project.class);
         return crmService.updateProject(project);
     }
 
