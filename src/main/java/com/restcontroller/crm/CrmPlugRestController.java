@@ -292,7 +292,7 @@ public class CrmPlugRestController {
     @RequestMapping(value = "/update/task/member/remove", method = POST)
     public ResponseEntity removeTaskMember(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         String task_id = (String) body.get("id");
-        Integer member_no = (Integer) body.get("member_no");
+        Integer member_no = Integer.parseInt(body.get("member_no").toString());
         return crmService.removeTaskMember(task_id, member_no);
     }
 

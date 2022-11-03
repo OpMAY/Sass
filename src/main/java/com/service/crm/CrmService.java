@@ -582,6 +582,7 @@ public class CrmService {
     @Transactional
     public ResponseEntity deleteBoard(String board_id) {
         Message message = new Message();
+        // TODO Board Order
         boardDao.deleteBoard(board_id);
         message.put("status", true);
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
@@ -708,6 +709,7 @@ public class CrmService {
     @Transactional
     public ResponseEntity deleteTask(String task_id) {
         Message message = new Message();
+        // TODO TASK ORDER UPDATE
         taskDao.deleteTask(task_id);
         message.put("status", true);
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
