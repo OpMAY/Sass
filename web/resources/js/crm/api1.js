@@ -572,7 +572,7 @@ async function apiDeleteFile(file_no) {
 
     let result;
     try {
-        result = await apiFetchDeleteFile(comment_no);
+        result = await apiFetchDeleteFile(file_no);
         console.log(result);
         return result;
     } catch (error) {

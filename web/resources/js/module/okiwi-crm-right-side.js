@@ -371,6 +371,7 @@ const rightTaskAssignInit = (profiles) => {
     let assign_user_add = assign_user_container.querySelector('.user-item.add');
     // 20221103 지우 add
     if (profiles !== undefined) {
+        profiles = taskProfilesChanger(profiles);
         profiles.forEach(function (profile) {
             assign_user_add.before(createRightTaskAssignItem(profile));
         });
@@ -403,6 +404,7 @@ const rightTaskCommentsInit = (comments) => {
     let comments_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._comments');
     comments_container.innerHTML = '';
     comments.forEach(function (comment) {
+
         comments_container.appendChild(createRightTaskCommentItem(comment));
     });
 }
@@ -509,6 +511,8 @@ const rightTaskUserAssignDropdownUpdateItems = (event) => {
             if(result.data.status) {
                 let profiles = result.data.members;
                 let dropdown_menu = event.target.querySelector('.dropdown-menu');
+                // TODO 더이상 추가할 멤버가 없을 때 디자인 or alert?
+                profiles = taskProfilesChanger(profiles);
 
                 profiles.forEach(function (profile) {
                     dropdown_menu.appendChild(createRightTaskDropdownAssignItem(profile));
@@ -551,9 +555,16 @@ function rightTaskUserAssignDeleteClickEventListener(event) {
     let user_item = this.closest('.user-item');
     let user_no = user_item.dataset.no;
     console.log('delete user_no', user_no);
-    user_item.remove();
     event.preventDefault();
     event.stopPropagation();
+    removeTaskMember(RIGHT_TASK_CONTAINER.dataset.id, user_no).then((result) => {
+        console.log(result);
+        if(result.status === 'OK') {
+            if(result.data.status) {
+                user_item.remove();
+            }
+        }
+    })
 }
 
 //TODO 20221102 - 22번 - 지우
@@ -565,9 +576,7 @@ function rightTaskUserAssignAddClickEventListener(event) {
     let url = img.substring(img.indexOf('"') + 1, img.lastIndexOf('"'));
     let profile = {
         no: user_no,
-        profile_img: {
-            url : url
-        },
+        url,
         name
     }
     addTaskMember(RIGHT_TASK_CONTAINER.dataset.id, user_no).then((result) => {
@@ -758,7 +767,7 @@ const createRightTaskAssignItem = (profile) => {
     const __buildRightTaskAssignInnerHTML = (profile) => {
         return `<div class="_user">
               <div class="_profile"
-                   style="background-image: url('${profile.profile_img.url}')">
+                   style="background-image: url('${profile.url}')">
               </div>
               <div class="_name">
                 ${profile.name}
@@ -833,7 +842,7 @@ const createRightSubtaskItem = (subtask) => {
 const createRightTaskDropdownAssignItem = (profile) => {
     const __buildRightTaskDropdownAssignInnerHTML = (profile) => {
         return `  <div class="_dropdown-user">
-                <div class="_profile" style="background-image: url('${profile.profile_img.url}')">
+                <div class="_profile" style="background-image: url('${profile.url}')">
                 </div>
                 <div class="_name">
                   ${profile.name}
@@ -851,7 +860,7 @@ const createRightTaskCommentItem = (comment) => {
     const __buildRightTaskCommentItem = (comment) => {
         if (comment.type === 'text') {
             return `<div class="_profile"
-                     style="background-image: url('${comment.profile.profile_img.url}')"></div>
+                     style="background-image: url('${comment.profile.url}')"></div>
                 <div class="_info">
                   <div class="_user">
                     <div class="_title bold-h5 c-gray-dark-low">${comment.profile.name}</div>
@@ -865,7 +874,7 @@ const createRightTaskCommentItem = (comment) => {
             let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp', 'image/svg+xml'];
             if (allowedExtension.indexOf(comment.file.type) > -1) {
                 return `<div class="_profile"
-                         style="background-image: url('${comment.profile.profile_img.url}')"></div>
+                         style="background-image: url('${comment.profile.url}')"></div>
                     <div class="_info">
                       <div class="_user">
                         <div class="_title bold-h5 c-gray-dark-low">${comment.profile.name}</div>
@@ -887,7 +896,7 @@ const createRightTaskCommentItem = (comment) => {
                     </div>`;
             } else {
                 return `<div class="_profile"
-                             style="background-image: url('${comment.profile.profile_img.url}')"></div>
+                             style="background-image: url('${comment.profile.url}')"></div>
                         <div class="_info">
                           <div class="_user">
                             <div class="_title bold-h5 c-gray-dark-low">${comment.profile.name}</div>
