@@ -54,9 +54,9 @@ const createFileItem = (file) => {
                   <div class="_name regular-h6"
                        data-toggle="tooltip"
                        data-placement="bottom"
-                       title="${file.name}">${file.name}
+                       title="${file.file.name}">${file.file.name}
                   </div>
-                  <div class="_size regular-p1 text-muted">${file.size}</div>
+                  <div class="_size regular-p1 text-muted">${file.file.size}</div>
                 </div>
                 <div class="_download">
                   <svg width="32"

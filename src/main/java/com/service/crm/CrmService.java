@@ -1147,8 +1147,9 @@ public class CrmService {
                 comment.setDate(comment.getReg_datetime().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")));
                 comment.setProfile(companyMemberDao.getCompanyMemberProfile(comment.getMember_no()));
             }
+            message.put("status", true);
+            message.put("comments", comments);
         }
-        message.put("status", true);
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
 
@@ -1313,7 +1314,6 @@ public class CrmService {
                 // task 내에 담당자 set
                 List<CompanyProfileMember> members = taskMemberDao.getTaskMembers(task.getId());
                 task.setCollaborators(members);
-                //TODO Subtask 로직 추가
                 List<SubTask> subTasks = subTaskDao.getSubtasksByTaskId(task.getId());
                 task.setSubTasks(subTasks);
             }

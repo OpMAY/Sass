@@ -188,8 +188,8 @@ const rightTaskReInitialize = (task_id) => {
     console.log('rightTaskReInitialize', task_id);
     getTaskDetail(task_id).then((result) => {
         console.log(result);
-        if(result.status === 'OK') {
-            if(result.data.status) {
+        if (result.status === 'OK') {
+            if (result.data.status) {
                 let task = result.data.task;
                 rightTaskInit(task);
             } else {
@@ -263,7 +263,7 @@ const rightTaskInit = (task) => {
     RIGHT_TASK_CONTAINER.setAttribute('data-id', task.id);
     rightTaskCheckboxInit(task.complete);
     rightTaskTitleInit(task.title);
-    rightTaskAssignInit(task.profiles);
+    rightTaskAssignInit(task.collaborators);
     rightTaskWorkTimeInit(task.start_date, task.end_date);
     rightTaskContentInit(task.description);
     rightTaskSubtasksInit(task.subtasks);
@@ -329,8 +329,30 @@ const rightTaskInit = (task) => {
         size: 102938,
         date: '2022.11.01'
     }];
-    rightTaskCommentsInit(comments);
-    rightTaskFilesInit(files);
+    getTaskComments(task.id).then((result) => {
+        console.log(result)
+        if (result.status === 'OK') {
+            if (result.data.status) {
+                let comments = result.data.comments;
+                rightTaskCommentsInit(comments);
+            } else {
+                alert(result.data.error_message);
+            }
+        }
+
+    })
+
+    getTaskFiles(task.id).then((result) => {
+        console.log(result);
+        if (result.status === 'OK') {
+            if (result.data.status) {
+                let files = result.data.files;
+                rightTaskFilesInit(files);
+            } else {
+                alert(result.data.error_message);
+            }
+        }
+    })
 }
 
 const rightTaskCheckboxInit = (is_complete) => {
@@ -347,9 +369,12 @@ const rightTaskTitleInit = (title) => {
 const rightTaskAssignInit = (profiles) => {
     let assign_user_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner ._info ._assign .user-item-container');
     let assign_user_add = assign_user_container.querySelector('.user-item.add');
-    profiles.forEach(function (profile) {
-        assign_user_add.before(createRightTaskAssignItem(profile));
-    });
+    // 20221103 지우 add
+    if (profiles !== undefined) {
+        profiles.forEach(function (profile) {
+            assign_user_add.before(createRightTaskAssignItem(profile));
+        });
+    }
 }
 
 const rightTaskWorkTimeInit = (start_date, end_date) => {
@@ -367,9 +392,11 @@ const rightTaskContentInit = (content) => {
 const rightTaskSubtasksInit = (subtasks) => {
     let subtasks_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._subtasks');
     let subtask_add = subtasks_container.querySelector('.subtask-item.add');
-    subtasks.forEach(function (subtask) {
-        subtask_add.before(createRightSubtaskItem(subtask));
-    });
+    if (subtasks !== undefined) {
+        subtasks.forEach(function (subtask) {
+            subtask_add.before(createRightSubtaskItem(subtask));
+        });
+    }
 }
 
 const rightTaskCommentsInit = (comments) => {
@@ -477,6 +504,18 @@ function rightTaskEndDatePickerChangeEventListener(event) {
 //TODO 20221102 - 32번 - 지우
 const rightTaskUserAssignDropdownUpdateItems = (event) => {
     console.log('rightTaskUserAssignDropdownUpdateItems', event, this);
+    getTaskAvailableMembers(RIGHT_TASK_CONTAINER.dataset.id).then((result) => {
+        if(result.status === 'OK') {
+            if(result.data.status) {
+                let profiles = result.data.members;
+                let dropdown_menu = event.target.querySelector('.dropdown-menu');
+
+                profiles.forEach(function (profile) {
+                    dropdown_menu.appendChild(createRightTaskDropdownAssignItem(profile));
+                });
+            }
+        }
+    })
     let profiles = [
         {
             no: 1,
@@ -494,11 +533,7 @@ const rightTaskUserAssignDropdownUpdateItems = (event) => {
             name: 'kimwoosik3'
         }
     ];
-    let dropdown_menu = event.target.querySelector('.dropdown-menu');
 
-    profiles.forEach(function (profile) {
-        dropdown_menu.appendChild(createRightTaskDropdownAssignItem(profile));
-    });
 }
 
 const rightTaskUserAssignDropdownClearItems = (event) => {
@@ -530,12 +565,22 @@ function rightTaskUserAssignAddClickEventListener(event) {
     let url = img.substring(img.indexOf('"') + 1, img.lastIndexOf('"'));
     let profile = {
         no: user_no,
-        url,
+        profile_img: {
+            url : url
+        },
         name
     }
-    let assign_user_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner ._info ._assign .user-item-container');
-    let assign_user_add = assign_user_container.querySelector('.user-item.add');
-    assign_user_add.before(createRightTaskAssignItem(profile));
+    addTaskMember(RIGHT_TASK_CONTAINER.dataset.id, user_no).then((result) => {
+        if(result.status === 'OK') {
+            if(result.data.status) {
+                let assign_user_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner ._info ._assign .user-item-container');
+                let assign_user_add = assign_user_container.querySelector('.user-item.add');
+                assign_user_add.before(createRightTaskAssignItem(profile));
+            } else {
+                alert(result.data.error_message);
+            }
+        }
+    })
 }
 
 function rightTaskDatepickerInputEventListener(event) {
@@ -713,7 +758,7 @@ const createRightTaskAssignItem = (profile) => {
     const __buildRightTaskAssignInnerHTML = (profile) => {
         return `<div class="_user">
               <div class="_profile"
-                   style="background-image: url('${profile.url}')">
+                   style="background-image: url('${profile.profile_img.url}')">
               </div>
               <div class="_name">
                 ${profile.name}
@@ -788,7 +833,7 @@ const createRightSubtaskItem = (subtask) => {
 const createRightTaskDropdownAssignItem = (profile) => {
     const __buildRightTaskDropdownAssignInnerHTML = (profile) => {
         return `  <div class="_dropdown-user">
-                <div class="_profile" style="background-image: url('${profile.url}')">
+                <div class="_profile" style="background-image: url('${profile.profile_img.url}')">
                 </div>
                 <div class="_name">
                   ${profile.name}
@@ -806,7 +851,7 @@ const createRightTaskCommentItem = (comment) => {
     const __buildRightTaskCommentItem = (comment) => {
         if (comment.type === 'text') {
             return `<div class="_profile"
-                     style="background-image: url('${comment.profile.url}')"></div>
+                     style="background-image: url('${comment.profile.profile_img.url}')"></div>
                 <div class="_info">
                   <div class="_user">
                     <div class="_title bold-h5 c-gray-dark-low">${comment.profile.name}</div>
@@ -820,7 +865,7 @@ const createRightTaskCommentItem = (comment) => {
             let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/bmp', 'image/svg+xml'];
             if (allowedExtension.indexOf(comment.file.type) > -1) {
                 return `<div class="_profile"
-                         style="background-image: url('${comment.profile.url}')"></div>
+                         style="background-image: url('${comment.profile.profile_img.url}')"></div>
                     <div class="_info">
                       <div class="_user">
                         <div class="_title bold-h5 c-gray-dark-low">${comment.profile.name}</div>
@@ -842,7 +887,7 @@ const createRightTaskCommentItem = (comment) => {
                     </div>`;
             } else {
                 return `<div class="_profile"
-                             style="background-image: url('${comment.profile.url}')"></div>
+                             style="background-image: url('${comment.profile.profile_img.url}')"></div>
                         <div class="_info">
                           <div class="_user">
                             <div class="_title bold-h5 c-gray-dark-low">${comment.profile.name}</div>
