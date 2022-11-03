@@ -13,7 +13,7 @@
     </select>
     <insert id="addSubTask">
         insert into subtask(id, task_id, title, complete, reg_datetime, updated_datetime)
-        VALUES (#{id}, #{task_id}, #{title}, false, now(), now())
+        VALUES (#{id}, #{task_id}, #{title}, #{complete}, now(), now())
     </insert>
     <select id="getSubtaskById" resultType="SubTask">
         select *

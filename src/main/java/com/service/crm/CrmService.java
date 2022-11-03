@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -430,14 +431,18 @@ public class CrmService {
 
         // 기존 task에 엮여진 subtask
         List<SubTask> subTasks = subTaskDao.getSubtasksByTaskId(original_task.getId());
+        List<SubTask> copied_subTasks = new ArrayList<>();
         for (SubTask subTask : subTasks) {
             subTask.setTask_id(copied_task.getId());
+            subTask.setComplete(subTask.isComplete());
             subTask.setId(TokenGenerator.RandomToken(8));
             while (!subTaskDao.checkTokenIdAbleToUse(subTask.getTask_id())) {
                 subTask.setId(TokenGenerator.RandomToken(8));
             }
             subTaskDao.addSubTask(subTask);
+            copied_subTasks.add(subTask);
         }
+        copied_task.setSubTasks(copied_subTasks);
 
         // 기존 task에 엮여진 file
         List<TaskFile> files = taskFileDao.getTaskFiles(original_task.getId());
