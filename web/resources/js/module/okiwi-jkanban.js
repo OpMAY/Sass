@@ -11,12 +11,34 @@ const initializeKanban = (boards) => {
                     </svg>
                     섹션 추가하기
                </button>`, id: 'add-board', class: 'kanban-board add-board', onClick: function (self) {
+            console.log('addButton clicked');
+            let id = tokenGenerator(8);
             boards = [{
-                id: tokenGenerator(8), title: tokenGenerator(8), class: 'class1, class2, class3', percent: 0, item: [],
+                id: id,
+                title: id,
+                name: id,
+                project_hash: getURLParamByPrevAndNext('project', 'detail'),
+                class: 'class1, class2, class3',
+                percent: 0,
+                item: [],
             }];
-            self.addBoards(boards, false, {
-                baseId: self.options.addBoardOption.id, direction: 'prepend'
-            });
+            createBoard(boards[0]).then((result) => {
+                console.log(result);
+                if (result.status === 'OK') {
+                    if (result.data.status) {
+                        let back_board = result.data.board;
+                        if (boards[0].id !== back_board.id) {
+                            boards[0].id = back_board.id;
+                            boards[0].title = back_board.id;
+                        }
+                        self.addBoards(boards, false, {
+                            baseId: self.options.addBoardOption.id, direction: 'prepend'
+                        });
+                    } else {
+                        alert(result.data.error_message);
+                    }
+                }
+            })
         }
     }
     kanban = new jKanban({
@@ -430,21 +452,25 @@ const kanbanUpdateBoardEventListener = (selected_option, board, boardId) => {
     }
 };
 
-//TODO 20221102 - 16번 - 지우
+//TODO 20221102 - 16번 - 지우 O
 const kanbanAddTaskEventListener = (el, boardId) => {
     const task = {
-        id: tokenGenerator(6), title: tokenGenerator(8), complete: false, profiles: [{
-            url: 'https://via.placeholder.com/30x30', name: 'kimwoosik'
-        }, {
-            url: 'https://via.placeholder.com/30x30', name: 'kimwoosik2'
-        }], work: 0, start_date: '2022-08-21', end_date: '2022-08-30',
+        board_id: boardId, id: tokenGenerator(8), title: tokenGenerator(8), complete: false, profiles: [], work: 0,
     };
-    kanban.addTaskAndElement(boardId, task);
-
-    const board = kanban.findBoardJSON(boardId);
-    updatePercent(kanban, board);
-    let context_menu = document.querySelector('#context-menu');
-    closeContextMenu(context_menu);
+    createTask(task).then((result) => {
+        console.log(result);
+        if(result.status === 'OK') {
+            if(result.data.status) {
+                kanban.addTaskAndElement(boardId, task);
+                const board = kanban.findBoardJSON(boardId);
+                updatePercent(kanban, board);
+                let context_menu = document.querySelector('#context-menu');
+                closeContextMenu(context_menu);
+            } else {
+                alert('업무를 생성할 수 없습니다.');
+            }
+        }
+    })
 };
 
 //TODO 20221102 - 13번 - 우식

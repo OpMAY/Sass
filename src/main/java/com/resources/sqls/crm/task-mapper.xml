@@ -76,8 +76,8 @@
     <insert id="copyTask">
         insert into task(id, board_id, project_no, start_date, end_date, title, description, _order, complete,
                          reg_datetime, updated_datetime)
-        VALUES (#{id}, #{board_id}, #{project_no}, #{start_date}, #{end_date}, #{title}, #{description}, #{complete},
-                #{_order}, now(), now())
+        VALUES (#{id}, #{board_id}, #{project_no}, #{start_date}, #{end_date}, #{title}, #{description},
+                #{_order}, #{complete}, now(), now())
     </insert>
     <select id="getTaskById" resultType="Task" resultMap="Task">
         select *

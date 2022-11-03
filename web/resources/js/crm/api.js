@@ -328,7 +328,7 @@ async function addTaskComment(comment) {
             body : raw
         };
 
-        const response = fetch(`${host}/crm/create/task/comments`, requestOptions);
+        const response = fetch(`${host}/crm/create/task/comment`, requestOptions);
         return response.then((res) => res.json());
     }
 

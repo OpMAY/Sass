@@ -198,7 +198,7 @@ const __taskListInnerElement = (task) => {
               <div class="list-td">
                 <div class="_image background-image ${task.profiles !== null && task.profiles !== undefined && task.profiles.length !== 0 ? '' : 'd-none'}"
                      style="padding-top: 30px; width: 30px;
-                           border-radius: 50%; background-image: url('${task.profiles[0]?.url}');"></div>
+                           border-radius: 50%; background-image: url('${task.profiles !== null && task.profiles !== undefined && task.profiles.length !== 0 ? task.profiles[0]?.url : ''}');"></div>
               </div>
             </td>
             <td>
@@ -208,12 +208,12 @@ const __taskListInnerElement = (task) => {
             </td>
             <td>
               <div class="list-td">
-                <div class="_start">${task.start_date}</div>
+                <div class="_start">${task.start_date === null ? '-' : task.start_date}</div>
               </div>
             </td>
             <td>
               <div class="list-td">
-                <div class="_end">${task.end_date}</div>
+                <div class="_end">${task.end_date === null ? '-' : task.end_date}</div>
               </div>
             </td>
             <td>
@@ -361,7 +361,7 @@ function boardListDropdownClickEventListener(event) {
     }
 }
 
-//TODO 20221102 - 16번 - 지우
+//TODO 20221102 - 16번 - 지우 O
 function taskAddListClickEventListener(event) {
     console.log('taskAddListClickEventListener', this);
     let task_add_list = this;
@@ -370,38 +370,53 @@ function taskAddListClickEventListener(event) {
     let current_date = new Date().toISOString().slice(0, 10);
     let task = {
         id: created_task_id,
+        board_id: board_id,
         title: created_task_id,
         complete: false,
-        profiles: [{
-            url: 'https://via.placeholder.com/30x30',
-            name: 'kimwoosik'
-        }],
-        work: 0,
-        start_date: current_date,
-        end_date: current_date
     };
-    let created_task_element = createTaskList(board_id, task);
-    task_add_list.before(created_task_element);
-    updateListPercents();
+    createTask(task).then((result) => {
+        console.log(result);
+        if(result.status === 'OK') {
+            if(result.data.status) {
+                task = result.data.task;
+                let created_task_element = createTaskList(board_id, task);
+                task_add_list.before(created_task_element);
+                updateListPercents();
+            } else {
+                alert(result.data.error_message);
+            }
+        }
+    })
 }
 
-//TODO 20221102 - 10번 - 지우
+//TODO 20221102 - 10번 - 지우 O
 function boardAddListClickEventListener(event) {
     console.log('boardAddListClickEventListener', this);
     let board_add_list = this;
     let created_board_id = tokenGenerator(8);
     let board = {
+        project_hash: getURLParamByPrevAndNext('project', 'detail'),
         id: created_board_id,
         title: created_board_id,
+        name: created_board_id,
         class: 'class1, class2, class3',
         percent: 0,
     }
+    createBoard(board).then((result) => {
+        console.log(result);
+        if (result.status === 'OK') {
+            if (result.data.status) {
+                let back_board = result.data.board;
+                board.id = back_board.id;
+                board.title = back_board.id;
+                let board_element = createBoardListElement(board);
+                let task_add_element = createAddTaskList(created_board_id);
 
-    let board_element = createBoardListElement(board);
-    let task_add_element = createAddTaskList(created_board_id);
-
-    board_add_list.before(board_element);
-    board_add_list.before(task_add_element);
+                board_add_list.before(board_element);
+                board_add_list.before(task_add_element);
+            }
+        }
+    })
 }
 
 //TODO 20221102 - 13번 - 우식
