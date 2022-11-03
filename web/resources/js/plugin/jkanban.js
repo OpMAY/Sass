@@ -149,12 +149,12 @@
                                 if (typeof el.dragfn === 'function') el.dragfn(el, source)
                             })
                             .on('dragend', function (el) {
-                                __updateBoardsOrder()
                                 el.classList.remove('is-moving')
                                 self.options.dragendBoard(el)
                                 if (typeof el.dragendfn === 'function') el.dragendfn(el)
                             })
                             .on('drop', function (el, target, source, sibling) {
+                                __updateBoardsOrder()
                                 el.classList.remove('is-moving')
                                 self.options.dropBoard(el, target, source, sibling)
                                 if (typeof el.dropfn === 'function')
@@ -920,7 +920,7 @@
                                      src="/resources/assets/images/icon/board_options.svg">
                               </div>
                             </div>
-                            <span class="checkbox ${item.complete ? 'active' : void (0)}"><i class="fas fa-check" aria-hidden="true"></i></span>
+                            <span class="checkbox ${item.complete ? 'active' : ''}"><i class="fas fa-check" aria-hidden="true"></i></span>
                             ${__buildItemSubCardInnerHTML(item.subtasks)}`;
                     } else {
                         return `<div class="kanban-item-title">
@@ -941,7 +941,7 @@
                                      src="/resources/assets/images/icon/board_options.svg">
                               </div>
                             </div>
-                            <span class="checkbox ${item.complete ? 'active' : void (0)}"><i class="fas fa-check" aria-hidden="true"></i></span>
+                            <span class="checkbox ${item.complete ? 'active' : ''}"><i class="fas fa-check" aria-hidden="true"></i></span>
                             ${__buildItemSubCardInnerHTML(item.subtasks)}`;
                     }
                 }

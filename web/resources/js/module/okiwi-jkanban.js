@@ -397,7 +397,6 @@ const kanbanDropBoardEventListener = (el, target, source, sibling) => {
     kanban.options.board_dragging = false;
     let board_id = el.dataset.id;
     let order = el.dataset.order * 1;
-    console.log(board_id, order);
     apiChangeBoardOrder(board_id, order).then((result) => {
         console.log('apiChangeBoardOrder', result);
     });
