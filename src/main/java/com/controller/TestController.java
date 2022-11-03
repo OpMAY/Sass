@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
@@ -37,8 +38,12 @@ public class TestController {
 
     public static void main(String[] args) {
         try {
+            System.out.println(new EncryptionService().encryptAES("1", true));
+            System.out.println(new EncryptionService().encryptAES("2", true));
+            System.out.println(new EncryptionService().encryptAES("3", true));
+            System.out.println(new EncryptionService().encryptAES("4", true));
             System.out.println(new EncryptionService().decryptAES("FL/PqnsIIQ24F/wLxroa7Qhn+DgaoqsbvZ9en0a4uYxxrBd1IatIf+09+Cqpp5lj2ms0NEdZ4acyJ0RnrCfSOZAxdmYeO4wDH1essHeDhcVo89zWQG3pXXJlHYDN+ovmt6/QrEnkTV3O+yvGeF9s2Q=="));
-            System.out.println(new EncryptionService().encryptAES("jdbc:mysql://127.0.0.1:3306/avouch?serverTimezone=Asia/Seoul&allowMultiQueries=true&autoReconnect=true",false));
+            System.out.println(new EncryptionService().encryptAES("jdbc:mysql://127.0.0.1:3306/avouch?serverTimezone=Asia/Seoul&allowMultiQueries=true&autoReconnect=true", false));
         } catch (Exception e) {
             e.printStackTrace();
         }

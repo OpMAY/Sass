@@ -1,6 +1,5 @@
 package com.restcontroller.crm;
 
-import com.api.businessRegistration.Response;
 import com.aws.file.FileUploadUtility;
 import com.dao.CompanyDao;
 import com.dao.CompanyMemberDao;
@@ -31,7 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.web.bind.annotation.RequestMethod.*;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @Slf4j
@@ -77,7 +77,7 @@ public class CrmPlugRestController {
         Message message = new Message();
         int project_no = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
         message.put("status", true);
-        message.put("data", crmService.getProjectDashBoardData(project_no));
+        message.put("project", crmService.getProjectDashBoardData(project_no));
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
@@ -133,6 +133,12 @@ public class CrmPlugRestController {
     @RequestMapping(value = "/delete/project/{hash}", method = POST)
     public ResponseEntity deleteProject(HttpServletRequest request, @PathVariable String hash) throws Exception {
         int project_no = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
+        //TODO Test Only
+        /*Message message = new Message();
+        message.put("project_no", project_no);
+        message.put("status", true);
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);*/
+        //Test Only End
         return crmService.deleteProject(project_no);
     }
 
@@ -423,7 +429,7 @@ public class CrmPlugRestController {
         return crmService.getProjectFiles(project_no);
     }
 
-    // TODO 20221102 38번 -
+    // TODO 20221102 38번 - 우식
     @RequestMapping(value = "/delete/file/{file_no}", method = POST)
     public ResponseEntity deleteFile(HttpServletRequest request, @PathVariable int file_no) {
         return crmService.deleteFile(file_no);
