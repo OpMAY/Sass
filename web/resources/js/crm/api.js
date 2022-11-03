@@ -96,3 +96,25 @@ async function updateProject(project) {
     }
 }
 
+async function getTaskDetail(task_id) {
+    function apiGetTaskDetail(task_id) {
+        const myHeaders = new Headers();
+        myHeaders.append('Content-Type', 'application/json');
+
+        const requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        const response = fetch(`${host}/crm/get/task/${task_id}`, requestOptions);
+        return response.then((res) => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiGetTaskDetail(task_id);
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}

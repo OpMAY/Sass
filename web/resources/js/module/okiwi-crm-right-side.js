@@ -186,6 +186,17 @@ const rightTaskFilesClear = () => {
 //TODO 20221102 - 21번 - 지우, 우식
 const rightTaskReInitialize = (task_id) => {
     console.log('rightTaskReInitialize', task_id);
+    getTaskDetail(task_id).then((result) => {
+        console.log(result);
+        if(result.status === 'OK') {
+            if(result.data.status) {
+                let task = result.data.task;
+                rightTaskInit(task);
+            } else {
+                alert(result.data.error_message);
+            }
+        }
+    })
     let task = {
         id: tokenGenerator(6),
         title: 'Item 1',
@@ -242,7 +253,7 @@ const rightTaskReInitialize = (task_id) => {
         start_date: '2022-08-21',
         end_date: '2022-08-30'
     };
-    rightTaskInit(task);
+
 }
 
 //TODO 20221102 - 36번 - 지우

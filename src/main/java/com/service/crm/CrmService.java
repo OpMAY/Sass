@@ -373,6 +373,10 @@ public class CrmService {
         // TODO boardDao.createBoard() 와 동일하지만 추후 수정 가능성을 위해 분할 - 해당 쿼리 수정 시 주석 삭제
         boardDao.copyBoard(copied_board);
 
+        if(original_board.getTaskList() == null) {
+            original_board.setTaskList(taskDao.getBoardTasks(original_board.getId()));
+        }
+
         // 3. Task Copy
         for (Task task : original_board.getTaskList()) {
             task.setBoard_id(copied_board.getId());
