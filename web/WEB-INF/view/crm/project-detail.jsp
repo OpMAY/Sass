@@ -77,6 +77,7 @@
                style="display: none;">커버 이미지 제거</a>
             <a class="list-group-item list-group-item-action _edit">태스크 이름 수정</a>
             <a class="list-group-item list-group-item-action _complete">작업 완료</a>
+            <a class="list-group-item list-group-item-action _dis-complete">작업 취소</a>
             <a class="list-group-item list-group-item-action _copy">작업 복사</a>
             <a class="list-group-item list-group-item-action _delete">작업 삭제</a>
             <a class="list-group-item list-group-item-action _subtask _open">하위 작업 보기</a>

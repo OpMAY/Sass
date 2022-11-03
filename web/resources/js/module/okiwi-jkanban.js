@@ -129,17 +129,33 @@ function contextMenuClickEventListener(event) {
     } else if (this.classList.contains('_complete')) {
         let el = kanban.findElement(taskId).querySelector('.checkbox');
         if (!el.classList.contains('active')) {
-            task.complete = true;
-            el.classList.add('active');
-            const board = kanban.findBoardJSON(boardId);
-            updatePercent(kanban, board);
+            apiUpdateTaskStatus(taskId).then((result) => {
+                console.log('apiUpdateTaskStatus', result);
+                task.complete = true;
+                el.classList.add('active');
+                const board = kanban.findBoardJSON(boardId);
+                updatePercent(kanban, board);
+            });
+        }
+    } else if (this.classList.contains('_dis-complete')) {
+        let el = kanban.findElement(taskId).querySelector('.checkbox');
+        if (el.classList.contains('active')) {
+            apiUpdateTaskStatus(taskId).then((result) => {
+                console.log('apiUpdateTaskStatus', result);
+                task.complete = false;
+                el.classList.remove('active');
+                const board = kanban.findBoardJSON(boardId);
+                updatePercent(kanban, board);
+            });
         }
     } else if (this.classList.contains('_copy')) {
-        let _task = Object.assign({}, task);
-        _task.id = tokenGenerator(8);
-        kanban.addTaskAndElement(boardId, _task);
-        const board = kanban.findBoardJSON(boardId);
-        updatePercent(kanban, board);
+        apiCopyTask(taskId).then((result) => {
+            console.log('apiCopyTask', result);
+            let _task = taskTypeChanger(result.data.copied_task);
+            kanban.addTaskAndElement(boardId, _task);
+            const board = kanban.findBoardJSON(boardId);
+            updatePercent(kanban, board);
+        });
     } else if (this.classList.contains('_delete')) {
         //삭제
         kanban.removeTask(board, task);
@@ -163,14 +179,22 @@ const checkboxClickEventListener = (kanban, el) => {
     let taskId = el.closest('.kanban-item').dataset.eid;
     let task = kanban.findTaskJSON(boardId, taskId);
     if (!el.classList.contains('active')) {
-        task.complete = true;
-        el.classList.add('active');
+        apiUpdateTaskStatus(taskId).then((result) => {
+            console.log('apiUpdateTaskStatus', result);
+            task.complete = true;
+            el.classList.add('active');
+            const board = kanban.findBoardJSON(boardId);
+            updatePercent(kanban, board);
+        });
     } else {
-        task.complete = false;
-        el.classList.remove('active');
+        apiUpdateTaskStatus(taskId).then((result) => {
+            console.log('apiUpdateTaskStatus', result);
+            task.complete = false;
+            el.classList.remove('active');
+            const board = kanban.findBoardJSON(boardId);
+            updatePercent(kanban, board);
+        });
     }
-    const board = kanban.findBoardJSON(boardId);
-    updatePercent(kanban, board);
 }
 
 //TODO 20221102 - 28번 - 우식
@@ -238,6 +262,7 @@ const closeContextMenu = (menu) => {
 };
 const openContextMenu = (menu, board_id, task_id, position) => {
     let task = kanban.findElement(task_id);
+    let task_json = kanban.findTaskJSON(board_id, task_id);
     let is_cover = task.querySelector('.kanban-item-cover') !== null && task.querySelector('.kanban-item-cover') !== undefined ? true : false;
     if (is_cover) {
         menu.querySelector('._cover-delete').style.display = 'block';
@@ -252,6 +277,13 @@ const openContextMenu = (menu, board_id, task_id, position) => {
     } else {
         menu.querySelector('._subtask._open').style.display = 'block';
         menu.querySelector('._subtask._close').style.display = 'none';
+    }
+    if (task_json.complete) {
+        menu.querySelector('._dis-complete').style.display = 'block';
+        menu.querySelector('._complete').style.display = 'none';
+    } else {
+        menu.querySelector('._dis-complete').style.display = 'none';
+        menu.querySelector('._complete').style.display = 'block';
     }
     menu.style.top = position.top + 'px';
     menu.style.left = position.left + 'px';
@@ -308,6 +340,12 @@ const kanbanDragEndBoardEventListener = (el) => {
 //TODO 20221102 - 12번 - 우식
 const kanbanDropBoardEventListener = (el, target, source, sibling) => {
     kanban.options.board_dragging = false;
+    let board_id = el.dataset.id;
+    let order = el.dataset.order * 1;
+    console.log(board_id, order);
+    apiChangeBoardOrder(board_id, order).then((result) => {
+        console.log('apiChangeBoardOrder', result);
+    });
 }
 
 const kanbanUpdateBoardEventListener = (selected_option, board, boardId) => {
@@ -318,7 +356,9 @@ const kanbanUpdateBoardEventListener = (selected_option, board, boardId) => {
             modifyBoard(kanban, board.dataset.id);
             break;
         case '_delete':
-            removeBoard(kanban, board.dataset.id);
+            apiDeleteBoard(board.dataset.id).then((result) => {
+                removeBoard(kanban, board.dataset.id);
+            });
             break;
         case '_add_left':
             boards = [{
