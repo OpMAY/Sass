@@ -149,12 +149,12 @@
                                 if (typeof el.dragfn === 'function') el.dragfn(el, source)
                             })
                             .on('dragend', function (el) {
-                                __updateBoardsOrder()
                                 el.classList.remove('is-moving')
                                 self.options.dragendBoard(el)
                                 if (typeof el.dragendfn === 'function') el.dragendfn(el)
                             })
                             .on('drop', function (el, target, source, sibling) {
+                                __updateBoardsOrder()
                                 el.classList.remove('is-moving')
                                 self.options.dropBoard(el, target, source, sibling)
                                 if (typeof el.dropfn === 'function')
