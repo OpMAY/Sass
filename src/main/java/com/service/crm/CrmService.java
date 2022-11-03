@@ -373,7 +373,7 @@ public class CrmService {
         // TODO boardDao.createBoard() 와 동일하지만 추후 수정 가능성을 위해 분할 - 해당 쿼리 수정 시 주석 삭제
         boardDao.copyBoard(copied_board);
 
-        if(original_board.getTaskList() == null) {
+        if (original_board.getTaskList() == null) {
             original_board.setTaskList(taskDao.getBoardTasks(original_board.getId()));
         }
 
@@ -1147,8 +1147,9 @@ public class CrmService {
                 comment.setDate(comment.getReg_datetime().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")));
                 comment.setProfile(companyMemberDao.getCompanyMemberProfile(comment.getMember_no()));
             }
+            message.put("status", true);
+            message.put("comments", comments);
         }
-        message.put("status", true);
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
 
@@ -1313,6 +1314,8 @@ public class CrmService {
                 // task 내에 담당자 set
                 List<CompanyProfileMember> members = taskMemberDao.getTaskMembers(task.getId());
                 task.setCollaborators(members);
+                List<SubTask> subTasks = subTaskDao.getSubtasksByTaskId(task.getId());
+                task.setSubTasks(subTasks);
             }
             board.setTaskList(tasks);
         }

@@ -49,7 +49,7 @@ public class CrmPlugRestController {
 
     // Project
 
-    // TODO 20221102 1번 - 지우
+    // TODO 20221102 1번 - 지우 O
     @RequestMapping(value = "/get/projects", method = GET)
     public ResponseEntity getProjects(HttpServletRequest request) {
         Message message = new Message();
@@ -81,7 +81,7 @@ public class CrmPlugRestController {
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
-    // TODO 20221102 3번 - 지우
+    // TODO 20221102 3번 - 지우 O
     @RequestMapping(value = "/get/member/tasks", method = GET)
     public ResponseEntity getMemberTasks(@RequestParam("type") TASK_STATUS_TYPE type, HttpServletRequest request) {
         Message message = new Message();
@@ -104,7 +104,7 @@ public class CrmPlugRestController {
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
 
-    // TODO 20221102 4번 - 지우
+    // TODO 20221102 4번 - 지우 O
     @RequestMapping(value = "/create/project", method = POST)
     public ResponseEntity createProject(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         Message message = new Message();
@@ -142,7 +142,7 @@ public class CrmPlugRestController {
         return crmService.deleteProject(project_no);
     }
 
-    // TODO 20221102 6번 - 지우
+    // TODO 20221102 6번 - 지우 O
     @RequestMapping(value = "/update/project", method = POST)
     public ResponseEntity updateProject(HttpServletRequest request, @RequestBody Map<String, Object> body) throws Exception {
         JSONObject jsonObject = new JSONObject(body.get("project"));
@@ -184,7 +184,8 @@ public class CrmPlugRestController {
     // TODO 20221102 10번 - 지우
     @RequestMapping(value = "/create/board", method = POST)
     public ResponseEntity createBoard(HttpServletRequest request, @RequestBody Map<String, Object> body) {
-        Board board = (Board) body.get("board");
+        JSONObject jsonObject = new JSONObject(body);
+        Board board = new Gson().fromJson(jsonObject.toString(), Board.class);
         return crmService.createBoard(board);
     }
 
@@ -237,7 +238,8 @@ public class CrmPlugRestController {
     // TODO 20221102 16번 - 지우
     @RequestMapping(value = "/create/task", method = POST)
     public ResponseEntity createTask(HttpServletRequest request, @RequestBody Map<String, Object> body) {
-        Task task = (Task) body.get("task");
+        JSONObject jsonObject = new JSONObject(body);
+        Task task = new Gson().fromJson(jsonObject.toString(), Task.class);
         return crmService.createTask(task);
     }
 
@@ -272,7 +274,7 @@ public class CrmPlugRestController {
         return crmService.moveTaskToOtherBoard(task_id, board_id, _order);
     }
 
-    // TODO 20221102 21번 - 우식, 지우
+    // TODO 20221102 21번 - 우식, 지우 O
     @RequestMapping(value = "/get/task/{task_id}", method = GET)
     public ResponseEntity getTaskDetail(HttpServletRequest request, @PathVariable String task_id) {
         return crmService.getTask(task_id);
@@ -282,7 +284,7 @@ public class CrmPlugRestController {
     @RequestMapping(value = "/update/task/member/add", method = POST)
     public ResponseEntity addTaskMember(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         String task_id = (String) body.get("id");
-        Integer member_no = (Integer) body.get("member_no");
+        Integer member_no = Integer.parseInt(body.get("member_no").toString());
         return crmService.addTaskMember(task_id, member_no);
     }
 
@@ -348,7 +350,8 @@ public class CrmPlugRestController {
     // TODO 20221102 30번 - 지우
     @RequestMapping(value = "/create/subtask", method = POST)
     public ResponseEntity addSubTask(HttpServletRequest request, @RequestBody Map<String, Object> body) {
-        SubTask subTask = (SubTask) body.get("subtask");
+        JSONObject jsonObject = new JSONObject(body);
+        SubTask subTask = new Gson().fromJson(jsonObject.toString(), SubTask.class);
         return crmService.addSubTask(subTask);
     }
 
@@ -358,13 +361,13 @@ public class CrmPlugRestController {
         return crmService.removeSubTask(subtask_id);
     }
 
-    // TODO 20221102 32번 - 지우
+    // TODO 20221102 32번 - 지우 O
     @RequestMapping(value = "/get/task/{task_id}/members/available", method = GET)
     public ResponseEntity getTaskAvailableMembers(HttpServletRequest request, @PathVariable String task_id) {
         return crmService.getTaskAvailableMembers(task_id);
     }
 
-    // TODO 20221102 33번 - 지우
+    // TODO 20221102 33번 - 지우 O
     @RequestMapping(value = "/get/task/{task_id}/comments", method = GET)
     public ResponseEntity getTaskComments(HttpServletRequest request, @PathVariable String task_id) {
         return crmService.getTaskComments(task_id);
@@ -380,7 +383,8 @@ public class CrmPlugRestController {
             Company company = companyMemberDao.getUserCompany(userNo);
             if (company != null) {
                 CompanyMember companyMember = companyMemberDao.getUserMemberInfo(userNo, company.getNo());
-                TaskComment comment = (TaskComment) body.get("comment");
+                JSONObject jsonObject = new JSONObject(body);
+                TaskComment comment = new Gson().fromJson(jsonObject.toString(), TaskComment.class);
                 comment.setMember_no(companyMember.getNo());
                 return crmService.addComment(comment);
             } else {
