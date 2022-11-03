@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let temp_board_id = '3fq4ku8z';
     let temp_task_id = "9u8xcibk";
     //TODO Error
-    apiCopyBoard(temp_board_id).then((result) => {
+    /*apiCopyBoard(temp_board_id).then((result) => {
         console.log('apiCopyBoard', result);
-    });
+    });*/
 });
 
 //TODO 2번 - 우식, 지우
@@ -578,4 +578,81 @@ async function apiDeleteFile(file_no) {
     } catch (error) {
         console.log(error);
     }
+}
+
+function boardsTypeChanger(back_boards) {
+    let boards = new Array();
+    back_boards.forEach(function (back_board) {
+        let board = {
+            id: back_board.id,
+            title: back_board.name,
+            class: 'class1, class2, class3',
+            percent: 0,
+            item: tasksTypeChanger(back_board.taskList)
+        };
+        boards.push(board);
+    });
+    return boards;
+}
+
+function tasksTypeChanger(back_tasks) {
+    let tasks = new Array();
+    back_tasks.forEach(function (back_task) {
+        let task = taskTypeChanger(back_task);
+        tasks.push(task);
+    });
+    return tasks;
+}
+
+function taskTypeChanger(back_task) {
+    let task = {
+        id: back_task.id,
+        title: back_task.title,
+        complete: back_task.complete,
+        cover: back_task.thumbnail != null ? back_task.thumbnail : undefined,
+        profiles: taskProfilesChanger(back_task.collaborators),
+        work: 0,
+        subtasks: subTasksTypeChanger(back_task.subTasks),
+        start_date: '2022-08-21',
+        end_date: '2022-08-30'
+    };
+    return task;
+}
+
+function subTasksTypeChanger(back_subTasks) {
+    let subtasks = new Array();
+    back_subTasks.forEach(function (back_subTask) {
+        let subtask = subTaskTypeChanger(back_subTask);
+        subtasks.push(subtask);
+    });
+    return subtasks;
+}
+
+function subTaskTypeChanger(back_subTask) {
+    let subtask = {
+        id: back_subTask.id,
+        title: back_subTask.title,
+        complete: back_subTask.complete,
+        work: 0
+    };
+    return subtask;
+}
+
+function taskProfilesChanger(back_profiles) {
+    let profiles = new Array();
+    back_profiles.forEach(function (back_profile) {
+        let profile = taskProfileChanger(back_profile);
+        profiles.push(profile);
+    });
+    return profiles;
+};
+
+function taskProfileChanger(back_profile) {
+    console.log(back_profile);
+    let profile = {
+        url: back_profile.profile_img.url,
+        name: back_profile.name,
+        no: back_profile.no
+    }
+    return profile;
 }
