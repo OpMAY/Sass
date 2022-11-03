@@ -72,7 +72,15 @@ public class CrmService {
     public List<Project> getCompanyProjects(int company_no) {
         // 쿼리로 한 번에 처리하는 것은 너무 비효율적
         // TODO 트래픽 발생 시 속도 부하 시 일부는 쿼리로 처리하는 것도 고려
-        return projectDao.getCompanyProjects(company_no);
+        List<Project> projects = projectDao.getCompanyProjects(company_no);
+        projects.forEach(project -> {
+            try {
+                project.setHash_no(encryptionService.encryptAES(Integer.toString(project.getNo()), true));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return projects;
     }
 
     public Project getProjectDashBoardData(int project_no) {
