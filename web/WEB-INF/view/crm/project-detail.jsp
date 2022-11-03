@@ -824,6 +824,7 @@
 <script src="/resources/js/validation.js"></script>
 <script src="/resources/js/global-modal.js"></script>
 <script src="/resources/js/api.js"></script>
+<script src="/resources/js/crm/api1.js"></script>
 <!--Font Awesome-->
 <script src="https://kit.fontawesome.com/3581631c82.js"
         crossorigin="anonymous"></script>
