@@ -626,7 +626,7 @@ function taskTypeChanger(back_task) {
 
 function subTasksTypeChanger(back_subTasks) {
     let subtasks = new Array();
-    back_subTasks.forEach(function (back_subTask) {
+    back_subTasks?.forEach(function (back_subTask) {
         let subtask = subTaskTypeChanger(back_subTask);
         subtasks.push(subtask);
     });
@@ -645,7 +645,7 @@ function subTaskTypeChanger(back_subTask) {
 
 function taskProfilesChanger(back_profiles) {
     let profiles = new Array();
-    back_profiles.forEach(function (back_profile) {
+    back_profiles?.forEach(function (back_profile) {
         let profile = taskProfileChanger(back_profile);
         profiles.push(profile);
     });
