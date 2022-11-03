@@ -315,6 +315,13 @@
             rightTaskOpen(this.dataset.id);
         });
 
+        $('.project-container').on('click', '.project', function (e) {
+            if($(e.target).closest('.btn-group').length === 0) {
+                let hash = $(this).data().id;
+                window.location.href = '/crm/project/' + hash + '/detail';
+            }
+        })
+
         //TODO 20221102 - 1번 - 지우
         getProjects().then((result) => {
             console.log(result);

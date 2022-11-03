@@ -18,7 +18,7 @@
                  height="36"
                  src="/resources/assets/images/icon/query/query-plug-logo.png"/>
         </div>
-        <div class="_left-plugin">
+        <div class="_left-plugin" data-href="/crm/workspace">
             <img width="36"
                  height="36"
                  src="/resources/assets/images/icon/crm-plug-logo.png"/>

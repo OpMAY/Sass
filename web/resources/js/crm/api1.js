@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let temp_board_id = '3fq4ku8z';
     let temp_task_id = "9u8xcibk";
     //TODO Error
-    /*apiCopyBoard(temp_board_id).then((result) => {
+    apiCopyBoard(temp_board_id).then((result) => {
         console.log('apiCopyBoard', result);
-    });*/
+    });
 });
 
 //TODO 2번 - 우식, 지우
