@@ -9,6 +9,8 @@ import java.util.List;
 public interface TaskMapper {
     List<Task> getBoardTasks(String board_id);
 
+    List<Task> getBoardTasksForMove(String board_id);
+
     boolean checkTokenIdAbleToUse(String token_id);
 
     List<Task> getMemberToDoTasks(int member_no);

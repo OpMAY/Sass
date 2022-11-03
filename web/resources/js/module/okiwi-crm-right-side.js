@@ -329,6 +329,8 @@ const rightTaskInit = (task) => {
         size: 102938,
         date: '2022.11.01'
     }];
+
+    // TODO WHEN COMMENT TAB OPEN
     getTaskComments(task.id).then((result) => {
         console.log(result)
         if (result.status === 'OK') {
@@ -342,6 +344,7 @@ const rightTaskInit = (task) => {
 
     })
 
+    // TODO WHEN FILE TAB OPEN
     getTaskFiles(task.id).then((result) => {
         console.log(result);
         if (result.status === 'OK') {
@@ -387,7 +390,7 @@ const rightTaskWorkTimeInit = (start_date, end_date) => {
 
 const rightTaskContentInit = (content) => {
     let content_input = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab .content-editable-container');
-    content_input.innerHTML = `${content}`;
+    content_input.innerHTML = `${content === null ? '' : content}`;
 }
 
 const rightTaskSubtasksInit = (subtasks) => {

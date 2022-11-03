@@ -21,6 +21,12 @@
         WHERE board_id = #{board_id}
         ORDER BY _order
     </select>
+    <select id="getBoardTasksForMove" resultType="Task" resultMap="Task">
+        select *
+        from task
+        WHERE board_id = #{board_id}
+        ORDER BY _order
+    </select>
     <select id="checkTokenIdAbleToUse" resultType="_boolean">
         select !EXISTS(select * from task WHERE id = #{token_id})
     </select>

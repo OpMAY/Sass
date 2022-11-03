@@ -20,6 +20,10 @@ public class TaskDao {
         return mapper.getBoardTasks(board_id);
     }
 
+    public List<Task> getBoardTasksForMove(String board_id) {
+        return mapper.getBoardTasksForMove(board_id);
+    }
+
     public boolean checkTokenIdAbleToUse(String token_id) {
         return mapper.checkTokenIdAbleToUse(token_id);
     }
