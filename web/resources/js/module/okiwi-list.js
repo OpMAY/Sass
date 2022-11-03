@@ -196,9 +196,9 @@ const __taskListInnerElement = (task) => {
             </td>
             <td>
               <div class="list-td">
-                <div class="_image background-image"
+                <div class="_image background-image ${task.profiles !== null && task.profiles !== undefined && task.profiles.length !== 0 ? '' : 'd-none'}"
                      style="padding-top: 30px; width: 30px;
-                           border-radius: 50%; background-image: url('${task.profiles[0].url}');"></div>
+                           border-radius: 50%; background-image: url('${task.profiles[0]?.url}');"></div>
               </div>
             </td>
             <td>
@@ -322,7 +322,17 @@ const removeBoardListById = (board_id) => {
 function taskListCheckboxClickEventListener(event) {
     console.log('taskListCheckboxClickEventListener', this);
     let task = this.closest('._task[data-id][data-board-id]');
-    updateTaskCheckbox(task.dataset.id, !task.classList.contains('is-checked'));
+    if (!task.classList.contains('is-checked')) {
+        apiUpdateTaskStatus(task.dataset.id).then((result) => {
+            updateTaskCheckbox(task.dataset.id, !task.classList.contains('is-checked'));
+            console.log('apiUpdateTaskStatus', result);
+        });
+    } else {
+        apiUpdateTaskStatus(task.dataset.id).then((result) => {
+            updateTaskCheckbox(task.dataset.id, !task.classList.contains('is-checked'));
+            console.log('apiUpdateTaskStatus', result);
+        });
+    }
     event.stopPropagation();
     event.preventDefault();
 }
@@ -375,7 +385,7 @@ function taskAddListClickEventListener(event) {
     updateListPercents();
 }
 
-//TODO 20221102 - 10번 - 지우 - class 및 percent back-end에서 넣기
+//TODO 20221102 - 10번 - 지우
 function boardAddListClickEventListener(event) {
     console.log('boardAddListClickEventListener', this);
     let board_add_list = this;
@@ -413,7 +423,10 @@ function boardListOptionClickEventListener(event) {
         input_title.value = value;
     } else if (this.classList.contains('_delete')) {
         let board = this.closest('._board');
-        removeBoardListById(board.dataset.id);
+        apiDeleteBoard(board.dataset.id).then((result) => {
+            console.log('apiDeleteBoard', result);
+            removeBoardListById(board.dataset.id);
+        });
     }
 }
 
@@ -429,6 +442,7 @@ function listWritableInputKeyUpEventListener(event) {
 }
 
 const listWritableInputKeyUpUpdateEventListener = (event, input, is_close) => {
+    let is_board = input.closest('._board') !== undefined && input.closest('._board') !== null ? true : false;
     let name = input.closest('._name');
     let value;
     if (is_close) {
@@ -436,14 +450,29 @@ const listWritableInputKeyUpUpdateEventListener = (event, input, is_close) => {
     } else {
         value = input.value;
     }
-    name.innerHTML = `${value}`;
-    input.remove();
+    if (is_board) {
+        let board_id = input.closest('[data-id]').dataset.id;
+        //TODO 보드 이름 업데이트 11번
+        apiChangeBoardName(board_id, value).then((result) => {
+            console.log('apiChangeBoardName', result);
+            name.innerHTML = `${value}`;
+            input.remove();
+        });
+    } else {
+        //TODO 태스크 이름 업데이트 18번
+        let task_id = input.closest('[data-id]').dataset.id;
+        apiChangeTaskName(task_id, value).then((result) => {
+            console.log('apiChangeTaskName', result);
+            name.innerHTML = `${value}`;
+            input.remove();
+        });
+    }
     event.preventDefault();
 }
 
-//TODO 20221102 - 14번 - 우식
-//TODO 20221102 - 15번 - 우식
-//TODO 20221102 - 19번 - 우식
+//TODO 20221102 - 14번 - 우식 check
+//TODO 20221102 - 15번 - 우식 check
+//TODO 20221102 - 19번 - 우식 check
 function contextListMenuClickEventListener(event) {
     console.log('contextListMenuClickEventListener', this);
     let menu = this.closest('#list-context-menu');
@@ -471,27 +500,18 @@ function contextListMenuClickEventListener(event) {
         task.querySelector('.checkbox').click();
     } else if (this.classList.contains('_copy')) {
         let task_element = findTaskListById(task_id);
-        /*TODO Fetch and Get Task Data*/
-        let current_date = new Date().toISOString().slice(0, 10);
-        let create_id = tokenGenerator(8);
-
-        let task = {
-            id: create_id,
-            title: create_id,
-            complete: task_element.classList.contains('is-checked'),
-            profiles: [{
-                url: 'https://via.placeholder.com/30x30',
-                name: 'kimwoosik'
-            }],
-            work: 0,
-            start_date: current_date,
-            end_date: current_date
-        };
-        let created_task = createTaskList(board_id, task);
-        task_element.after(created_task);
+        apiCopyTask(task_id).then((result) => {
+            console.log('apiCopyTask', result);
+            let _task = taskTypeChanger(result.data.copied_task);
+            let created_task = createTaskList(board_id, _task);
+            task_element.after(created_task);
+        });
     } else if (this.classList.contains('_delete')) {
         let task = findTaskListById(task_id);
-        task.remove();
+        apiDeleteTask(task_id).then((result) => {
+            console.log('apiDeleteTask', result);
+            task.remove();
+        });
     }
     closeListContextMenu(menu);
 }
