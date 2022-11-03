@@ -427,13 +427,16 @@ function boardTitleUpdateClickEventListener(e, is_close) {
     } else {
         value = board_input.value
     }
-    board_input.remove();
-    board_title_container.innerHTML = createBoardTitleElement(value);
-    board_title_container.setAttribute('title', value);
-    $(board_percent_container).show();
-    $(board_option_container).show();
-    const item_board = kanban.findBoardJSON(board.dataset.id);
-    item_board.title = `${value}`;
+    apiChangeBoardName(board.dataset.id, value).then((result) => {
+        console.log('apiChangeBoardName', result);
+        board_input.remove();
+        board_title_container.innerHTML = createBoardTitleElement(value);
+        board_title_container.setAttribute('title', value);
+        $(board_percent_container).show();
+        $(board_option_container).show();
+        const item_board = kanban.findBoardJSON(board.dataset.id);
+        item_board.title = `${value}`;
+    });
 }
 
 const modifyBoard = (kanban, boardId) => {
