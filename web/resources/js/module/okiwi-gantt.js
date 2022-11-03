@@ -352,15 +352,26 @@ function boardAddClickEventListener(event) {
     let last_index = document.querySelector('.gantt-container ._gantt-board #gantt-accordion .card:last-child .card-header[data-index]').dataset.index;
     let board_id = tokenGenerator(8);
     let board = {
+        project_no: 1,
         id: board_id,
         title: board_id,
-        class: 'class1, class2, class3',
+        class: 'class1, class2, class3', // TODO java에선 class로 변수를 만들 수 없어서 model에 넣기 위해선 변수명 수정 필요
         percent: 0,
         item: []
     };
-    let board_element = createGanttBoardElement(board, parseInt(last_index) + 1);
-    let accordion = document.querySelector('.gantt-container ._gantt-board #gantt-accordion');
-    accordion.appendChild(board_element);
+    createBoard(board).then((result) => {
+        console.log(result);
+        if (result.status === 'OK') {
+            if (result.data.status) {
+                board.id = result.data.board.id;
+                let board_element = createGanttBoardElement(board, parseInt(last_index) + 1);
+                let accordion = document.querySelector('.gantt-container ._gantt-board #gantt-accordion');
+                accordion.appendChild(board_element);
+            } else {
+                alert(result.data.error_message);
+            }
+        }
+    })
 }
 
 const createGanttBoardElement = (board, index) => {

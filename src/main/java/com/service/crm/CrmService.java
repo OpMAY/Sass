@@ -642,7 +642,7 @@ public class CrmService {
     public ResponseEntity changeTaskOrder(String task_id, int _order) {
         Message message = new Message();
         Task task = taskDao.getTaskById(task_id);
-        List<Task> tasks = taskDao.getBoardTasks(task.getBoard_id());
+        List<Task> tasks = taskDao.getBoardTasksForMove(task.getBoard_id());
         if (_order > tasks.size() || _order <= 0) {
             message.put("status", false);
             message.put("error_message", "잘못된 접근입니다.");
@@ -655,6 +655,7 @@ public class CrmService {
                 this_task.set_order(i + 1);
                 taskDao.updateTaskOrder(this_task.getId(), this_task.get_order());
             }
+            log.info("after order tasks : {}", tasks);
             message.put("status", true);
             message.put("tasks", tasks);
         }

@@ -35,7 +35,7 @@
         insert into task_member (task_id, member_no)
         VALUES (#{task_id}, #{member_no})
     </insert>
-    <delete id="deleteTaskMember">
+    <delete id="removeTaskMember">
         delete
         from task_member
         WHERE task_id = #{task_id}

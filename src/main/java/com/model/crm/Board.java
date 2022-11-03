@@ -12,4 +12,7 @@ public class Board extends Time {
     private String name;
     private int _order;
     private List<Task> taskList;
+
+    private String class_string;
+    private int percent;
 }

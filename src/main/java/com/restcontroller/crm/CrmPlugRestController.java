@@ -5,10 +5,12 @@ import com.dao.CompanyDao;
 import com.dao.CompanyMemberDao;
 import com.dao.crm.BoardDao;
 import com.dao.crm.TaskDao;
+import com.dao.crm.TaskMemberDao;
 import com.google.gson.Gson;
 import com.model.common.MFile;
 import com.model.company.Company;
 import com.model.company.CompanyMember;
+import com.model.company.CompanyProfileMember;
 import com.model.crm.*;
 import com.model.crm.state.TASK_STATUS_TYPE;
 import com.response.DefaultRes;
@@ -28,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -46,6 +49,7 @@ public class CrmPlugRestController {
     private final BoardDao boardDao;
     private final TaskDao taskDao;
     private final FileUploadUtility uploadUtility;
+    private final TaskMemberDao taskMemberDao;
 
     // Project
 
@@ -226,8 +230,10 @@ public class CrmPlugRestController {
         Task task = taskDao.getTaskById(task_id);
         if (task != null) {
             Task copied_task = crmService.copyTask(task);
+            List<CompanyProfileMember> members = taskMemberDao.getTaskMembers(copied_task.getId());
             message.put("copied_task", copied_task);
             message.put("status", true);
+            message.put("members", members);
         } else {
             message.put("status", false);
             message.put("error_message", "복사할 대상 업무가 존재하지 않습니다.");
@@ -309,7 +315,7 @@ public class CrmPlugRestController {
     public ResponseEntity changeTaskEndDate(HttpServletRequest request, @RequestBody Map<String, Object> body) {
         String task_id = (String) body.get("id");
         String end_date = (String) body.get("date");
-        return crmService.changeTaskStartDate(task_id, end_date);
+        return crmService.changeTaskEndDate(task_id, end_date);
     }
 
     // TODO 20221102 26번 - 우식
