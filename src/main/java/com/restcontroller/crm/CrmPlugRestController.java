@@ -152,7 +152,7 @@ public class CrmPlugRestController {
     // TODO 20221102 6번 - 지우 O
     @RequestMapping(value = "/update/project", method = POST)
     public ResponseEntity updateProject(HttpServletRequest request, @RequestBody Map<String, Object> body) throws Exception {
-        JSONObject jsonObject = new JSONObject(body.get("project"));
+        JSONObject jsonObject = new JSONObject(body);
         Project project = new Gson().fromJson(jsonObject.toString(), Project.class);
         return crmService.updateProject(project);
     }
@@ -332,7 +332,7 @@ public class CrmPlugRestController {
     // TODO 20221102 27번 - 지우
     @RequestMapping(value = "/update/task/{task_id}/thumbnail", method = POST)
     public ResponseEntity changeTaskThumbnail(HttpServletRequest request, @PathVariable String task_id, @RequestBody MultipartFile file) {
-        if(file == null) {
+        if (file == null) {
             return crmService.changeTaskThumbnail(task_id, null);
         } else {
             if (file.getSize() > 0) {
@@ -466,7 +466,7 @@ public class CrmPlugRestController {
                 comment.setType(TASK_COMMENT_TYPE.FILE);
                 comment.setMember_no(companyMember.getNo());
                 comment.setTask_id(task_id);
-                if(file.isEmpty()) {
+                if (file.isEmpty()) {
                     message.put("status", false);
                     message.put("error_message", "잘못된 접근입니다.");
                     log.debug("uploadCommentFile error : file is empty");

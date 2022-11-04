@@ -315,7 +315,30 @@
         });
         $('.recent-status-container .tab-content .list-group').on('click', '.list-group-item:not(.add)', function
             (event) {
-            rightTaskOpen(this.dataset.id);
+            console.log(event);
+            if (event.target.classList.contains('checkbox') || event.target.closest('.checkbox') !== null) {
+                let parent = this.closest('.list-group-item')
+                let group = parent.closest('.list-group');
+                apiUpdateTaskStatus(parent.dataset.id).then((result) => {
+                    console.log(result);
+                    if (result.status === 'OK') {
+                        if (result.data.status) {
+                            parent.remove();
+                            if (group.querySelectorAll('.list-group-item').length === 0) {
+                                $(group).append(`<li class="list-group-item" style="display: flex; justify-content: center">
+                                                <div class="medium-h5 c-gray-light">데이터가 없습니다
+                                                </div>
+                                            </li>`);
+                            }
+                        } else {
+                            alert(result.data.error_message);
+                        }
+                    }
+                })
+                console.log('check')
+            } else {
+                rightTaskOpen(this.dataset.id);
+            }
         });
 
         $('.project-container').on('click', '.project', function (e) {
@@ -389,18 +412,16 @@
                                                                         </span>
                                                 <div class="_name medium-h5">[` + element.project_name + `] ` + element.title + `
                                                 </div>
-                                                <div class="_date bold-h5 ml-auto">D-3</div>
+                                                <div class="_date bold-h5 ml-auto">` + taskDdayCalculator(element.end_date) + `</div>
                                             </li>`
                             list_group.append(item);
                         })
                     } else {
-                        list_group.append(`<li class="list-group-item"
-                                                data-id="task_id">
-                                                <div class="_name medium-h5">데이터가 없습니다
+                        list_group.append(`<li class="list-group-item" style="display: flex; justify-content: center">
+                                                <div class="medium-h5 c-gray-light">데이터가 없습니다
                                                 </div>
                                             </li>`);
                     }
-
                 } else {
                     alert(result.data.error_message);
                 }
@@ -429,7 +450,7 @@
                                                                         </span>
                                                 <div class="_name medium-h5">[` + element.project_name + `] ` + element.title + `
                                                 </div>
-                                                <div class="_date bold-h5 ml-auto">D-3</div>
+                                                <div class="_date bold-h5 ml-auto">` + taskDdayCalculator(element.end_date) + `</div>
                                             </li>`
                                 list_group.append(item);
                             })
@@ -501,16 +522,14 @@
                 if (confirm('프로젝트를 수정하시겠습니까?')) {
                     let input = parent.querySelector('input');
                     let emoji = parent.querySelector('.emoji-container').textContent;
-                    if(input.value.trim().length <= 1) {
-                        viewAlert({content : '프로젝트 명은 최소 2자 이상이어야 합니다.'});
+                    if (input.value.trim().length <= 1) {
+                        viewAlert({content: '프로젝트 명은 최소 2자 이상이어야 합니다.'});
                         return false;
                     }
                     let update_project = {
-                        "project": {
-                            "no": parent.dataset.no,
-                            "emoji" : emoji.length >= 0? emoji : null,
-                            "name": input.value.trim(),
-                        }
+                        "no": parent.dataset.no,
+                        "emoji": emoji.length >= 0 ? emoji : null,
+                        "name": input.value.trim(),
                     };
                     updateProject(update_project).then((result) => {
                         console.log(result);
@@ -519,7 +538,7 @@
                                 // TODO SUCCESS PROJECT NAME UPDATE
                                 let project = result.data.project;
                                 viewAlert({content: '프로젝트 정보가 수정되었습니다.'});
-                                parent.before(`<div class="col project" data-no="` + project.no + `" data-id="` + project.hash_no + `">
+                                $(parent).before(`<div class="col project" data-no="` + project.no + `" data-id="` + project.hash_no + `">
                                     <div class="p-24">
                                         <div class="emoji-container-pure ` + (project.emoji === null ? 'd-none' : '') + `">` + (project.emoji === null ? '' : project.emoji) + `</div>
                                         <div class="_name ml-8 medium-h4">` + project.name + `</div>
@@ -555,7 +574,7 @@
                     let parent = $(this).closest('.project.edit');
                     let name_input = $(this).parent().find('._name input');
                     if (name_input.val().trim().length <= 1) {
-                        viewAlert({content : '프로젝트 명은 최소 2자 이상이어야 합니다.'});
+                        viewAlert({content: '프로젝트 명은 최소 2자 이상이어야 합니다.'});
                         return false;
                     } else {
                         const emoji = $(this).parent().find('.emoji-container').html();
@@ -608,7 +627,37 @@
         })
 
         $('.project-container').on('click', '.project.edit ._option.delete', function (e) {
-            e.target.closest('.project').remove();
+            let parent = e.target.closest('.project');
+            if (parent.classList.contains('edit-project')) {
+                let emoji = parent.dataset.originEmoji;
+                let has_emoji = emoji.length > 0;
+                $(parent).before(`<div class="col project" data-no="` + parent.dataset.no + `" data-id="` + parent.dataset.id + `">
+                                    <div class="p-24">
+                                        <div class="emoji-container-pure ` + (has_emoji ? '' : 'd-none') + `">` + (has_emoji ? emoji : '') + `</div>
+                                        <div class="_name ml-8 medium-h4">` + parent.dataset.originName + `</div>
+                                        <div class="btn-group dropright dropleft">
+                                            <div data-toggle="dropdown"
+                                                 aria-expanded="false">
+                                                <img class="img-fluid"
+                                                     src="/resources/assets/images/icon/board_options.svg">
+                                            </div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item _modify medium-h6"
+                                                   data-type="_modify"
+                                                   href="javascript:void(0)">프로젝트 수정</a>
+                                                <a class="dropdown-item _copy medium-h6"
+                                                   data-type="_delete"
+                                                   href="javascript:void(0)">프로젝트 복사</a>
+                                                <a class="dropdown-item _delete medium-h6"
+                                                   data-type="_delete"
+                                                   href="javascript:void(0)">프로젝트 삭제</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`)
+            }
+            parent.remove();
+
         })
 
         //TODO 20221102 - 5번 - 우식 O
@@ -635,7 +684,7 @@
             console.log(parent);
             let emoji = parent.querySelector('.emoji-container-pure');
             let title = parent.querySelector('._name');
-            $(parent).before(`<div class="col project edit edit-project" data-no="` + parent.dataset.no + `" data-id="` + parent.dataset.id + `">
+            $(parent).before(`<div class="col project edit edit-project" data-no="` + parent.dataset.no + `" data-id="` + parent.dataset.id + `" data-origin-name="` + title.textContent + `" data-origin-emoji="` + emoji.textContent + `">
                                                       <div class="p-24">
                                                             <div class="position-relative">
                                                                   <button id="emoji-picker">
@@ -716,6 +765,41 @@
             })
         })
     });
+
+    function taskDdayCalculator(end_date) {
+        let result;
+        if (end_date === null || end_date === undefined) {
+            result = '-';
+        } else {
+            let now = new Date();
+            let end = to_date2(end_date);
+            let calc = getDayDiff(now, end);
+            if (calc < 0) {
+                calc = calc * -1;
+                result = 'D+' + calc;
+            } else if (calc === 0) {
+                result = 'D-DAY';
+            } else {
+                result = 'D-' + calc;
+            }
+        }
+        return result;
+    }
+
+    function to_date2(date_str) {
+        var yyyyMMdd = String(date_str);
+        var sYear = yyyyMMdd.substring(0, 4);
+        var sMonth = yyyyMMdd.substring(5, 7);
+        var sDate = yyyyMMdd.substring(8, 10);
+
+        //alert("sYear :"+sYear +"   sMonth :"+sMonth + "   sDate :"+sDate);
+        return new Date(Number(sYear), Number(sMonth) - 1, Number(sDate));
+    }
+
+    function getDayDiff(date1, date2) {
+        const one_day = 24 * 60 * 60 * 1000;
+        return Math.round((date2.getTime() - date1.getTime()) / one_day);
+    }
 </script>
 </body>
 </html>
