@@ -295,14 +295,16 @@ const initializeGantt = (boards) => {
     let _content = document.querySelector('.gantt-container ._gantt-timeline ._content');
     boards.forEach(function (board) {
         board.item.forEach(function (task) {
-            let position = getGanttTaskPosition(task);
-            let task_element = createGanttTaskElement(position, task);
-            $(_content).append(task_element);
-            let inserted_task_element = $(_content).find(`.gantt-task[data-id="${task.id}"]`)[0];
-            inserted_task_element.addEventListener('click', function (event) {
-                rightTaskOpen(this.dataset.id);
-            });
-            inserted_task_element.querySelector('.checkbox').addEventListener('click', ganttTaskCheckboxClickEventListener);
+            if (task.start_date !== undefined && task.start_date !== null && task.end_date !== undefined && task.end_date !== null) {
+                let position = getGanttTaskPosition(task);
+                let task_element = createGanttTaskElement(position, task);
+                $(_content).append(task_element);
+                let inserted_task_element = $(_content).find(`.gantt-task[data-id="${task.id}"]`)[0];
+                inserted_task_element.addEventListener('click', function (event) {
+                    rightTaskOpen(this.dataset.id);
+                });
+                inserted_task_element.querySelector('.checkbox').addEventListener('click', ganttTaskCheckboxClickEventListener);
+            }
         });
     });
 
@@ -540,16 +542,18 @@ function addTaskClickEventListener(event) {
 
     let _content = document.querySelector('.gantt-container ._gantt-timeline ._content');
     //create right side element
-    expandGanttWidth(task.end_date);
-    let position = getGanttTaskPosition(task);
-    let task_element = createGanttTaskElement(position, task);
-    $(_content).append(task_element);
-    let inserted_task_element = $(_content).find(`.gantt-task[data-id="${task.id}"]`)[0];
-    console.log('inserted_task_element', inserted_task_element);
-    inserted_task_element.addEventListener('click', function (event) {
-        rightTaskOpen(this.dataset.id);
-    });
-    inserted_task_element.querySelector('.checkbox').addEventListener('click', ganttTaskCheckboxClickEventListener);
+    if (task.start_date !== undefined && task.start_date !== null && task.end_date !== undefined && task.end_date !== null) {
+        expandGanttWidth(task.end_date);
+        let position = getGanttTaskPosition(task);
+        let task_element = createGanttTaskElement(position, task);
+        $(_content).append(task_element);
+        let inserted_task_element = $(_content).find(`.gantt-task[data-id="${task.id}"]`)[0];
+        console.log('inserted_task_element', inserted_task_element);
+        inserted_task_element.addEventListener('click', function (event) {
+            rightTaskOpen(this.dataset.id);
+        });
+        inserted_task_element.querySelector('.checkbox').addEventListener('click', ganttTaskCheckboxClickEventListener);
+    }
 }
 
 //TODO 20221102 - 14번 - 우식
