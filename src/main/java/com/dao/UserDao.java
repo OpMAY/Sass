@@ -2,6 +2,7 @@ package com.dao;
 
 import com.mapper.UserMapper;
 import com.model.User;
+import com.model.common.MFile;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -78,5 +79,9 @@ public class UserDao {
 
     public User getUser(int user_no) {
         return mapper.getUser(user_no);
+    }
+
+    public void changeUserProfile(Integer userNo, MFile mFile) {
+        mapper.changeUserProfile(userNo, mFile);
     }
 }

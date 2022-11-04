@@ -84,4 +84,9 @@
         from user
         where no = #{user_no};
     </select>
+    <update id="changeUserProfile">
+        update user
+        SET profile_img = #{mFile, typeHandler=com.middleware.JsonObjectTypeHandler}
+        WHERE no = #{userNo}
+    </update>
 </mapper>
