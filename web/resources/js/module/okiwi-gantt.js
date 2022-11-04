@@ -7,8 +7,10 @@ function accordionDropdownShowEvent(event) {
     let items = event.target.querySelectorAll('li.list-group-item[id]');
     items.forEach(function (item) {
         let task = findTimelineTask(item.id);
-        task.style.display = 'block';
-        item.setAttribute('data-show', true);
+        if (task !== null && task !== undefined) {
+            task.style.display = 'block';
+            item.setAttribute('data-show', true);
+        }
     });
     updateTimelineTaskPosition();
 }
@@ -18,8 +20,10 @@ function accordionDropdownHideEvent(event) {
     let items = event.target.querySelectorAll('li.list-group-item[id]');
     items.forEach(function (item) {
         let task = findTimelineTask(item.id);
-        task.style.display = 'none';
-        item.setAttribute('data-show', false);
+        if (task !== null && task !== undefined) {
+            task.style.display = 'none';
+            item.setAttribute('data-show', false);
+        }
     });
     updateTimelineTaskPosition();
 }
@@ -76,25 +80,32 @@ function ganttBoardOptionMenuClickEventListener(event) {
         let gantt_board_element = container.querySelector(`.card-header[data-id="${boardId}"]`).closest('.card');
         let gantt_timeline_tasks = gantt_board_element.querySelectorAll('.board-collapse li[id]');
         console.log('gantt_timeline_tasks', gantt_timeline_tasks);
-        gantt_timeline_tasks.forEach(function (task) {
-            let gantt_timeline_task = findTimelineTask(task.getAttribute('id'));
-            console.log('gantt_timeline_task', gantt_timeline_task);
-            gantt_timeline_task.remove();
+        apiDeleteBoard(boardId).then((result) => {
+            console.log('apiDeleteBoard', result);
+            gantt_timeline_tasks.forEach(function (task) {
+                let gantt_timeline_task = findTimelineTask(task.getAttribute('id'));
+                console.log('gantt_timeline_task', gantt_timeline_task);
+                gantt_timeline_task.remove();
+            });
+            gantt_board_element.remove();
+            updateTimelineTaskPosition();
         });
-        gantt_board_element.remove();
     }
     updateTimelineTaskPosition();
     closeGanttContextMenu(menu);
 };
 
-//TODO 20221102 - 14번 - 우식
-//TODO 20221102 - 15번 - 우식
-//TODO 20221102 - 19번 - 우식
+//TODO 20221102 - 14번 - 우식 check
+//TODO 20221102 - 15번 - 우식 check
+//TODO 20221102 - 19번 - 우식 check
 function ganttContextMenuClickEventListener(event) {
     let menu = this.closest('#gantt-context-menu');
     let taskId = menu.dataset.taskId;
     let container = document.querySelector('.gantt-container');
-    if (this.classList.contains('_edit')) {
+    if (this.classList.contains('_view')) {
+        console.log('_view');
+        rightTaskOpen(taskId);
+    } else if (this.classList.contains('_edit')) {
         console.log('_edit');
         let gantt_board_item_task_element = container.querySelector(`.list-group-item[id="${taskId}"]`);
         let title = gantt_board_item_task_element.querySelector('.title');
@@ -106,48 +117,73 @@ function ganttContextMenuClickEventListener(event) {
         console.log('_complete');
         let _content = document.querySelector('.gantt-container ._gantt-timeline ._content');
         let gantt_timeline_item_task_element = _content.querySelector(`.gantt-task[data-id="${taskId}"]`);
-        gantt_timeline_item_task_element.querySelector('.checkbox').click();
+        if (gantt_timeline_item_task_element !== undefined && gantt_timeline_item_task_element !== null) {
+            gantt_timeline_item_task_element.querySelector('.checkbox').click();
+        } else {
+            let gantt_board_task = container.querySelector(`._gantt-board .list-group li[id="${taskId}"]`);
+            if (gantt_board_task.classList.contains('is-checked')) {
+                apiUpdateTaskStatus(taskId).then((result) => {
+                    console.log('apiUpdateTaskStatus', result);
+                    gantt_board_task.classList.remove('is-checked');
+                });
+            } else {
+                apiUpdateTaskStatus(taskId).then((result) => {
+                    console.log('apiUpdateTaskStatus', result);
+                    gantt_board_task.classList.add('is-checked');
+                });
+            }
+        }
     } else if (this.classList.contains('_dis-complete')) {
         console.log('_dis-complete');
         let _content = document.querySelector('.gantt-container ._gantt-timeline ._content');
         let gantt_timeline_item_task_element = _content.querySelector(`.gantt-task[data-id="${taskId}"]`);
-        gantt_timeline_item_task_element.querySelector('.checkbox').click();
+        if (gantt_timeline_item_task_element !== undefined && gantt_timeline_item_task_element !== null) {
+            gantt_timeline_item_task_element.querySelector('.checkbox').click();
+        } else {
+            let gantt_board_task = container.querySelector(`._gantt-board .list-group li[id="${taskId}"]`);
+            if (gantt_board_task.classList.contains('is-checked')) {
+                apiUpdateTaskStatus(taskId).then((result) => {
+                    console.log('apiUpdateTaskStatus', result);
+                    gantt_board_task.classList.remove('is-checked');
+                });
+            } else {
+                apiUpdateTaskStatus(taskId).then((result) => {
+                    console.log('apiUpdateTaskStatus', result);
+                    gantt_board_task.classList.add('is-checked');
+                });
+            }
+        }
     } else if (this.classList.contains('_copy')) {
         console.log('_copy');
         let gantt_board_item_task_element = container.querySelector(`.list-group-item[id="${taskId}"]`);
         let create_gantt_board_item_task = gantt_board_item_task_element.cloneNode(true);
-        /*TODO Fetch and Get Task Data*/
-        let current_date = new Date().toISOString().slice(0, 10);
-        let create_id = tokenGenerator(8);
-        let task = {
-            id: create_id,
-            title: create_id,
-            complete: gantt_board_item_task_element.classList.contains('is-checked'),
-            profiles: [{
-                url: 'https://via.placeholder.com/30x30',
-                name: 'kimwoosik'
-            }],
-            work: 0,
-            start_date: current_date,
-            end_date: current_date
-        };
+        apiCopyTask(taskId).then((result) => {
+            console.log('apiCopyTask', result);
+            let _task = taskTypeChanger(result.data.copied_task);
+            create_gantt_board_item_task.setAttribute('id', _task.id);
+            create_gantt_board_item_task.addEventListener('contextmenu', ganttContextTaskEventListener);
+            create_gantt_board_item_task.querySelector('.dropright').addEventListener('click', ganttBoardTaskOptionClickEventListener);
+            gantt_board_item_task_element.closest('.list-group').querySelector('.list-group-item:last-child').before(create_gantt_board_item_task);
 
-        create_gantt_board_item_task.setAttribute('id', task.id);
-        create_gantt_board_item_task.addEventListener('contextmenu', ganttContextTaskEventListener);
-        create_gantt_board_item_task.querySelector('.dropright').addEventListener('click', ganttBoardTaskOptionClickEventListener);
-        gantt_board_item_task_element.closest('.list-group').querySelector('.list-group-item:last-child').before(create_gantt_board_item_task);
-
-        let _content = document.querySelector('.gantt-container ._gantt-timeline ._content');
-        //create right side element
-        expandGanttWidth(task.end_date);
-        let position = getGanttTaskPosition(task);
-        let task_element = createGanttTaskElement(position, task);
-        $(_content).append(task_element);
-        let inserted_task_element = $(_content).find(`.gantt-task[data-id="${task.id}"]`)[0];
-        inserted_task_element.querySelector('.checkbox').addEventListener('click', ganttTaskCheckboxClickEventListener);
+            let _content = document.querySelector('.gantt-container ._gantt-timeline ._content');
+            //create right side element
+            if (_task.start_date !== undefined && _task.start_date !== null && _task.end_date !== undefined && _task.end_date !== null) {
+                expandGanttWidth(_task.end_date);
+                let position = getGanttTaskPosition(_task);
+                let task_element = createGanttTaskElement(position, _task);
+                $(_content).append(task_element);
+                let inserted_task_element = $(_content).find(`.gantt-task[data-id="${_task.id}"]`)[0];
+                inserted_task_element.querySelector('.checkbox').addEventListener('click', ganttTaskCheckboxClickEventListener);
+            }
+            updateTimelineTaskPosition();
+        });
     } else if (this.classList.contains('_delete')) {
         console.log('_delete');
-        removeGanttTaskItemElement(taskId);
+        apiDeleteTask(taskId).then((result) => {
+            console.log('apiChangeTaskName', result);
+            removeGanttTaskItemElement(taskId);
+            updateTimelineTaskPosition();
+        });
     }
     updateTimelineTaskPosition();
     closeGanttContextMenu(menu);
@@ -192,8 +228,11 @@ function ganttBoardWritableElementInputKeyUpUpdateListener(e, is_close) {
     } else {
         value = gantt_board_title_input.value;
     }
-    updateGanttBoardName(gantt_board.querySelector('.title'), value);
-    gantt_board_title_input.remove();
+    apiChangeBoardName(gantt_board.dataset.id, value).then((result) => {
+        console.log('apiChangeBoardName', result);
+        updateGanttBoardName(gantt_board.querySelector('.title'), value);
+        gantt_board_title_input.remove();
+    });
     e.preventDefault();
 }
 
@@ -219,9 +258,14 @@ function ganttBoardItemWritableElementInputKeyUpUpdateListener(e, is_close) {
     } else {
         value = gantt_board_task_title_input.value;
     }
-    updateGanttTaskName(gantt_timeline_task.querySelector('.gantt-info .task-title .title'), value);
-    updateGanttTaskName(gantt_board_task.querySelector('.title'), value);
-    gantt_board_task_title_input.remove();
+    apiChangeTaskName().then((result) => {
+        console.log('apiChangeTaskName', result);
+        if (gantt_timeline_task !== undefined && gantt_timeline_task !== null) {
+            updateGanttTaskName(gantt_timeline_task.querySelector('.gantt-info .task-title .title'), value);
+        }
+        updateGanttTaskName(gantt_board_task.querySelector('.title'), value);
+        gantt_board_task_title_input.remove();
+    });
     e.preventDefault();
 }
 
@@ -309,8 +353,7 @@ const initializeGantt = (boards) => {
     });
 
     let currentDate = new Date().toISOString().slice(0, 10);
-    let currentDateElement =
-        document.querySelector(`.gantt-container ._gantt-timeline ._date [data-date="${currentDate}"]`);
+    let currentDateElement = document.querySelector(`.gantt-container ._gantt-timeline ._date [data-date="${currentDate}"]`);
     if (currentDateElement !== null && currentDateElement !== undefined) {
         currentDateElement.classList.add('active');
         let span = document.createElement('span');
@@ -515,9 +558,7 @@ function addTaskClickEventListener(event) {
     let task_id = tokenGenerator(6);
     let current_date = new Date().toISOString().slice(0, 10);
     let task = {
-        id: task_id,
-        title: task_id,
-        // board_id: ,  // TODO Board_id get
+        id: task_id, title: task_id, // board_id: ,  // TODO Board_id get
         complete: false,
     };
     // TODO Task 초기 생성 시 start_date, end_date === null => date === null 인 요소에 대해 처리 후 생성 function 넣기
@@ -562,17 +603,22 @@ function ganttTaskCheckboxClickEventListener(event) {
     let container = document.querySelector('.gantt-container');
     let gantt_task = this.closest('.gantt-task[data-id]');
     let task_id = gantt_task.dataset.id;
-    if (gantt_task.classList.contains('is-checked')) {
-        gantt_task.classList.remove('is-checked');
-    } else {
-        gantt_task.classList.add('is-checked');
+    if (!gantt_task.classList.contains('is-checked')) {
         is_checked = true;
     }
     let gantt_board_task = container.querySelector(`._gantt-board .list-group li[id="${task_id}"]`);
     if (!is_checked && gantt_board_task.classList.contains('is-checked')) {
-        gantt_board_task.classList.remove('is-checked');
+        apiUpdateTaskStatus(task_id).then((result) => {
+            console.log('apiUpdateTaskStatus', result);
+            gantt_task.classList.remove('is-checked');
+            gantt_board_task.classList.remove('is-checked');
+        });
     } else {
-        gantt_board_task.classList.add('is-checked');
+        apiUpdateTaskStatus(task_id).then((result) => {
+            console.log('apiUpdateTaskStatus', result);
+            gantt_task.classList.add('is-checked');
+            gantt_board_task.classList.add('is-checked');
+        });
     }
     event.preventDefault();
     event.stopPropagation();
@@ -609,8 +655,7 @@ const createGanttRightSide = (boards) => {
         let total_date = 0;
         year_months.forEach(function (month) {
             let first_date = 1;
-            let last_date = new Date(month.substring(0, month.lastIndexOf('-')) * 1,
-                month.substring(month.lastIndexOf('-') + 1) * 1, 0).getDate();
+            let last_date = new Date(month.substring(0, month.lastIndexOf('-')) * 1, month.substring(month.lastIndexOf('-') + 1) * 1, 0).getDate();
             total_date += (last_date - first_date + 1);
         });
         year_element.style.minWidth = ((12 + 12 + 20) * total_date) + 'px';
@@ -629,8 +674,7 @@ const createGanttRightSide = (boards) => {
         month_text.innerText = `${month.substring(month.lastIndexOf('-') + 1) * 1}`;
         month_element.appendChild(month_text);
         let first_date = 1;
-        let last_date = new Date(month.substring(0, month.lastIndexOf('-')) * 1,
-            month.substring(month.lastIndexOf('-') + 1) * 1, 0).getDate();
+        let last_date = new Date(month.substring(0, month.lastIndexOf('-')) * 1, month.substring(month.lastIndexOf('-') + 1) * 1, 0).getDate();
         month_element.style.minWidth = ((12 + 12 + 20) * (last_date - first_date + 1)) + 'px';
         _month.appendChild(month_element);
     });
@@ -639,8 +683,7 @@ const createGanttRightSide = (boards) => {
     _date.classList.add('_date');
     months.forEach(function (month) {
         let first_date = 1;
-        let last_date = new Date(month.substring(0, month.lastIndexOf('-')) * 1,
-            month.substring(month.lastIndexOf('-') + 1) * 1, 0).getDate();
+        let last_date = new Date(month.substring(0, month.lastIndexOf('-')) * 1, month.substring(month.lastIndexOf('-') + 1) * 1, 0).getDate();
         for (let i = first_date; i <= last_date; i++) {
             let date_element = document.createElement('div');
             date_element.setAttribute('data-year', month.substring(0, month.lastIndexOf('-')));
@@ -823,8 +866,7 @@ const expandGanttWidth = (end_date) => {
             let total_date = 0;
             year_months.forEach(function (month) {
                 let first_date = 1;
-                let last_date = new Date(month.substring(0, month.lastIndexOf('-')) * 1,
-                    month.substring(month.lastIndexOf('-') + 1) * 1, 0).getDate();
+                let last_date = new Date(month.substring(0, month.lastIndexOf('-')) * 1, month.substring(month.lastIndexOf('-') + 1) * 1, 0).getDate();
                 total_date += (last_date - first_date + 1);
             });
             year_element.style.minWidth = ((12 + 12 + 20) * total_date) + 'px';
@@ -840,8 +882,7 @@ const expandGanttWidth = (end_date) => {
             month_text.innerText = `${month.substring(month.lastIndexOf('-') + 1) * 1}`;
             month_element.appendChild(month_text);
             let first_date = 1;
-            let last_date = new Date(month.substring(0, month.lastIndexOf('-')) * 1,
-                month.substring(month.lastIndexOf('-') + 1) * 1, 0).getDate();
+            let last_date = new Date(month.substring(0, month.lastIndexOf('-')) * 1, month.substring(month.lastIndexOf('-') + 1) * 1, 0).getDate();
             month_element.style.minWidth = ((12 + 12 + 20) * (last_date - first_date + 1)) + 'px';
             _month.appendChild(month_element);
 

@@ -16,7 +16,7 @@
     <select id="getProjectFiles" resultType="TaskFile" resultMap="TaskFile">
         select *
         from task_file
-        WHERE task_id IN (select task_id from task WHERE project_no = #{project_no})
+        WHERE task_id IN (select t.id from task as t WHERE project_no = #{project_no})
         ORDER BY reg_datetime DESC
     </select>
     <delete id="deleteFile">

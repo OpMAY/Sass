@@ -99,6 +99,7 @@
      id="gantt-context-menu"
      style="position: absolute; top: 0; left: 0; z-index: 1; display: none;">
     <div class="list-group">
+        <a class="list-group-item list-group-item-action _view">작업 보기</a>
         <a class="list-group-item list-group-item-action _edit">태스크 이름 수정</a>
         <a class="list-group-item list-group-item-action _complete">작업 완료</a>
         <a class="list-group-item list-group-item-action _dis-complete">작업 완료 해제</a>
@@ -831,7 +832,7 @@
 <script src="https://kit.fontawesome.com/3581631c82.js"
         crossorigin="anonymous"></script>
 <script>
-    let TEMP_HASH = getURLParamByPrevAndNext('project', 'detail'); //1번 프로젝트 hash
+    let TEMP_HASH = getURLParamByPrevAndNext('project', 'detail');
     /**
      * Static JS
      * Static JS는 특정 페이지 에서만 작동하는 부분으로 Event 및 Element 생성 및 화면에 진입했을 때의
