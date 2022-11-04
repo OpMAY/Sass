@@ -919,9 +919,12 @@ public class CrmService {
             String date_database_format = "yyyy-MM-dd";
             try {
                 Date s_date = Time.DateStringToDate(start_date, date_default_format);
-                Date e_date = Time.DateStringToDate(task.getEnd_date(), date_database_format);
+                Date e_date = null;
+                if (task.getEnd_date() != null) {
+                    e_date = Time.DateStringToDate(task.getEnd_date(), date_database_format);
+                }
                 message.put("status", true);
-                if (e_date.before(s_date)) {
+                if (e_date != null && e_date.before(s_date)) {
                     // DB에 저장되어 있는 종료 일자가 시작 일자보다 이전일 경우 종료 일자를 동일하게 설정
                     taskDao.updateTaskEndDate(task_id, start_date);
                     message.put("end_date", start_date);
@@ -961,10 +964,13 @@ public class CrmService {
             String date_default_format = "yyyy.MM.dd";
             String date_database_format = "yyyy-MM-dd";
             try {
-                Date start_date = Time.DateStringToDate(task.getStart_date(), date_database_format);
+                Date start_date = null;
+                if(task.getStart_date() != null) {
+                    start_date = Time.DateStringToDate(task.getStart_date(), date_database_format);
+                }
                 Date e_date = Time.DateStringToDate(end_date, date_default_format);
                 message.put("status", true);
-                if (start_date.after(e_date)) {
+                if (start_date != null && start_date.after(e_date)) {
                     // DB에 저장되어 있는 시작 일자가 종료 일자보다 이후일 경우 시작 일자를 동일하게 설정
                     taskDao.updateTaskStartDate(task_id, end_date);
                     message.put("start_date", end_date);

@@ -14,11 +14,13 @@ const initializeRightTask = () => {
     //TODO Datepicker (start_date & end_date)
     $('#start').datepicker({
         container: '.start-datepicker-container',
-        language: 'ko'
+        language: 'ko',
+        autoclose: true,
     }).on('input', rightTaskDatepickerInputEventListener).on('changeDate', rightTaskStartDatePickerChangeEventListener);
     $('#end').datepicker({
         container: '.end-datepicker-container',
-        language: 'ko'
+        language: 'ko',
+        autoclose: true,
     }).on('input', rightTaskDatepickerInputEventListener).on('changeDate', rightTaskEndDatePickerChangeEventListener);
     //TODO Delete & Close
     RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._header ._delete').addEventListener('click', rightTaskDeleteClickEventListener);
@@ -434,7 +436,7 @@ function rightTaskStartDatePickerChangeEventListener(event) {
     console.log('rightTaskStartDatePickerChangeEventListener', this);
     // `e` here contains the extra attributes
     /*TODO 조건 -> end_date가 start_date보다 커야한다.*/
-    $('#end').datepicker('setDate', event.date);
+    // $('#end').datepicker('setDate', event.date);
     let task_id = this.closest('[data-id]').dataset.id;
     console.log('this.value', this.value);
     apiChangeTaskStart(task_id, this.value).then((result) => {

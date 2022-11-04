@@ -759,7 +759,7 @@ const createGanttTaskElement = (position, task) => {
               <div class="gantt-inner-container">
                 <div class="gantt-info">
                   <span class="divider"></span>
-                  <img width="24" height="24" src="${task.profiles[0].url}"/>
+                  <img width="24" height="24" src="${task.profiles[0] !== null && task.profiles[0] !== undefined ? task.profiles[0].url : ''}"/>
                   <div class="task-title"><div class="title">${task.title}</div></div>
                   <span class="checkbox"><i class="fas fa-check" aria-hidden="true"></i></span>
                 </div>
