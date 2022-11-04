@@ -10,6 +10,7 @@ public class Project extends Time {
     private int no;
     private int company_no;
     private String name;
+    private String emoji;
     private List<Board> boardList;
 
     private String hash_no;
