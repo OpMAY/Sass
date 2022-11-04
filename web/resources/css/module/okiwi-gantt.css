@@ -194,6 +194,7 @@
 }
 
 .gantt-container ._gantt-board ._board-add {
+    cursor: pointer;
     color: #F06A6A;
     padding: 0.75rem 1.25rem;
     display: block;

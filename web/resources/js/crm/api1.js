@@ -587,22 +587,26 @@ async function apiDeleteFile(file_no) {
 
 function boardsTypeChanger(back_boards) {
     let boards = new Array();
-    back_boards.forEach(function (back_board) {
-        let board = {
-            id: back_board.id,
-            title: back_board.name,
-            class: 'class1, class2, class3',
-            percent: 0,
-            item: tasksTypeChanger(back_board.taskList)
-        };
+    back_boards?.forEach(function (back_board) {
+        let board = boardTypeChanger(back_board);
         boards.push(board);
     });
     return boards;
 }
 
+function boardTypeChanger(back_board) {
+    return {
+        id: back_board.id,
+        title: back_board.name,
+        class: 'class1, class2, class3',
+        percent: 0,
+        item: tasksTypeChanger(back_board.taskList)
+    };
+}
+
 function tasksTypeChanger(back_tasks) {
     let tasks = new Array();
-    back_tasks.forEach(function (back_task) {
+    back_tasks?.forEach(function (back_task) {
         let task = taskTypeChanger(back_task);
         tasks.push(task);
     });
@@ -659,4 +663,24 @@ function taskProfileChanger(back_profile) {
         no: back_profile.no
     }
     return profile;
+}
+
+function filesChanger(back_files) {
+    let files = new Array();
+    back_files?.forEach(function (back_file) {
+        let file = fileChanger(back_file);
+        files.push(file);
+    })
+    return files;
+}
+
+function fileChanger(back_file) {
+    let file = {
+        name: back_file.file.name,
+        url: back_file.file.url,
+        type: back_file.file.type,
+        size: back_file.file.size,
+        date: back_file.date,
+    }
+    return file;
 }

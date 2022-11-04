@@ -237,8 +237,26 @@ async function removeTaskMember(task_id, member_no) {
 }
 
 // 27번
-async function changeTaskThumbnail() {
+async function changeTaskThumbnail(task_id, file) {
+    function apiChangeTaskThumbnail(task_id, file) {
+        const formData = new FormData();
+        formData.append('file', file);
 
+        let requestOptions = {
+            method: 'POST',
+            body: formData,
+        };
+        const response = fetch(`${host}/crm/update/task/${task_id}/thumbnail`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiChangeTaskThumbnail(task_id, file);
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 // 30번
@@ -328,7 +346,7 @@ async function addTaskComment(comment) {
             body : raw
         };
 
-        const response = fetch(`${host}/crm/create/task/comments`, requestOptions);
+        const response = fetch(`${host}/crm/create/task/comment`, requestOptions);
         return response.then((res) => res.json());
     }
 
@@ -383,6 +401,29 @@ async function getProjectFiles(hash) {
     let result;
     try {
         result = await apiGetProjectFiles(hash);
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// 39번
+async function createFileComment(task_id, file) {
+    function apiCreateFileComment(task_id, file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        let requestOptions = {
+            method: 'POST',
+            body: formData,
+        };
+        const response = fetch(`${host}/crm/create/task/${task_id}/comment/file`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiCreateFileComment(task_id, file);
         return result;
     } catch (error) {
         console.log(error);

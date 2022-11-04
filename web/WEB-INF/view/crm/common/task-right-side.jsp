@@ -114,6 +114,7 @@
                             data-target="#task-content"
                             type="button"
                             role="tab"
+                            data-type="content"
                             aria-controls="task-content"
                             aria-selected="true">내용
                     </button>
@@ -126,6 +127,7 @@
                             data-target="#task-comment"
                             type="button"
                             role="tab"
+                            data-type="comment"
                             aria-controls="task-comment"
                             aria-selected="false">댓글
                     </button>
@@ -138,6 +140,7 @@
                             data-target="#task-file"
                             type="button"
                             role="tab"
+                            data-type="file"
                             aria-controls="task-file"
                             aria-selected="false">파일
                     </button>

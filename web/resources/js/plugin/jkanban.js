@@ -874,7 +874,12 @@
                               <span class="_count">${subtasks}</span>
                             </div>`;
                     } else {
-                        return ``;
+                        return `<div class="sub-task-count">
+                                <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5.6 2.8V2H0.8V6H5.6V5.2C5.6 5.09391 5.64214 4.99217 5.71716 4.91716C5.79217 4.84214 5.89391 4.8 6 4.8H7.0344C7.14048 4.80002 7.2422 4.84218 7.3172 4.9172L7.8828 5.4828C7.95782 5.5578 7.99998 5.65952 8 5.7656V7.6C8 7.70609 7.95786 7.80783 7.88284 7.88284C7.80783 7.95786 7.70609 8 7.6 8H6C5.89391 8 5.79217 7.95786 5.71716 7.88284C5.64214 7.80783 5.6 7.70609 5.6 7.6V6.8H0.4C0.293913 6.8 0.192172 6.75786 0.117157 6.68284C0.0421427 6.60783 0 6.50609 0 6.4V0.4C0 0.293913 0.0421427 0.192172 0.117157 0.117157C0.192172 0.0421427 0.293913 0 0.4 0C0.506087 0 0.607828 0.0421427 0.682843 0.117157C0.757857 0.192172 0.8 0.293913 0.8 0.4V1.2H5.6V0.4C5.6 0.293913 5.64214 0.192172 5.71716 0.117157C5.79217 0.0421427 5.89391 0 6 0H7.0344C7.14048 2.2655e-05 7.2422 0.0421802 7.3172 0.1172L7.8828 0.6828C7.95782 0.757797 7.99998 0.859522 8 0.9656V2.8C8 2.90609 7.95786 3.00783 7.88284 3.08284C7.80783 3.15786 7.70609 3.2 7.6 3.2H6C5.89391 3.2 5.79217 3.15786 5.71716 3.08284C5.64214 3.00783 5.6 2.90609 5.6 2.8Z" fill="#222222"/>
+                              </svg>
+                              <span class="_count">0</span>
+                              </div>`;
                     }
                 }
 
@@ -901,6 +906,7 @@
                 }
 
                 function __buildItemCardInnerHTML(item) {
+                    // console.log(JSON.stringify(item));
                     if (item.cover !== undefined && item.cover !== null) {
                         return `<div class="kanban-item-cover" style="background-image: url('${item.cover.url}')"></div><div class="kanban-item-title">
                                 <h6 class="title" data-toggle="tooltip" data-placement="bottom" title="${item.title}">${item.title}</h6>
@@ -911,7 +917,7 @@
                                 </div>
                                 <div class="right text-right">
                                   ${__createSubTasksHTML(item.subtasks !== undefined && item.subtasks !== null ? item.subtasks.length : void (0))}
-                                  <span class="time">${item.start_date.substring(2)} ~ ${item.end_date.substring(2)}</span>
+                                  <span class="time">${item.start_date === null || item.start_date === undefined ? '' : item.start_date.substring(2)}${item.start_date !== null && item.end_date !== null ? ' ~ ' : ''}${item.end_date === null || item.end_date === undefined ? '' : item.end_date.substring(2)}</span>
                                 </div>
                             </div>
                             <div class="btn-group dropright">
@@ -932,7 +938,7 @@
                                 </div>
                                 <div class="right text-right">
                                   ${__createSubTasksHTML(item.subtasks !== undefined && item.subtasks !== null ? item.subtasks.length : void (0))}
-                                  <span class="time">${item.start_date.substring(2)} ~ ${item.end_date.substring(2)}</span>
+                                  <span class="time">${item.start_date === null || item.start_date === undefined ? ' ' : item.start_date.substring(2)}${(item.start_date !== null && item.start_date !== undefined && item.end_date !== null && item.end_date !== undefined) ? ' ~ ' : ''}${item.end_date === null || item.end_date === undefined ? ' ' : item.end_date.substring(2)}</span>
                                 </div>
                             </div>
                             <div class="btn-group dropright">

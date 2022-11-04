@@ -323,7 +323,7 @@
             }
         })
 
-        //TODO 20221102 - 1번 - 지우
+        //TODO 20221102 - 1번 - 지우 O
         getProjects().then((result) => {
             console.log(result);
             if (result.status === 'OK') {
@@ -366,7 +366,7 @@
             }
         })
 
-        //TODO 20221102 - 3번 - 지우
+        //TODO 20221102 - 3번 - 지우 O
         // 시작 시
         getUserTasks('TODO').then((result) => {
             console.log(result);
@@ -446,7 +446,7 @@
         })
 
 
-        //TODO 20221102 - 4번 - 지우
+        //TODO 20221102 - 4번 - 지우 O
         $('.project.add').on('click', function () {
             let project = {"name": 'create project sample'};
             createProject(project).then((result) => {
@@ -462,7 +462,7 @@
             })
         })
         //TODO 20221102 - 5번 - 우식
-        //TODO 20221102 - 6번 - 지우
+        //TODO 20221102 - 6번 - 지우 O
         $('._modify').on('click', function () {
             let update_project = {
                 "project": {

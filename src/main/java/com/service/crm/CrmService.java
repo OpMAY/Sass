@@ -414,6 +414,7 @@ public class CrmService {
         while (!taskDao.checkTokenIdAbleToUse(copied_task.getId())) {
             copied_task.setId(TokenGenerator.RandomToken(8));
         }
+        List<Task> tasks = taskDao.getBoardTasks(original_task.getBoard_id());
         copied_task.setProject_no(original_task.getProject_no());
         copied_task.setBoard_id(original_task.getBoard_id());
         copied_task.setTitle(original_task.getTitle());
@@ -421,6 +422,7 @@ public class CrmService {
         copied_task.setEnd_date(original_task.getEnd_date());
         copied_task.setDescription(original_task.getDescription());
         copied_task.setComplete(original_task.isComplete());
+        copied_task.set_order(tasks.size() + 1);
         // TODO taskDao.createTask() 와 동일하지만 추후 수정 가능성을 위해 분할 - 해당 쿼리 수정 시 주석 삭제
         taskDao.copyTask(copied_task);
 
@@ -479,11 +481,15 @@ public class CrmService {
     public ResponseEntity createBoard(Board board) {
         Message message = new Message();
         // Token 재검증
-        if (board.getProject_no() <= 0) {
-            message.put("status", false);
-            message.put("error_message", "");
-            log.debug("createBoard error : project_no 없음");
-        } else {
+        if (board.getProject_hash() != null) {
+            try {
+                board.setProject_no(Integer.parseInt(encryptionService.decryptAESWithSlash(board.getProject_hash())));
+            } catch (Exception e) {
+                e.printStackTrace();
+                message.put("status", false);
+                message.put("error_message", "서버 에러");
+                log.debug("createBoard error : project_no 없음");
+            }
             if (board.getId() == null) {
                 board.setId(TokenGenerator.RandomToken(8));
             }
@@ -497,6 +503,10 @@ public class CrmService {
             boardDao.createBoard(board);
             message.put("status", true);
             message.put("board", board);
+        } else {
+            message.put("status", false);
+            message.put("error_message", "잘못된 요청입니다.");
+            log.debug("createBoard error : project hash 없음");
         }
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
@@ -608,13 +618,19 @@ public class CrmService {
     @Transactional
     public ResponseEntity createTask(Task task) {
         Message message = new Message();
-        if (taskDao.checkTokenIdAbleToUse(task.getId())) {
-            taskDao.createTask(task);
-            message.put("status", true);
-            message.put("task", task);
-        } else {
-            message.put("status", false);
+        if (task.getId() == null) {
+            task.setId(TokenGenerator.RandomToken(8));
         }
+        while (!taskDao.checkTokenIdAbleToUse(task.getId())) {
+            task.setId(TokenGenerator.RandomToken(8));
+        }
+        Board board = boardDao.getBoardById(task.getBoard_id());
+        task.setProject_no(board.getProject_no());
+        List<Task> tasks = taskDao.getBoardTasks(board.getId());
+        task.set_order(tasks.size() + 1);
+        taskDao.createTask(task);
+        message.put("status", true);
+        message.put("task", task);
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
 
@@ -888,9 +904,9 @@ public class CrmService {
                 Date e_date = Time.DateStringToDate(task.getEnd_date(), date_default_format);
                 message.put("status", true);
                 if (e_date.before(s_date)) {
-                    // DB에 저장되어 있는 종료 일자가 시작 일자보다 이전일 경우 종료 일자 => null
-                    taskDao.updateTaskEndDate(task_id, null);
-                    message.put("end_date", null);
+                    // DB에 저장되어 있는 종료 일자가 시작 일자보다 이전일 경우 종료 일자를 동일하게 설정
+                    taskDao.updateTaskEndDate(task_id, start_date);
+                    message.put("end_date", start_date);
                 }
                 taskDao.updateTaskStartDate(task_id, start_date);
             } catch (Exception e) {
@@ -930,9 +946,9 @@ public class CrmService {
                 Date e_date = Time.DateStringToDate(end_date, date_default_format);
                 message.put("status", true);
                 if (start_date.after(e_date)) {
-                    // DB에 저장되어 있는 시작 일자가 종료 일자보다 이후일 경우 시작 일자 => null
-                    taskDao.updateTaskStartDate(task_id, null);
-                    message.put("start_date", null);
+                    // DB에 저장되어 있는 시작 일자가 종료 일자보다 이후일 경우 시작 일자를 동일하게 설정
+                    taskDao.updateTaskStartDate(task_id, end_date);
+                    message.put("start_date", end_date);
                 }
                 taskDao.updateTaskEndDate(task_id, end_date);
             } catch (Exception e) {
@@ -1152,6 +1168,9 @@ public class CrmService {
         } else {
             List<TaskComment> comments = taskCommentDao.getTaskComments(task_id);
             for (TaskComment comment : comments) {
+                if(comment.getType().equals(TASK_COMMENT_TYPE.FILE)) {
+                    comment.setFile(taskCommentFileDao.getFileInfoByCommentNo(comment.getNo()).getFile());
+                }
                 comment.setDate(comment.getReg_datetime().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")));
                 comment.setProfile(companyMemberDao.getCompanyMemberProfile(comment.getMember_no()));
             }
@@ -1169,10 +1188,7 @@ public class CrmService {
      * @return ResponseEntity(REST)
      * <p>
      * 현재 업무에 작성된 댓글 목록 호출
-     * TODO add taskCommentFile =>
-     * - 1. task file로 넣고 comment에 엮을 지 /
-     * - 2. taskCommentFile의 객체로 둘지 결정
-     * - 만일 getProjectFiles(), getTaskFiles()에서 보여져야 한다면 1번, 아니면 2번
+     * type File :  task file로 넣고 comment에 엮었음
      * # 예상 예외 처리
      * - 업무 데이터 없을 떄
      * - 회사 데이터 없음 -> Interceptor 처리?
@@ -1185,15 +1201,26 @@ public class CrmService {
             message.put("status", false);
             message.put("error_message", "해당 업무의 댓글 목록을 불러올 수 없습니다. 업무 리스트를 최신화 해주세요.");
         } else {
-
-//            switch (comment.getType()) {
-//                case TEXT:
-//                case MENTION:
-//                    break;
-//                case FILE:
-//            }
+            MFile temp_file = null;
             taskCommentDao.addComment(comment);
+            if(comment.getType().equals(TASK_COMMENT_TYPE.FILE)) {
+                /**
+                 * 1. File 등록
+                 * 2. Comment - file 엮기
+                 * */
+                // 1
+                TaskFile taskFile = new TaskFile();
+                taskFile.setTask_id(comment.getTask_id());
+                taskFile.setFile(comment.getFile());
+                taskFileDao.insertTaskFile(taskFile);
+
+                // 2
+                taskCommentFileDao.connectFileWithComment(comment.getNo(), taskFile.getNo());
+                message.put("file", comment.getFile());
+                temp_file = comment.getFile();
+            }
             comment = taskCommentDao.getTaskCommentByNo(comment.getNo());
+            comment.setFile(temp_file);
             // TODO 몇분 전?
             comment.setDate(comment.getReg_datetime().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")));
             comment.setProfile(companyMemberDao.getCompanyMemberProfile(comment.getMember_no()));

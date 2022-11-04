@@ -66,6 +66,9 @@ const initializeRightTask = () => {
             rightTaskClose();
         }
     });
+    // TODO Click Tab
+    console.log(RIGHT_TASK_CONTAINER.querySelectorAll('.right-side-inner > ._tab .nav-item'));
+    $(RIGHT_TASK_CONTAINER).on('click', '.nav-item', rightTaskTabChangeEventListener);
 };
 
 const rightTaskShowContent = (icon) => {
@@ -122,6 +125,7 @@ const rightTaskClear = () => {
     rightTaskSubtasksClear();
     rightTaskCommentsClear();
     rightTaskFilesClear();
+    rightTaskTabClear();
 }
 
 const rightTaskCheckboxClear = () => {
@@ -183,6 +187,12 @@ const rightTaskFilesClear = () => {
     });
 }
 
+// Tab 초기화 - 지우 added
+const rightTaskTabClear = () => {
+    let tab = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab #task-tab');
+    $(tab).find('#task-content-tab').click();
+}
+
 //TODO 20221102 - 21번 - 지우, 우식
 const rightTaskReInitialize = (task_id) => {
     console.log('rightTaskReInitialize', task_id);
@@ -197,67 +207,8 @@ const rightTaskReInitialize = (task_id) => {
             }
         }
     })
-    let task = {
-        id: tokenGenerator(6),
-        title: 'Item 1',
-        complete: false,
-        cover: {
-            url: 'https://via.placeholder.com/240x240',
-            size: 999,
-            name: 'cover.png',
-            type: 'image/jpeg'
-        },
-        profiles: [
-            {
-                no: 1,
-                url: 'https://via.placeholder.com/30x30',
-                name: 'kimwoosik'
-            },
-            {
-                no: 2,
-                url: 'https://via.placeholder.com/30x30',
-                name: 'kimwoosik2'
-            }
-        ],
-        description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam atque deserunt dignissimos eligendi facilis impedit inventore, nisi nobis obcaecati odit perferendis placeat rerum sed similique tempora tempore velit vitae voluptatem.',
-        work: 6,
-        subtasks: [{
-            id: tokenGenerator(6),
-            title: 'subtask1',
-            complete: true,
-            profiles: [
-                {
-                    no: 9,
-                    url: 'https://via.placeholder.com/30x30',
-                    name: 'kimwoosik'
-                },
-            ],
-            work: 6,
-            start_date: '2022-08-21',
-            end_date: '2022-08-30'
-        }, {
-            id: tokenGenerator(6),
-            title: 'subtask2',
-            complete: true,
-            profiles: [
-                {
-                    no: 9,
-                    url: 'https://via.placeholder.com/30x30',
-                    name: 'kimwoosik'
-                },
-            ],
-            work: 6,
-            start_date: '2022-08-21',
-            end_date: '2022-08-30'
-        }],
-        start_date: '2022-08-21',
-        end_date: '2022-08-30'
-    };
-
 }
 
-//TODO 20221102 - 36번 - 지우
-//TODO 20221102 - 34번 - 지우
 const rightTaskInit = (task) => {
     console.log('rightTaskInit');
     RIGHT_TASK_CONTAINER.setAttribute('data-id', task.id);
@@ -266,96 +217,7 @@ const rightTaskInit = (task) => {
     rightTaskAssignInit(task.collaborators);
     rightTaskWorkTimeInit(task.start_date, task.end_date);
     rightTaskContentInit(task.description);
-    rightTaskSubtasksInit(task.subtasks);
-    let comments = [
-        {
-            no: 10,
-            profile: {
-                no: 9,
-                url: 'https://via.placeholder.com/30x30',
-                name: 'kimwoosik'
-            },
-            type: 'text',
-            content: 'content',
-            date: '2022.12.02'
-        }, {
-            no: 10,
-            profile: {
-                no: 9,
-                url: 'https://via.placeholder.com/30x30',
-                name: 'kimwoosik'
-            },
-            type: 'file',
-            file: {
-                name: 'test.png',
-                url: 'https://via.placeholder.com/350x150',
-                type: 'image/png',
-                size: 102938
-            },
-            date: '2022.12.02'
-        }, {
-            no: 10,
-            profile: {
-                no: 9,
-                url: 'https://via.placeholder.com/30x30',
-                name: 'kimwoosik'
-            },
-            type: 'file',
-            file: {
-                name: 'test.zip',
-                url: 'https://via.placeholder.com/350x150',
-                type: 'file',
-                size: 102938
-            },
-            date: '2022.12.02'
-        }
-    ];
-    let files = [{
-        name: 'test.png',
-        url: 'https://via.placeholder.com/350x150',
-        type: 'image/png',
-        size: 102938,
-        date: '2022.11.01'
-    }, {
-        name: 'test.zip',
-        url: 'https://via.placeholder.com/350x150',
-        type: 'file',
-        size: 102938,
-        date: '2022.11.02'
-    }, {
-        name: 'test.zip',
-        url: 'https://via.placeholder.com/350x150',
-        type: 'file',
-        size: 102938,
-        date: '2022.11.01'
-    }];
-
-    // TODO WHEN COMMENT TAB OPEN
-    getTaskComments(task.id).then((result) => {
-        console.log(result)
-        if (result.status === 'OK') {
-            if (result.data.status) {
-                let comments = result.data.comments;
-                rightTaskCommentsInit(comments);
-            } else {
-                alert(result.data.error_message);
-            }
-        }
-
-    })
-
-    // TODO WHEN FILE TAB OPEN
-    getTaskFiles(task.id).then((result) => {
-        console.log(result);
-        if (result.status === 'OK') {
-            if (result.data.status) {
-                let files = result.data.files;
-                rightTaskFilesInit(files);
-            } else {
-                alert(result.data.error_message);
-            }
-        }
-    })
+    rightTaskSubtasksInit(task.subTasks);
 }
 
 const rightTaskCheckboxInit = (is_complete) => {
@@ -384,8 +246,8 @@ const rightTaskAssignInit = (profiles) => {
 const rightTaskWorkTimeInit = (start_date, end_date) => {
     let start_date_input = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner ._info #start');
     let end_date_input = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner ._info #end');
-    start_date_input.value = start_date.replaceAll(/-/g, '.');
-    end_date_input.value = end_date.replaceAll(/-/g, '.');
+    start_date_input.value = start_date !== null ? start_date.replaceAll(/-/g, '.') : '';
+    end_date_input.value = end_date !== null ? end_date.replaceAll(/-/g, '.') : '';
 }
 
 const rightTaskContentInit = (content) => {
@@ -396,8 +258,11 @@ const rightTaskContentInit = (content) => {
 const rightTaskSubtasksInit = (subtasks) => {
     let subtasks_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._subtasks');
     let subtask_add = subtasks_container.querySelector('.subtask-item.add');
+    console.log(subtasks)
     if (subtasks !== undefined) {
+        console.log("not undefined")
         subtasks.forEach(function (subtask) {
+            console.log(subtask);
             subtask_add.before(createRightSubtaskItem(subtask));
         });
     }
@@ -407,13 +272,14 @@ const rightTaskCommentsInit = (comments) => {
     let comments_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._comments');
     comments_container.innerHTML = '';
     comments.forEach(function (comment) {
-
+        comment.profile = taskProfileChanger(comment.profile);
         comments_container.appendChild(createRightTaskCommentItem(comment));
     });
 }
 
 const rightTaskFilesInit = (files) => {
     let container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._files-container');
+    files = filesChanger(files);
     initializeFiles({container, files});
 }
 
@@ -437,6 +303,60 @@ function rightTaskTitleKeydownEventListener(event) {
 
 function rightTaskTitleKeyupEventListener(event) {
     console.log('rightTaskTitleKeyupEventListener', this);
+}
+
+function rightTaskTabChangeEventListener(event) {
+    let id = RIGHT_TASK_CONTAINER.dataset.id;
+    switch ($(this).find('button').data().type) {
+        case 'content' :
+            // for prevent tab change on close
+            if (id !== undefined) {
+                getTaskDetail(id).then((result) => {
+                    console.log(result);
+                    if (result.status === 'OK') {
+                        if (result.data.status) {
+                            let task = result.data.task;
+                            rightTaskWorkTimeInit(task.start_date, task.end_date);
+                            rightTaskContentInit(task.description);
+                            rightTaskSubtasksClear();
+                            rightTaskSubtasksInit(task.subTasks);
+                        } else {
+                            alert(result.data.error_message);
+                        }
+                    }
+                })
+            }
+            break;
+        case 'comment':
+            // TODO WHEN COMMENT TAB OPEN
+            //TODO 20221102 - 34번 - 지우 O
+            getTaskComments(id).then((result) => {
+                console.log(result)
+                if (result.status === 'OK') {
+                    if (result.data.status) {
+                        let comments = result.data.comments;
+                        rightTaskCommentsInit(comments);
+                    } else {
+                        alert(result.data.error_message);
+                    }
+                }
+            })
+            break;
+        case 'file':
+            // TODO WHEN FILE TAB OPEN
+            //TODO 20221102 - 36번 - 지우 O
+            getTaskFiles(id).then((result) => {
+                console.log(result);
+                if (result.status === 'OK') {
+                    if (result.data.status) {
+                        let files = result.data.files;
+                        rightTaskFilesInit(files);
+                    } else {
+                        alert(result.data.error_message);
+                    }
+                }
+            })
+    }
 }
 
 //TODO 20221102 - 18번 - 우식
@@ -506,12 +426,12 @@ function rightTaskEndDatePickerChangeEventListener(event) {
     event.stopPropagation();
 }
 
-//TODO 20221102 - 32번 - 지우
+//TODO 20221102 - 32번 - 지우 O
 const rightTaskUserAssignDropdownUpdateItems = (event) => {
     console.log('rightTaskUserAssignDropdownUpdateItems', event, this);
     getTaskAvailableMembers(RIGHT_TASK_CONTAINER.dataset.id).then((result) => {
-        if(result.status === 'OK') {
-            if(result.data.status) {
+        if (result.status === 'OK') {
+            if (result.data.status) {
                 let profiles = result.data.members;
                 let dropdown_menu = event.target.querySelector('.dropdown-menu');
                 // TODO 더이상 추가할 멤버가 없을 때 디자인 or alert?
@@ -552,7 +472,7 @@ const rightTaskUserAssignDropdownClearItems = (event) => {
     });
 }
 
-//TODO 20221102 - 23번 - 지우
+//TODO 20221102 - 23번 - 지우 O
 function rightTaskUserAssignDeleteClickEventListener(event) {
     console.log('rightTaskUserAssignDeleteClickEventListener', this);
     let user_item = this.closest('.user-item');
@@ -562,15 +482,15 @@ function rightTaskUserAssignDeleteClickEventListener(event) {
     event.stopPropagation();
     removeTaskMember(RIGHT_TASK_CONTAINER.dataset.id, user_no).then((result) => {
         console.log(result);
-        if(result.status === 'OK') {
-            if(result.data.status) {
+        if (result.status === 'OK') {
+            if (result.data.status) {
                 user_item.remove();
             }
         }
     })
 }
 
-//TODO 20221102 - 22번 - 지우
+//TODO 20221102 - 22번 - 지우 O
 function rightTaskUserAssignAddClickEventListener(event) {
     console.log('rightTaskUserAssignAddClickEventListener', this);
     let user_no = this.dataset.no;
@@ -583,8 +503,8 @@ function rightTaskUserAssignAddClickEventListener(event) {
         name
     }
     addTaskMember(RIGHT_TASK_CONTAINER.dataset.id, user_no).then((result) => {
-        if(result.status === 'OK') {
-            if(result.data.status) {
+        if (result.status === 'OK') {
+            if (result.data.status) {
                 let assign_user_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner ._info ._assign .user-item-container');
                 let assign_user_add = assign_user_container.querySelector('.user-item.add');
                 assign_user_add.before(createRightTaskAssignItem(profile));
@@ -615,7 +535,7 @@ function rightTaskContentInputEventListener(event) {
     console.log(task_id, content.innerHTML);
 }
 
-//TODO 20221102 - 30번 - 지우
+//TODO 20221102 - 30번 - 지우 O
 function rightTaskSubTaskAddClickEventListener(event) {
     console.log('rightTaskSubTaskAddClickEventListener', this);
     let current_date = new Date().toISOString().slice(0, 10);
@@ -623,26 +543,29 @@ function rightTaskSubTaskAddClickEventListener(event) {
     let subtask = {
         id: create_id,
         title: create_id,
+        task_id: RIGHT_TASK_CONTAINER.dataset.id,
         complete: false,
-        profiles: [
-            {
-                no: 999,
-                url: 'https://via.placeholder.com/30x30',
-                name: 'kimwoosik'
-            },
-        ],
-        work: 0,
-        start_date: current_date,
-        end_date: current_date
     };
-    let subtasks_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._subtasks');
-    let subtask_add = subtasks_container.querySelector('.subtask-item.add');
-    subtask_add.before(createRightSubtaskItem(subtask));
+    createSubTask(subtask).then((result) => {
+        console.log(result);
+        if (result.status === 'OK') {
+            if (result.data.status) {
+                subtask = result.data.subTask;
+                let subtasks_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._subtasks');
+                let subtask_add = subtasks_container.querySelector('.subtask-item.add');
+                subtask_add.before(createRightSubtaskItem(subtask));
+            } else {
+                alert(result.data.error_message);
+            }
+        }
+    })
 }
 
 //TODO 20221102 - 40번 - 지우
 function rightTaskDownloadClickEventListener(event) {
     console.log('rightTaskDownloadClickEventListener', this);
+    // For Comment
+    downloadFileFromUrl($(this).data().url, $(this).data().name);
 }
 
 function rightTaskCommentKeydownEventListener(event) {
@@ -671,7 +594,7 @@ function rightTaskCommentInputEventListener(event) {
     console.log('rightTaskCommentInputEventListener', this);
 }
 
-//TODO 20221102 - 34번 - 지우
+//TODO 20221102 - 34번 - 지우 O
 function rightTaskCommentWriteEventListener(event) {
     console.log('rightTaskCommentWriteEventListener', this);
     let task_id = this.closest('[data-id]').dataset.id;
@@ -682,18 +605,22 @@ function rightTaskCommentWriteEventListener(event) {
 
     let comment = {
         task_id: task_id,
-        no: 999,
-        profile: {
-            no: 999,
-            url: 'https://via.placeholder.com/30x30',
-            name: 'kimwoosik'
-        },
-        type: 'text',
+        type: 'TEXT',
         content: comment_write_input.value,
-        date: current_date
     }
-    comments_container.appendChild(createRightTaskCommentItem(comment));
-    comment_write_input.value = '';
+    addTaskComment(comment).then((result) => {
+        console.log(result);
+        if (result.status === 'OK') {
+            if (result.data.status) {
+                comment = result.data.comment;
+                comment.profile = taskProfileChanger(comment.profile);
+                comments_container.appendChild(createRightTaskCommentItem(comment));
+                comment_write_input.value = '';
+            } else {
+                alert(result.data.error_message);
+            }
+        }
+    })
 }
 
 function rightTaskMessageFileUploadEventListener(event) {
@@ -722,9 +649,21 @@ function rightTaskMessageFileChangeEventListener(event) {
             var reader = new FileReader();
 
             reader.onload = function (e) {
-                comment.file.url = e.target.result;
-                console.log(comment.file);
-                callback(comment);
+                createFileComment(task_id, file).then((result) => {
+                    console.log(result);
+                    if(result.status === 'OK') {
+                        if(result.data.status) {
+                            comment = result.data.comment;
+                            // comment.file.url = e.target.result;
+                            // console.log(comment.file);
+                            comment.profile = taskProfileChanger(comment.profile);
+                            callback(comment);
+                        } else {
+                            alert(result.data.error_message);
+                        }
+                    }
+                })
+
             }
 
             reader.readAsDataURL(input.files[0]);
@@ -736,20 +675,20 @@ function rightTaskMessageFileChangeEventListener(event) {
     }
 
     let comment = {
-        no: 9999,
-        profile: {
-            no: 9999,
-            url: 'https://via.placeholder.com/30x30',
-            name: 'kimwoosik'
-        },
-        type: 'file',
-        file: {
-            name: file.name,
-            url: 'https://via.placeholder.com/350x150',
-            type: file.type,
-            size: file.size
-        },
-        date: current_date
+        // no: 9999,
+        // profile: {
+        //     no: 9999,
+        //     url: 'https://via.placeholder.com/30x30',
+        //     name: 'kimwoosik'
+        // },
+        // type: 'file',
+        // file: {
+        //     name: file.name,
+        //     url: 'https://via.placeholder.com/350x150',
+        //     type: file.type,
+        //     size: file.size
+        // },
+        // date: current_date
     };
     readURL(input, comment, (comment) => {
         comments_container.appendChild(createRightTaskCommentItem(comment))
@@ -861,7 +800,7 @@ const createRightTaskDropdownAssignItem = (profile) => {
 
 const createRightTaskCommentItem = (comment) => {
     const __buildRightTaskCommentItem = (comment) => {
-        if (comment.type === 'text') {
+        if (comment.type === 'TEXT') {
             return `<div class="_profile"
                      style="background-image: url('${comment.profile.url}')"></div>
                 <div class="_info">
@@ -892,7 +831,7 @@ const createRightTaskCommentItem = (comment) => {
                                   data-toggle="tooltip"
                                   data-placement="bottom"
                                   title="${comment.file.name}">${comment.file.name}</span>
-                            <span class="_download medium-h6">Download</span>
+                            <span class="_download medium-h6" data-url="${comment.file.url}" data-name="${comment.file.name}">Download</span>
                           </div>
                         </div>
                       </div>
@@ -914,7 +853,7 @@ const createRightTaskCommentItem = (comment) => {
                                       data-toggle="tooltip"
                                       data-placement="bottom"
                                       title="${comment.file.name}">${comment.file.name}</span>
-                                <span class="_download medium-h6">Download</span>
+                                <span class="_download medium-h6" data-url="${comment.file.url}" data-name="${comment.file.name}">Download</span>
                               </div>
                             </div>
                           </div>

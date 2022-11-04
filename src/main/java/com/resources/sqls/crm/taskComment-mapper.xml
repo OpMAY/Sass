@@ -7,7 +7,7 @@
         select *
         from task_comment
         WHERE task_id = #{task_id}
-        ORDER BY reg_datetime DESC
+        ORDER BY reg_datetime
     </select>
     <insert id="addComment" keyProperty="no" useGeneratedKeys="true">
         insert into task_comment(task_id, member_no, type, content, reg_datetime, updated_datetime)

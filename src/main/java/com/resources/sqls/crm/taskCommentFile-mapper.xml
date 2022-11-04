@@ -3,4 +3,18 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.crm.TaskCommentFileMapper">
+    <resultMap id="TaskFile" type="com.model.crm.file.TaskFile">
+        <result column="file" property="file" typeHandler="com.middleware.JsonObjectTypeHandler"
+                javaType="com.model.common.MFile"/>
+    </resultMap>
+    <insert id="connectFileWithComment">
+        insert into task_comment_file(task_comment_no, task_file_no, reg_datetime, updated_datetime)
+        VALUES (#{comment_no}, #{file_no}, now(), now())
+    </insert>
+    <select id="getFileInfoByCommentNo" resultType="TaskFile" resultMap="TaskFile">
+        select tf.*
+        from task_comment_file
+                 left join task_file tf on task_comment_file.task_file_no = tf.no
+        WHERE task_comment_no = #{comment_no}
+    </select>
 </mapper>

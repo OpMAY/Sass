@@ -54,11 +54,11 @@ const createFileItem = (file) => {
                   <div class="_name regular-h6"
                        data-toggle="tooltip"
                        data-placement="bottom"
-                       title="${file.file.name}">${file.file.name}
+                       title="${file.name}">${file.name}
                   </div>
-                  <div class="_size regular-p1 text-muted">${file.file.size}</div>
+                  <div class="_size regular-p1 text-muted">${file.size}</div>
                 </div>
-                <div class="_download">
+                <div class="_download" data-url="${file.url}" data-name="${file.name}">
                   <svg width="32"
                        height="32"
                        viewBox="0 0 32 32"
@@ -82,4 +82,5 @@ const createFileItem = (file) => {
 
 function fileDownloadClickEventListener(event) {
     console.log('fileDownloadClickEventListener', this);
+    downloadFileFromUrl($(this).data().url, $(this).data().name);
 }

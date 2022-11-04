@@ -13,6 +13,7 @@ public class Board extends Time {
     private int _order;
     private List<Task> taskList;
 
+    private String project_hash;
     private String class_string;
     private int percent;
 }

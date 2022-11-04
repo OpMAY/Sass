@@ -1,5 +1,6 @@
 package com.model.crm;
 
+import com.model.common.MFile;
 import com.model.common.Time;
 import com.model.company.CompanyProfileMember;
 import lombok.Data;
@@ -14,4 +15,5 @@ public class TaskComment extends Time {
 
     private String date;
     private CompanyProfileMember profile;
+    private MFile file;
 }

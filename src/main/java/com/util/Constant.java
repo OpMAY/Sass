@@ -67,7 +67,8 @@ public class Constant {
     /* aws cdn path */
     public static class CDN_PATH {
         public static final String TEST = "test/";
-        public static final String TASK_THUMBNAIL = "crm/task/thumbnail/";
-        public static final String TASK_FILE = "crm/task/file/";
+        public static final String USER_PROFILE = "avouch/user/profile";
+        public static final String TASK_THUMBNAIL = "avouch/crm/task/thumbnail/";
+        public static final String TASK_FILE = "avouch/crm/task/file/";
     }
 }

@@ -16,6 +16,7 @@
                complete,
                title,
                _order,
+               thumbnail,
                (select COUNT(*) from subtask WHERE task_id = task.id) as sub_task_count
         from task
         WHERE board_id = #{board_id}
@@ -76,8 +77,8 @@
     <insert id="copyTask">
         insert into task(id, board_id, project_no, start_date, end_date, title, description, _order, complete,
                          reg_datetime, updated_datetime)
-        VALUES (#{id}, #{board_id}, #{project_no}, #{start_date}, #{end_date}, #{title}, #{description}, #{complete},
-                #{_order}, now(), now())
+        VALUES (#{id}, #{board_id}, #{project_no}, #{start_date}, #{end_date}, #{title}, #{description},
+                #{_order}, #{complete}, now(), now())
     </insert>
     <select id="getTaskById" resultType="Task" resultMap="Task">
         select *
@@ -125,7 +126,7 @@
             updated_datetime = now()
         WHERE id = #{task_id}
     </update>
-    <update id="updateTaskThumbnail">
+    <update id="changeTaskThumbnail">
         update task
         SET thumbnail        = #{thumbnail, typeHandler=com.middleware.JsonObjectTypeHandler},
             updated_datetime = now()
