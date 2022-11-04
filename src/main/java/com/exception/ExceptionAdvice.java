@@ -61,8 +61,19 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler(GrantAccessDeniedException.class)
     protected ModelAndView handleGrantAccessDeniedException(HttpServletRequest request, GrantAccessDeniedException e) {
-//        e.printStackTrace();
-//        log.error("handleGrantAccessDeniedException");
+        e.printStackTrace();
+        log.error("handleGrantAccessDeniedException");
+        modelAndView = new ModelAndView("redirect:/");
+        return modelAndView;
+    }
+
+    /**
+     * 사용자(Company Member)의 회사(Company)가 Plugin을 Access할 수 있는 권한이 없을 때
+     */
+    @ExceptionHandler(PlugAccessDeniedException.class)
+    protected ModelAndView handlePlugAccessDeniedException(HttpServletRequest request, PlugAccessDeniedException e) {
+        e.printStackTrace();
+        log.error("handlePlugAccessDeniedException");
         modelAndView = new ModelAndView("redirect:/");
         return modelAndView;
     }

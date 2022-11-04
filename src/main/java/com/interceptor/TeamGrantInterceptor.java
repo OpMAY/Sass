@@ -42,24 +42,28 @@ public class TeamGrantInterceptor extends HandlerInterceptorAdapter {
         log.debug("TeamGrant Interceptor preHandle");
         HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
         int user_no = (Integer) hashMap.get(JWTEnum.NO.name());
+        //접속한 유저가 Company를 가지고 있는지 확인
         if (companyMemberDao.checkUserHasCompany(user_no)) {
             Company company = companyMemberDao.getUserCompany(user_no);
+            //접속한 유저의 ROLE을 뽑아온다.
             ROLE role = companyMemberDao.getUserRoleOfCompany(user_no, company.getNo());
             log.debug("request header : {}", request.getHeader("Content-Api"));
             if(request.getHeader("Content-Api") != null && request.getMethod().equals(RequestMethod.POST.toString())) {
+                //접속한 유저의 ROLE이 OWNER(소유자)가 아닐 때 에러
                 if (role != ROLE.OWNER) {
                     throw new GrantAccessDeniedException(BusinessExceptionType.GRANT_EXCEPTION);
                 /*response.sendError(HttpStatus.UNAUTHORIZED.value());
                 return false;*/
                 }
             } else {
+                //접속한 유저의 ROLE이 READY(초대 초대중)일때 에러
                 if(role.equals(ROLE.READY)) {
                     throw new GrantAccessDeniedException(BusinessExceptionType.GRANT_EXCEPTION);
                 }
             }
 
         } else {
-            /*중간 추방 케이스*/
+            //접속한 유저가 중간에 추방됬을때의 에러
             throw new GrantAccessDeniedException(BusinessExceptionType.GRANT_EXCEPTION);
         }
         return true;

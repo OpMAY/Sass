@@ -229,11 +229,11 @@ public class AppConfig implements WebApplicationInitializer, SchedulingConfigure
                 .addPathPatterns("/global/**")
                 .excludePathPatterns("/global/get/plugs");
         /** is Plugin Grant, READ or EDIT or READ(무조건 Intercept) 구분 지어서 Intercept*/
-        /*registry.addInterceptor(pluginInterceptor).order(5)
+        registry.addInterceptor(pluginInterceptor).order(5)
                 .addPathPatterns("/query")
                 .addPathPatterns("/crm")
                 .addPathPatterns("/chat")
-                .addPathPatterns("/plan");*/
+                .addPathPatterns("/plan");
     }
 
     @Bean

@@ -55,8 +55,18 @@ public class AjaxExceptionAdvice {
      */
     @ExceptionHandler(GrantAccessDeniedException.class)
     protected ResponseEntity handleGrantAccessDeniedException(GrantAccessDeniedException e) {
-//        e.printStackTrace();
-//        log.info("handleGrantAccessDeniedException");
+        e.printStackTrace();
+        log.info("handleGrantAccessDeniedException");
+        return new ResponseEntity(DefaultRes.res(HttpStatus.UNAUTHORIZED), HttpStatus.OK);
+    }
+
+    /**
+     * 사용자(Company Member)의 회사(Company)가 Plugin을 Access할 수 있는 권한이 없을 때
+     */
+    @ExceptionHandler(PlugAccessDeniedException.class)
+    protected ResponseEntity handlePlugAccessDeniedException(PlugAccessDeniedException e) {
+        e.printStackTrace();
+        log.info("handlePlugAccessDeniedException");
         return new ResponseEntity(DefaultRes.res(HttpStatus.UNAUTHORIZED), HttpStatus.OK);
     }
 

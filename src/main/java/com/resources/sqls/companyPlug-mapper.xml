@@ -3,4 +3,11 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.CompanyPlugMapper">
+    <select id="isPlugRegistered" resultType="boolean">
+        SELECT IF(EXISTS(
+                          SELECT *
+                          FROM company_plug
+                          WHERE company_no = #{company_no}
+                            and plug_no = #{plug_no}), true, false);
+    </select>
 </mapper>

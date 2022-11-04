@@ -1,7 +1,8 @@
 package com.exception.enums;
 
 public enum BusinessExceptionType implements BaseExceptionType {
-    GRANT_EXCEPTION(1001, 200, "1001, You do not have permission.");
+    GRANT_EXCEPTION(1001, 200, "1001, You do not have permission."),
+    PLUG_ACCESS_EXCEPTION(1002, 200, "1002, You do not have permission.");;
 
     private int errorCode;
     private int httpStatus;
