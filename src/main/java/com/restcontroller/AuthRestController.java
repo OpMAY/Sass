@@ -8,6 +8,7 @@ import com.response.DefaultRes;
 import com.response.Message;
 import com.service.CompanyService;
 import com.service.UserService;
+import com.util.Constant;
 import com.util.Encryption.EncryptionService;
 import com.util.Encryption.JWTEnum;
 import lombok.AllArgsConstructor;
@@ -171,7 +172,7 @@ public class AuthRestController {
         Message message = new Message();
         if (file.getSize() > 0) {
             log.info("{},{},{},{}", file.getName(), file.getSize(), file.getOriginalFilename(), file.getContentType());
-            MFile mFile = uploadUtility.uploadFile(file, null);
+            MFile mFile = uploadUtility.uploadFile(file, Constant.CDN_PATH.USER_PROFILE);
             message.put("file", mFile);
         }
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);

@@ -906,6 +906,7 @@
                 }
 
                 function __buildItemCardInnerHTML(item) {
+                    // console.log(JSON.stringify(item));
                     if (item.cover !== undefined && item.cover !== null) {
                         return `<div class="kanban-item-cover" style="background-image: url('${item.cover.url}')"></div><div class="kanban-item-title">
                                 <h6 class="title" data-toggle="tooltip" data-placement="bottom" title="${item.title}">${item.title}</h6>

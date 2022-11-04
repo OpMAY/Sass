@@ -329,12 +329,16 @@ public class CrmPlugRestController {
     // TODO 20221102 27번 - 지우
     @RequestMapping(value = "/update/task/{task_id}/thumbnail", method = POST)
     public ResponseEntity changeTaskThumbnail(HttpServletRequest request, @PathVariable String task_id, @RequestBody MultipartFile file) {
-        if (file.getSize() > 0) {
-            log.info("{},{},{},{}", file.getName(), file.getSize(), file.getOriginalFilename(), file.getContentType());
-            MFile mFile = uploadUtility.uploadFile(file, Constant.CDN_PATH.TASK_THUMBNAIL);
-            return crmService.changeTaskThumbnail(task_id, mFile);
+        if(file == null) {
+            return crmService.changeTaskThumbnail(task_id, null);
         } else {
-            return new ResponseEntity(DefaultRes.res(HttpStatus.BAD_REQUEST), HttpStatus.OK);
+            if (file.getSize() > 0) {
+                log.info("{},{},{},{}", file.getName(), file.getSize(), file.getOriginalFilename(), file.getContentType());
+                MFile mFile = uploadUtility.uploadFile(file, Constant.CDN_PATH.TASK_THUMBNAIL);
+                return crmService.changeTaskThumbnail(task_id, mFile);
+            } else {
+                return new ResponseEntity(DefaultRes.res(HttpStatus.BAD_REQUEST), HttpStatus.OK);
+            }
         }
     }
 

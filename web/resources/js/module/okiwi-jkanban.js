@@ -115,27 +115,47 @@ function contextMenuClickEventListener(event) {
             let task_element = kanban.findElement(taskId);
             let kanban_item_cover = task_element.querySelector('.kanban-item-cover');
             //TODO Fetch
-            let image = {
-                url: URL.createObjectURL(this.files[0]), size: 999, name: 'test.png', type: 'image/jpeg'
-            };
-            if (kanban_item_cover !== undefined && kanban_item_cover !== null) {
-                kanban_item_cover.style.backgroundImage = `url('${image.url}')`;
-                task.cover = image;
-            } else {
-                kanban_item_cover = document.createElement('div');
-                kanban_item_cover.classList.add('kanban-item-cover');
-                kanban_item_cover.style.backgroundImage = `url('${image.url}')`;
-                task_element.prepend(kanban_item_cover);
-                task.cover = image;
-            }
+            // let image = {
+            //     url: URL.createObjectURL(this.files[0]), size: 999, name: 'test.png', type: 'image/jpeg'
+            // };
+            changeTaskThumbnail(taskId, this.files[0]).then((result) => {
+                console.log(result);
+                if(result.status === 'OK') {
+                    if(result.data.status) {
+                        let image = result.data.thumbnail;
+                        if (kanban_item_cover !== undefined && kanban_item_cover !== null) {
+                            kanban_item_cover.style.backgroundImage = `url('${image.url}')`;
+                            task.cover = image;
+                        } else {
+                            kanban_item_cover = document.createElement('div');
+                            kanban_item_cover.classList.add('kanban-item-cover');
+                            kanban_item_cover.style.backgroundImage = `url('${image.url}')`;
+                            task_element.prepend(kanban_item_cover);
+                            task.cover = image;
+                        }
+                    } else {
+                        alert(result.data.error_message);
+                    }
+                }
+            })
         });
         container.appendChild(input_element);
         input_element.click();
     } else if (this.classList.contains('_cover-delete')) {
         let task_element = kanban.findElement(taskId);
-        task_element.querySelector('.kanban-item-cover').remove();
-        task.cover = null;
-        delete task.cover;
+        changeTaskThumbnail(taskId, null).then((result) => {
+            console.log(result);
+            if(result.status === 'OK') {
+                if(result.data.status) {
+                    task_element.querySelector('.kanban-item-cover').remove();
+                    task.cover = null;
+                    delete task.cover;
+                } else {
+                    alert(result.data.error_message);
+                }
+            }
+        })
+
     } else if (this.classList.contains('_edit')) {
         let task_element = kanban.findElement(taskId);
         let task_title = task_element.querySelector('.kanban-item-title');
