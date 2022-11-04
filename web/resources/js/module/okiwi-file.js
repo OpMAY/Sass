@@ -56,7 +56,7 @@ const createFileItem = (file) => {
                        data-placement="bottom"
                        title="${file.name}">${file.name}
                   </div>
-                  <div class="_size regular-p1 text-muted">${file.size}</div>
+                  <div class="_size regular-p1 text-muted">${convertFileSize(file.size)}</div>
                 </div>
                 <div class="_download" data-url="${file.url}" data-name="${file.name}">
                   <svg width="32"
@@ -83,4 +83,21 @@ const createFileItem = (file) => {
 function fileDownloadClickEventListener(event) {
     console.log('fileDownloadClickEventListener', this);
     downloadFileFromUrl($(this).data().url, $(this).data().name);
+}
+
+const convertFileSize = (size) => {
+    let file_size = size / 1024 / 1024;
+    if (size >= 1024) {
+        if (file_size < 1) {
+            file_size *= 1024;
+            file_size = Math.ceil(file_size);
+            file_size += 'KB';
+        } else {
+            file_size = Math.ceil(file_size);
+            file_size += 'MB';
+        }
+    } else {
+        file_size = size + 'B';
+    }
+    return file_size;
 }
