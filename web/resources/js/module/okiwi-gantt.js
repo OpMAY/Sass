@@ -724,11 +724,13 @@ const getYears = (boards) => {
     let current_date = new Date().toISOString().slice(0, 10);
     boards.forEach(function (board) {
         board.item.forEach(function (task) {
-            if (min_year > getYear(task.start_date)) {
-                min_year = getYear(task.start_date);
-            }
-            if (max_year < getYear(task.end_date)) {
-                max_year = getYear(task.end_date);
+            if (task.start_date !== undefined && task.start_date !== null && task.end_date !== undefined && task.end_date !== null) {
+                if (min_year > getYear(task.start_date)) {
+                    min_year = getYear(task.start_date);
+                }
+                if (max_year < getYear(task.end_date)) {
+                    max_year = getYear(task.end_date);
+                }
             }
         });
     });
@@ -880,8 +882,10 @@ const getMonths = (boards) => {
     let dates = new Array();
     boards.forEach(function (board) {
         board.item.forEach(function (task) {
-            dates.push(Date.parse(task.start_date));
-            dates.push(Date.parse(task.end_date));
+            if (task.start_date !== undefined && task.start_date !== null && task.end_date !== undefined && task.end_date !== null) {
+                dates.push(Date.parse(task.start_date));
+                dates.push(Date.parse(task.end_date));
+            }
         });
     });
     let maxDate = new Date(Math.max.apply(null, dates));
