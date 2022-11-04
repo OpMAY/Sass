@@ -8,6 +8,7 @@ import com.dao.CompanyDao;
 import com.dao.CompanyMemberDao;
 import com.dao.UserDao;
 import com.model.User;
+import com.model.common.MFile;
 import com.model.company.Company;
 import com.model.company.CompanyRole;
 import com.model.grant.ROLE;
@@ -167,5 +168,10 @@ public class UserService {
 
     public User getUser(int user_no) {
         return userDao.getUser(user_no);
+    }
+
+    @Transactional
+    public void changeUserProfile(Integer userNo, MFile mFile) {
+        userDao.changeUserProfile(userNo, mFile);
     }
 }

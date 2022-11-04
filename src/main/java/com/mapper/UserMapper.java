@@ -1,6 +1,7 @@
 package com.mapper;
 
 import com.model.User;
+import com.model.common.MFile;
 import org.apache.ibatis.annotations.Param;
 
 public interface UserMapper {
@@ -35,4 +36,6 @@ public interface UserMapper {
     void changeWithdrawal(int userNo);
 
     User getUser(@Param("user_no")int user_no);
+
+    void changeUserProfile(@Param("userNo") Integer userNo, @Param("mFile") MFile mFile);
 }

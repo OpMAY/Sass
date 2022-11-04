@@ -170,10 +170,15 @@ public class AuthRestController {
     @RequestMapping(value = "/change/profile", method = RequestMethod.POST)
     public ResponseEntity<String> changeProfile(HttpServletRequest request, @RequestBody MultipartFile file) {
         Message message = new Message();
-        if (file.getSize() > 0) {
-            log.info("{},{},{},{}", file.getName(), file.getSize(), file.getOriginalFilename(), file.getContentType());
-            MFile mFile = uploadUtility.uploadFile(file, Constant.CDN_PATH.USER_PROFILE);
-            message.put("file", mFile);
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
+        if (userNo != null) {
+            if (file.getSize() > 0) {
+                log.info("{},{},{},{}", file.getName(), file.getSize(), file.getOriginalFilename(), file.getContentType());
+                MFile mFile = uploadUtility.uploadFile(file, Constant.CDN_PATH.USER_PROFILE);
+                userService.changeUserProfile(userNo, mFile);
+                message.put("file", mFile);
+            }
         }
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
