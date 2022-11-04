@@ -394,7 +394,9 @@ const createGanttLeftSide = (boards) => {
 //TODO 20221102 - 10번 - 지우 O
 function boardAddClickEventListener(event) {
     console.log(event, this);
-    let last_index = document.querySelector('.gantt-container ._gantt-board #gantt-accordion .card:last-child .card-header[data-index]').dataset.index;
+    let last_index = document.querySelector('.gantt-container ._gantt-board #gantt-accordion .card:last-child .card-header[data-index]')?.dataset.index;
+    if (last_index === undefined || last_index === null)
+        last_index = 0;
     let board_id = tokenGenerator(8);
     let board = {
         project_hash: getURLParamByPrevAndNext('project', 'detail'),
@@ -567,8 +569,8 @@ function addTaskClickEventListener(event) {
     // TODO Task 초기 생성 시 start_date, end_date === null => date === null 인 요소에 대해 처리 후 생성 function 넣기
     createTask(task).then((result) => {
         console.log(result);
-        if(result.status === 'OK') {
-            if(result.data.status) {
+        if (result.status === 'OK') {
+            if (result.data.status) {
                 task = result.data.task;
 //create left side element
                 let gantt_board_task_element = createGanttBoardTaskElement(task);
@@ -777,6 +779,10 @@ const getYears = (boards) => {
             }
         });
     });
+    if (max_year === 0 && min_year === 9999) {
+        max_year = getYear(current_date);
+        min_year = getYear(current_date);
+    }
 
     for (let y = min_year; y <= max_year; y++) {
         years.push(y);
