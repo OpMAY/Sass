@@ -931,16 +931,16 @@ const getMonths = (boards) => {
     });
     let maxDate = new Date(Math.max.apply(null, dates));
     let minDate = new Date(Math.min.apply(null, dates));
-    return getMonthsStartToLast(minDate, maxDate);
+    return getMonthsStartToLast(dates.length !== 0 ? minDate : null, dates.length !== 0 ? maxDate : null);
 }
 
 function getMonthsStartToLast(startDate, lastDate) {
-    var start_date_str = startDate.toISOString().slice(0, 10);
-    let end_date_star = lastDate.toISOString().slice(0, 10);
-    var regex = RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/);
+    let start_date_str = startDate !== null ? startDate.toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+    let end_date_star = lastDate !== null ? lastDate.toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+    let regex = RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/);
     if (!(regex.test(start_date_str) && regex.test(end_date_star))) return "Not Date Format";
-    var result = [];
-    var curDate = new Date(start_date_str);
+    let result = [];
+    let curDate = new Date(start_date_str);
     let end_date = new Date(end_date_star);
     let end_date_str = new Date(end_date.setDate(end_date.getDate() + 6)).toISOString().slice(0, 10);
     while (curDate <= new Date(end_date_str)) {
