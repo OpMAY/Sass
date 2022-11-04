@@ -164,7 +164,14 @@ public class CrmService {
         } else {
             projectDao.createNewProject(project);
             message.put("status", true);
-            message.put("project_no", project.getNo());
+            try {
+                project.setHash_no(encryptionService.decryptAESWithSlash(Integer.toString(project.getNo())));
+            } catch (Exception e) {
+                e.printStackTrace();
+                message.put("status", false);
+                message.put("error_message", "서버 내부 오류 발생. 관리자에게 문의하세요.");
+            }
+            message.put("project", project);
         }
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }

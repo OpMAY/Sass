@@ -317,7 +317,7 @@
         });
 
         $('.project-container').on('click', '.project', function (e) {
-            if($(e.target).closest('.btn-group').length === 0) {
+            if ($(e.target).closest('.btn-group').length === 0 && !$(this).hasClass('add') && !$(this).hasClass('edit')) {
                 let hash = $(this).data().id;
                 window.location.href = '/crm/project/' + hash + '/detail';
             }
@@ -337,7 +337,7 @@
                     projects.forEach(element => {
                         project_add.before(`<div class="col project" data-no="` + element.no + `" data-id="` + element.hash_no + `">
                                     <div class="p-24">
-                                        <div class="emoji-container-pure">🙊</div>
+                                        <div class="emoji-container-pure">` + (element.emoji === null ? '' : element.emoji) + `</div>
                                         <div class="_name ml-8 medium-h4">` + element.name + `</div>
                                         <div class="btn-group dropright dropleft">
                                             <div data-toggle="dropdown"
@@ -446,21 +446,105 @@
         })
 
 
-        //TODO 20221102 - 4번 - 지우 O
         $('.project.add').on('click', function () {
-            let project = {"name": 'create project sample'};
-            createProject(project).then((result) => {
-                console.log(result);
-                if (result.status === 'OK') {
-                    if (result.data.status) {
-                        // TODO SUCCESS PROJECT MAKE
-                        console.log("createProject : " + result.data.project_no);
-                    } else {
-                        alert(result.data.error_message);
-                    }
-                }
-            })
+            if (!$(this).hasClass('edit')) {
+                $(this).before(`<div class="col project edit">
+                                                      <div class="p-24">
+                                                            <div class="position-relative">
+                                                                  <button id="emoji-picker">
+                                                                        <span>
+                                                                              <svg width="20"
+                                                                                   height="20"
+                                                                                   viewBox="0 0 20 20"
+                                                                                   fill="none"
+                                                                                   xmlns="http://www.w3.org/2000/svg">
+                                                                                    <rect width="20"
+                                                                                          height="20"
+                                                                                          rx="2"
+                                                                                          fill="#F2F2F2"/>
+                                                                                    <path d="M10 4C10.1989 4 10.3897 4.07902 10.5303 4.21967C10.671 4.36032 10.75 4.55109 10.75 4.75V9.25H15.25C15.4489 9.25 15.6397 9.32902 15.7803 9.46967C15.921 9.61032 16 9.80109 16 10C16 10.1989 15.921 10.3897 15.7803 10.5303C15.6397 10.671 15.4489 10.75 15.25 10.75H10.75V15.25C10.75 15.4489 10.671 15.6397 10.5303 15.7803C10.3897 15.921 10.1989 16 10 16C9.80109 16 9.61032 15.921 9.46967 15.7803C9.32902 15.6397 9.25 15.4489 9.25 15.25V10.75H4.75C4.55109 10.75 4.36032 10.671 4.21967 10.5303C4.07902 10.3897 4 10.1989 4 10C4 9.80109 4.07902 9.61032 4.21967 9.46967C4.36032 9.32902 4.55109 9.25 4.75 9.25H9.25V4.75C9.25 4.55109 9.32902 4.36032 9.46967 4.21967C9.61032 4.07902 9.80109 4 10 4Z"
+                                                                                          fill="white"/>
+                                                                              </svg>
+                                                                        </span>
+                                                                  </button>
+                                                                  <div id="emoji-container"
+                                                                       class="emoji-container"></div>
+                                                                  <button id="_emoji-picker"></button>
+                                                            </div>
+                                                            <div class="_name ml-8 medium-h4">
+                                                                  <input type="text"
+                                                                         placeholder="프로젝트 명 입력"
+                                                                         class="form-control medium-h4"
+                                                                         name="name"/>
+                                                            </div>
+                                                            <div class="_option c-brand-red confirm">
+                                                                  <i class="fas fa-check"></i>
+                                                            </div>
+                                                            <div class="_option c-brand-red delete">
+                                                                  <i class="fas fa-times"></i>
+                                                            </div>
+                                                      </div>
+                                                </div>`)
+            }
+
+
         })
+
+        //TODO 20221102 - 4번 - 지우 O
+        $('.project-container').on('click', '.project.edit ._option.confirm', function () {
+            let name_input = $(this).parent().find('._name input');
+            if (name_input.val().trim().length <= 1) {
+                alert('프로젝트 명은 최소 2자 이상이어야 합니다.');
+                return false;
+            } else {
+                const emoji = $(this).parent().find('.emoji-container').html();
+                let project = {
+                    "name": name_input.val().trim(),
+                    "emoji": emoji.length >= 0 ? emoji : null,
+                };
+                createProject(project).then((result) => {
+                    console.log(result);
+                    if (result.status === 'OK') {
+                        if (result.data.status) {
+                            // TODO SUCCESS PROJECT MAKE
+                            let project = result.data.project;
+                            const project_add = $('.project-container').find('.project.add');
+                            project_add.before(`<div class="col project" data-no="` + project.no + `" data-id="` + project.hash_no + `">
+                                    <div class="p-24">
+                                        <div class="emoji-container-pure">` + (project.emoji === null ? '' : project.emoji) +  `</div>
+                                        <div class="_name ml-8 medium-h4">` + project.name + `</div>
+                                        <div class="btn-group dropright dropleft">
+                                            <div data-toggle="dropdown"
+                                                 aria-expanded="false">
+                                                <img class="img-fluid"
+                                                     src="/resources/assets/images/icon/board_options.svg">
+                                            </div>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item _modify medium-h6"
+                                                   data-type="_modify"
+                                                   href="javascript:void(0)">프로젝트 수정</a>
+                                                <a class="dropdown-item _copy medium-h6"
+                                                   data-type="_delete"
+                                                   href="javascript:void(0)">프로젝트 복사</a>
+                                                <a class="dropdown-item _delete medium-h6"
+                                                   data-type="_delete"
+                                                   href="javascript:void(0)">프로젝트 삭제</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`);
+                        } else {
+                            alert(result.data.error_message);
+                        }
+                    }
+                })
+            }
+        })
+
+        $('.project-container').on('click', '.project.edit ._option.delete', function (e) {
+            e.target.closest('.project').remove();
+        })
+
         //TODO 20221102 - 5번 - 우식
         //TODO 20221102 - 6번 - 지우 O
         $('._modify').on('click', function () {

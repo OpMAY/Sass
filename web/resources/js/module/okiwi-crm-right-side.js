@@ -561,7 +561,7 @@ function rightTaskSubTaskAddClickEventListener(event) {
     })
 }
 
-//TODO 20221102 - 40번 - 지우
+//TODO 20221102 - 40번 - 지우 O
 function rightTaskDownloadClickEventListener(event) {
     console.log('rightTaskDownloadClickEventListener', this);
     // For Comment
@@ -635,7 +635,7 @@ function rightTaskMessageFileUploadEventListener(event) {
     event.stopPropagation();
 }
 
-//TODO 20221102 - 39번 - 지우
+//TODO 20221102 - 39번 - 지우 O
 function rightTaskMessageFileChangeEventListener(event) {
     console.log('rightTaskMessageFileChangeEventListener', this, event);
     let comments_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._comments');

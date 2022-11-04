@@ -48,12 +48,15 @@
 }
 
 .project > div {
-    cursor: pointer;
     margin-top: 15px;
     margin-bottom: 15px;
     border: var(--border-1px) var(--gray-high-medium);
     border-radius: var(--button-radius);
     display: flex;
+}
+
+.project:not(.edit) > div {
+    cursor: pointer;
 }
 
 .project > div .emoji-container-pure {
@@ -96,6 +99,10 @@
 
 .project.edit > div {
     background-color: var(--basic-white);
+}
+
+.project.edit > div ._option > i {
+    cursor: pointer;
 }
 
 .project.edit > div ._name {
