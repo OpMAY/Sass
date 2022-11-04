@@ -448,4 +448,39 @@ public class CrmPlugRestController {
     public ResponseEntity deleteFile(HttpServletRequest request, @PathVariable int file_no) {
         return crmService.deleteFile(file_no);
     }
+
+    // TODO 20221102 39번 - 지우
+    @RequestMapping(value = "/create/task/{task_id}/comment/file", method = POST)
+    public ResponseEntity uploadCommentFile(HttpServletRequest request, @PathVariable String task_id, @RequestBody MultipartFile file) {
+        Message message = new Message();
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
+        if (userNo != null) {
+            Company company = companyMemberDao.getUserCompany(userNo);
+            if (company != null) {
+                CompanyMember companyMember = companyMemberDao.getUserMemberInfo(userNo, company.getNo());
+                TaskComment comment = new TaskComment();
+                comment.setType(TASK_COMMENT_TYPE.FILE);
+                comment.setMember_no(companyMember.getNo());
+                comment.setTask_id(task_id);
+                if(file.isEmpty()) {
+                    message.put("status", false);
+                    message.put("error_message", "잘못된 접근입니다.");
+                    log.debug("uploadCommentFile error : file is empty");
+                } else {
+                    log.info("{},{},{},{}", file.getName(), file.getSize(), file.getOriginalFilename(), file.getContentType());
+                    MFile mFile = uploadUtility.uploadFile(file, Constant.CDN_PATH.TASK_FILE);
+                    comment.setFile(mFile);
+                    return crmService.addComment(comment);
+                }
+            } else {
+                message.put("status", false);
+                message.put("error_message", "회사 데이터를 불러올 수 없습니다.");
+            }
+        } else {
+            message.put("status", false);
+            message.put("error_message", "유저 데이터를 불러올 수 없습니다.");
+        }
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
 }

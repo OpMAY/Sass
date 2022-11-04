@@ -406,3 +406,26 @@ async function getProjectFiles(hash) {
         console.log(error);
     }
 }
+
+// 39번
+async function createFileComment(task_id, file) {
+    function apiCreateFileComment(task_id, file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        let requestOptions = {
+            method: 'POST',
+            body: formData,
+        };
+        const response = fetch(`${host}/crm/create/task/${task_id}/comment/file`, requestOptions);
+        return response.then(res => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiCreateFileComment(task_id, file);
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}

@@ -93,8 +93,8 @@ function optionDropdownHideEventListener(event) {
     }
 }
 
-//TODO 20221102 - 27번 - 지우
-//TODO 20221102 - 27번 - 지우
+//TODO 20221102 - 27번 - 지우 O
+//TODO 20221102 - 27번 - 지우 O
 //TODO 20221102 - 14번 - 우식 check
 //TODO 20221102 - 15번 - 우식 check
 //TODO 20221102 - 19번 - 우식 check
@@ -114,10 +114,6 @@ function contextMenuClickEventListener(event) {
         input_element.addEventListener('change', function (event) {
             let task_element = kanban.findElement(taskId);
             let kanban_item_cover = task_element.querySelector('.kanban-item-cover');
-            //TODO Fetch
-            // let image = {
-            //     url: URL.createObjectURL(this.files[0]), size: 999, name: 'test.png', type: 'image/jpeg'
-            // };
             changeTaskThumbnail(taskId, this.files[0]).then((result) => {
                 console.log(result);
                 if(result.status === 'OK') {

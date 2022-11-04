@@ -1168,6 +1168,9 @@ public class CrmService {
         } else {
             List<TaskComment> comments = taskCommentDao.getTaskComments(task_id);
             for (TaskComment comment : comments) {
+                if(comment.getType().equals(TASK_COMMENT_TYPE.FILE)) {
+                    comment.setFile(taskCommentFileDao.getFileInfoByCommentNo(comment.getNo()).getFile());
+                }
                 comment.setDate(comment.getReg_datetime().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")));
                 comment.setProfile(companyMemberDao.getCompanyMemberProfile(comment.getMember_no()));
             }
@@ -1185,10 +1188,7 @@ public class CrmService {
      * @return ResponseEntity(REST)
      * <p>
      * 현재 업무에 작성된 댓글 목록 호출
-     * TODO add taskCommentFile =>
-     * - 1. task file로 넣고 comment에 엮을 지 /
-     * - 2. taskCommentFile의 객체로 둘지 결정
-     * - 만일 getProjectFiles(), getTaskFiles()에서 보여져야 한다면 1번, 아니면 2번
+     * type File :  task file로 넣고 comment에 엮었음
      * # 예상 예외 처리
      * - 업무 데이터 없을 떄
      * - 회사 데이터 없음 -> Interceptor 처리?
@@ -1201,15 +1201,26 @@ public class CrmService {
             message.put("status", false);
             message.put("error_message", "해당 업무의 댓글 목록을 불러올 수 없습니다. 업무 리스트를 최신화 해주세요.");
         } else {
-
-//            switch (comment.getType()) {
-//                case TEXT:
-//                case MENTION:
-//                    break;
-//                case FILE:
-//            }
+            MFile temp_file = null;
             taskCommentDao.addComment(comment);
+            if(comment.getType().equals(TASK_COMMENT_TYPE.FILE)) {
+                /**
+                 * 1. File 등록
+                 * 2. Comment - file 엮기
+                 * */
+                // 1
+                TaskFile taskFile = new TaskFile();
+                taskFile.setTask_id(comment.getTask_id());
+                taskFile.setFile(comment.getFile());
+                taskFileDao.insertTaskFile(taskFile);
+
+                // 2
+                taskCommentFileDao.connectFileWithComment(comment.getNo(), taskFile.getNo());
+                message.put("file", comment.getFile());
+                temp_file = comment.getFile();
+            }
             comment = taskCommentDao.getTaskCommentByNo(comment.getNo());
+            comment.setFile(temp_file);
             // TODO 몇분 전?
             comment.setDate(comment.getReg_datetime().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")));
             comment.setProfile(companyMemberDao.getCompanyMemberProfile(comment.getMember_no()));

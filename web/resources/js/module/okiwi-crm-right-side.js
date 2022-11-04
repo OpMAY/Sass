@@ -209,8 +209,6 @@ const rightTaskReInitialize = (task_id) => {
     })
 }
 
-//TODO 20221102 - 36번 - 지우 O
-//TODO 20221102 - 34번 - 지우 O
 const rightTaskInit = (task) => {
     console.log('rightTaskInit');
     RIGHT_TASK_CONTAINER.setAttribute('data-id', task.id);
@@ -281,6 +279,7 @@ const rightTaskCommentsInit = (comments) => {
 
 const rightTaskFilesInit = (files) => {
     let container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._files-container');
+    files = filesChanger(files);
     initializeFiles({container, files});
 }
 
@@ -330,6 +329,7 @@ function rightTaskTabChangeEventListener(event) {
             break;
         case 'comment':
             // TODO WHEN COMMENT TAB OPEN
+            //TODO 20221102 - 34번 - 지우 O
             getTaskComments(id).then((result) => {
                 console.log(result)
                 if (result.status === 'OK') {
@@ -344,6 +344,7 @@ function rightTaskTabChangeEventListener(event) {
             break;
         case 'file':
             // TODO WHEN FILE TAB OPEN
+            //TODO 20221102 - 36번 - 지우 O
             getTaskFiles(id).then((result) => {
                 console.log(result);
                 if (result.status === 'OK') {
@@ -646,9 +647,21 @@ function rightTaskMessageFileChangeEventListener(event) {
             var reader = new FileReader();
 
             reader.onload = function (e) {
-                comment.file.url = e.target.result;
-                console.log(comment.file);
-                callback(comment);
+                createFileComment(task_id, file).then((result) => {
+                    console.log(result);
+                    if(result.status === 'OK') {
+                        if(result.data.status) {
+                            comment = result.data.comment;
+                            // comment.file.url = e.target.result;
+                            // console.log(comment.file);
+                            comment.profile = taskProfileChanger(comment.profile);
+                            callback(comment);
+                        } else {
+                            alert(result.data.error_message);
+                        }
+                    }
+                })
+
             }
 
             reader.readAsDataURL(input.files[0]);
@@ -660,20 +673,20 @@ function rightTaskMessageFileChangeEventListener(event) {
     }
 
     let comment = {
-        no: 9999,
-        profile: {
-            no: 9999,
-            url: 'https://via.placeholder.com/30x30',
-            name: 'kimwoosik'
-        },
-        type: 'file',
-        file: {
-            name: file.name,
-            url: 'https://via.placeholder.com/350x150',
-            type: file.type,
-            size: file.size
-        },
-        date: current_date
+        // no: 9999,
+        // profile: {
+        //     no: 9999,
+        //     url: 'https://via.placeholder.com/30x30',
+        //     name: 'kimwoosik'
+        // },
+        // type: 'file',
+        // file: {
+        //     name: file.name,
+        //     url: 'https://via.placeholder.com/350x150',
+        //     type: file.type,
+        //     size: file.size
+        // },
+        // date: current_date
     };
     readURL(input, comment, (comment) => {
         comments_container.appendChild(createRightTaskCommentItem(comment))
