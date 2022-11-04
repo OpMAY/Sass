@@ -116,8 +116,8 @@ function contextMenuClickEventListener(event) {
             let kanban_item_cover = task_element.querySelector('.kanban-item-cover');
             changeTaskThumbnail(taskId, this.files[0]).then((result) => {
                 console.log(result);
-                if(result.status === 'OK') {
-                    if(result.data.status) {
+                if (result.status === 'OK') {
+                    if (result.data.status) {
                         let image = result.data.thumbnail;
                         if (kanban_item_cover !== undefined && kanban_item_cover !== null) {
                             kanban_item_cover.style.backgroundImage = `url('${image.url}')`;
@@ -141,8 +141,8 @@ function contextMenuClickEventListener(event) {
         let task_element = kanban.findElement(taskId);
         changeTaskThumbnail(taskId, null).then((result) => {
             console.log(result);
-            if(result.status === 'OK') {
-                if(result.data.status) {
+            if (result.status === 'OK') {
+                if (result.data.status) {
                     task_element.querySelector('.kanban-item-cover').remove();
                     task.cover = null;
                     delete task.cover;
@@ -455,13 +455,13 @@ const kanbanUpdateBoardEventListener = (selected_option, board, boardId) => {
             break;
         case '_add_left':
             boards = [{
-                id: tokenGenerator(8), title: tokenGenerator(8), class: 'class1, class2, class3', percent: 0, item: [],
+                id: tokenGenerator(8), title: tokenGenerator(8), name: tokenGenerator(8), project_hash: getURLParamByPrevAndNext('project', 'detail'), class: 'class1, class2, class3', percent: 0, item: [],
             }];
             addBoards(kanban, 'prepend', boardId, boards);
             break;
         case '_add_right':
             boards = [{
-                id: tokenGenerator(8), title: tokenGenerator(8), class: 'class1, class2, class3', percent: 0, item: [],
+                id: tokenGenerator(8), title: tokenGenerator(8), name: tokenGenerator(8), project_hash: getURLParamByPrevAndNext('project', 'detail'), class: 'class1, class2, class3', percent: 0, item: [],
             }];
             addBoards(kanban, 'append', boardId, boards);
             break;
@@ -475,8 +475,8 @@ const kanbanAddTaskEventListener = (el, boardId) => {
     };
     createTask(task).then((result) => {
         console.log(result);
-        if(result.status === 'OK') {
-            if(result.data.status) {
+        if (result.status === 'OK') {
+            if (result.data.status) {
                 kanban.addTaskAndElement(boardId, task);
                 const board = kanban.findBoardJSON(boardId);
                 updatePercent(kanban, board);
@@ -626,22 +626,76 @@ function boardInputKeyUpEventListener(event) {
     }
 };
 
-//TODO 20221102 - 10번 - 지우
+//TODO 20221102 - 10번 - 지우 O
 const addBoards = (kanban, direction, boardId, boards) => {
     switch (direction) {
         case 'prepend':
-            kanban.addBoards(boards, false, {baseId: boardId, direction: 'prepend'});
+            createBoard(boards[0]).then((result) => {
+                console.log(result);
+                if(result.status === 'OK') {
+                    if(result.data.status) {
+                        let order = kanban.findBoard(boardId).dataset.order;
+                        boards[0] = boardTypeChanger(result.data.board);
+                        apiChangeBoardOrder(boards[0].id, order * 1).then((result) => {
+                            console.log(result);
+                            if(result.status === 'OK') {
+                                if(result.data.status) {
+                                    kanban.addBoards(boards, false, {baseId: boardId, direction: 'prepend'});
+                                    kanban.updateBoardsOrder(function (updated_order_boards) {
+                                        //console.log('updated_boards', updated_order_boards);
+                                    });
+                                } else {
+                                    alert(result.data.error_message);
+                                }
+                            }
+                        });
+                    } else {
+                        alert(result.data.error_message);
+                    }
+                }
+            })
             break;
         case 'append':
-            kanban.addBoards(boards, false, {baseId: boardId, direction: 'append'});
+            createBoard(boards[0]).then((result) => {
+                console.log(result);
+                if(result.status === 'OK') {
+                    if(result.data.status) {
+                        let order = kanban.findBoard(boardId).dataset.order;
+                        boards[0] = boardTypeChanger(result.data.board);
+                        apiChangeBoardOrder(boards[0].id, (order * 1 + 1)).then((result) => {
+                            console.log(result);
+                            if(result.status === 'OK') {
+                                if(result.data.status) {
+                                    kanban.addBoards(boards, false, {baseId: boardId, direction: 'append'});
+                                    kanban.updateBoardsOrder(function (updated_order_boards) {
+                                        //console.log('updated_boards', updated_order_boards);
+                                    });
+                                } else {
+                                    alert(result.data.error_message);
+                                }
+                            }
+                        });
+                    } else {
+                        alert(result.data.error_message);
+                    }
+                }
+            })
             break;
         case 'last':
-            kanban.addBoards(boards);
+            createBoard(boards[0]).then((result) => {
+                console.log(result);
+                if(result.status === 'OK') {
+                    if(result.data.status) {
+                        boards[0] = boardTypeChanger(result.data.board);
+                        kanban.addBoards(boards);
+                    } else {
+                        alert(result.data.error_message);
+                    }
+                }
+            })
             break;
     }
-    kanban.updateBoardsOrder(function (updated_order_boards) {
-        //console.log('updated_boards', updated_order_boards);
-    });
+
 };
 
 const updatePercents = (kanban) => {

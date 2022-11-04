@@ -510,50 +510,48 @@ const createGanttBoardTaskElement = (task) => {
     return li;
 }
 
-//TODO 20221102 - 16번 - 지우
+//TODO 20221102 - 16번 - 지우 O
 function addTaskClickEventListener(event) {
     let task_id = tokenGenerator(6);
     let current_date = new Date().toISOString().slice(0, 10);
+    console.log(event);
     let task = {
         id: task_id,
         title: task_id,
-        // board_id: ,  // TODO Board_id get
+        board_id: event.target.closest('.card').querySelector('.card-header').dataset.id,  // TODO Board_id get
         complete: false,
     };
     // TODO Task 초기 생성 시 start_date, end_date === null => date === null 인 요소에 대해 처리 후 생성 function 넣기
-    // createTask(task).then((result) => {
-    //     console.log(result);
-    //     if(result.status === 'OK') {
-    //         if(result.data.status) {
-    //             task = result.data.task;
-    //
-    //         } else {
-    //             alert(result.data.error_message);
-    //         }
-    //     }
-    // })
+    createTask(task).then((result) => {
+        console.log(result);
+        if(result.status === 'OK') {
+            if(result.data.status) {
+                task = result.data.task;
+//create left side element
+                let gantt_board_task_element = createGanttBoardTaskElement(task);
+                gantt_board_task_element.addEventListener('contextmenu', ganttContextTaskEventListener);
+                gantt_board_task_element.querySelector('.dropright').addEventListener('click', ganttBoardTaskOptionClickEventListener)
+                this.before(gantt_board_task_element);
 
-
-    //create left side element
-    let gantt_board_task_element = createGanttBoardTaskElement(task);
-    gantt_board_task_element.addEventListener('contextmenu', ganttContextTaskEventListener);
-    gantt_board_task_element.querySelector('.dropright').addEventListener('click', ganttBoardTaskOptionClickEventListener)
-    this.before(gantt_board_task_element);
-
-    let _content = document.querySelector('.gantt-container ._gantt-timeline ._content');
-    //create right side element
-    if (task.start_date !== undefined && task.start_date !== null && task.end_date !== undefined && task.end_date !== null) {
-        expandGanttWidth(task.end_date);
-        let position = getGanttTaskPosition(task);
-        let task_element = createGanttTaskElement(position, task);
-        $(_content).append(task_element);
-        let inserted_task_element = $(_content).find(`.gantt-task[data-id="${task.id}"]`)[0];
-        console.log('inserted_task_element', inserted_task_element);
-        inserted_task_element.addEventListener('click', function (event) {
-            rightTaskOpen(this.dataset.id);
-        });
-        inserted_task_element.querySelector('.checkbox').addEventListener('click', ganttTaskCheckboxClickEventListener);
-    }
+                let _content = document.querySelector('.gantt-container ._gantt-timeline ._content');
+                //create right side element
+                if (task.start_date !== undefined && task.start_date !== null && task.end_date !== undefined && task.end_date !== null) {
+                    expandGanttWidth(task.end_date);
+                    let position = getGanttTaskPosition(task);
+                    let task_element = createGanttTaskElement(position, task);
+                    $(_content).append(task_element);
+                    let inserted_task_element = $(_content).find(`.gantt-task[data-id="${task.id}"]`)[0];
+                    console.log('inserted_task_element', inserted_task_element);
+                    inserted_task_element.addEventListener('click', function (event) {
+                        rightTaskOpen(this.dataset.id);
+                    });
+                    inserted_task_element.querySelector('.checkbox').addEventListener('click', ganttTaskCheckboxClickEventListener);
+                }
+            } else {
+                alert(result.data.error_message);
+            }
+        }
+    })
 }
 
 //TODO 20221102 - 14번 - 우식
