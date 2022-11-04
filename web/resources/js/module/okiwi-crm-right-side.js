@@ -287,9 +287,10 @@ const rightTaskFilesInit = (files) => {
 function rightTaskDeleteClickEventListener(event) {
     console.log('deleteOptionClickEventListener', this);
     let task_id = this.closest('[data-id]').dataset.id;
-    console.log('task_id', task_id);
-    //TODO Delete Fetch
-    rightTaskClose();
+    apiDeleteTask(task_id).then((result) => {
+        console.log('apiDeleteTask', result);
+        rightTaskClose();
+    });
 }
 
 function rightTaskBackClickEventListener(event) {
@@ -364,7 +365,18 @@ function rightTaskTitleInputEventListener(event) {
     console.log('rightTaskTitleInputEventListener', this);
     let title = this;
     let task_id = this.closest('[data-id]').dataset.id;
-    console.log(task_id, title.value);
+    console.log(this.closest('.subtask-item'));
+    let is_subtask = this.closest('.subtask-item') !== undefined && this.closest('.subtask-item') !== null;
+    console.log(is_subtask, task_id, title.value);
+    if (is_subtask) {
+        apiChangeSubTaskName(task_id, title.value).then((result) => {
+            console.log('apiChangeSubTaskName', result);
+        });
+    } else {
+        apiChangeTaskName(task_id, title.value).then((result) => {
+            console.log('apiChangeTaskName', result);
+        });
+    }
 }
 
 //TODO 20221102 - 14번 - 우식
@@ -373,11 +385,15 @@ function rightTaskCheckboxClickEventListener(event) {
     let task_id = this.closest('[data-id]').dataset.id;
     let is_complete = this.classList.contains('is-checked');
     if (is_complete) {
-        console.log(!is_complete);
-        this.classList.remove('is-checked');
+        apiUpdateTaskStatus(task_id).then((result) => {
+            console.log('apiUpdateTaskStatus', result);
+            this.classList.remove('is-checked');
+        });
     } else {
-        console.log(!is_complete);
-        this.classList.add('is-checked');
+        apiUpdateTaskStatus(task_id).then((result) => {
+            console.log('apiUpdateTaskStatus', result);
+            this.classList.add('is-checked');
+        });
     }
     event.preventDefault();
     event.stopPropagation();
@@ -390,11 +406,15 @@ function rightSubtaskCheckboxClickEventListener(event) {
     let task_id = subtask.dataset.id;
     let is_complete = subtask.classList.contains('is-checked');
     if (is_complete) {
-        console.log(!is_complete);
-        subtask.classList.remove('is-checked');
+        apiChangeSubTaskStatus(task_id).then((result) => {
+            console.log('apiChangeSubTaskStatus', result);
+            subtask.classList.remove('is-checked');
+        });
     } else {
-        console.log(!is_complete);
-        subtask.classList.add('is-checked');
+        apiChangeSubTaskStatus(task_id).then((result) => {
+            console.log('apiChangeSubTaskStatus', result);
+            subtask.classList.add('is-checked');
+        });
     }
     event.preventDefault();
     event.stopPropagation();
@@ -415,6 +435,11 @@ function rightTaskStartDatePickerChangeEventListener(event) {
     // `e` here contains the extra attributes
     /*TODO 조건 -> end_date가 start_date보다 커야한다.*/
     $('#end').datepicker('setDate', event.date);
+    let task_id = this.closest('[data-id]').dataset.id;
+    console.log('this.value', this.value);
+    apiChangeTaskStart(task_id, this.value).then((result) => {
+        console.log('apiChangeTaskStart', result);
+    });
     event.preventDefault();
     event.stopPropagation();
 }
@@ -422,6 +447,10 @@ function rightTaskStartDatePickerChangeEventListener(event) {
 //TODO 20221102 - 25번 - 우식
 function rightTaskEndDatePickerChangeEventListener(event) {
     console.log('rightTaskEndDatePickerChangeEventListener', this);
+    let task_id = this.closest('[data-id]').dataset.id;
+    apiChangeTaskEnd(task_id, this.value).then((result) => {
+        console.log('apiChangeTaskEnd', result);
+    });
     event.preventDefault();
     event.stopPropagation();
 }
@@ -533,6 +562,9 @@ function rightTaskContentInputEventListener(event) {
     let task_id = this.closest('[data-id]').dataset.id;
     let content = this;
     console.log(task_id, content.innerHTML);
+    apiChangeTaskDescription(task_id, content.innerHTML).then((result) => {
+        console.log('apiChangeTaskDescription', result);
+    });
 }
 
 //TODO 20221102 - 30번 - 지우 O
@@ -651,8 +683,8 @@ function rightTaskMessageFileChangeEventListener(event) {
             reader.onload = function (e) {
                 createFileComment(task_id, file).then((result) => {
                     console.log(result);
-                    if(result.status === 'OK') {
-                        if(result.data.status) {
+                    if (result.status === 'OK') {
+                        if (result.data.status) {
                             comment = result.data.comment;
                             // comment.file.url = e.target.result;
                             // console.log(comment.file);

@@ -1,6 +1,7 @@
 package com.mapper.crm;
 
 import com.model.crm.SubTask;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface SubTaskMapper {
 
     void changeSubTaskStatus(String sub_task_id);
 
-    void changeSubTaskName(String sub_task_id, String name);
+    void changeSubTaskName(@Param("sub_task_id") String sub_task_id, @Param("name") String name);
 
     boolean checkSubTaskCompleted(String sub_task_id);
 }

@@ -131,4 +131,8 @@ public class CompanyService {
     public boolean checkUserHasCompany(int user_no) {
         return companyMemberDao.checkUserHasCompany(user_no);
     }
+
+    public Company getUserCompany(int user_no) {
+        return companyMemberDao.getUserCompany(user_no);
+    }
 }

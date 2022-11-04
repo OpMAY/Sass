@@ -142,7 +142,7 @@
 
 #project-left-sidebar.is-close ._back {
     right: -89px;
-    transition: right 0.5s 1s;
+    transition: right 0.5s .75s;
     transform: translate(50%, 50%) rotate(180deg);
 }
 

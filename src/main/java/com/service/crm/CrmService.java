@@ -1175,7 +1175,7 @@ public class CrmService {
         } else {
             List<TaskComment> comments = taskCommentDao.getTaskComments(task_id);
             for (TaskComment comment : comments) {
-                if(comment.getType().equals(TASK_COMMENT_TYPE.FILE)) {
+                if (comment.getType().equals(TASK_COMMENT_TYPE.FILE)) {
                     comment.setFile(taskCommentFileDao.getFileInfoByCommentNo(comment.getNo()).getFile());
                 }
                 comment.setDate(comment.getReg_datetime().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")));
@@ -1210,7 +1210,7 @@ public class CrmService {
         } else {
             MFile temp_file = null;
             taskCommentDao.addComment(comment);
-            if(comment.getType().equals(TASK_COMMENT_TYPE.FILE)) {
+            if (comment.getType().equals(TASK_COMMENT_TYPE.FILE)) {
                 /**
                  * 1. File 등록
                  * 2. Comment - file 엮기
@@ -1363,5 +1363,9 @@ public class CrmService {
         }
         project.setBoardList(boards);
         return project;
+    }
+
+    public Project getProject(int project_no) {
+        return projectDao.getProjectByNo(project_no);
     }
 }

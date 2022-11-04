@@ -33,7 +33,7 @@
     </update>
     <update id="changeSubTaskName">
         update subtask
-        SET title            = #{title},
+        SET title            = #{name},
             updated_datetime = now()
         WHERE id = #{sub_task_id}
     </update>

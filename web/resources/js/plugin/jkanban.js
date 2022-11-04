@@ -886,7 +886,13 @@
                 function __createProfileHTML(profiles) {
                     let profiles_html = '';
                     profiles.forEach(function (profile, index) {
-                        profiles_html += `<img data-toggle="tooltip" data-placement="bottom" title="${profile.name}" style="left: ${index * 24}px;" src="${profile.url}" data-label="${profile.name}">`;
+                        if (index <= 4) {
+                            if (index === 0) {
+                                profiles_html += `<img data-toggle="tooltip" data-placement="bottom" title="${profile.name}" style="left: 0px;" src="${profile.url}" data-label="${profile.name}">`;
+                            } else {
+                                profiles_html += `<img data-toggle="tooltip" data-placement="bottom" title="${profile.name}" style="left: ${index * 32}px;" src="${profile.url}" data-label="${profile.name}">`;
+                            }
+                        }
                     });
                     return profiles_html;
                 }
@@ -917,7 +923,7 @@
                                 </div>
                                 <div class="right text-right">
                                   ${__createSubTasksHTML(item.subtasks !== undefined && item.subtasks !== null ? item.subtasks.length : void (0))}
-                                  <span class="time">${item.start_date === null || item.start_date === undefined ? '' : item.start_date.substring(2)}${item.start_date !== null && item.end_date !== null ? ' ~ ' : ''}${item.end_date === null || item.end_date === undefined ? '' : item.end_date.substring(2)}</span>
+                                  <span class="time">${item.start_date === null || item.start_date === undefined ? '작업 날짜 미지정' : item.start_date.substring(2)}${item.start_date !== null && item.end_date !== null ? ' ~ ' : ''}${item.end_date === null || item.end_date === undefined ? '' : item.end_date.substring(2)}</span>
                                 </div>
                             </div>
                             <div class="btn-group dropright">
@@ -938,7 +944,7 @@
                                 </div>
                                 <div class="right text-right">
                                   ${__createSubTasksHTML(item.subtasks !== undefined && item.subtasks !== null ? item.subtasks.length : void (0))}
-                                  <span class="time">${item.start_date === null || item.start_date === undefined ? ' ' : item.start_date.substring(2)}${(item.start_date !== null && item.start_date !== undefined && item.end_date !== null && item.end_date !== undefined) ? ' ~ ' : ''}${item.end_date === null || item.end_date === undefined ? ' ' : item.end_date.substring(2)}</span>
+                                  <span class="time">${item.start_date === null || item.start_date === undefined ? '작업 날짜 미지정' : item.start_date.substring(2)}${(item.start_date !== null && item.start_date !== undefined && item.end_date !== null && item.end_date !== undefined) ? ' ~ ' : ''}${item.end_date === null || item.end_date === undefined ? ' ' : item.end_date.substring(2)}</span>
                                 </div>
                             </div>
                             <div class="btn-group dropright">

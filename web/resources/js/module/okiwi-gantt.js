@@ -345,6 +345,11 @@ const initializeGantt = (boards) => {
                 $(_content).append(task_element);
                 let inserted_task_element = $(_content).find(`.gantt-task[data-id="${task.id}"]`)[0];
                 inserted_task_element.addEventListener('click', function (event) {
+                    if (event.ctrlKey || event.shiftKey || event.altKey) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return;
+                    }
                     rightTaskOpen(this.dataset.id);
                 });
                 inserted_task_element.querySelector('.checkbox').addEventListener('click', ganttTaskCheckboxClickEventListener);

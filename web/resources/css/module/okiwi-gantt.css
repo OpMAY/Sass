@@ -69,10 +69,12 @@
     border-bottom: var(--border-1px) var(--gray-high-medium);
     background-color: transparent;
 }
+
 .gantt-container .accordion.board-container > .card > .card-header button.collapsed .dropdown {
     transform: rotate(0);
     transition: transform .5s;
 }
+
 .gantt-container .accordion.board-container > .card > .card-header button .dropdown {
     width: 16px;
     height: 16px;
@@ -313,6 +315,10 @@
     background-position-y: -0.5px;
     overflow-y: hidden;
     background-image: url('/resources/assets/images/sample/background/gantt-background.svg');
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
 }
 
 .gantt-task {

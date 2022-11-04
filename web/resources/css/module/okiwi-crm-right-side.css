@@ -333,7 +333,7 @@
 
 .right-side-inner .tab-content ._content-container-remover {
     position: absolute;
-    top: calc(304px - 24px);
+    top: calc(247px - 24px);
     right: 24px;
     color: var(--brand-red);
     cursor: pointer;
