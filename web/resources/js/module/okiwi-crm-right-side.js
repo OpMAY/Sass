@@ -564,6 +564,8 @@ function rightTaskSubTaskAddClickEventListener(event) {
 //TODO 20221102 - 40번 - 지우
 function rightTaskDownloadClickEventListener(event) {
     console.log('rightTaskDownloadClickEventListener', this);
+    // For Comment
+    downloadFileFromUrl($(this).data().url, $(this).data().name);
 }
 
 function rightTaskCommentKeydownEventListener(event) {
@@ -829,7 +831,7 @@ const createRightTaskCommentItem = (comment) => {
                                   data-toggle="tooltip"
                                   data-placement="bottom"
                                   title="${comment.file.name}">${comment.file.name}</span>
-                            <span class="_download medium-h6">Download</span>
+                            <span class="_download medium-h6" data-url="${comment.file.url}" data-name="${comment.file.name}">Download</span>
                           </div>
                         </div>
                       </div>
@@ -851,7 +853,7 @@ const createRightTaskCommentItem = (comment) => {
                                       data-toggle="tooltip"
                                       data-placement="bottom"
                                       title="${comment.file.name}">${comment.file.name}</span>
-                                <span class="_download medium-h6">Download</span>
+                                <span class="_download medium-h6" data-url="${comment.file.url}" data-name="${comment.file.name}">Download</span>
                               </div>
                             </div>
                           </div>

@@ -23,6 +23,7 @@ import com.util.Encryption.JWTEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +42,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RequiredArgsConstructor
 @RequestMapping("/crm")
 public class CrmPlugRestController {
+    @Value("{S3}")
+    private String aws_s3_url;
     private final CompanyDao companyDao;
     private final CompanyMemberDao companyMemberDao;
     private final CompanyService companyService;
