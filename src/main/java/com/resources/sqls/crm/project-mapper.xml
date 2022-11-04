@@ -9,8 +9,8 @@
         WHERE company_no = #{company_no}
     </select>
     <insert id="createNewProject" useGeneratedKeys="true" keyProperty="no">
-        insert into project(company_no, name, reg_datetime, updated_datetime)
-        VALUES (#{company_no}, #{name}, NOW(), NOW())
+        insert into project(company_no, name, emoji, reg_datetime, updated_datetime)
+        VALUES (#{company_no}, #{name}, #{emoji}, NOW(), NOW())
     </insert>
     <select id="checkProjectNameDuplicate" resultType="_boolean">
         select EXISTS(select * from project WHERE name = #{name} AND company_no = #{company_no})
@@ -35,7 +35,7 @@
         select EXISTS(select * from project WHERE name = #{name} AND no != #{no})
     </select>
     <insert id="copyProject" keyProperty="no" useGeneratedKeys="true">
-        insert into project(company_no, name, reg_datetime, updated_datetime)
-        VALUES (#{company_no}, #{name}, NOW(), NOW())
+        insert into project(company_no, name, emoji, reg_datetime, updated_datetime)
+        VALUES (#{company_no}, #{name}, #{emoji}, NOW(), NOW())
     </insert>
 </mapper>

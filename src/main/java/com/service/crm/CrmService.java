@@ -165,7 +165,7 @@ public class CrmService {
             projectDao.createNewProject(project);
             message.put("status", true);
             try {
-                project.setHash_no(encryptionService.decryptAESWithSlash(Integer.toString(project.getNo())));
+                project.setHash_no(encryptionService.encryptAES(Integer.toString(project.getNo()), true));
             } catch (Exception e) {
                 e.printStackTrace();
                 message.put("status", false);
@@ -212,12 +212,14 @@ public class CrmService {
     @Transactional
     public ResponseEntity updateProject(Project project) {
         Message message = new Message();
+        log.info("project : {}", project);
         if (projectDao.checkProjectNameDuplicateOnUpdate(project)) {
             message.put("status", false);
             message.put("error_message", "다른 프로젝트에서 해당 이름을 사용 중입니다.");
         } else {
             projectDao.updateProject(project);
             message.put("status", true);
+            message.put("project", projectDao.getProjectByNo(project.getNo()));
         }
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
@@ -259,6 +261,7 @@ public class CrmService {
         Project copied_project = new Project();
         copied_project.setCompany_no(project.getCompany_no());
         copied_project.setName(project.getName() + " - 복사본");
+        copied_project.setEmoji(project.getEmoji());
         // 이름 중복 Numbering
         int i = 1;
         String non_numbered_name = copied_project.getName();
@@ -291,6 +294,13 @@ public class CrmService {
         }
         log.debug("Board 및 Task 복사 완료, 소요시간 : {}초", Time.getDateSecondDiff(start_time, Time.LongTimeStamp(0)));
 
+        try {
+            copied_project.setHash_no(encryptionService.encryptAES(Integer.toString(copied_project.getNo()), true));
+        } catch (Exception e) {
+            e.printStackTrace();
+            message.put("status", false);
+            message.put("error_message", "서버 오류 발생. 관리자에게 문의하세요.");
+        }
         message.put("status", true);
         message.put("project", copied_project);
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
@@ -906,9 +916,10 @@ public class CrmService {
         } else {
             Task task = taskDao.getTaskById(task_id);
             String date_default_format = "yyyy.MM.dd";
+            String date_database_format = "yyyy-MM-dd";
             try {
                 Date s_date = Time.DateStringToDate(start_date, date_default_format);
-                Date e_date = Time.DateStringToDate(task.getEnd_date(), date_default_format);
+                Date e_date = Time.DateStringToDate(task.getEnd_date(), date_database_format);
                 message.put("status", true);
                 if (e_date.before(s_date)) {
                     // DB에 저장되어 있는 종료 일자가 시작 일자보다 이전일 경우 종료 일자를 동일하게 설정
@@ -948,8 +959,9 @@ public class CrmService {
         } else {
             Task task = taskDao.getTaskById(task_id);
             String date_default_format = "yyyy.MM.dd";
+            String date_database_format = "yyyy-MM-dd";
             try {
-                Date start_date = Time.DateStringToDate(task.getStart_date(), date_default_format);
+                Date start_date = Time.DateStringToDate(task.getStart_date(), date_database_format);
                 Date e_date = Time.DateStringToDate(end_date, date_default_format);
                 message.put("status", true);
                 if (start_date.after(e_date)) {
