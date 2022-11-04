@@ -36,6 +36,7 @@
         from task t
                  left join task_member tm on t.id = tm.task_id
         WHERE complete = false
+          AND end_date <![CDATA[>=]]> CURDATE()
           AND tm.member_no = #{member_no}
         ORDER BY reg_datetime, end_date
     </select>
