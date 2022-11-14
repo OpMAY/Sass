@@ -285,6 +285,30 @@ async function createSubTask(subtask) {
     }
 }
 
+//31번
+async function deleteSubTask(subtask_id) {
+    function apiDeleteSubTask(subtask_id) {
+        const myHeaders = new Headers();
+        myHeaders.append('Content-Type', 'application/json');
+
+        const requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+        };
+
+        const response = fetch(`${host}/crm/delete/subtask/${subtask_id}`, requestOptions);
+        return response.then((res) => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiDeleteSubTask(subtask_id);
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 // 32번
 async function getTaskAvailableMembers(task_id) {
     function apiGetTaskAvailableMembers(task_id) {
@@ -343,7 +367,7 @@ async function addTaskComment(comment) {
         const requestOptions = {
             method: 'POST',
             headers: myHeaders,
-            body : raw
+            body: raw
         };
 
         const response = fetch(`${host}/crm/create/task/comment`, requestOptions);

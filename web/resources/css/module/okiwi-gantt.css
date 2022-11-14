@@ -300,8 +300,8 @@
     background-color: rgb(240, 106, 106);
     left: 50%;
     transform: translate(-50%, 0);
-    top: 42px;
-    z-index: 999;
+    top: 40px;
+    z-index: 1;
 }
 
 ._gantt-timeline ._gantt-header ._date > div > span {
@@ -326,6 +326,7 @@
     position: absolute;
     cursor: pointer;
     border: 1px solid var(--gray-high-medium);
+    z-index: 2;
 }
 
 .gantt-task.day.one {

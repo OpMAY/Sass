@@ -427,8 +427,14 @@ function rightSubtaskCloseClickEventListener(event) {
     console.log('rightSubtaskCloseClickEventListener', this);
     let subtask = this.closest('[data-id]');
     let task_id = subtask.dataset.id;
-    console.log(task_id);
-    subtask.remove();
+    deleteSubTask(task_id).then((result) => {
+        console.log('deleteSubTask', result);
+        if (result.status === 'OK') {
+            if (result.data.status) {
+                subtask.remove();
+            }
+        }
+    });
 }
 
 //TODO 20221102 - 24번 - 우식
