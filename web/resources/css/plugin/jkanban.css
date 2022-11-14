@@ -240,6 +240,10 @@
 }
 
 .kanban-item .kanban-sub-item-container {
+    /*margin-top: 12px;*/
+}
+
+.kanban-item .kanban-sub-item-container .kanban-sub-item:first-child {
     margin-top: 12px;
 }
 
