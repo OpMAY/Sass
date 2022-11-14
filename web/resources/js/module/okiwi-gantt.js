@@ -2,6 +2,8 @@
 let task_order = 1;
 const week = ['일', '월', '화', '수', '목', '금', '토'];
 let boards = new Array();
+let BODY_ELEMENT = document.documentElement;
+let SCROLL_POSITION = {top: 0, left: 0, x: 0, y: 0};
 
 function accordionDropdownShowEvent(event) {
     let items = event.target.querySelectorAll('li.list-group-item[id]');
@@ -56,6 +58,7 @@ const createGantt = (_boards, gantt_container) => {
     //Context Menu Event Initialize
     //$('#gantt-context-menu').on('click', '.list-group a', contextMenuClickEventListener);
     $('#gantt-board-option-menu').on('click', '.list-group a', ganttBoardOptionMenuClickEventListener);
+    BODY_ELEMENT.addEventListener('mousedown', ganttScrollTopMouseDownEventListener);
 };
 
 //TODO 20221102 - 13번 - 우식
@@ -734,11 +737,11 @@ const getGanttTaskPosition = (task) => {
 }
 
 const getDistance = (start_date, end_date) => {
-    let startDate = Date.parse(start_date);
-    let endDate = Date.parse(end_date);
+    let startDate = new Date(start_date).getTime();
+    let endDate = new Date(end_date).getTime();
     const elapsedMSec = endDate - startDate;
-    const elapsedDay = elapsedMSec / 1000 / 60 / 60 / 24;
-    return elapsedDay <= 0 ? 0 : elapsedDay * 44 - 16;
+    const elapsedDay = elapsedMSec / (1000 * 60 * 60 * 24);
+    return elapsedDay <= 0 ? 0 : (elapsedDay + 1) * 44 - 16;
 }
 
 const findLeftTask = (id) => {
@@ -749,7 +752,7 @@ const createGanttTaskElement = (position, task) => {
     let _class = '';
     if (position.width === 0) {
         _class = 'day one';
-    } else if (position.width <= 72) {
+    } else if (position.width <= 72 && position.width > 0) {
         _class = 'day two';
     } else if (position.width <= 116) {
         _class = 'day third';
@@ -759,7 +762,7 @@ const createGanttTaskElement = (position, task) => {
               <div class="gantt-inner-container">
                 <div class="gantt-info">
                   <span class="divider"></span>
-                  <img width="24" height="24" src="${task.profiles[0] !== null && task.profiles[0] !== undefined ? task.profiles[0].url : ''}"/>
+                  <img style="min-width: 24px;" width="24" height="24" src="${task.profiles[0] !== null && task.profiles[0] !== undefined ? task.profiles[0].url : ''}"/>
                   <div class="task-title"><div class="title">${task.title}</div></div>
                   <span class="checkbox"><i class="fas fa-check" aria-hidden="true"></i></span>
                 </div>
@@ -968,4 +971,35 @@ function getMonthsStartToLast(startDate, lastDate) {
 function getDayOfWeek(date) {
     const dayOfWeek = week[new Date(date).getDay()];
     return dayOfWeek;
+}
+
+function ganttScrollTopMouseMoveEventListener(event) {
+    console.log('ganttScrollTopMouseMoveEventListener');
+    // How far the mouse has been moved
+    const dx = event.clientX - SCROLL_POSITION.x;
+    const dy = event.clientY - SCROLL_POSITION.y;
+
+    // Scroll the element
+    BODY_ELEMENT.scrollTop = SCROLL_POSITION.top - dy;
+    BODY_ELEMENT.scrollLeft = SCROLL_POSITION.left - dx;
+}
+
+function ganttScrollTopMouseDownEventListener(event) {
+    console.log('ganttScrollTopMouseDownEventListener');
+    SCROLL_POSITION = {
+        // The current scroll
+        left: BODY_ELEMENT.scrollLeft,
+        top: BODY_ELEMENT.scrollTop,
+        // Get the current mouse position
+        x: event.clientX,
+        y: event.clientY,
+    };
+    BODY_ELEMENT.addEventListener('mousemove', ganttScrollTopMouseMoveEventListener);
+    BODY_ELEMENT.addEventListener('mouseup', ganttScrollTopMouseUpEventListener);
+}
+
+function ganttScrollTopMouseUpEventListener(event) {
+    console.log('ganttScrollTopMouseUpEventListener');
+    BODY_ELEMENT.removeEventListener('mousemove', ganttScrollTopMouseMoveEventListener);
+    BODY_ELEMENT.removeEventListener('mouseup', ganttScrollTopMouseUpEventListener);
 }
