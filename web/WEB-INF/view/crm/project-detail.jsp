@@ -852,26 +852,7 @@
                                 initializeFiles({files});
                             }
                         }
-                    })
-                    // let files = [{
-                    //     name: 'test.png',
-                    //     url: 'https://via.placeholder.com/350x150',
-                    //     type: 'image/png',
-                    //     size: 102938,
-                    //     date: '2022.11.01'
-                    // }, {
-                    //     name: 'test.zip',
-                    //     url: 'https://via.placeholder.com/350x150',
-                    //     type: 'file',
-                    //     size: 102938,
-                    //     date: '2022.11.02'
-                    // }, {
-                    //     name: 'test.zip',
-                    //     url: 'https://via.placeholder.com/350x150',
-                    //     type: 'file',
-                    //     size: 102938,
-                    //     date: '2022.11.01'
-                    // }];
+                    });
                     break;
             }
         });

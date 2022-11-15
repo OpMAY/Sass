@@ -645,6 +645,20 @@
                     return el
                 }
 
+                this.__createProfileHTML = function (profiles) {
+                    let profiles_html = __createProfileHTML(profiles);
+                    return profiles_html;
+                }
+
+                this.__buildItemSubCardInnerHTML = function (subtasks) {
+                    let subtasks_html = __buildItemSubCardInnerHTML(subtasks);
+                    return subtasks_html;
+                }
+
+                this.__onSubTaskClickHandler = function (nodeItems, clickfn) {
+                    __onSubTaskClickHandler(nodeItems);
+                }
+
                 this.findBoardJSON = function (board_id) {
                     let board = __findBoardJSON(board_id);
                     return board;
