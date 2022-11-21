@@ -63,31 +63,24 @@ const initializeKanban = (boards) => {
         dragendBoard: kanbanDragEndBoardEventListener, // 보드 드랍 이벤트
         dropBoard: kanbanDropBoardEventListener, // 보드 옵션 이벤트
         updateBoard: kanbanUpdateBoardEventListener,
+        headerOptionShow: optionDropdownShowEventListener,
+        headerOptionHide: optionDropdownHideEventListener
     });
     updatePercents(kanban);
-
-    //Context Menu Clear Event
-    /*document.querySelector('.kanban-board-container').addEventListener('contextmenu', function (event) {
-        let menu = document.querySelector('#context-menu');
-        closeContextMenu(menu);
-    });*/
-    //Context Menu Event Initialize
-    /*$('#context-menu').on('click', '.list-group a', contextMenuClickEventListener);*/
-    //Dropdown Menu Event Initialize
-    $('.kanban-board-container .kanban-board-header .kanban-board-option .dropright').on('show.bs.dropdown', optionDropdownShowEventListener);
-    $('.kanban-board-container .kanban-board-header .kanban-board-option .dropright').on('hide.bs.dropdown', optionDropdownHideEventListener);
     return kanban;
 };
 
-function optionDropdownShowEventListener(event) {
-    let option = this.closest('.kanban-board-option');
+function optionDropdownShowEventListener(element, event) {
+    console.log('optionDropdownShowEventListener', element, 'btn-group dropright');
+    let option = element.closest('.kanban-board-option');
     if (!option.classList.contains('is-dropdown')) {
         option.classList.add('is-dropdown');
     }
 }
 
-function optionDropdownHideEventListener(event) {
-    let option = this.closest('.kanban-board-option');
+function optionDropdownHideEventListener(element, event) {
+    console.log('optionDropdownHideEventListener', element);
+    let option = element.closest('.kanban-board-option');
     if (option.classList.contains('is-dropdown')) {
         option.classList.remove('is-dropdown');
     }

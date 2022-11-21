@@ -335,7 +335,7 @@
 }
 
 .gantt-task.day.two {
-    width: 54px !important;
+    width: 72px !important;
 }
 
 .gantt-task.day:not(.one):hover {
@@ -431,12 +431,17 @@
     font-size: 14px;
     color: black;
     margin-left: 8px;
-    margin-right: 8px;
+    margin-right: 12px;
     width: calc(100% - 72px);
     text-overflow: ellipsis;
     display: flex;
     overflow: hidden;
     white-space: nowrap;
+    min-width: 18px;
+}
+
+.gantt-task.day.two .gantt-inner-container .gantt-info > .task-title {
+    min-width: 32px;
 }
 
 .gantt-task.is-checked .gantt-inner-container .gantt-info > .task-title {
