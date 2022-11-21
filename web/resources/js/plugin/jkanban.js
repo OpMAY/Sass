@@ -99,6 +99,10 @@
                     },
                     addTask: function (el, boardId) {
                     },
+                    headerOptionShow: function (el, e) {
+                    },
+                    headerOptionHide: function (el, e) {
+                    },
                     propagationHandlers: [],
                 }
 
@@ -276,7 +280,6 @@
                     __onclickHandler(nodeItem)
                     __onSubTaskClickHandler(nodeItem.querySelectorAll('.kanban-sub-item .checkbox'));
                     __onContextHandler(nodeItem)
-
                     let boardJSON = __findBoardJSON(boardID);
 
                     boardJSON.item.push(element);
@@ -375,6 +378,8 @@
                             headerBoard.classList.add(value)
                         });
                         headerBoard.innerHTML = this.createHeaderBoardElement(board);
+                        __onHeaderOptionShowHandler(headerBoard);
+                        __onHeaderOptionHideHandler(headerBoard);
 
                         //Event Listener Add
                         let option_container = headerBoard.querySelector('.kanban-board-option');
@@ -623,6 +628,8 @@
                     __onclickHandler(nodeItem)
                     __onSubTaskClickHandler(nodeItem.querySelectorAll('.kanban-sub-item .checkbox'));
                     __onContextHandler(nodeItem)
+                    __onHeaderOptionShowHandler(nodeItem);
+                    __onHeaderOptionHideHandler(nodeItem);
 
                     //체크박스 클릭 이벤트
                     nodeItem.querySelector('.checkbox').addEventListener('click', function (e) {
@@ -643,6 +650,20 @@
                 this.findElement = function (id) {
                     var el = self.element.querySelector('[data-eid="' + id + '"]')
                     return el
+                }
+
+                this.__createProfileHTML = function (profiles) {
+                    let profiles_html = __createProfileHTML(profiles);
+                    return profiles_html;
+                }
+
+                this.__buildItemSubCardInnerHTML = function (subtasks) {
+                    let subtasks_html = __buildItemSubCardInnerHTML(subtasks);
+                    return subtasks_html;
+                }
+
+                this.__onSubTaskClickHandler = function (nodeItems, clickfn) {
+                    __onSubTaskClickHandler(nodeItems);
                 }
 
                 this.findBoardJSON = function (board_id) {
@@ -759,6 +780,18 @@
                             e.preventDefault();
                             e.stopPropagation();
                         });
+                    });
+                }
+
+                function __onHeaderOptionShowHandler(nodeItem) {
+                    $(nodeItem.querySelector('.kanban-board-option .dropright')).on('show.bs.dropdown', function (e) {
+                        self.options.headerOptionShow(this, e);
+                    });
+                }
+
+                function __onHeaderOptionHideHandler(nodeItem) {
+                    $(nodeItem.querySelector('.kanban-board-option .dropright')).on('hide.bs.dropdown', function (e) {
+                        self.options.headerOptionHide(this, e);
                     });
                 }
 

@@ -118,6 +118,7 @@ const createBoardListElement = (board) => {
     board_tr.classList.add('_board');
     board_tr.setAttribute('data-id', board.id);
     board_tr.innerHTML = __boardListInnerElement(board);
+    board_tr.querySelector('._name').addEventListener('click', boardListDropdownClickEventListener);
     board_tr.querySelector('._dropdown').addEventListener('click', boardListDropdownClickEventListener);
     $(board_tr.querySelector('.dropright .dropdown-menu')).on('click', '.dropdown-item', boardListOptionClickEventListener);
     return board_tr;
@@ -376,8 +377,8 @@ function taskAddListClickEventListener(event) {
     };
     createTask(task).then((result) => {
         console.log(result);
-        if(result.status === 'OK') {
-            if(result.data.status) {
+        if (result.status === 'OK') {
+            if (result.data.status) {
                 task = result.data.task;
                 let created_task_element = createTaskList(board_id, task);
                 task_add_list.before(created_task_element);
@@ -520,12 +521,14 @@ function contextListMenuClickEventListener(event) {
             let _task = taskTypeChanger(result.data.copied_task);
             let created_task = createTaskList(board_id, _task);
             task_element.after(created_task);
+            updateListPercents();
         });
     } else if (this.classList.contains('_delete')) {
         let task = findTaskListById(task_id);
         apiDeleteTask(task_id).then((result) => {
             console.log('apiDeleteTask', result);
             task.remove();
+            updateListPercents();
         });
     }
     closeListContextMenu(menu);

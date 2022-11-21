@@ -69,7 +69,6 @@ const initializeRightTask = () => {
         }
     });
     // TODO Click Tab
-    console.log(RIGHT_TASK_CONTAINER.querySelectorAll('.right-side-inner > ._tab .nav-item'));
     $(RIGHT_TASK_CONTAINER).on('click', '.nav-item', rightTaskTabChangeEventListener);
 };
 
@@ -260,11 +259,8 @@ const rightTaskContentInit = (content) => {
 const rightTaskSubtasksInit = (subtasks) => {
     let subtasks_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._subtasks');
     let subtask_add = subtasks_container.querySelector('.subtask-item.add');
-    console.log(subtasks)
     if (subtasks !== undefined) {
-        console.log("not undefined")
         subtasks.forEach(function (subtask) {
-            console.log(subtask);
             subtask_add.before(createRightSubtaskItem(subtask));
         });
     }
@@ -291,6 +287,26 @@ function rightTaskDeleteClickEventListener(event) {
     let task_id = this.closest('[data-id]').dataset.id;
     apiDeleteTask(task_id).then((result) => {
         console.log('apiDeleteTask', result);
+        let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
+        let task_element = undefined, board_id = undefined;
+        switch (type) {
+            case '#feed':
+                task_element = kanban.findElement(task_id);
+                board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                let board = kanban.findBoardJSON(board_id);
+                let task = kanban.findTaskJSON(board_id, task_id);
+                kanban.removeTask(board, task);
+                kanban.removeElement(task_id);
+                updatePercent(kanban, board);
+                break;
+            case '#list':
+                task_element = LIST_CONTAINER.querySelector(`[data-id="${RIGHT_TASK_CONTAINER.dataset.id}"]`);
+                task_element.remove();
+                updateListPercents();
+                break;
+            case '#timeline':
+                break;
+        }
         rightTaskClose();
     });
 }
@@ -367,16 +383,71 @@ function rightTaskTitleInputEventListener(event) {
     console.log('rightTaskTitleInputEventListener', this);
     let title = this;
     let task_id = this.closest('[data-id]').dataset.id;
-    console.log(this.closest('.subtask-item'));
     let is_subtask = this.closest('.subtask-item') !== undefined && this.closest('.subtask-item') !== null;
-    console.log(is_subtask, task_id, title.value);
     if (is_subtask) {
         apiChangeSubTaskName(task_id, title.value).then((result) => {
             console.log('apiChangeSubTaskName', result);
+            let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
+            switch (type) {
+                case '#feed':
+                    let subtask_id = task_id;
+                    task_id = RIGHT_TASK_CONTAINER.dataset.id;
+                    let task_element = kanban.findElement(task_id);
+                    let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                    let task = kanban.findTaskJSON(board_id, task_id);
+                    //SUBTASK
+                    let subtask = findSubTask(task, subtask_id);
+                    subtask.title = title.value;
+                    let subtask_element = findSubTaskElement(task, subtask_id);
+                    subtask_element.querySelector('._title').innerHTML = `${subtask.title}`;
+                    break;
+                case '#list':
+                    //TODO okiwi-list.js -> Subtask 개발 예정
+                    break;
+                case '#timeline':
+                    //TODO okiwi-gantt.js -> Subtask 개발 예정
+                    break;
+            }
         });
     } else {
         apiChangeTaskName(task_id, title.value).then((result) => {
             console.log('apiChangeTaskName', result);
+            let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
+            let task_element = undefined;
+            switch (type) {
+                case '#feed':
+                    task_element = kanban.findElement(task_id);
+                    let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                    let task = kanban.findTaskJSON(board_id, task_id);
+                    task.title = title.value;
+                    task_element.querySelector('.kanban-item-title .title').innerHTML = `${task.title}`;
+                    break;
+                case '#list':
+                    task_element = LIST_CONTAINER.querySelector(`[data-id="${task_id}"]`);
+                    if (title.value.trim().length !== 0) {
+                        task_element.querySelector('._name').innerHTML = `${title.value}`;
+                    } else {
+                        task_element.querySelector('._name').innerHTML = `업무명을 입력해주세요.`;
+                    }
+                    break;
+                case '#timeline':
+                    //LEFT
+                    let left_task_element = document.querySelector(`.gantt-container ._gantt-board .list-group-item[id="${task_id}"]`);
+                    console.log(left_task_element);
+                    if (title.value.trim().length !== 0) {
+                        left_task_element.querySelector('.title').innerHTML = `${title.value}`;
+                    } else {
+                        left_task_element.querySelector('.title').innerHTML = `업무명을 입력해주세요.`;
+                    }
+                    //GANTT
+                    task_element = document.querySelector(`.gantt-container ._gantt-timeline ._content .gantt-task[data-id="${task_id}"]`);
+                    if (title.value.trim().length !== 0) {
+                        task_element.querySelector('.title').innerHTML = `${title.value}`;
+                    } else {
+                        task_element.querySelector('.title').innerHTML = `업무명을 입력해주세요.`;
+                    }
+                    break;
+            }
         });
     }
 }
@@ -385,16 +456,92 @@ function rightTaskTitleInputEventListener(event) {
 function rightTaskCheckboxClickEventListener(event) {
     console.log('rightTaskCheckboxClickEventListener', this);
     let task_id = this.closest('[data-id]').dataset.id;
-    let is_complete = this.classList.contains('is-checked');
-    if (is_complete) {
+    let is_before_complete = this.classList.contains('is-checked');
+    if (is_before_complete) {
         apiUpdateTaskStatus(task_id).then((result) => {
             console.log('apiUpdateTaskStatus', result);
             this.classList.remove('is-checked');
+            //FALSE
+            let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
+            let task_element = undefined, checkbox = undefined;
+            switch (type) {
+                case '#feed':
+                    task_id = RIGHT_TASK_CONTAINER.dataset.id;
+                    task_element = kanban.findElement(task_id);
+                    let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                    let task = kanban.findTaskJSON(board_id, task_id);
+                    task.complete = false;
+                    checkbox = task_element.querySelector('.kanban-item .checkbox');
+                    if (checkbox.classList.contains('active')) {
+                        checkbox.classList.remove('active');
+                    }
+                    updatePercents(kanban);
+                    break;
+                case '#list':
+                    task_id = RIGHT_TASK_CONTAINER.dataset.id;
+                    task_element = LIST_CONTAINER.querySelector(`[data-id="${task_id}"]`);
+                    checkbox = task_element.querySelector('.checkbox');
+                    if (task_element.classList.contains('is-checked')) {
+                        task_element.classList.remove('is-checked');
+                    }
+                    updateListPercents();
+                    break;
+                case '#timeline':
+                    //LEFT
+                    let left_task_element = document.querySelector(`.gantt-container ._gantt-board .list-group-item[id="${task_id}"]`);
+                    if (left_task_element.classList.contains('is-checked')) {
+                        left_task_element.classList.remove('is-checked');
+                    }
+                    //GANTT
+                    task_element = document.querySelector(`.gantt-container ._gantt-timeline ._content .gantt-task[data-id="${task_id}"]`);
+                    if (task_element.classList.contains('is-checked')) {
+                        task_element.classList.remove('is-checked');
+                    }
+                    break;
+            }
         });
     } else {
         apiUpdateTaskStatus(task_id).then((result) => {
             console.log('apiUpdateTaskStatus', result);
             this.classList.add('is-checked');
+            //TRUE
+            let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
+            let task_element = undefined, checkbox = undefined;
+            switch (type) {
+                case '#feed':
+                    task_id = RIGHT_TASK_CONTAINER.dataset.id;
+                    task_element = kanban.findElement(task_id);
+                    let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                    let task = kanban.findTaskJSON(board_id, task_id);
+                    task.complete = true;
+                    checkbox = task_element.querySelector('.kanban-item .checkbox');
+                    if (!checkbox.classList.contains('active')) {
+                        checkbox.classList.add('active');
+                    }
+                    updatePercents(kanban);
+                    break;
+                case '#list':
+                    task_id = RIGHT_TASK_CONTAINER.dataset.id;
+                    task_element = LIST_CONTAINER.querySelector(`[data-id="${task_id}"]`);
+                    checkbox = task_element.querySelector('.checkbox');
+                    if (!task_element.classList.contains('is-checked')) {
+                        task_element.classList.add('is-checked');
+                    }
+                    updateListPercents();
+                    break;
+                case '#timeline':
+                    //LEFT
+                    let left_task_element = document.querySelector(`.gantt-container ._gantt-board .list-group-item[id="${task_id}"]`);
+                    if (!left_task_element.classList.contains('is-checked')) {
+                        left_task_element.classList.add('is-checked');
+                    }
+                    //GANTT
+                    task_element = document.querySelector(`.gantt-container ._gantt-timeline ._content .gantt-task[data-id="${task_id}"]`);
+                    if (!task_element.classList.contains('is-checked')) {
+                        task_element.classList.add('is-checked');
+                    }
+                    break;
+            }
         });
     }
     event.preventDefault();
@@ -403,19 +550,55 @@ function rightTaskCheckboxClickEventListener(event) {
 
 //TODO 20221102 - 28 - 우식
 function rightSubtaskCheckboxClickEventListener(event) {
-    console.log('rightTaskCheckboxClickEventListener', this);
+    console.log('rightSubtaskCheckboxClickEventListener', this);
     let subtask = this.closest('[data-id]');
-    let task_id = subtask.dataset.id;
+    let subtask_id = subtask.dataset.id;
     let is_complete = subtask.classList.contains('is-checked');
     if (is_complete) {
-        apiChangeSubTaskStatus(task_id).then((result) => {
+        apiChangeSubTaskStatus(subtask_id).then((result) => {
             console.log('apiChangeSubTaskStatus', result);
             subtask.classList.remove('is-checked');
+            let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
+            let task_id = undefined, task_element = undefined, subtask_element = undefined;
+            switch (type) {
+                case '#feed':
+                    task_id = RIGHT_TASK_CONTAINER.dataset.id;
+                    task_element = kanban.findElement(task_id);
+                    let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                    let task = kanban.findTaskJSON(board_id, task_id);
+                    let _subtask = findSubTask(task, subtask_id);
+                    _subtask.complete = false;
+                    subtask_element = findSubTaskElement(task, subtask_id);
+                    subtask_element.classList.remove('active');
+                    break;
+                case '#list':
+                    break;
+                case '#timeline':
+                    break;
+            }
         });
     } else {
-        apiChangeSubTaskStatus(task_id).then((result) => {
+        apiChangeSubTaskStatus(subtask_id).then((result) => {
             console.log('apiChangeSubTaskStatus', result);
             subtask.classList.add('is-checked');
+            let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
+            let task_id = undefined, task_element = undefined, subtask_element = undefined;
+            switch (type) {
+                case '#feed':
+                    task_id = RIGHT_TASK_CONTAINER.dataset.id;
+                    task_element = kanban.findElement(task_id);
+                    let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                    let task = kanban.findTaskJSON(board_id, task_id);
+                    let _subtask = findSubTask(task, subtask_id);
+                    _subtask.complete = true;
+                    subtask_element = findSubTaskElement(task, subtask_id);
+                    subtask_element.classList.add('active');
+                    break;
+                case '#list':
+                    break;
+                case '#timeline':
+                    break;
+            }
         });
     }
     event.preventDefault();
@@ -426,12 +609,46 @@ function rightSubtaskCheckboxClickEventListener(event) {
 function rightSubtaskCloseClickEventListener(event) {
     console.log('rightSubtaskCloseClickEventListener', this);
     let subtask = this.closest('[data-id]');
-    let task_id = subtask.dataset.id;
-    deleteSubTask(task_id).then((result) => {
+    let subtask_id = subtask.dataset.id;
+    deleteSubTask(subtask_id).then((result) => {
         console.log('deleteSubTask', result);
         if (result.status === 'OK') {
             if (result.data.status) {
                 subtask.remove();
+                let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
+                let task_id = undefined, task_element = undefined, subtasks_container = undefined,
+                    subtask_add = undefined;
+                switch (type) {
+                    case '#feed':
+                        task_id = RIGHT_TASK_CONTAINER.dataset.id;
+                        task_element = kanban.findElement(task_id);
+                        let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                        let task = kanban.findTaskJSON(board_id, task_id);
+                        let subtask_container = task_element.querySelector('.kanban-sub-item-container');
+                        let subtask_is_open = subtask_container.style.display !== 'none' ? true : false;
+                        //subtask remove
+                        task.subtasks = task.subtasks.filter((_subtask) => {
+                            if (_subtask.id !== subtask_id) {
+                                console.log(_subtask, subtask_id);
+                                return true;
+                            }
+                            return false;
+                        });
+                        subtask_container.outerHTML = kanban.__buildItemSubCardInnerHTML(task.subtasks);
+                        subtask_container = task_element.querySelector('.kanban-sub-item-container');
+                        subtask_container.style.display = subtask_is_open ? 'block' : 'none';
+                        kanban.__onSubTaskClickHandler(subtask_container.querySelectorAll('.kanban-sub-item .checkbox'));
+                        task_element.querySelector('.sub-task-count ._count').innerHTML = `${task.subtasks.length}`;
+                        break;
+                    case '#list':
+                        task_id = RIGHT_TASK_CONTAINER.dataset.id;
+                        task_element = LIST_CONTAINER.querySelector(`[data-id="${RIGHT_TASK_CONTAINER.dataset.id}"]`);
+                        let list_task_subtasks_count = RIGHT_TASK_CONTAINER.querySelectorAll('._subtasks .subtask-item:not(.add)').length;
+                        task_element.querySelector('._subtasks').innerHTML = `${list_task_subtasks_count}개`;
+                        break;
+                    case '#timeline':
+                        break;
+                }
             }
         }
     });
@@ -440,13 +657,42 @@ function rightSubtaskCloseClickEventListener(event) {
 //TODO 20221102 - 24번 - 우식
 function rightTaskStartDatePickerChangeEventListener(event) {
     console.log('rightTaskStartDatePickerChangeEventListener', this);
-    // `e` here contains the extra attributes
-    /*TODO 조건 -> end_date가 start_date보다 커야한다.*/
-    // $('#end').datepicker('setDate', event.date);
     let task_id = this.closest('[data-id]').dataset.id;
-    console.log('this.value', this.value);
+    if ($('#end').val().trim().length !== 0) {
+        if (this.value > $('#end').val()) {
+            $('#end').datepicker('setDate', event.date);
+        }
+    }
     apiChangeTaskStart(task_id, this.value).then((result) => {
         console.log('apiChangeTaskStart', result);
+        let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
+        let task_element = undefined, start_time = undefined;
+        switch (type) {
+            case '#feed':
+                task_element = kanban.findElement(task_id);
+                let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                let task = kanban.findTaskJSON(board_id, task_id);
+                start_time = $('#start').val().trim().replaceAll(/\./g, '-').substring(2);
+                let end_time = $('#end').val().trim().replaceAll(/\./g, '-').substring(2);
+                if (end_time.length !== 0) {
+                    task_element.querySelector('.kanban-item-task-info .time').innerHTML = `${start_time} - ${end_time}`;
+                } else {
+                    task_element.querySelector('.kanban-item-task-info .time').innerHTML = `${start_time} - 미설정`;
+                }
+                break;
+            case '#list':
+                task_id = RIGHT_TASK_CONTAINER.dataset.id;
+                task_element = LIST_CONTAINER.querySelector(`[data-id="${task_id}"]`);
+                start_time = $('#start').val().trim().replaceAll(/\./g, '-');
+                task_element.querySelector('._start').innerHTML = `${start_time}`;
+                break;
+            case '#timeline':
+                task_element = document.querySelector(`.gantt-container ._gantt-timeline ._content .gantt-task[data-id="${task_id}"]`);
+                task_element.setAttribute('data-start-date', $('#start').val().trim());
+                /*TODO Gantt Task Move*/
+
+                break;
+        }
     });
     event.preventDefault();
     event.stopPropagation();
@@ -458,6 +704,29 @@ function rightTaskEndDatePickerChangeEventListener(event) {
     let task_id = this.closest('[data-id]').dataset.id;
     apiChangeTaskEnd(task_id, this.value).then((result) => {
         console.log('apiChangeTaskEnd', result);
+        let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
+        let task_element = undefined, end_time = undefined;
+        switch (type) {
+            case '#feed':
+                task_element = kanban.findElement(task_id);
+                let start_time = $('#start').val().trim().replaceAll(/\./g, '-').substring(2);
+                end_time = $('#end').val().trim().replaceAll(/\./g, '-').substring(2);
+                console.log(start_time, end_time);
+                if (start_time.length !== 0) {
+                    task_element.querySelector('.kanban-item-task-info .time').innerHTML = `${start_time} - ${end_time}`;
+                } else {
+                    task_element.querySelector('.kanban-item-task-info .time').innerHTML = `미설정 - ${end_time}`;
+                }
+                break;
+            case '#list':
+                task_id = RIGHT_TASK_CONTAINER.dataset.id;
+                task_element = LIST_CONTAINER.querySelector(`[data-id="${task_id}"]`);
+                end_time = $('#end').val().trim().replaceAll(/\./g, '-');
+                task_element.querySelector('._end').innerHTML = `${end_time}`;
+                break;
+            case '#timeline':
+                break;
+        }
     });
     event.preventDefault();
     event.stopPropagation();
@@ -513,7 +782,7 @@ const rightTaskUserAssignDropdownClearItems = (event) => {
 function rightTaskUserAssignDeleteClickEventListener(event) {
     console.log('rightTaskUserAssignDeleteClickEventListener', this);
     let user_item = this.closest('.user-item');
-    let user_no = user_item.dataset.no;
+    let user_no = user_item.dataset.no * 1;
     console.log('delete user_no', user_no);
     event.preventDefault();
     event.stopPropagation();
@@ -522,6 +791,47 @@ function rightTaskUserAssignDeleteClickEventListener(event) {
         if (result.status === 'OK') {
             if (result.data.status) {
                 user_item.remove();
+                let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
+                let task_element = undefined, profile_container = undefined, size = undefined;
+                switch (type) {
+                    case '#feed':
+                        task_element = kanban.findElement(RIGHT_TASK_CONTAINER.dataset.id);
+                        let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                        let task = kanban.findTaskJSON(board_id, RIGHT_TASK_CONTAINER.dataset.id);
+                        task.profiles = task.profiles.filter((_profile) => {
+                            if (_profile.no !== user_no) {
+                                return true;
+                            }
+                            return false;
+                        });
+                        task.profiles = duplicateProfilesRemover(task.profiles);
+                        profile_container = task_element.querySelector('.kanban-item-task-info .left');
+                        deleteChild(profile_container);
+                        profile_container.innerHTML = kanban.__createProfileHTML(task.profiles);
+                        break;
+                    case '#list':
+                        task_element = LIST_CONTAINER.querySelector(`[data-id="${RIGHT_TASK_CONTAINER.dataset.id}"]`);
+                        size = RIGHT_TASK_CONTAINER.querySelectorAll('.user-item-container .user-item:not(.add)').length;
+                        profile_container = task_element.querySelector('._image');
+                        if (size === 0) {
+                            if (!profile_container.classList.contains('d-none')) {
+                                profile_container.classList.add('d-none');
+                                profile_container.style.backgroundImage = `url('')`;
+                            }
+                        }
+                        break;
+                    case '#timeline':
+                        size = RIGHT_TASK_CONTAINER.querySelectorAll('.user-item-container .user-item:not(.add)').length;
+                        task_element = document.querySelector(`.gantt-container ._gantt-timeline ._content .gantt-task[data-id="${RIGHT_TASK_CONTAINER.dataset.id}"]`);
+                        profile_container = task_element.querySelector('.gantt-info > img');
+                        if (size === 0) {
+                            if (profile_container.style.display !== 'none') {
+                                profile_container.style.display = 'none';
+                                profile_container.setAttribute('src', ``);
+                            }
+                        }
+                        break;
+                }
             }
         }
     })
@@ -530,7 +840,7 @@ function rightTaskUserAssignDeleteClickEventListener(event) {
 //TODO 20221102 - 22번 - 지우 O
 function rightTaskUserAssignAddClickEventListener(event) {
     console.log('rightTaskUserAssignAddClickEventListener', this);
-    let user_no = this.dataset.no;
+    let user_no = this.dataset.no * 1;
     let name = this.querySelector('._name').innerText.trim();
     let img = this.querySelector('._profile').style.backgroundImage;
     let url = img.substring(img.indexOf('"') + 1, img.lastIndexOf('"'));
@@ -545,6 +855,36 @@ function rightTaskUserAssignAddClickEventListener(event) {
                 let assign_user_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner ._info ._assign .user-item-container');
                 let assign_user_add = assign_user_container.querySelector('.user-item.add');
                 assign_user_add.before(createRightTaskAssignItem(profile));
+                let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
+                let task_element = undefined, profile_container = undefined;
+                switch (type) {
+                    case '#feed':
+                        task_element = kanban.findElement(RIGHT_TASK_CONTAINER.dataset.id);
+                        let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                        let task = kanban.findTaskJSON(board_id, RIGHT_TASK_CONTAINER.dataset.id);
+                        task.profiles.push(profile);
+                        task.profiles = duplicateProfilesRemover(task.profiles);
+                        profile_container = task_element.querySelector('.kanban-item-task-info .left');
+                        deleteChild(profile_container);
+                        profile_container.innerHTML = kanban.__createProfileHTML(task.profiles);
+                        break;
+                    case '#list':
+                        task_element = LIST_CONTAINER.querySelector(`[data-id="${RIGHT_TASK_CONTAINER.dataset.id}"]`);
+                        profile_container = task_element.querySelector('._image');
+                        if (profile_container.classList.contains('d-none')) {
+                            profile_container.style.backgroundImage = `url('${profile.url}')`;
+                            profile_container.classList.remove('d-none');
+                        }
+                        break;
+                    case '#timeline':
+                        task_element = document.querySelector(`.gantt-container ._gantt-timeline ._content .gantt-task[data-id="${RIGHT_TASK_CONTAINER.dataset.id}"]`);
+                        profile_container = task_element.querySelector('.gantt-info > img');
+                        if (profile_container.style.display === 'none') {
+                            profile_container.style.display = 'inline';
+                            profile_container.setAttribute('src', `${profile.url}`);
+                        }
+                        break;
+                }
             } else {
                 alert(result.data.error_message);
             }
@@ -569,7 +909,6 @@ function rightTaskContentInputEventListener(event) {
     console.log('rightTaskContentInputEventListener', this);
     let task_id = this.closest('[data-id]').dataset.id;
     let content = this;
-    console.log(task_id, content.innerHTML);
     apiChangeTaskDescription(task_id, content.innerHTML).then((result) => {
         console.log('apiChangeTaskDescription', result);
     });
@@ -578,7 +917,6 @@ function rightTaskContentInputEventListener(event) {
 //TODO 20221102 - 30번 - 지우 O
 function rightTaskSubTaskAddClickEventListener(event) {
     console.log('rightTaskSubTaskAddClickEventListener', this);
-    let current_date = new Date().toISOString().slice(0, 10);
     let create_id = tokenGenerator(8);
     let subtask = {
         id: create_id,
@@ -590,10 +928,43 @@ function rightTaskSubTaskAddClickEventListener(event) {
         console.log(result);
         if (result.status === 'OK') {
             if (result.data.status) {
-                subtask = result.data.subTask;
-                let subtasks_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._subtasks');
-                let subtask_add = subtasks_container.querySelector('.subtask-item.add');
-                subtask_add.before(createRightSubtaskItem(subtask));
+                let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
+                let task_id = undefined, task_element = undefined, subtasks_container = undefined,
+                    subtask_add = undefined;
+                switch (type) {
+                    case '#feed':
+                        task_id = RIGHT_TASK_CONTAINER.dataset.id;
+                        task_element = kanban.findElement(task_id)
+                        let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                        let task = kanban.findTaskJSON(board_id, task_id);
+                        subtask = result.data.subTask;
+                        task.subtasks.push(subtask);
+                        subtasks_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._subtasks');
+                        subtask_add = subtasks_container.querySelector('.subtask-item.add');
+                        subtask_add.before(createRightSubtaskItem(subtask));
+
+                        let subtask_container = task_element.querySelector('.kanban-sub-item-container');
+                        let subtask_is_open = subtask_container.style.display !== 'none' ? true : false;
+                        subtask_container.outerHTML = kanban.__buildItemSubCardInnerHTML(task.subtasks);
+                        subtask_container = task_element.querySelector('.kanban-sub-item-container');
+                        subtask_container.style.display = subtask_is_open ? 'block' : 'none';
+                        kanban.__onSubTaskClickHandler(subtask_container.querySelectorAll('.kanban-sub-item .checkbox'));
+                        task_element.querySelector('.sub-task-count ._count').innerHTML = `${task.subtasks.length}`;
+                        break;
+                    case '#list':
+                        task_id = RIGHT_TASK_CONTAINER.dataset.id;
+                        task_element = LIST_CONTAINER.querySelector(`[data-id="${RIGHT_TASK_CONTAINER.dataset.id}"]`);
+                        subtask = result.data.subTask;
+                        subtasks_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._subtasks');
+                        subtask_add = subtasks_container.querySelector('.subtask-item.add');
+                        subtask_add.before(createRightSubtaskItem(subtask));
+
+                        let list_task_subtasks_count = RIGHT_TASK_CONTAINER.querySelectorAll('._subtasks .subtask-item:not(.add)').length;
+                        task_element.querySelector('._subtasks').innerHTML = `${list_task_subtasks_count}개`;
+                        break;
+                    case '#timeline':
+                        break;
+                }
             } else {
                 alert(result.data.error_message);
             }
@@ -640,7 +1011,6 @@ function rightTaskCommentWriteEventListener(event) {
     let task_id = this.closest('[data-id]').dataset.id;
     let comment_write_input = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._comment-input-container #comment-input');
     let comments_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._comments');
-    console.log('task_id', task_id, comment_write_input.value);
     let current_date = new Date().toISOString().slice(0, 10);
 
     let comment = {
@@ -666,7 +1036,6 @@ function rightTaskCommentWriteEventListener(event) {
 function rightTaskMessageFileUploadEventListener(event) {
     console.log('rightTaskMessageFileUploadEventListener', this);
     let task_id = this.closest('[data-id]').dataset.id;
-    console.log('task_id', task_id);
     let input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.click();

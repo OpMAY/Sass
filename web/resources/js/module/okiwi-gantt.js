@@ -1,7 +1,7 @@
 'use strict';
-let task_order = 1;
-const week = ['일', '월', '화', '수', '목', '금', '토'];
-let boards = new Array();
+let TASK_ORDER = 1;
+const WEEK = ['일', '월', '화', '수', '목', '금', '토'];
+let GANTT_BOARDS = new Array();
 let BODY_ELEMENT = document.documentElement;
 let SCROLL_POSITION = {top: 0, left: 0, x: 0, y: 0};
 
@@ -52,7 +52,7 @@ const findTimelineTask = (id) => {
 const createGantt = (_boards, gantt_container) => {
     gantt_container.appendChild(createGanttLeftSide(_boards));
     gantt_container.appendChild(createGanttRightSide(_boards));
-    boards = initializeGantt(_boards);
+    GANTT_BOARDS = initializeGantt(_boards);
     $('#gantt-accordion').on('shown.bs.collapse', accordionDropdownShowEvent);
     $('#gantt-accordion').on('hidden.bs.collapse', accordionDropdownHideEvent);
     //Context Menu Event Initialize
@@ -166,6 +166,7 @@ function ganttContextMenuClickEventListener(event) {
             create_gantt_board_item_task.setAttribute('id', _task.id);
             create_gantt_board_item_task.addEventListener('contextmenu', ganttContextTaskEventListener);
             create_gantt_board_item_task.querySelector('.dropright').addEventListener('click', ganttBoardTaskOptionClickEventListener);
+            create_gantt_board_item_task.addEventListener('click', ganttBoardTaskClickEventListener);
             gantt_board_item_task_element.closest('.list-group').querySelector('.list-group-item:last-child').before(create_gantt_board_item_task);
 
             let _content = document.querySelector('.gantt-container ._gantt-timeline ._content');
@@ -498,11 +499,12 @@ const createGanttBoardElement = (board, index) => {
 
     let list_group = document.createElement('ul');
     list_group.classList.add('list-group', 'list-group-flush');
-    task_order++;
+    TASK_ORDER++;
     board.item.forEach(function (task) {
         let gantt_board_task_element = createGanttBoardTaskElement(task);
         gantt_board_task_element.addEventListener('contextmenu', ganttContextTaskEventListener);
         gantt_board_task_element.querySelector('.dropright').addEventListener('click', ganttBoardTaskOptionClickEventListener);
+        gantt_board_task_element.addEventListener('click', ganttBoardTaskClickEventListener);
         list_group.appendChild(gantt_board_task_element);
     });
     //업무 추가하기 버튼
@@ -517,7 +519,7 @@ const createGanttBoardElement = (board, index) => {
 }
 
 function ganttBoardHeaderOptionClickEventListener(event) {
-    console.log('event', event, this);
+    console.log('ganttBoardHeaderOptionClickEventListener', event, this);
     let context_menu = document.querySelector('#gantt-board-option-menu');
     let board_id = this.closest('.card-header').dataset.id;
     let scrollTop = document.querySelector('html').scrollTop;
@@ -529,17 +531,25 @@ function ganttBoardHeaderOptionClickEventListener(event) {
 }
 
 function ganttBoardTaskOptionClickEventListener(event) {
-    console.log('event', this);
+    console.log('ganttBoardTaskOptionClickEventListener', this);
     this.closest('.list-group-item').dispatchEvent(new Event('contextmenu'));
     event.stopPropagation();
     event.preventDefault();
+}
+
+function ganttBoardTaskClickEventListener(event) {
+    console.log('ganttBoardTaskClickEventListener', this, event);
+    let task_id = this.getAttribute('id');
+    moveScrollToTimelineTask(task_id);
+    event.preventDefault();
+    event.stopPropagation();
 }
 
 const createGanttBoardAddTaskElement = () => {
     let add_li = document.createElement('li');
     add_li.classList.add('list-group-item');
     add_li.style.color = '#F06A6A';
-    add_li.setAttribute('order', task_order++);
+    add_li.setAttribute('order', TASK_ORDER++);
     add_li.innerHTML = `<svg width="12" height="12" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                   <path d="M7 0C7.23206 0 7.45462 0.0921874 7.61872 0.256282C7.78281 0.420376 7.875 0.642936 7.875 0.875V6.125H13.125C13.3571 6.125 13.5796 6.21719 13.7437 6.38128C13.9078 6.54538 14 6.76794 14 7C14 7.23206 13.9078 7.45462 13.7437 7.61872C13.5796 7.78281 13.3571 7.875 13.125 7.875H7.875V13.125C7.875 13.3571 7.78281 13.5796 7.61872 13.7437C7.45462 13.9078 7.23206 14 7 14C6.76794 14 6.54538 13.9078 6.38128 13.7437C6.21719 13.5796 6.125 13.3571 6.125 13.125V7.875H0.875C0.642936 7.875 0.420376 7.78281 0.256282 7.61872C0.0921874 7.45462 0 7.23206 0 7C0 6.76794 0.0921874 6.54538 0.256282 6.38128C0.420376 6.21719 0.642936 6.125 0.875 6.125H6.125V0.875C6.125 0.642936 6.21719 0.420376 6.38128 0.256282C6.54538 0.0921874 6.76794 0 7 0Z" fill="#F06A6A"></path>
                                          </svg>업무 추가하기`;
@@ -552,7 +562,7 @@ const createGanttBoardTaskElement = (task) => {
         li.classList.add('is-checked');
     }
     li.setAttribute('id', `${task.id}`);
-    li.setAttribute('order', task_order++);
+    li.setAttribute('order', TASK_ORDER++);
     li.setAttribute('data-show', true);
     li.innerHTML = `<div class="title">${task.title}</div>
                     <div class="btn-group dropright">
@@ -583,7 +593,8 @@ function addTaskClickEventListener(event) {
 //create left side element
                 let gantt_board_task_element = createGanttBoardTaskElement(task);
                 gantt_board_task_element.addEventListener('contextmenu', ganttContextTaskEventListener);
-                gantt_board_task_element.querySelector('.dropright').addEventListener('click', ganttBoardTaskOptionClickEventListener)
+                gantt_board_task_element.querySelector('.dropright').addEventListener('click', ganttBoardTaskOptionClickEventListener);
+                gantt_board_task_element.addEventListener('click', ganttBoardTaskClickEventListener);
                 this.before(gantt_board_task_element);
 
                 let _content = document.querySelector('.gantt-container ._gantt-timeline ._content');
@@ -757,12 +768,18 @@ const createGanttTaskElement = (position, task) => {
     } else if (position.width <= 116) {
         _class = 'day third';
     }
+    let is_profile = true;
+    if (task.profiles.length === 0) {
+        is_profile = false;
+    } else {
+        is_profile = true;
+    }
     return `<div class="gantt-task ${_class} ${task.complete ? 'is-checked' : ''}" data-width="${position.width}" data-start-date="${task.start_date}" data-end-date="${task.end_date}" data-id="${task.id}"
                      style="width: ${position.width}px; top: ${position.top}px; left: ${position.left}px;">
               <div class="gantt-inner-container">
                 <div class="gantt-info">
                   <span class="divider"></span>
-                  <img style="min-width: 24px;" width="24" height="24" src="${task.profiles[0] !== null && task.profiles[0] !== undefined ? task.profiles[0].url : ''}"/>
+                  <img style="min-width: 24px; ${!is_profile ? 'display:none;' : ''}" width="24" height="24" src="${is_profile ? task.profiles[0].url : ''}"/>
                   <div class="task-title"><div class="title">${task.title}</div></div>
                   <span class="checkbox"><i class="fas fa-check" aria-hidden="true"></i></span>
                 </div>
@@ -969,7 +986,7 @@ function getMonthsStartToLast(startDate, lastDate) {
 }
 
 function getDayOfWeek(date) {
-    const dayOfWeek = week[new Date(date).getDay()];
+    const dayOfWeek = WEEK[new Date(date).getDay()];
     return dayOfWeek;
 }
 
@@ -1002,4 +1019,29 @@ function ganttScrollTopMouseUpEventListener(event) {
     console.log('ganttScrollTopMouseUpEventListener');
     BODY_ELEMENT.removeEventListener('mousemove', ganttScrollTopMouseMoveEventListener);
     BODY_ELEMENT.removeEventListener('mouseup', ganttScrollTopMouseUpEventListener);
+}
+
+function moveScrollToTimelineTask(task_id, effectTimeout = 500, callbackTimeout = 1000) {
+    let gantt_task = findTimelineTask(task_id);
+    if (gantt_task !== undefined && gantt_task !== null) {
+        let gantt_timeline_container = document.querySelector('._gantt-timeline');
+        //Y축 중앙 정렬, X축 태스크의 - 200 정렬
+        let position = {
+            x: gantt_task.style.left.substring(0, gantt_task.style.left.lastIndexOf('px')) * 1 - 200,
+            y: BODY_ELEMENT.scrollTop + gantt_task.getBoundingClientRect().top - (BODY_ELEMENT.clientHeight / 2)
+        }
+        gantt_timeline_container.scroll({left: position.x, behavior: 'smooth'});
+        BODY_ELEMENT.scroll({top: position.y, behavior: 'smooth'});
+        setTimeout(function () {
+            gantt_task.style.outline = '2px solid #F06A6A';
+            $(gantt_task).effect('highlight', {color: '#FFF'}, callbackTimeout, timelineTaskOutlineHighlightCallback);
+        }, effectTimeout);
+    } else {
+        viewAlert({content: '해당 업무는 타임라인에 표시되지 않아 찾을 수 없습니다. 날짜를 설정해주세요.'});
+    }
+}
+
+function timelineTaskOutlineHighlightCallback() {
+    console.log('timelineTaskOutlineHighlightCallback');
+    this.style.outline = '2px solid transparent';
 }

@@ -63,31 +63,24 @@ const initializeKanban = (boards) => {
         dragendBoard: kanbanDragEndBoardEventListener, // 보드 드랍 이벤트
         dropBoard: kanbanDropBoardEventListener, // 보드 옵션 이벤트
         updateBoard: kanbanUpdateBoardEventListener,
+        headerOptionShow: optionDropdownShowEventListener,
+        headerOptionHide: optionDropdownHideEventListener
     });
     updatePercents(kanban);
-
-    //Context Menu Clear Event
-    /*document.querySelector('.kanban-board-container').addEventListener('contextmenu', function (event) {
-        let menu = document.querySelector('#context-menu');
-        closeContextMenu(menu);
-    });*/
-    //Context Menu Event Initialize
-    /*$('#context-menu').on('click', '.list-group a', contextMenuClickEventListener);*/
-    //Dropdown Menu Event Initialize
-    $('.kanban-board-container .kanban-board-header .kanban-board-option .dropright').on('show.bs.dropdown', optionDropdownShowEventListener);
-    $('.kanban-board-container .kanban-board-header .kanban-board-option .dropright').on('hide.bs.dropdown', optionDropdownHideEventListener);
     return kanban;
 };
 
-function optionDropdownShowEventListener(event) {
-    let option = this.closest('.kanban-board-option');
+function optionDropdownShowEventListener(element, event) {
+    console.log('optionDropdownShowEventListener', element, 'btn-group dropright');
+    let option = element.closest('.kanban-board-option');
     if (!option.classList.contains('is-dropdown')) {
         option.classList.add('is-dropdown');
     }
 }
 
-function optionDropdownHideEventListener(event) {
-    let option = this.closest('.kanban-board-option');
+function optionDropdownHideEventListener(element, event) {
+    console.log('optionDropdownHideEventListener', element);
+    let option = element.closest('.kanban-board-option');
     if (option.classList.contains('is-dropdown')) {
         option.classList.remove('is-dropdown');
     }
@@ -455,13 +448,25 @@ const kanbanUpdateBoardEventListener = (selected_option, board, boardId) => {
             break;
         case '_add_left':
             boards = [{
-                id: tokenGenerator(8), title: tokenGenerator(8), name: tokenGenerator(8), project_hash: getURLParamByPrevAndNext('project', 'detail'), class: 'class1, class2, class3', percent: 0, item: [],
+                id: tokenGenerator(8),
+                title: tokenGenerator(8),
+                name: tokenGenerator(8),
+                project_hash: getURLParamByPrevAndNext('project', 'detail'),
+                class: 'class1, class2, class3',
+                percent: 0,
+                item: [],
             }];
             addBoards(kanban, 'prepend', boardId, boards);
             break;
         case '_add_right':
             boards = [{
-                id: tokenGenerator(8), title: tokenGenerator(8), name: tokenGenerator(8), project_hash: getURLParamByPrevAndNext('project', 'detail'), class: 'class1, class2, class3', percent: 0, item: [],
+                id: tokenGenerator(8),
+                title: tokenGenerator(8),
+                name: tokenGenerator(8),
+                project_hash: getURLParamByPrevAndNext('project', 'detail'),
+                class: 'class1, class2, class3',
+                percent: 0,
+                item: [],
             }];
             addBoards(kanban, 'append', boardId, boards);
             break;
@@ -632,14 +637,14 @@ const addBoards = (kanban, direction, boardId, boards) => {
         case 'prepend':
             createBoard(boards[0]).then((result) => {
                 console.log(result);
-                if(result.status === 'OK') {
-                    if(result.data.status) {
+                if (result.status === 'OK') {
+                    if (result.data.status) {
                         let order = kanban.findBoard(boardId).dataset.order;
                         boards[0] = boardTypeChanger(result.data.board);
                         apiChangeBoardOrder(boards[0].id, order * 1).then((result) => {
                             console.log(result);
-                            if(result.status === 'OK') {
-                                if(result.data.status) {
+                            if (result.status === 'OK') {
+                                if (result.data.status) {
                                     kanban.addBoards(boards, false, {baseId: boardId, direction: 'prepend'});
                                     kanban.updateBoardsOrder(function (updated_order_boards) {
                                         //console.log('updated_boards', updated_order_boards);
@@ -658,14 +663,14 @@ const addBoards = (kanban, direction, boardId, boards) => {
         case 'append':
             createBoard(boards[0]).then((result) => {
                 console.log(result);
-                if(result.status === 'OK') {
-                    if(result.data.status) {
+                if (result.status === 'OK') {
+                    if (result.data.status) {
                         let order = kanban.findBoard(boardId).dataset.order;
                         boards[0] = boardTypeChanger(result.data.board);
                         apiChangeBoardOrder(boards[0].id, (order * 1 + 1)).then((result) => {
                             console.log(result);
-                            if(result.status === 'OK') {
-                                if(result.data.status) {
+                            if (result.status === 'OK') {
+                                if (result.data.status) {
                                     kanban.addBoards(boards, false, {baseId: boardId, direction: 'append'});
                                     kanban.updateBoardsOrder(function (updated_order_boards) {
                                         //console.log('updated_boards', updated_order_boards);
@@ -684,8 +689,8 @@ const addBoards = (kanban, direction, boardId, boards) => {
         case 'last':
             createBoard(boards[0]).then((result) => {
                 console.log(result);
-                if(result.status === 'OK') {
-                    if(result.data.status) {
+                if (result.status === 'OK') {
+                    if (result.data.status) {
                         boards[0] = boardTypeChanger(result.data.board);
                         kanban.addBoards(boards);
                     } else {
@@ -734,4 +739,26 @@ const findSubTask = (task, subtask_id) => {
     } else {
         throw new Error(`${task.id}, ${task.title} subtask is empty`);
     }
+}
+const findSubTaskElement = (task, subtask_id) => {
+    if (task.subtasks.length !== 0) {
+        let subtask = task.subtasks.filter(function (subtask) {
+            if (subtask.id === subtask_id) {
+                return true;
+            }
+            return false;
+        })[0];
+        return document.querySelector(`.kanban-sub-item-container .kanban-sub-item[data-id="${subtask.id}"]`);
+    } else {
+        throw new Error(`${task.id}, ${task.title} subtask is empty`);
+    }
+}
+
+const duplicateProfilesRemover = (profiles) => {
+    return profiles.reduce(function (acc, current) {
+        if (acc.findIndex(({no}) => no === current.no) === -1) {
+            acc.push(current);
+        }
+        return acc;
+    }, []);
 }
