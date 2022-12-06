@@ -8,16 +8,7 @@
                 typeHandler="com.middleware.JsonObjectTypeHandler"/>
     </resultMap>
     <select id="getBoardTasks" resultType="Task" resultMap="Task">
-        select id,
-               board_id,
-               project_no,
-               start_date,
-               end_date,
-               complete,
-               title,
-               _order,
-               thumbnail,
-               `description`,
+        select *,
                (select COUNT(*) from subtask WHERE task_id = task.id) as sub_task_count
         from task
         WHERE board_id = #{board_id}
@@ -131,6 +122,18 @@
     <update id="changeTaskThumbnail">
         update task
         SET thumbnail        = #{thumbnail, typeHandler=com.middleware.JsonObjectTypeHandler},
+            updated_datetime = now()
+        WHERE id = #{task_id}
+    </update>
+    <update id="updateTaskFigmaUrl">
+        update task
+        SET plug_figma       = #{content},
+            updated_datetime = now()
+        WHERE id = #{task_id}
+    </update>
+    <update id="updateTaskQueryUrl">
+        update task
+        SET plug_query       = #{content},
             updated_datetime = now()
         WHERE id = #{task_id}
     </update>

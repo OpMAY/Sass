@@ -486,4 +486,15 @@ public class CrmPlugRestController {
         }
         return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/update/task/plug", method = POST)
+    public ResponseEntity updateTaskPlug(HttpServletRequest request, @RequestBody Map<String, Object> body) {
+        Message message = new Message();
+        TASK_PLUGIN_TYPE task_plugin_type = TASK_PLUGIN_TYPE.valueOf(body.get("plugin_type").toString());
+        String task_id = body.get("task_id").toString();
+        String content = body.get("content").toString();
+        crmService.updateTaskPlug(task_id, task_plugin_type, content);
+        message.put("status", true);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+    }
 }

@@ -434,6 +434,7 @@ public class CrmService {
         while (!taskDao.checkTokenIdAbleToUse(copied_task.getId())) {
             copied_task.setId(TokenGenerator.RandomToken(8));
         }
+        // TODO 복사 요소 추가 시 getBoardTask 내에서 가져올 것들 추가
         List<Task> tasks = taskDao.getBoardTasks(original_task.getBoard_id());
         copied_task.setProject_no(original_task.getProject_no());
         copied_task.setBoard_id(original_task.getBoard_id());
@@ -443,6 +444,8 @@ public class CrmService {
         copied_task.setDescription(original_task.getDescription());
         copied_task.setComplete(original_task.isComplete());
         copied_task.set_order(tasks.size() + 1);
+        copied_task.setPlug_figma(original_task.getPlug_figma());
+        copied_task.setPlug_query(original_task.getPlug_query());
         log.info("original : {}", original_task);
         log.info("copied : {}", copied_task);
         // TODO taskDao.createTask() 와 동일하지만 추후 수정 가능성을 위해 분할 - 해당 쿼리 수정 시 주석 삭제
@@ -1392,5 +1395,15 @@ public class CrmService {
 
     public Project getProject(int project_no) {
         return projectDao.getProjectByNo(project_no);
+    }
+
+    @Transactional
+    public void updateTaskPlug(String task_id, TASK_PLUGIN_TYPE task_plugin_type, String content) {
+        switch (task_plugin_type) {
+            case FIGMA:
+                taskDao.updateTaskFigmaUrl(task_id, content);
+            case QUERY:
+                taskDao.updateTaskQueryUrl(task_id, content);
+        }
     }
 }
