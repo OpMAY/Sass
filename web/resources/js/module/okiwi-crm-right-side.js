@@ -264,13 +264,13 @@ const rightTaskWorkTimeInit = (start_date, end_date) => {
 }
 
 const rightTaskFigmaInit = (plug_figma_url) => {
-    let title_input = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._info ._plug[data-type="FIGMA"]');
-    title_input.value = plug_figma_url;
+    let plug_input = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._info ._plugin[data-type="FIGMA"] input');
+    plug_input.value = plug_figma_url;
 }
 
 const rightTaskQueryInit = (plug_query_url) => {
-    let title_input = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._info ._plug[data-type="QUERY"]');
-    title_input.value = plug_query_url;
+    let plug_input = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._info ._plugin[data-type="QUERY"] input');
+    plug_input.value = plug_query_url;
 }
 const rightTaskContentInit = (content) => {
     let content_input = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab .content-editable-container');
