@@ -17,6 +17,7 @@
                title,
                _order,
                thumbnail,
+               `description`,
                (select COUNT(*) from subtask WHERE task_id = task.id) as sub_task_count
         from task
         WHERE board_id = #{board_id}

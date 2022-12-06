@@ -92,7 +92,8 @@ public class CDNService {
     public File download(Download download) {
         try {
             File file = new File(download.getCreated_local_path() + download.getFile_name());
-            S3Object s3object = s3Client.getObject(awsInfo.getBucketName(), download.getFile_path() + "/" + download.getFile_name());
+            log.info("bucket Name : {}, file_path : {}", awsInfo.getBucketName(), download.getFile_path());
+            S3Object s3object = s3Client.getObject(awsInfo.getBucketName(), download.getFile_path());
             S3ObjectInputStream inputStream = s3object.getObjectContent();
             FileUtils.copyInputStreamToFile(inputStream, file);  //#2 - 스트림을 파일로 저장함
             return file;
