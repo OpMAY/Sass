@@ -101,6 +101,84 @@
                     </div>
                 </div>
             </div>
+            <div class="form-group row _type _plugin" data-type="FIGMA">
+                <label class="col-sm-2 col-form-label">
+                    <div class="d-flex">
+                        <svg style="border-radius: 50%;" class="my-auto mr-2" width="24" height="24" viewBox="0 0 24 24"
+                             fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_747_4816)">
+                                <path d="M8.50076 22.6359C10.4324 22.6359 12.0001 21.0204 12.0001 19.0299V15.4238H8.50076C6.56915 15.4238 5.00146 17.0393 5.00146 19.0299C5.00146 21.0204 6.56915 22.6359 8.50076 22.6359Z"
+                                      fill="#0ACF83"/>
+                                <path d="M5.00146 11.819C5.00146 9.82841 6.56915 8.21289 8.50076 8.21289H12.0001V15.425H8.50076C6.56915 15.425 5.00146 13.8095 5.00146 11.819Z"
+                                      fill="#A259FF"/>
+                                <path d="M5.00146 4.60606C5.00146 2.61552 6.56915 1 8.50076 1H12.0001V8.21212H8.50076C6.56915 8.21212 5.00146 6.59661 5.00146 4.60606Z"
+                                      fill="#F24E1E"/>
+                                <path d="M12 1H15.4993C17.4309 1 18.9986 2.61552 18.9986 4.60606C18.9986 6.59661 17.4309 8.21212 15.4993 8.21212H12V1Z"
+                                      fill="#FF7262"/>
+                                <path d="M18.9986 11.819C18.9986 13.8095 17.4309 15.425 15.4993 15.425C13.5677 15.425 12 13.8095 12 11.819C12 9.82841 13.5677 8.21289 15.4993 8.21289C17.4309 8.21289 18.9986 9.82841 18.9986 11.819Z"
+                                      fill="#1ABCFE"/>
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_747_4816">
+                                    <rect width="14" height="21.6364" fill="white" transform="translate(5 1)"/>
+                                </clipPath>
+                            </defs>
+                        </svg>
+                        <div>Figma</div>
+                    </div>
+                </label>
+                <div class="col-sm-10 d-flex">
+                    <div class="my-auto position-relative d-flex w-100">
+                        <input type="text" class="form-control form-control-plaintext my-auto"
+                               value="https://www.figma.com/file/DbxD9GfAkpVksjmPVWzuSR/queryPlug?node-id=42%3A4189&t=LcPyQXI1w0n6D2Qy-0"
+                               placeholder="Input Your Figma URL">
+                        <div class="my-auto _preview">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <g clip-path="url(#clip0_42_4223)">
+                                    <path d="M21 3C21.2652 3 21.5196 3.10536 21.7071 3.29289C21.8946 3.48043 22 3.73478 22 4V20C22 20.2652 21.8946 20.5196 21.7071 20.7071C21.5196 20.8946 21.2652 21 21 21H9V3H21ZM7 21H3C2.73478 21 2.48043 20.8946 2.29289 20.7071C2.10536 20.5196 2 20.2652 2 20V4C2 3.73478 2.10536 3.48043 2.29289 3.29289C2.48043 3.10536 2.73478 3 3 3H7V21Z"
+                                          fill="#F2F2F2"/>
+                                </g>
+                                <defs>
+                                    <clipPath id="clip0_42_4223">
+                                        <rect width="24" height="24" fill="white"/>
+                                    </clipPath>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row _type _plugin" data-type="QUERY">
+                <label class="col-sm-2 col-form-label">
+                    <div class="d-flex">
+                        <img style="border-radius: 50%;" class="my-auto mr-2" width="24" height="24"
+                             src="/resources/assets/images/icon/query/white-theme-logo-24x24.png"/>
+                        <div>Query</div>
+                    </div>
+                </label>
+                <div class="col-sm-10 d-flex">
+                    <div class="my-auto position-relative d-flex w-100">
+                        <input type="text" class="form-control form-control-plaintext my-auto"
+                               value="http://3.35.26.5//query/database/oGyRGACK76YJZC0MgjgYKw==/detail"
+                               placeholder="Input Your Query URL">
+                        <div class="my-auto ml-2 _preview">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <g clip-path="url(#clip0_42_4223)">
+                                    <path d="M21 3C21.2652 3 21.5196 3.10536 21.7071 3.29289C21.8946 3.48043 22 3.73478 22 4V20C22 20.2652 21.8946 20.5196 21.7071 20.7071C21.5196 20.8946 21.2652 21 21 21H9V3H21ZM7 21H3C2.73478 21 2.48043 20.8946 2.29289 20.7071C2.10536 20.5196 2 20.2652 2 20V4C2 3.73478 2.10536 3.48043 2.29289 3.29289C2.48043 3.10536 2.73478 3 3 3H7V21Z"
+                                          fill="#F2F2F2"/>
+                                </g>
+                                <defs>
+                                    <clipPath id="clip0_42_4223">
+                                        <rect width="24" height="24" fill="white"/>
+                                    </clipPath>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="_tab">
             <ul class="nav nav-tabs"

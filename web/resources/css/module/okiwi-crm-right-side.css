@@ -128,6 +128,15 @@
     max-width: 104px;
 }
 
+.right-side-inner ._info ._type._plugin input {
+    cursor: pointer;
+    width: 100%;
+    padding: 8px;
+    border: var(--border-1px) transparent;
+    border-radius: var(--input-radius);
+    max-width: 100%;
+}
+
 .right-side-inner ._info ._type input:active,
 .right-side-inner ._info ._type input:focus-visible,
 .right-side-inner ._info ._type input:hover {
@@ -136,6 +145,15 @@
 
 .right-side-inner ._info ._type input:focus {
     border: var(--border-1px) var(--brand-red);
+}
+
+.right-side-inner ._info ._type._plugin ._preview {
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+.right-side-inner ._info ._type._plugin ._preview:hover svg * {
+    fill: var(--brand-red);
 }
 
 .right-side-inner ._info ._type._assign .user-item {
