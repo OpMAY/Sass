@@ -224,6 +224,8 @@ const rightTaskInit = (task) => {
     RIGHT_TASK_CONTAINER.setAttribute('data-id', task.id);
     rightTaskCheckboxInit(task.complete);
     rightTaskTitleInit(task.title);
+    rightTaskFigmaInit(task.plug_figma);
+    rightTaskQueryInit(task.plug_query);
     rightTaskAssignInit(task.collaborators);
     rightTaskWorkTimeInit(task.start_date, task.end_date);
     rightTaskContentInit(task.description);
@@ -236,6 +238,7 @@ const rightTaskCheckboxInit = (is_complete) => {
         checkbox_input.classList.add('is-checked');
     }
 }
+
 const rightTaskTitleInit = (title) => {
     let title_input = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._title input');
     title_input.value = title;
@@ -260,6 +263,15 @@ const rightTaskWorkTimeInit = (start_date, end_date) => {
     end_date_input.value = end_date !== null ? end_date.replaceAll(/-/g, '.') : '';
 }
 
+const rightTaskFigmaInit = (plug_figma_url) => {
+    let title_input = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._info ._plug[data-type="FIGMA"]');
+    title_input.value = plug_figma_url;
+}
+
+const rightTaskQueryInit = (plug_query_url) => {
+    let title_input = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._info ._plug[data-type="QUERY"]');
+    title_input.value = plug_query_url;
+}
 const rightTaskContentInit = (content) => {
     let content_input = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab .content-editable-container');
     content_input.innerHTML = `${content === null ? '' : content}`;
