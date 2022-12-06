@@ -44,7 +44,7 @@ import static org.springframework.http.HttpStatus.OK;
 @Slf4j
 @RequiredArgsConstructor
 public class CrmService {
-    @Value("{UPLOAD_PATH}")
+    @Value("${UPLOAD_PATH}")
     private String upload_path;
     private final CompanyMemberDao companyMemberDao;
     private final CompanyDao companyDao;
@@ -210,7 +210,7 @@ public class CrmService {
      * - Update 권한 없음 -> Interceptor 처리?
      */
     @Transactional
-    public ResponseEntity updateProject(Project project) {
+    public ResponseEntity updateProject(Project project) throws Exception {
         Message message = new Message();
         log.info("project : {}", project);
         if (projectDao.checkProjectNameDuplicateOnUpdate(project)) {
@@ -219,7 +219,9 @@ public class CrmService {
         } else {
             projectDao.updateProject(project);
             message.put("status", true);
-            message.put("project", projectDao.getProjectByNo(project.getNo()));
+            Project updated = projectDao.getProjectByNo(project.getNo());
+            updated.setHash_no(encryptionService.encryptAES(Integer.toString(project.getNo()), true));
+            message.put("project", updated);
         }
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
@@ -397,6 +399,7 @@ public class CrmService {
 
         // 3. Task Copy
         for (Task task : original_board.getTaskList()) {
+            task.setProject_no(original_board.getProject_no());
             task.setBoard_id(copied_board.getId());
             copyTask(task);
         }
@@ -440,6 +443,8 @@ public class CrmService {
         copied_task.setDescription(original_task.getDescription());
         copied_task.setComplete(original_task.isComplete());
         copied_task.set_order(tasks.size() + 1);
+        log.info("original : {}", original_task);
+        log.info("copied : {}", copied_task);
         // TODO taskDao.createTask() 와 동일하지만 추후 수정 가능성을 위해 분할 - 해당 쿼리 수정 시 주석 삭제
         taskDao.copyTask(copied_task);
 
@@ -470,8 +475,10 @@ public class CrmService {
             // TODO AWS COPY error? => fix
             String url = file.getFile().getUrl();
             String path = Format.getURIFromUrl(url);
-            String cdn_path = path.substring(path.lastIndexOf("/") - 1);
-            File f = cdnService.download(new Download(upload_path, cdn_path, file.getFile().getName()));
+            String cdn_path = path.substring(path.indexOf("/") + 1);
+            Download download = new Download(upload_path, cdn_path, file.getFile().getName());
+            log.info("download : {}", download);
+            File f = cdnService.download(download);
             MFile result = fileUploadUtility.uploadFile(f, Constant.CDN_PATH.TASK_FILE);
             file.setFile(result);
             taskFileDao.insertTaskFile(file);

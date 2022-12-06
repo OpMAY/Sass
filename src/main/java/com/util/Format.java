@@ -237,7 +237,9 @@ public class Format {
 
     public static String getURIFromUrl(String url_string) {
         try {
+            log.info("urlString : {}", url_string);
             URL url = new URL(url_string);
+            log.info("url : {}", url);
             return url.getPath();
         } catch (MalformedURLException e) {
             e.printStackTrace();

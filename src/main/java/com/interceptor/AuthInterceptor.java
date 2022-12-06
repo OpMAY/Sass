@@ -32,6 +32,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.debug("Auth Interceptor preHandle");
+        // TODO 일반 Request, fetch request, websocket request 별 다 다르게 접근
         if (request.getSession().getAttribute(JWTEnum.JWTToken.name()) != null) {
             /**Login 했을 때의 Session 필터링*/
             HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());

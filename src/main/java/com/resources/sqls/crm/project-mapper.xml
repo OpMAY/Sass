@@ -28,6 +28,7 @@
     <update id="updateProject">
         update project
         SET name             = #{name},
+            emoji            = #{emoji},
             updated_datetime = now()
         WHERE no = #{no}
     </update>
