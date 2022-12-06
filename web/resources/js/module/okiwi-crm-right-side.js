@@ -1163,9 +1163,9 @@ function rightTaskPluginInputKeyInputEventListener(event) {
     let content = this;
     console.log('plugin_type', plugin_type, 'task_id', task_id, 'content', content.value);
 
-    /*apiChangeTaskPluginUrl(task_id, plugin_type, content.value).then((result) => {
+    apiChangeTaskPluginUrl(task_id, plugin_type, content.value).then((result) => {
         console.log('apiChangeTaskDescription', result);
-    });*/
+    });
 }
 
 function debounce(callback, limit = 100) {

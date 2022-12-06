@@ -465,7 +465,7 @@ async function apiChangeTaskPluginUrl(task_id, plugin_type, content) {
             body: raw
         };
 
-        const response = fetch(`${host}/crm/create/task/comment`, requestOptions);
+        const response = fetch(`${host}/crm/update/task/plug`, requestOptions);
         return response.then((res) => res.json());
     }
 

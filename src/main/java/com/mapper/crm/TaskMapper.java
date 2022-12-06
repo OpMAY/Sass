@@ -44,4 +44,8 @@ public interface TaskMapper {
     void updateTaskEndDate(@Param("task_id") String task_id, @Param("end_date") String end_date);
 
     void changeTaskThumbnail(@Param("task_id") String task_id, @Param("thumbnail") MFile thumbnail);
+
+    void updateTaskFigmaUrl(@Param("task_id") String task_id, @Param("content") String content);
+
+    void updateTaskQueryUrl(@Param("task_id") String task_id, @Param("content") String content);
 }

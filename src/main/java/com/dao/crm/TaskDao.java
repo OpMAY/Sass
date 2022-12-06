@@ -91,4 +91,12 @@ public class TaskDao {
     public void changeTaskThumbnail(String task_id, MFile thumbnail) {
         mapper.changeTaskThumbnail(task_id, thumbnail);
     }
+
+    public void updateTaskFigmaUrl(String task_id, String content) {
+        mapper.updateTaskFigmaUrl(task_id, content);
+    }
+
+    public void updateTaskQueryUrl(String task_id, String content) {
+        mapper.updateTaskQueryUrl(task_id, content);
+    }
 }

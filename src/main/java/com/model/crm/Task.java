@@ -1,6 +1,5 @@
 package com.model.crm;
 
-import com.model.User;
 import com.model.common.MFile;
 import com.model.common.Time;
 import com.model.company.CompanyProfileMember;
@@ -29,6 +28,6 @@ public class Task extends Time {
 
     private String project_name;
     /*TODO 2022-12-02 Figma & Query link add*/
-    private String figma;
-    private String query;
+    private String plug_figma;
+    private String plug_query;
 }
