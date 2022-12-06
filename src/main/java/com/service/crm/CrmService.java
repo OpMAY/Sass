@@ -1402,8 +1402,10 @@ public class CrmService {
         switch (task_plugin_type) {
             case FIGMA:
                 taskDao.updateTaskFigmaUrl(task_id, content);
+                break;
             case QUERY:
                 taskDao.updateTaskQueryUrl(task_id, content);
+                break;
         }
     }
 }
