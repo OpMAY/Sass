@@ -130,7 +130,7 @@
                 <div class="col-sm-10 d-flex">
                     <div class="my-auto position-relative d-flex w-100">
                         <input type="text" class="form-control form-control-plaintext my-auto"
-                               value="https://www.figma.com/file/DbxD9GfAkpVksjmPVWzuSR/queryPlug?node-id=42%3A4189&t=LcPyQXI1w0n6D2Qy-0"
+                               value=""
                                placeholder="Input Your Figma URL">
                         <div class="my-auto _preview">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -160,7 +160,7 @@
                 <div class="col-sm-10 d-flex">
                     <div class="my-auto position-relative d-flex w-100">
                         <input type="text" class="form-control form-control-plaintext my-auto"
-                               value="http://3.35.26.5//query/database/oGyRGACK76YJZC0MgjgYKw==/detail"
+                               value=""
                                placeholder="Input Your Query URL">
                         <div class="my-auto ml-2 _preview">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
