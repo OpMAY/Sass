@@ -40,6 +40,15 @@ const initializeRightTask = () => {
     $('.right-side-inner ._info ._assign .user-item-container .dropright').on('hide.bs.dropdown', rightTaskUserAssignDropdownClearItems);
     //TODO Dropdowns Assign Event Add
     $('.right-side-inner ._info ._assign .user-item-container .dropright .dropdown-menu').on('click', '.dropdown-item', rightTaskUserAssignAddClickEventListener);
+    //TODO Figma & Query Preview Event Add
+    let previews = RIGHT_TASK_CONTAINER.querySelectorAll('.right-side-inner ._plugin');
+    previews.forEach(function (preview) {
+        /*TODO Preview Event Add*/
+        preview.querySelector('input').addEventListener('keydown', rightTaskPluginInputKeyDownEventListener);
+        preview.querySelector('input').addEventListener('keyup', rightTaskPluginInputKeyUpEventListener);
+        preview.querySelector('input').addEventListener('input', debounce(rightTaskPluginInputKeyInputEventListener, 300));
+        preview.querySelector('._preview').addEventListener('click', rightTaskPluginPreviewClickEventListener);
+    });
     //TODO Subtask
     RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._subtasks .subtask-item.add').addEventListener('click', rightTaskSubTaskAddClickEventListener);
     //TODO Comment
@@ -1102,6 +1111,61 @@ function rightTaskMessageFileChangeEventListener(event) {
     readURL(input, comment, (comment) => {
         comments_container.appendChild(createRightTaskCommentItem(comment))
     });
+}
+
+//TODO 2022-12-02 Figma & Query link add
+function rightTaskPluginPreviewClickEventListener(event) {
+    console.log('rightTaskPluginPreviewClickEventListener');
+    let type = this.closest('[data-type]').dataset.type;
+    let url = this.parentElement.querySelector('input').value;
+    console.log('type', type, 'url', url);
+    //Initialize Window
+    switch (type) {
+        case 'FIGMA':
+            createPreview({
+                id: tokenGenerator(8),
+                width: 400,
+                height: 400,
+                top: 50,
+                left: 50,
+                title: 'Figma Plugin',
+                src: `https://www.figma.com/embed?embed_host=share&url=${url}`,
+                is_full_screen: true
+            });
+            break;
+        case 'QUERY':
+            createPreview({
+                id: tokenGenerator(8),
+                width: 400,
+                height: 400,
+                top: 50,
+                left: 50,
+                title: 'Query Plugin',
+                src: `${url}?summary=preview`,
+                is_full_screen: true
+            });
+            break;
+    }
+}
+
+function rightTaskPluginInputKeyDownEventListener(event) {
+    console.log('rightTaskPluginInputKeyDownEventListener');
+}
+
+function rightTaskPluginInputKeyUpEventListener(event) {
+    console.log('rightTaskPluginInputKeyUpEventListener');
+}
+
+function rightTaskPluginInputKeyInputEventListener(event) {
+    console.log('rightTaskPluginInputKeyInputEventListener');
+    let plugin_type = this.closest('[data-type]').dataset.type;
+    let task_id = this.closest('[data-id]').dataset.id;
+    let content = this;
+    console.log('plugin_type', plugin_type, 'task_id', task_id, 'content', content.value);
+
+    /*apiChangeTaskPluginUrl(task_id, plugin_type, content.value).then((result) => {
+        console.log('apiChangeTaskDescription', result);
+    });*/
 }
 
 function debounce(callback, limit = 100) {

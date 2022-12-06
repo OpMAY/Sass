@@ -453,3 +453,27 @@ async function createFileComment(task_id, file) {
         console.log(error);
     }
 }
+
+async function apiChangeTaskPluginUrl(task_id, plugin_type, content) {
+    function apiFetchChangeTaskPluginUrl(task_id, plugin_type, content) {
+        const myHeaders = new Headers();
+        myHeaders.append('Content-Type', 'application/json');
+        let raw = JSON.stringify({task_id, plugin_type, content});
+        const requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw
+        };
+
+        const response = fetch(`${host}/crm/create/task/comment`, requestOptions);
+        return response.then((res) => res.json());
+    }
+
+    let result;
+    try {
+        result = await apiFetchChangeTaskPluginUrl(task_id, plugin_type, content);
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+}

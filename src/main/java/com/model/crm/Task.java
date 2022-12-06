@@ -28,4 +28,7 @@ public class Task extends Time {
     private int sub_task_count;
 
     private String project_name;
+    /*TODO 2022-12-02 Figma & Query link add*/
+    private String figma;
+    private String query;
 }

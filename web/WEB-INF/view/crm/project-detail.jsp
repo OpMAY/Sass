@@ -67,6 +67,8 @@
           href="/resources/css/module/okiwi-gantt.css">
     <link rel="stylesheet"
           href="/resources/css/module/okiwi-file.css">
+    <link rel="stylesheet"
+          href="/resources/css/module/okiwi-preview.css">
     <!-- Element -->
     <link rel="stylesheet"
           href="/resources/css/base/element.css">
@@ -726,7 +728,8 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
 -->
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js" integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"
+        integrity="sha256-xLD7nhI62fcsEZK2/v8LsBcb4lG7dgULkuXoXB/j91c=" crossorigin="anonymous"></script>
 <script src="/resources/js/utility.js"></script>
 <script src="/resources/js/common.js"></script>
 <script src="/resources/js/app.js"></script>
@@ -748,6 +751,7 @@
 <script src="/resources/js/module/okiwi-list.js"></script>
 <script src="/resources/js/module/okiwi-gantt.js"></script>
 <script src="/resources/js/module/okiwi-file.js"></script>
+<script src="/resources/js/module/okiwi-preview.js"></script>
 <script src="/resources/js/validation.js"></script>
 <script src="/resources/js/global-modal.js"></script>
 <script src="/resources/js/api.js"></script>
@@ -889,13 +893,6 @@
         $(document).on('click', '.kanban-item .dropright', function (event) {
             event.stopPropagation();
             event.preventDefault();
-        });
-
-        $(document).click(function (event) {
-            let context_menu = document.querySelector('#context-menu');
-            if ($(event.target.closest('#context-menu')).length === 0) {
-                closeContextMenu(context_menu);
-            }
         });
 
         const slider = document.querySelector('.kanban-board-container');
