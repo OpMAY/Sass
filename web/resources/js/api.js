@@ -1,7 +1,7 @@
 'use strict';
 
-let host = 'http://localhost:8080';
-// let host = 'http://3.35.26.5';
+// let host = 'http://localhost:8080';
+let host = '';
 async function apiLogin(email, password) {
     function apiFetchLogin(email, password) {
         let myHeaders = new Headers();
@@ -11,6 +11,7 @@ async function apiLogin(email, password) {
         let raw = JSON.stringify({
             email,
             password
+
         });
 
         let requestOptions = {
