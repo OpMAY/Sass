@@ -3,7 +3,6 @@ package com.config;
 import com.filter.GeneralFilter;
 import com.filter.LogFilter;
 import com.interceptor.*;
-import com.model.grant.TeamGrant;
 import com.util.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -198,7 +197,6 @@ public class AppConfig implements WebApplicationInitializer, SchedulingConfigure
     private TeamGrantInterceptor teamGrantInterceptor;
     @Autowired
     private PluginInterceptor pluginInterceptor;
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(logInterceptor).order(0)
