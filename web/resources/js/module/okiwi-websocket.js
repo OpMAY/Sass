@@ -84,6 +84,6 @@ const initializeSocket = ({
 function getSocketWsURI(plugin_type) {
     const protocol = window.location.protocol;
     const host = window.location.host;
-    if (protocol === 'http:') return `ws://${host}/${plugin_type}`;
-    if (protocol === 'https:') return `wss://${host}/${plugin_type}`;
+    if (protocol === 'http:') return `ws://${host}/socket/${plugin_type.toLowerCase()}`;
+    if (protocol === 'https:') return `wss://${host}/socket/${plugin_type.toLowerCase()}`;
 }

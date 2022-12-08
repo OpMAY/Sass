@@ -13,7 +13,7 @@ public class AgentWebSocketHandlerDecoratorFactory implements WebSocketHandlerDe
         ProxyFactory proxyFactory = new ProxyFactory();
         proxyFactory.setTargetClass(AopUtils.getTargetClass(webSocketHandler));
         proxyFactory.setTargetSource(new SingletonTargetSource(webSocketHandler));
-        proxyFactory.addAdvisor(new DefaultIntroductionAdvisor(new SubProtocolWebSocketHandlerInterceptor()));
+//        proxyFactory.addAdvisor(new DefaultIntroductionAdvisor(new SubProtocolWebSocketHandlerInterceptor()));
         proxyFactory.setOptimize(true);
         proxyFactory.setExposeProxy(true);
         return (WebSocketHandler) proxyFactory.getProxy();

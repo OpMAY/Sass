@@ -28,7 +28,9 @@ public class CrmWebSocketHandler extends TextWebSocketHandler {
 
     @PostConstruct
     private void init() {
+        log.info("crmwebsocketHandler postconstructor");
         sessions = new LinkedHashMap<>();
+        log.info("sessions : {}", sessions);
     }
 
     @Override
@@ -37,10 +39,10 @@ public class CrmWebSocketHandler extends TextWebSocketHandler {
         String payload = message.getPayload();
         log.info("payload : {}", payload);
 
-        CrmWebSocketObject object = gson.fromJson(payload, CrmWebSocketObject.class);
+//        CrmWebSocketObject object = gson.fromJson(payload, CrmWebSocketObject.class);
 
         for (String sess : sessions.keySet()) {
-            TextMessage textMessage = new TextMessage(gson.toJson(object));
+            TextMessage textMessage = new TextMessage(payload);
             sessions.get(sess).getWebSocketSession().sendMessage(textMessage);
         }
     }
@@ -50,7 +52,7 @@ public class CrmWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         CrmSocketSessionModel model = new CrmSocketSessionModel();
         model.setWebSocketSession(session);
-
+        log.info("session : {}, sessions : {}", session, sessions);
         sessions.put(session.getId(), model);
         log.info("{} Client Connection Established", session);
     }

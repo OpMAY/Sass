@@ -16,7 +16,7 @@ public class WebSocketEventListener {
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
-
+        log.info("connected : {}", event);
     }
 
     @EventListener
