@@ -1,13 +1,9 @@
 const RIGHT_TASK_CONTAINER = document.querySelector('#okiwi-crm-right-side');
-document.addEventListener('DOMContentLoaded', function () {
-    if (RIGHT_TASK_CONTAINER !== null && RIGHT_TASK_CONTAINER !== undefined) {
-        initializeRightTask();
-    } else {
-        throw new Error('RIGHT_TASK_CONTAINER is null or undefined');
+let RIGHT_TASK_WEBSOCKET;
+const initializeRightTask = (websocket) => {
+    if (!RIGHT_TASK_WEBSOCKET) {
+        RIGHT_TASK_WEBSOCKET = websocket;
     }
-});
-
-const initializeRightTask = () => {
     //TODO Control Panel
     //TODO File Message
     RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._control-panel ._file').addEventListener('click', rightTaskMessageFileUploadEventListener);
@@ -470,6 +466,17 @@ function rightTaskTitleInputEventListener(event) {
                     break;
             }
         });
+        RIGHT_TASK_WEBSOCKET.onSend({
+            plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+                category: 'FEED',
+                subcategory: 'TASK',
+                target: 'TITLE',
+                data: {
+                    id: task_id,
+                    name: title.value
+                }
+            },
+        }, RIGHT_TASK_WEBSOCKET);
     }
 }
 

@@ -31,8 +31,23 @@ const WEBSOCKET_PLUG_TYPE = {
         name: 'PLAN',
     },
 }
+const WEBSOCKET_ACTION_TYPE = {
+    CREATE: {
+        name: 'CREATE',
+    },
+    READ: {
+        name: 'READ',
+    },
+    UPDATE: {
+        name: 'UPDATE',
+    },
+    DELETE: {
+        name: 'DELETE',
+    },
+}
 Object.freeze(WEBSOCKET_STATE);
 Object.freeze(WEBSOCKET_PLUG_TYPE);
+Object.freeze(WEBSOCKET_ACTION_TYPE);
 
 const WEBSOCKET_ENDPOINT = {}
 let WEBSOCKET;
@@ -40,7 +55,7 @@ let WEBSOCKET;
 const initializeSocket = ({
                               onOpen = (event, self) => {
                                   console.log('open', 'event', event, 'this', self);
-                                  WEBSOCKET.messageSend(self.options);
+                                  console.log('You need define initializeSocket function in onOpen');
                               },
                               onMessage = (event, self) => {
                                   console.log('message', 'event', event, 'self', self, 'data', event.data);
@@ -51,9 +66,9 @@ const initializeSocket = ({
                               onError = (event, self) => {
                                   console.log('error', event, 'self', self);
                               },
-                              onSend = (data) => {
-                                  console.log(`send -> ${JSON.stringify(data)}`, 'this', this);
-                                  this.send(JSON.stringify(data));
+                              onSend = (data, self) => {
+                                  console.log(`send -> ${JSON.stringify(data)}`, 'self', self);
+                                  self.send(JSON.stringify(data));
                               },
                               disconnect = () => {
                                   this.close();
@@ -76,7 +91,7 @@ const initializeSocket = ({
     WEBSOCKET.addEventListener('error', function (event) {
         onError(event, this);
     });
-    WEBSOCKET.messageSend = onSend;
+    WEBSOCKET.onSend = onSend;
     WEBSOCKET.disconnect = disconnect;
     return WEBSOCKET;
 }
