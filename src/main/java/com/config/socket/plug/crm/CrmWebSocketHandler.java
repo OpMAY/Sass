@@ -39,10 +39,10 @@ public class CrmWebSocketHandler extends TextWebSocketHandler {
         String payload = message.getPayload();
         log.info("payload : {}", payload);
 
-//        CrmWebSocketObject object = gson.fromJson(payload, CrmWebSocketObject.class);
+        CrmWebSocketObject object = gson.fromJson(payload, CrmWebSocketObject.class);
 
         for (String sess : sessions.keySet()) {
-            TextMessage textMessage = new TextMessage(payload);
+            TextMessage textMessage = new TextMessage(new Gson().toJson(object));
             sessions.get(sess).getWebSocketSession().sendMessage(textMessage);
         }
     }

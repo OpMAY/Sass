@@ -770,6 +770,147 @@
      * */
     $(document).ready(function () {
         console.log('Static JS is ready');
+        //Initialize WebSocket
+        let websocket = initializeSocket({
+            onOpen: (event, self) => {
+                console.log('open', 'event', event, 'self', self);
+            },
+            onMessage: (event, self) => {
+                console.log('message', 'event', event, 'self', self, 'data', event.data);
+                let data = JSON.parse(event.data);
+                console.log('data', data);
+                switch (data.action_type) {
+                    case WEBSOCKET_ACTION_TYPE.CREATE.name:
+                        switch (data.data.category) {
+                            case 'FEED':
+                                switch (data.data.subcategory) {
+                                    case 'TASK':
+                                        break;
+                                    case 'BOARD':
+                                        break;
+                                    case'PROJECT':
+                                        break;
+                                }
+                                break;
+                            case 'LIST':
+                                break;
+                            case 'TIMELINE':
+                                break;
+                            case 'FILE':
+                                break;
+                            case 'PROJECT':
+                                break;
+                            case 'SIDE':
+                                break;
+                        }
+                        break;
+                    case WEBSOCKET_ACTION_TYPE.UPDATE.name:
+                        switch (data.data.category) {
+                            case 'FEED':
+                                switch (data.data.subcategory) {
+                                    case 'TASK':
+                                        switch (data.data.target) {
+                                            case 'TITLE':
+                                                let task_element = kanban.findElement(data.data.data.id);
+                                                let boardId = task_element.closest('.kanban-board[data-id]').dataset.id;
+                                                let task = kanban.findTaskJSON(boardId, task_element.dataset.eid);
+                                                console.log('task', task);
+                                                task_element.querySelector('.kanban-item-title .title').innerHTML = task.title = data.data.data.name;
+                                                break;
+                                        }
+                                        break;
+                                    case 'BOARD':
+                                        break;
+                                    case'PROJECT':
+                                        break;
+                                }
+                                break;
+                            case 'LIST':
+                                break;
+                            case 'TIMELINE':
+                                break;
+                            case 'FILE':
+                                break;
+                            case 'PROJECT':
+                                break;
+                            case 'SIDE':
+                                break;
+                        }
+                        break;
+                    case WEBSOCKET_ACTION_TYPE.DELETE.name:
+                        switch (data.data.category) {
+                            case 'FEED':
+                                switch (data.data.subcategory) {
+                                    case 'TASK':
+                                        break;
+                                    case 'BOARD':
+                                        break;
+                                    case'PROJECT':
+                                        break;
+                                }
+                                break;
+                            case 'LIST':
+                                break;
+                            case 'TIMELINE':
+                                break;
+                            case 'FILE':
+                                break;
+                            case 'PROJECT':
+                                break;
+                            case 'SIDE':
+                                break;
+                        }
+                        break;
+                    case WEBSOCKET_ACTION_TYPE.READ.name:
+                        switch (data.data.category) {
+                            case 'FEED':
+                                switch (data.data.subcategory) {
+                                    case 'TASK':
+                                        break;
+                                    case 'BOARD':
+                                        break;
+                                    case'PROJECT':
+                                        break;
+                                }
+                                break;
+                            case 'LIST':
+                                break;
+                            case 'TIMELINE':
+                                break;
+                            case 'FILE':
+                                break;
+                            case 'PROJECT':
+                                break;
+                            case 'SIDE':
+                                break;
+                        }
+                        break;
+                    default:
+                        throw new Error('data action type is not found in onMessage');
+                }
+            },
+            onClose: (event, self) => {
+                console.log('close code', event.code, 'close reason', event.reason, 'self', self);
+            },
+            onError: (event, self) => {
+                console.log('error', event, 'self', self);
+            },
+            onSend: (data, self) => {
+                console.log('send', JSON.stringify(data), 'self', self);
+                self.send(JSON.stringify(data));
+            },
+            disconnect: () => {
+                this.close();
+            },
+        }, {
+            plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+            user_no: 10
+        });
+        if (RIGHT_TASK_CONTAINER !== null && RIGHT_TASK_CONTAINER !== undefined) {
+            initializeRightTask(websocket);
+        } else {
+            throw new Error('RIGHT_TASK_CONTAINER is null or undefined');
+        }
         new EmojiPicker({
             trigger: [
                 {
@@ -975,33 +1116,6 @@
         //TODO Initialize Files Start
 
         //Initialize Files Start End
-
-        //Initialize WebSocket
-        let websocket = initializeSocket({
-            onOpen: (event, self) => {
-                console.log('open', 'event', event, 'self', self);
-                WEBSOCKET.send('Hello Server!');
-            },
-            onMessage: (event, self) => {
-                console.log('message', 'event', event, 'self', self, 'data', event.data);
-            },
-            onClose: (event, self) => {
-                console.log('close code', event.code, 'close reason', event.reason, 'self', self);
-            },
-            onError: (event, self) => {
-                console.log('error', event, 'self', self);
-            },
-            onSend: (data) => {
-                console.log('send', JSON.stringify(data), 'this', this);
-                this.send(JSON.stringify(data));
-            },
-            disconnect: () => {
-                this.close();
-            },
-        }, {
-            plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
-            user_no: 10
-        });
     });
 </script>
 </body>
