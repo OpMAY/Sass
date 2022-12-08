@@ -778,7 +778,7 @@
             onMessage: (event, self) => {
                 console.log('message', 'event', event, 'self', self, 'data', event.data);
                 let data = JSON.parse(event.data);
-                console.log('data', data);
+                console.log('MESSAGE', data);
                 switch (data.action_type) {
                     case WEBSOCKET_ACTION_TYPE.CREATE.name:
                         switch (data.data.category) {
@@ -805,12 +805,13 @@
                         }
                         break;
                     case WEBSOCKET_ACTION_TYPE.UPDATE.name:
+                        console.log('UPDATE', data.data.category);
                         switch (data.data.category) {
                             case WEBSOCKET_CATEGORY.CATEGORY.FEED.name:
                                 switch (data.data.subcategory) {
                                     case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name:
                                         switch (data.data.target) {
-                                            case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.TITLE: {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.TITLE.name: {
                                                 let task_element = kanban.findElement(data.data.data.id);
                                                 let boardId = task_element.closest('.kanban-board[data-id]').dataset.id;
                                                 let task = kanban.findTaskJSON(boardId, task_element.dataset.eid);
@@ -835,15 +836,141 @@
                             case WEBSOCKET_CATEGORY.CATEGORY.PROJECT.name:
                                 break;
                             case WEBSOCKET_CATEGORY.CATEGORY.SIDE.name:
+                                console.log('SIDE', data.data.subcategory, WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name);
                                 switch (data.data.subcategory) {
                                     case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name:
+                                        console.log('TASK', data.data.subcategory);
                                         switch (data.data.target) {
-                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.TITLE: {
-                                                /*TODO SIDE 적용 로직 미적용*/
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.TITLE.name: {
+                                                console.log('TITLE', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._title input').value = data.data.data.name;
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
                                                 let task_element = kanban.findElement(data.data.data.id);
                                                 let boardId = task_element.closest('.kanban-board[data-id]').dataset.id;
                                                 let task = kanban.findTaskJSON(boardId, task_element.dataset.eid);
                                                 task_element.querySelector('.kanban-item-title .title').innerHTML = task.title = data.data.data.name;
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.CHECK.name: {
+                                                console.log('CHECK', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    let checkbox = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._title .checkbox');
+                                                    if (data.data.data.check) {
+                                                        checkbox.classList.add('is-checked');
+                                                    } else {
+                                                        checkbox.classList.remove('is-checked');
+                                                    }
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.MEMBER_ADD.name: {
+                                                console.log('MEMBER_ADD', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    let assign_user_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner ._info ._assign .user-item-container');
+                                                    let assign_user_add = assign_user_container.querySelector('.user-item.add');
+                                                    assign_user_add.before(createRightTaskAssignItem(data.data.data.profile));
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.MEMBER_REMOVE.name: {
+                                                console.log('MEMBER_REMOVE', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    let assign_user_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner ._info ._assign .user-item-container');
+                                                    let user_item = assign_user_container.querySelector('.user-item[data-no="' + data.data.data.user_no + '"]');
+                                                    user_item.remove();
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.DATE_START.name: {
+                                                console.log('DATE_START', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    $('#start').val(data.data.data.start_date);
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.DATE_END.name: {
+                                                console.log('DATE_END', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    $('#end').val(data.data.data.end_date);
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.DESCRIPTION.name: {
+                                                console.log('DESCRIPTION', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab .content-editable-container').innerHTML = data.data.data.content;
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.SUBTASK_CHECK.name: {
+                                                console.log('SUBTASK_CHECK', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    let checkbox = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._subtasks .subtask-item[data-id="' + data.data.data.subtask_id + '"]');
+                                                    if (data.data.data.check) {
+                                                        checkbox.classList.add('is-checked');
+                                                    } else {
+                                                        checkbox.classList.remove('is-checked');
+                                                    }
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.SUBTASK_NAME.name: {
+                                                console.log('SUBTASK_NAME', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    let subtask_item = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._subtasks .subtask-item[data-id="' + data.data.data.subtask_id + '"]');
+                                                    let input = subtask_item.querySelector('._title input');
+                                                    input.value = data.data.data.name;
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.SUBTASK.name: {
+                                                console.log('SUBTASK', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    let subtasks_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._subtasks');
+                                                    let subtask_add = subtasks_container.querySelector('.subtask-item.add');
+                                                    subtask_add.before(createRightSubtaskItem(data.data.data.subtask));
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.SUBTASK_REMOVE.name: {
+                                                console.log('SUBTASK_REMOVE', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    let subtask_item = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._subtasks .subtask-item[data-id="' + data.data.data.subtask_id + '"]');
+                                                    subtask_item.remove();
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.COMMENT.name: {
+                                                console.log('COMMENT', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    let comments_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._comments');
+                                                    comments_container.appendChild(createRightTaskCommentItem(data.data.data.comment));
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
                                                 break;
                                             }
                                         }
@@ -877,6 +1004,25 @@
                             case WEBSOCKET_CATEGORY.CATEGORY.PROJECT.name:
                                 break;
                             case WEBSOCKET_CATEGORY.CATEGORY.SIDE.name:
+                                switch (data.data.subcategory) {
+                                    case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name:
+                                        switch (data.data.target) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.TASK.name: {
+                                                console.log('TASK', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    rightTaskClose();
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.BOARD.name:
+                                        break;
+                                    case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.PROJECT.name:
+                                        break;
+                                }
                                 break;
                         }
                         break;

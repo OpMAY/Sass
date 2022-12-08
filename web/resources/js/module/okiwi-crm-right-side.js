@@ -326,6 +326,16 @@ function rightTaskDeleteClickEventListener(event) {
         }
         rightTaskClose();
     });
+    RIGHT_TASK_WEBSOCKET.onSend({
+        plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.DELETE.name, data: {
+            category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+            subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+            target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.TASK.name,
+            data: {
+                id: task_id,
+            }
+        },
+    }, RIGHT_TASK_WEBSOCKET);
 }
 
 function rightTaskBackClickEventListener(event) {
@@ -426,6 +436,18 @@ function rightTaskTitleInputEventListener(event) {
                     break;
             }
         });
+        RIGHT_TASK_WEBSOCKET.onSend({
+            plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+                category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+                subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+                target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.SUBTASK_NAME.name,
+                data: {
+                    id: RIGHT_TASK_CONTAINER.dataset.id,
+                    subtask_id: task_id,
+                    name: title.value
+                }
+            },
+        }, RIGHT_TASK_WEBSOCKET);
     } else {
         apiChangeTaskName(task_id, title.value).then((result) => {
             console.log('apiChangeTaskName', result);
@@ -528,6 +550,17 @@ function rightTaskCheckboxClickEventListener(event) {
                     break;
             }
         });
+        RIGHT_TASK_WEBSOCKET.onSend({
+            plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+                category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+                subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+                target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.CHECK.name,
+                data: {
+                    id: task_id,
+                    check: false
+                }
+            },
+        }, RIGHT_TASK_WEBSOCKET);
     } else {
         apiUpdateTaskStatus(task_id).then((result) => {
             console.log('apiUpdateTaskStatus', result);
@@ -571,6 +604,17 @@ function rightTaskCheckboxClickEventListener(event) {
                     break;
             }
         });
+        RIGHT_TASK_WEBSOCKET.onSend({
+            plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+                category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+                subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+                target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.CHECK.name,
+                data: {
+                    id: task_id,
+                    check: true
+                }
+            },
+        }, RIGHT_TASK_WEBSOCKET);
     }
     event.preventDefault();
     event.stopPropagation();
@@ -579,6 +623,7 @@ function rightTaskCheckboxClickEventListener(event) {
 //TODO 20221102 - 28 - 우식
 function rightSubtaskCheckboxClickEventListener(event) {
     console.log('rightSubtaskCheckboxClickEventListener', this);
+    let task_id = RIGHT_TASK_CONTAINER.dataset.id;
     let subtask = this.closest('[data-id]');
     let subtask_id = subtask.dataset.id;
     let is_complete = subtask.classList.contains('is-checked');
@@ -587,10 +632,9 @@ function rightSubtaskCheckboxClickEventListener(event) {
             console.log('apiChangeSubTaskStatus', result);
             subtask.classList.remove('is-checked');
             let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
-            let task_id = undefined, task_element = undefined, subtask_element = undefined;
+            let task_element = undefined, subtask_element = undefined;
             switch (type) {
                 case '#feed':
-                    task_id = RIGHT_TASK_CONTAINER.dataset.id;
                     task_element = kanban.findElement(task_id);
                     let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
                     let task = kanban.findTaskJSON(board_id, task_id);
@@ -605,15 +649,26 @@ function rightSubtaskCheckboxClickEventListener(event) {
                     break;
             }
         });
+        RIGHT_TASK_WEBSOCKET.onSend({
+            plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+                category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+                subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+                target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.SUBTASK_CHECK.name,
+                data: {
+                    id: task_id,
+                    subtask_id: subtask_id,
+                    check: !is_complete
+                }
+            },
+        }, RIGHT_TASK_WEBSOCKET);
     } else {
         apiChangeSubTaskStatus(subtask_id).then((result) => {
             console.log('apiChangeSubTaskStatus', result);
             subtask.classList.add('is-checked');
             let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
-            let task_id = undefined, task_element = undefined, subtask_element = undefined;
+            let task_element = undefined, subtask_element = undefined;
             switch (type) {
                 case '#feed':
-                    task_id = RIGHT_TASK_CONTAINER.dataset.id;
                     task_element = kanban.findElement(task_id);
                     let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
                     let task = kanban.findTaskJSON(board_id, task_id);
@@ -628,6 +683,18 @@ function rightSubtaskCheckboxClickEventListener(event) {
                     break;
             }
         });
+        RIGHT_TASK_WEBSOCKET.onSend({
+            plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+                category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+                subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+                target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.SUBTASK_CHECK.name,
+                data: {
+                    id: task_id,
+                    subtask_id: subtask_id,
+                    check: !is_complete
+                }
+            },
+        }, RIGHT_TASK_WEBSOCKET);
     }
     event.preventDefault();
     event.stopPropagation();
@@ -636,6 +703,7 @@ function rightSubtaskCheckboxClickEventListener(event) {
 //TODO 20221102 - 31번 - 우식
 function rightSubtaskCloseClickEventListener(event) {
     console.log('rightSubtaskCloseClickEventListener', this);
+    let task_id = RIGHT_TASK_CONTAINER.dataset.id;
     let subtask = this.closest('[data-id]');
     let subtask_id = subtask.dataset.id;
     deleteSubTask(subtask_id).then((result) => {
@@ -644,11 +712,10 @@ function rightSubtaskCloseClickEventListener(event) {
             if (result.data.status) {
                 subtask.remove();
                 let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
-                let task_id = undefined, task_element = undefined, subtasks_container = undefined,
+                let task_element = undefined, subtasks_container = undefined,
                     subtask_add = undefined;
                 switch (type) {
                     case '#feed':
-                        task_id = RIGHT_TASK_CONTAINER.dataset.id;
                         task_element = kanban.findElement(task_id);
                         let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
                         let task = kanban.findTaskJSON(board_id, task_id);
@@ -669,7 +736,6 @@ function rightSubtaskCloseClickEventListener(event) {
                         task_element.querySelector('.sub-task-count ._count').innerHTML = `${task.subtasks.length}`;
                         break;
                     case '#list':
-                        task_id = RIGHT_TASK_CONTAINER.dataset.id;
                         task_element = LIST_CONTAINER.querySelector(`[data-id="${RIGHT_TASK_CONTAINER.dataset.id}"]`);
                         let list_task_subtasks_count = RIGHT_TASK_CONTAINER.querySelectorAll('._subtasks .subtask-item:not(.add)').length;
                         task_element.querySelector('._subtasks').innerHTML = `${list_task_subtasks_count}개`;
@@ -680,6 +746,17 @@ function rightSubtaskCloseClickEventListener(event) {
             }
         }
     });
+    RIGHT_TASK_WEBSOCKET.onSend({
+        plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+            category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+            subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+            target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.SUBTASK_REMOVE.name,
+            data: {
+                id: task_id,
+                subtask_id
+            }
+        },
+    }, RIGHT_TASK_WEBSOCKET);
 }
 
 //TODO 20221102 - 24번 - 우식
@@ -691,7 +768,8 @@ function rightTaskStartDatePickerChangeEventListener(event) {
             $('#end').datepicker('setDate', event.date);
         }
     }
-    apiChangeTaskStart(task_id, this.value).then((result) => {
+    let start_date = this.value;
+    apiChangeTaskStart(task_id, start_date).then((result) => {
         console.log('apiChangeTaskStart', result);
         let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
         let task_element = undefined, start_time = undefined;
@@ -722,6 +800,17 @@ function rightTaskStartDatePickerChangeEventListener(event) {
                 break;
         }
     });
+    RIGHT_TASK_WEBSOCKET.onSend({
+        plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+            category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+            subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+            target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.DATE_START.name,
+            data: {
+                id: task_id,
+                start_date
+            }
+        },
+    }, RIGHT_TASK_WEBSOCKET);
     event.preventDefault();
     event.stopPropagation();
 }
@@ -730,6 +819,7 @@ function rightTaskStartDatePickerChangeEventListener(event) {
 function rightTaskEndDatePickerChangeEventListener(event) {
     console.log('rightTaskEndDatePickerChangeEventListener', this);
     let task_id = this.closest('[data-id]').dataset.id;
+    let end_date = this.value;
     apiChangeTaskEnd(task_id, this.value).then((result) => {
         console.log('apiChangeTaskEnd', result);
         let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
@@ -756,6 +846,17 @@ function rightTaskEndDatePickerChangeEventListener(event) {
                 break;
         }
     });
+    RIGHT_TASK_WEBSOCKET.onSend({
+        plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+            category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+            subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+            target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.DATE_END.name,
+            data: {
+                id: task_id,
+                end_date
+            }
+        },
+    }, RIGHT_TASK_WEBSOCKET);
     event.preventDefault();
     event.stopPropagation();
 }
@@ -814,7 +915,8 @@ function rightTaskUserAssignDeleteClickEventListener(event) {
     console.log('delete user_no', user_no);
     event.preventDefault();
     event.stopPropagation();
-    removeTaskMember(RIGHT_TASK_CONTAINER.dataset.id, user_no).then((result) => {
+    let task_id = RIGHT_TASK_CONTAINER.dataset.id;
+    removeTaskMember(task_id, user_no).then((result) => {
         console.log(result);
         if (result.status === 'OK') {
             if (result.data.status) {
@@ -863,6 +965,17 @@ function rightTaskUserAssignDeleteClickEventListener(event) {
             }
         }
     })
+    RIGHT_TASK_WEBSOCKET.onSend({
+        plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+            category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+            subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+            target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.MEMBER_REMOVE.name,
+            data: {
+                id: task_id,
+                user_no
+            }
+        },
+    }, RIGHT_TASK_WEBSOCKET);
 }
 
 //TODO 20221102 - 22번 - 지우 O
@@ -877,7 +990,8 @@ function rightTaskUserAssignAddClickEventListener(event) {
         url,
         name
     }
-    addTaskMember(RIGHT_TASK_CONTAINER.dataset.id, user_no).then((result) => {
+    let task_id = RIGHT_TASK_CONTAINER.dataset.id;
+    addTaskMember(task_id, user_no).then((result) => {
         if (result.status === 'OK') {
             if (result.data.status) {
                 let assign_user_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner ._info ._assign .user-item-container');
@@ -918,6 +1032,17 @@ function rightTaskUserAssignAddClickEventListener(event) {
             }
         }
     })
+    RIGHT_TASK_WEBSOCKET.onSend({
+        plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+            category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+            subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+            target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.MEMBER_ADD.name,
+            data: {
+                id: task_id,
+                profile
+            }
+        },
+    }, RIGHT_TASK_WEBSOCKET);
 }
 
 function rightTaskDatepickerInputEventListener(event) {
@@ -940,16 +1065,28 @@ function rightTaskContentInputEventListener(event) {
     apiChangeTaskDescription(task_id, content.innerHTML).then((result) => {
         console.log('apiChangeTaskDescription', result);
     });
+    RIGHT_TASK_WEBSOCKET.onSend({
+        plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+            category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+            subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+            target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.DESCRIPTION.name,
+            data: {
+                id: task_id,
+                content: content.innerHTML
+            }
+        },
+    }, RIGHT_TASK_WEBSOCKET);
 }
 
 //TODO 20221102 - 30번 - 지우 O
 function rightTaskSubTaskAddClickEventListener(event) {
     console.log('rightTaskSubTaskAddClickEventListener', this);
+    let task_id = RIGHT_TASK_CONTAINER.dataset.id;
     let create_id = tokenGenerator(8);
     let subtask = {
         id: create_id,
         title: create_id,
-        task_id: RIGHT_TASK_CONTAINER.dataset.id,
+        task_id: task_id,
         complete: false,
     };
     createSubTask(subtask).then((result) => {
@@ -997,7 +1134,18 @@ function rightTaskSubTaskAddClickEventListener(event) {
                 alert(result.data.error_message);
             }
         }
-    })
+    });
+    RIGHT_TASK_WEBSOCKET.onSend({
+        plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+            category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+            subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+            target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.SUBTASK.name,
+            data: {
+                id: task_id,
+                subtask
+            }
+        },
+    }, RIGHT_TASK_WEBSOCKET);
 }
 
 //TODO 20221102 - 40번 - 지우 O
@@ -1054,11 +1202,23 @@ function rightTaskCommentWriteEventListener(event) {
                 comment.profile = taskProfileChanger(comment.profile);
                 comments_container.appendChild(createRightTaskCommentItem(comment));
                 comment_write_input.value = '';
+
+                RIGHT_TASK_WEBSOCKET.onSend({
+                    plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+                        category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+                        subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+                        target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.COMMENT.name,
+                        data: {
+                            id: task_id,
+                            comment
+                        }
+                    },
+                }, RIGHT_TASK_WEBSOCKET);
             } else {
                 alert(result.data.error_message);
             }
         }
-    })
+    });
 }
 
 function rightTaskMessageFileUploadEventListener(event) {
