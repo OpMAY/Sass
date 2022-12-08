@@ -782,106 +782,125 @@
                 switch (data.action_type) {
                     case WEBSOCKET_ACTION_TYPE.CREATE.name:
                         switch (data.data.category) {
-                            case 'FEED':
+                            case WEBSOCKET_CATEGORY.CATEGORY.FEED.name:
                                 switch (data.data.subcategory) {
-                                    case 'TASK':
+                                    case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name:
                                         break;
-                                    case 'BOARD':
+                                    case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.name:
                                         break;
-                                    case'PROJECT':
+                                    case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.PROJECT.name:
                                         break;
                                 }
                                 break;
-                            case 'LIST':
+                            case WEBSOCKET_CATEGORY.CATEGORY.LIST.name:
                                 break;
-                            case 'TIMELINE':
+                            case WEBSOCKET_CATEGORY.CATEGORY.TIMELINE.name:
                                 break;
-                            case 'FILE':
+                            case WEBSOCKET_CATEGORY.CATEGORY.FILE.name:
                                 break;
-                            case 'PROJECT':
+                            case WEBSOCKET_CATEGORY.CATEGORY.PROJECT.name:
                                 break;
-                            case 'SIDE':
+                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.name:
                                 break;
                         }
                         break;
                     case WEBSOCKET_ACTION_TYPE.UPDATE.name:
                         switch (data.data.category) {
-                            case 'FEED':
+                            case WEBSOCKET_CATEGORY.CATEGORY.FEED.name:
                                 switch (data.data.subcategory) {
-                                    case 'TASK':
+                                    case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name:
                                         switch (data.data.target) {
-                                            case 'TITLE':
+                                            case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.TITLE: {
                                                 let task_element = kanban.findElement(data.data.data.id);
                                                 let boardId = task_element.closest('.kanban-board[data-id]').dataset.id;
                                                 let task = kanban.findTaskJSON(boardId, task_element.dataset.eid);
-                                                console.log('task', task);
                                                 task_element.querySelector('.kanban-item-title .title').innerHTML = task.title = data.data.data.name;
+                                                /*TODO SIDE 적용 로직 미적용*/
                                                 break;
+                                            }
                                         }
                                         break;
-                                    case 'BOARD':
+                                    case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.name:
                                         break;
-                                    case'PROJECT':
+                                    case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.PROJECT.name:
                                         break;
                                 }
                                 break;
-                            case 'LIST':
+                            case WEBSOCKET_CATEGORY.CATEGORY.LIST.name:
                                 break;
-                            case 'TIMELINE':
+                            case WEBSOCKET_CATEGORY.CATEGORY.TIMELINE.name:
                                 break;
-                            case 'FILE':
+                            case WEBSOCKET_CATEGORY.CATEGORY.FILE.name:
                                 break;
-                            case 'PROJECT':
+                            case WEBSOCKET_CATEGORY.CATEGORY.PROJECT.name:
                                 break;
-                            case 'SIDE':
+                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.name:
+                                switch (data.data.subcategory) {
+                                    case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name:
+                                        switch (data.data.target) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.TITLE: {
+                                                /*TODO SIDE 적용 로직 미적용*/
+                                                let task_element = kanban.findElement(data.data.data.id);
+                                                let boardId = task_element.closest('.kanban-board[data-id]').dataset.id;
+                                                let task = kanban.findTaskJSON(boardId, task_element.dataset.eid);
+                                                task_element.querySelector('.kanban-item-title .title').innerHTML = task.title = data.data.data.name;
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.BOARD.name:
+                                        break;
+                                    case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.PROJECT.name:
+                                        break;
+                                }
                                 break;
                         }
                         break;
                     case WEBSOCKET_ACTION_TYPE.DELETE.name:
                         switch (data.data.category) {
-                            case 'FEED':
+                            case WEBSOCKET_CATEGORY.CATEGORY.FEED.name:
                                 switch (data.data.subcategory) {
-                                    case 'TASK':
+                                    case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name:
                                         break;
-                                    case 'BOARD':
+                                    case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.name:
                                         break;
-                                    case'PROJECT':
+                                    case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.PROJECT.name:
                                         break;
                                 }
                                 break;
-                            case 'LIST':
+                            case WEBSOCKET_CATEGORY.CATEGORY.LIST.name:
                                 break;
-                            case 'TIMELINE':
+                            case WEBSOCKET_CATEGORY.CATEGORY.TIMELINE.name:
                                 break;
-                            case 'FILE':
+                            case WEBSOCKET_CATEGORY.CATEGORY.FILE.name:
                                 break;
-                            case 'PROJECT':
+                            case WEBSOCKET_CATEGORY.CATEGORY.PROJECT.name:
                                 break;
-                            case 'SIDE':
+                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.name:
                                 break;
                         }
                         break;
                     case WEBSOCKET_ACTION_TYPE.READ.name:
                         switch (data.data.category) {
-                            case 'FEED':
+                            case WEBSOCKET_CATEGORY.CATEGORY.FEED.name:
                                 switch (data.data.subcategory) {
-                                    case 'TASK':
+                                    case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name:
                                         break;
-                                    case 'BOARD':
+                                    case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.name:
                                         break;
-                                    case'PROJECT':
+                                    case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.PROJECT.name:
                                         break;
                                 }
                                 break;
-                            case 'LIST':
+                            case WEBSOCKET_CATEGORY.CATEGORY.LIST.name:
                                 break;
-                            case 'TIMELINE':
+                            case WEBSOCKET_CATEGORY.CATEGORY.TIMELINE.name:
                                 break;
-                            case 'FILE':
+                            case WEBSOCKET_CATEGORY.CATEGORY.FILE.name:
                                 break;
-                            case 'PROJECT':
+                            case WEBSOCKET_CATEGORY.CATEGORY.PROJECT.name:
                                 break;
-                            case 'SIDE':
+                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.name:
                                 break;
                         }
                         break;

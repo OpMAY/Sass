@@ -45,6 +45,237 @@ const WEBSOCKET_ACTION_TYPE = {
         name: 'DELETE',
     },
 }
+const WEBSOCKET_CATEGORY = {
+    CATEGORY: {
+        SIDE: {
+            name: 'SIDE',
+            SUBCATEGORY: {
+                BOARD: {
+                    name: 'BOARD',
+                    TARGET: {
+                        BOARD: {
+                            name: 'BOARD',
+                        },
+                        TITLE: {
+                            name: 'TITLE',
+                        },
+                        ORDER: {
+                            name: 'ORDER',
+                        },
+                    }
+                },
+                TASK: {
+                    name: 'TASK',
+                    TARGET: {
+                        CHECK: {
+                            name: 'CHECK',
+                        }, TASK: {
+                            name: 'TASK',
+                        }, ORDER: {
+                            name: 'ORDER',
+                        }, TITLE: {
+                            name: 'TITLE',
+                        }, MOVE: {
+                            name: 'MOVE',
+                        }, MEMBER_ADD: {
+                            name: 'MEMBER_ADD',
+                        }, MEMBER_REMOVE: {
+                            name: 'MEMBER_REMOVE',
+                        }, DATE_START: {
+                            name: 'DATE_START',
+                        }, DATE_END: {
+                            name: 'DATE_END',
+                        }, THUMBNAIL: {
+                            name: 'THUMBNAIL',
+                        }, DESCRIPTION: {
+                            name: 'DESCRIPTION',
+                        }, SUBTASK_CHECK: {
+                            name: 'SUBTASK_CHECK',
+                        }, SUBTASK_NAME: {
+                            name: 'SUBTASK_NAME',
+                        }, SUBTASK: {
+                            name: 'SUBTASK',
+                        },
+                    }
+                },
+                PROJECT: {
+                    name: 'PROJECT'
+                }
+            }
+        },
+        FEED: {
+            name: 'FEED',
+            SUBCATEGORY: {
+                BOARD: {
+                    name: 'BOARD',
+                    TARGET: {
+                        BOARD: {
+                            name: 'BOARD',
+                        },
+                        TITLE: {
+                            name: 'TITLE',
+                        },
+                        ORDER: {
+                            name: 'ORDER',
+                        },
+                    }
+                },
+                TASK: {
+                    name: 'TASK',
+                    TARGET: {
+                        CHECK: {
+                            name: 'CHECK',
+                        }, TASK: {
+                            name: 'TASK',
+                        }, ORDER: {
+                            name: 'ORDER',
+                        }, TITLE: {
+                            name: 'TITLE',
+                        }, MOVE: {
+                            name: 'MOVE',
+                        }, MEMBER_ADD: {
+                            name: 'MEMBER_ADD',
+                        }, MEMBER_REMOVE: {
+                            name: 'MEMBER_REMOVE',
+                        }, DATE_START: {
+                            name: 'DATE_START',
+                        }, DATE_END: {
+                            name: 'DATE_END',
+                        }, THUMBNAIL: {
+                            name: 'THUMBNAIL',
+                        }, DESCRIPTION: {
+                            name: 'DESCRIPTION',
+                        }, SUBTASK_CHECK: {
+                            name: 'SUBTASK_CHECK',
+                        }, SUBTASK_NAME: {
+                            name: 'SUBTASK_NAME',
+                        }, SUBTASK: {
+                            name: 'SUBTASK',
+                        },
+                    }
+                },
+                PROJECT: {
+                    name: 'PROJECT'
+                }
+            }
+        },
+        LIST: {
+            name: 'LIST',
+            SUBCATEGORY: {
+                BOARD: {
+                    name: 'BOARD',
+                    TARGET: {
+                        BOARD: {
+                            name: 'BOARD',
+                        },
+                        TITLE: {
+                            name: 'TITLE',
+                        },
+                        ORDER: {
+                            name: 'ORDER',
+                        },
+                    }
+                },
+                TASK: {
+                    name: 'TASK',
+                    TARGET: {
+                        CHECK: {
+                            name: 'CHECK',
+                        }, TASK: {
+                            name: 'TASK',
+                        }, ORDER: {
+                            name: 'ORDER',
+                        }, TITLE: {
+                            name: 'TITLE',
+                        }, MOVE: {
+                            name: 'MOVE',
+                        }, MEMBER_ADD: {
+                            name: 'MEMBER_ADD',
+                        }, MEMBER_REMOVE: {
+                            name: 'MEMBER_REMOVE',
+                        }, DATE_START: {
+                            name: 'DATE_START',
+                        }, DATE_END: {
+                            name: 'DATE_END',
+                        }, THUMBNAIL: {
+                            name: 'THUMBNAIL',
+                        }, DESCRIPTION: {
+                            name: 'DESCRIPTION',
+                        }, SUBTASK_CHECK: {
+                            name: 'SUBTASK_CHECK',
+                        }, SUBTASK_NAME: {
+                            name: 'SUBTASK_NAME',
+                        }, SUBTASK: {
+                            name: 'SUBTASK',
+                        },
+                    }
+                },
+                PROJECT: {
+                    name: 'PROJECT'
+                }
+            }
+        },
+        TIMELINE: {
+            name: 'TIMELINE',
+            SUBCATEGORY: {
+                BOARD: {
+                    name: 'BOARD',
+                    TARGET: {
+                        BOARD: {
+                            name: 'BOARD',
+                        },
+                        TITLE: {
+                            name: 'TITLE',
+                        },
+                        ORDER: {
+                            name: 'ORDER',
+                        },
+                    }
+                },
+                TASK: {
+                    name: 'TASK',
+                    TARGET: {
+                        CHECK: {
+                            name: 'CHECK',
+                        }, TASK: {
+                            name: 'TASK',
+                        }, ORDER: {
+                            name: 'ORDER',
+                        }, TITLE: {
+                            name: 'TITLE',
+                        }, MOVE: {
+                            name: 'MOVE',
+                        }, MEMBER_ADD: {
+                            name: 'MEMBER_ADD',
+                        }, MEMBER_REMOVE: {
+                            name: 'MEMBER_REMOVE',
+                        }, DATE_START: {
+                            name: 'DATE_START',
+                        }, DATE_END: {
+                            name: 'DATE_END',
+                        }, THUMBNAIL: {
+                            name: 'THUMBNAIL',
+                        }, DESCRIPTION: {
+                            name: 'DESCRIPTION',
+                        }, SUBTASK_CHECK: {
+                            name: 'SUBTASK_CHECK',
+                        }, SUBTASK_NAME: {
+                            name: 'SUBTASK_NAME',
+                        }, SUBTASK: {
+                            name: 'SUBTASK',
+                        },
+                    }
+                },
+                PROJECT: {
+                    name: 'PROJECT'
+                }
+            }
+        },
+        FILE: {
+            name: 'FILE',
+        }
+    }
+}
 Object.freeze(WEBSOCKET_STATE);
 Object.freeze(WEBSOCKET_PLUG_TYPE);
 Object.freeze(WEBSOCKET_ACTION_TYPE);
