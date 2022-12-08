@@ -3,6 +3,7 @@ package com.config.socket.plug.crm;
 import com.google.gson.Gson;
 import com.model.ws.crm.CrmSocketSessionModel;
 import com.model.ws.crm.CrmWebSocketObject;
+import com.util.Encryption.JWTEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -33,6 +34,9 @@ public class CrmWebSocketHandler extends TextWebSocketHandler {
         Gson gson = new Gson();
         String payload = message.getPayload();
         log.info("payload : {}", payload);
+
+        log.info("session attribute keyset : {}", session.getAttributes().keySet());
+        log.info("session attribute : {}", session.getAttributes().get(JWTEnum.JWTToken.name()));
 
         CrmWebSocketObject object = gson.fromJson(payload, CrmWebSocketObject.class);
 
