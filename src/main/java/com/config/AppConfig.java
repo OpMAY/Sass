@@ -203,14 +203,17 @@ public class AppConfig implements WebApplicationInitializer, SchedulingConfigure
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(logInterceptor).order(0)
                 .addPathPatterns("/**")
+                .excludePathPatterns("/socket/**")
                 .excludePathPatterns("/resources/**")
                 .excludePathPatterns("/files/**");
 //        registry.addInterceptor(new RecoverInterceptor()).order(1)
 //                .addPathPatterns("/**")
+//                .excludePathPatterns("/socket/**")
 //                .excludePathPatterns("/resources/**")
 //                .excludePathPatterns("/files/**");
         registry.addInterceptor(baseInterceptor).order(2)
                 .addPathPatterns("/**")
+                .excludePathPatterns("/socket/**")
                 .excludePathPatterns("/resources/**")
                 .excludePathPatterns("/files/**");
         /** is Login */
@@ -221,23 +224,28 @@ public class AppConfig implements WebApplicationInitializer, SchedulingConfigure
                 .addPathPatterns("/crm/**")
                 .addPathPatterns("/chat/**")
                 .addPathPatterns("/plan/**")
+                .excludePathPatterns("/socket/**")
                 .excludePathPatterns("/login")
                 .excludePathPatterns("/global/get/plugs")
                 .excludePathPatterns("/logout")
                 .excludePathPatterns("/register")
                 .excludePathPatterns("/find/**")
                 .excludePathPatterns("/change/password")
-                .excludePathPatterns("/code/**");
+                .excludePathPatterns("/code/**")
+                .excludePathPatterns("/resources/**")
+                .excludePathPatterns("/files/**");
         /** is Team Grant, OWNER or PERSONAL 구분지어서 Intercept */
         registry.addInterceptor(teamGrantInterceptor).order(4)
                 .addPathPatterns("/global/**")
+                .excludePathPatterns("/socket/**")
                 .excludePathPatterns("/global/get/plugs");
         /** is Plugin Grant, READ or EDIT or READ(무조건 Intercept) 구분 지어서 Intercept*/
         registry.addInterceptor(pluginInterceptor).order(5)
                 .addPathPatterns("/query")
                 .addPathPatterns("/crm")
                 .addPathPatterns("/chat")
-                .addPathPatterns("/plan");
+                .addPathPatterns("/plan")
+                .excludePathPatterns("/socket/**");
     }
 
     @Bean

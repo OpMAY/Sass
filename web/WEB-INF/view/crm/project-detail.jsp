@@ -757,6 +757,7 @@
 <script src="/resources/js/api.js"></script>
 <script src="/resources/js/crm/api.js"></script>
 <script src="/resources/js/crm/api1.js"></script>
+<script src="/resources/js/module/okiwi-websocket.js"></script>
 <!--Font Awesome-->
 <script src="https://kit.fontawesome.com/3581631c82.js"
         crossorigin="anonymous"></script>
@@ -974,6 +975,33 @@
         //TODO Initialize Files Start
 
         //Initialize Files Start End
+
+        //Initialize WebSocket
+        let websocket = initializeSocket({
+            onOpen: (event, self) => {
+                console.log('open', 'event', event, 'self', self);
+                WEBSOCKET.send('Hello Server!');
+            },
+            onMessage: (event, self) => {
+                console.log('message', 'event', event, 'self', self, 'data', event.data);
+            },
+            onClose: (event, self) => {
+                console.log('close code', event.code, 'close reason', event.reason, 'self', self);
+            },
+            onError: (event, self) => {
+                console.log('error', event, 'self', self);
+            },
+            onSend: (data) => {
+                console.log('send', JSON.stringify(data), 'this', this);
+                this.send(JSON.stringify(data));
+            },
+            disconnect: () => {
+                this.close();
+            },
+        }, {
+            plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+            user_no: 10
+        });
     });
 </script>
 </body>
