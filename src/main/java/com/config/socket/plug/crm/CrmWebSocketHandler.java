@@ -2,6 +2,7 @@ package com.config.socket.plug.crm;
 
 import com.google.gson.Gson;
 import com.model.ws.crm.CrmSocketSessionModel;
+import com.model.ws.crm.CrmWebSocketObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -35,10 +36,9 @@ public class CrmWebSocketHandler extends TextWebSocketHandler {
 
         CrmWebSocketObject object = gson.fromJson(payload, CrmWebSocketObject.class);
 
-
-        for (String sess : sessions.keySet()) {
+        for (String sess : crmSessionQueue.keySet()) {
             TextMessage textMessage = new TextMessage(new Gson().toJson(object));
-            sessions.get(sess).getWebSocketSession().sendMessage(textMessage);
+            crmSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
         }
     }
 
