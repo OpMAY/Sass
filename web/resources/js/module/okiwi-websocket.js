@@ -95,7 +95,11 @@ const WEBSOCKET_CATEGORY = {
                             name: 'SUBTASK_NAME',
                         }, SUBTASK: {
                             name: 'SUBTASK',
-                        },
+                        }, SUBTASK_REMOVE: {
+                            name: 'SUBTASK_REMOVE',
+                        }, COMMENT: {
+                            name: 'COMMENT',
+                        }
                     }
                 },
                 PROJECT: {
@@ -151,7 +155,11 @@ const WEBSOCKET_CATEGORY = {
                             name: 'SUBTASK_NAME',
                         }, SUBTASK: {
                             name: 'SUBTASK',
-                        },
+                        }, SUBTASK_REMOVE: {
+                            name: 'SUBTASK_REMOVE',
+                        }, COMMENT: {
+                            name: 'COMMENT',
+                        }
                     }
                 },
                 PROJECT: {
@@ -207,7 +215,11 @@ const WEBSOCKET_CATEGORY = {
                             name: 'SUBTASK_NAME',
                         }, SUBTASK: {
                             name: 'SUBTASK',
-                        },
+                        }, SUBTASK_REMOVE: {
+                            name: 'SUBTASK_REMOVE',
+                        }, COMMENT: {
+                            name: 'COMMENT',
+                        }
                     }
                 },
                 PROJECT: {
@@ -263,7 +275,11 @@ const WEBSOCKET_CATEGORY = {
                             name: 'SUBTASK_NAME',
                         }, SUBTASK: {
                             name: 'SUBTASK',
-                        },
+                        }, SUBTASK_REMOVE: {
+                            name: 'SUBTASK_REMOVE',
+                        }, COMMENT: {
+                            name: 'COMMENT',
+                        }
                     }
                 },
                 PROJECT: {
@@ -273,6 +289,9 @@ const WEBSOCKET_CATEGORY = {
         },
         FILE: {
             name: 'FILE',
+        },
+        PROJECT: {
+            name: 'PROJECT',
         }
     }
 }
