@@ -468,9 +468,9 @@ function rightTaskTitleInputEventListener(event) {
         });
         RIGHT_TASK_WEBSOCKET.onSend({
             plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
-                category: 'FEED',
-                subcategory: 'TASK',
-                target: 'TITLE',
+                category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+                subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+                target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.TITLE.name,
                 data: {
                     id: task_id,
                     name: title.value
