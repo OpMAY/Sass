@@ -2,7 +2,7 @@ package com.config.socket.plug.crm;
 
 import com.google.gson.Gson;
 import com.model.ws.crm.CrmSocketSessionModel;
-import com.model.ws.crm.CrmWebSocketObject;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -10,12 +10,12 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class CrmWebSocketHandler extends TextWebSocketHandler {
     /**
      * TODO
@@ -24,14 +24,8 @@ public class CrmWebSocketHandler extends TextWebSocketHandler {
      *      2) action 프로젝트 hash
      *      3) 해당 user_no
      */
-    private LinkedHashMap<String, CrmSocketSessionModel> sessions;
 
-    @PostConstruct
-    private void init() {
-        log.info("crmwebsocketHandler postconstructor");
-        sessions = new LinkedHashMap<>();
-        log.info("sessions : {}", sessions);
-    }
+    private final LinkedHashMap<String, CrmSocketSessionModel> crmSessionQueue;
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
@@ -41,9 +35,9 @@ public class CrmWebSocketHandler extends TextWebSocketHandler {
 
 //        CrmWebSocketObject object = gson.fromJson(payload, CrmWebSocketObject.class);
 
-        for (String sess : sessions.keySet()) {
+        for (String sess : crmSessionQueue.keySet()) {
             TextMessage textMessage = new TextMessage(payload);
-            sessions.get(sess).getWebSocketSession().sendMessage(textMessage);
+            crmSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
         }
     }
 
@@ -52,8 +46,7 @@ public class CrmWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         CrmSocketSessionModel model = new CrmSocketSessionModel();
         model.setWebSocketSession(session);
-        log.info("session : {}, sessions : {}", session, sessions);
-        sessions.put(session.getId(), model);
+        crmSessionQueue.put(session.getId(), model);
         log.info("{} Client Connection Established", session);
     }
 
@@ -61,6 +54,6 @@ public class CrmWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         log.info("{} Client Connection Closed", session);
-        sessions.remove(session.getId());
+        crmSessionQueue.remove(session.getId());
     }
 }
