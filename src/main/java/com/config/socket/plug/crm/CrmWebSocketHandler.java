@@ -37,8 +37,10 @@ public class CrmWebSocketHandler extends TextWebSocketHandler {
         CrmWebSocketObject object = gson.fromJson(payload, CrmWebSocketObject.class);
 
         for (String sess : crmSessionQueue.keySet()) {
-            TextMessage textMessage = new TextMessage(new Gson().toJson(object));
-            crmSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
+            if (!sess.equals(session.getId())) {
+                TextMessage textMessage = new TextMessage(new Gson().toJson(object));
+                crmSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
+            }
         }
     }
 
