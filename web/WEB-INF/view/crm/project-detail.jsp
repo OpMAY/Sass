@@ -904,6 +904,12 @@
                                                 }
                                                 break;
                                             }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.ORDER.name :
+                                            case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.MOVE.name : {
+                                                console.log('task move or change order : ',data);
+                                                kanban.moveTask(data.data.data.id, {boardId: data.data.data.board_id, position: data.data.data.position});
+                                                break;
+                                            }
                                         }
                                         break;
                                     case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.name:
@@ -914,6 +920,11 @@
                                                 item_board.title = data.data.data.title;
                                                 let title_element = board_element.querySelector('.kanban-board-header .kanban-title-board');
                                                 title_element.innerHTML = createBoardTitleElement(data.data.data.title);
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.TARGET.ORDER.name : {
+                                                console.log('changeboardOrder: ',data);
+                                                kanban.moveBoard(data.data.data.id, {baseId: data.data.data.base_id, direction: data.data.data.direction});
                                                 break;
                                             }
                                         }
@@ -1289,8 +1300,16 @@
                                                 /*TODO SIDE TASK LOGIC*/
                                                 if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
                                                     rightTaskClose();
+                                                    viewAlert({content: '작업 중이던 업무가 삭제되었습니다.'});
                                                 }
                                                 /*TODO FEED TASK LOGIC*/
+                                                let task_element = kanban.findElement(data.data.data.id);
+                                                let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                                                let board = kanban.findBoardJSON(board_id);
+                                                let task = kanban.findTaskJSON(board_id, data.data.data.id);
+                                                kanban.removeTask(board, task);
+                                                kanban.removeElement(data.data.data.id);
+                                                updatePercent(kanban, board);
                                                 break;
                                             }
                                         }

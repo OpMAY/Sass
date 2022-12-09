@@ -527,6 +527,20 @@ const kanbanDropTaskEventListener = (self, el, target, source, sibling) => {
         console.log(order);
         apiChangeTaskOrder(task.id, order).then((result) => {
             console.log('apiChangeTaskOrder', result);
+            KANBAN_WEBSOCKET.onSend({
+                plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+                action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name,
+                data: {
+                    category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
+                    subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name,
+                    target: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.ORDER.name,
+                    data: {
+                        id: task.id,
+                        board_id: target_board.id,
+                        position: order - 1,
+                    }
+                },
+            }, KANBAN_WEBSOCKET);
         });
     } else {
         //TODO 다른 보드 안에서 Order Change 일때
@@ -544,6 +558,20 @@ const kanbanDropTaskEventListener = (self, el, target, source, sibling) => {
         console.log(order);
         apiMoveTaskToOtherBoard(task.id, target_board.id, order).then((result) => {
             console.log('apiMoveTaskToOtherBoard', result);
+            KANBAN_WEBSOCKET.onSend({
+                plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+                action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name,
+                data: {
+                    category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
+                    subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name,
+                    target: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.MOVE.name,
+                    data: {
+                        id: task.id,
+                        board_id: target_board.id,
+                        position: order - 1,
+                    }
+                },
+            }, KANBAN_WEBSOCKET);
         });
     }
 
@@ -576,9 +604,37 @@ const kanbanDropBoardEventListener = (el, target, source, sibling) => {
     kanban.options.board_dragging = false;
     let board_id = el.dataset.id;
     let order = el.dataset.order * 1;
+    let board = kanban.findBoard(board_id);
+    let direction = 'append';
+    let check = false;
+    let base_board = board.previousSibling;
+    if (base_board === undefined || base_board === null) {
+        base_board = board.nextSibling;
+        if (base_board.dataset.id === 'add-board') {
+            check = true;
+        } else {
+            direction = 'prepend';
+        }
+    }
     apiChangeBoardOrder(board_id, order).then((result) => {
         console.log('apiChangeBoardOrder', result);
     });
+    if (!check) {
+        KANBAN_WEBSOCKET.onSend({
+            plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+            action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name,
+            data: {
+                category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
+                subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.name,
+                target: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.TARGET.ORDER.name,
+                data: {
+                    id: board_id,
+                    base_id: base_board.dataset.id,
+                    direction: direction,
+                }
+            },
+        }, KANBAN_WEBSOCKET);
+    }
 }
 
 //TODO 13번 - 우식

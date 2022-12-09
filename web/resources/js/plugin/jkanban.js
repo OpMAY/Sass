@@ -559,9 +559,9 @@
                 }
                 this.moveBoard = function (boardID, addOption = {baseId: undefined, direction: undefined}) {
                     let findBoard = self.findBoard(boardID);
-                    self.removeBoard(boardID);
                     findBoard.remove();
                     let findBoardJson = self.findBoardJSON(boardID);
+                    self.removeBoard(boardID);
                     self.addBoards([findBoardJson], false, addOption);
                 }
 
@@ -616,8 +616,9 @@
 
                 this.moveTask = function (taskID, addOption = {boardId: undefined, position: undefined}) {
                     let findTask = self.findElement(taskID);
-                    let findTaskJson = self.findTaskJSON(addOption.boardId, taskID);
-                    let baseBoardJson = self.findBoardJSON(addOption.boardId);
+                    let board_id = findTask.closest('.kanban-board[data-id]').dataset.id;
+                    let findTaskJson = self.findTaskJSON(board_id, taskID);
+                    let baseBoardJson = self.findBoardJSON(board_id);
                     self.removeTask(baseBoardJson, findTaskJson);
                     findTask.remove();
                     self.addElement(addOption.boardId, findTaskJson, addOption.position);
