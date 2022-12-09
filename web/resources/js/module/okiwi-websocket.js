@@ -347,9 +347,9 @@ const initializeSocket = ({
                               disconnect = () => {
                                   this.close();
                               },
-                          }, {plugin_type, user_no}) => {
+                          }, {plugin_type, user_no, hash}) => {
     //Initialize
-    WEBSOCKET = new WebSocket(getSocketWsURI(plugin_type));
+    WEBSOCKET = new WebSocket(getSocketWsURI(plugin_type, hash));
     //Options
     WEBSOCKET.options = {plugin_type, user_no};
     //Method
@@ -370,9 +370,9 @@ const initializeSocket = ({
     return WEBSOCKET;
 }
 
-function getSocketWsURI(plugin_type) {
+function getSocketWsURI(plugin_type, hash) {
     const protocol = window.location.protocol;
     const host = window.location.host;
-    if (protocol === 'http:') return `ws://${host}/socket/${plugin_type.toLowerCase()}`;
-    if (protocol === 'https:') return `wss://${host}/socket/${plugin_type.toLowerCase()}`;
+    if (protocol === 'http:') return `ws://${host}/socket/${plugin_type.toLowerCase()}/${hash}`;
+    if (protocol === 'https:') return `wss://${host}/socket/${plugin_type.toLowerCase()}/${hash}`;
 }

@@ -1365,7 +1365,8 @@
             },
         }, {
             plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
-            user_no: 10
+            user_no: 10,
+            hash: getURLParamByPrevAndNext('project', 'detail')
         });
         if (RIGHT_TASK_CONTAINER !== null && RIGHT_TASK_CONTAINER !== undefined) {
             initializeRightTask(websocket);
