@@ -974,7 +974,7 @@
                                 </div>
                                 <div class="right text-right">
                                   ${__createSubTasksHTML(item.subtasks !== undefined && item.subtasks !== null ? item.subtasks.length : void (0))}
-                                  <span class="time">${item.start_date === null || item.start_date === undefined ? '작업 날짜 미지정' : item.start_date.substring(2)}${item.start_date !== null && item.end_date !== null ? ' ~ ' : ''}${item.end_date === null || item.end_date === undefined ? '' : item.end_date.substring(2)}</span>
+                                  <span class="time">${item.start_date !== undefined && item.start_date !== null ? item.end_date !== undefined && item.end_date !== null ? item.start_date.substring(2) + ' ~ ' + item.end_date.substring(2) : item.start_date.substring(2) + ' ~ ' + '종료 날짜 미지정' : item.end_date !== undefined && item.end_date !== null ? '시작 날짜 미지정' + ' ~ ' + item.end_date.substring(2) : '날짜 미지정'}</span>
                                 </div>
                             </div>
                             <div class="btn-group dropright">
@@ -995,7 +995,7 @@
                                 </div>
                                 <div class="right text-right">
                                   ${__createSubTasksHTML(item.subtasks !== undefined && item.subtasks !== null ? item.subtasks.length : void (0))}
-                                  <span class="time">${item.start_date === null || item.start_date === undefined ? '작업 날짜 미지정' : item.start_date.substring(2)}${(item.start_date !== null && item.start_date !== undefined && item.end_date !== null && item.end_date !== undefined) ? ' ~ ' : ''}${item.end_date === null || item.end_date === undefined ? ' ' : item.end_date.substring(2)}</span>
+                                  <span class="time">${item.start_date !== undefined && item.start_date !== null ? item.end_date !== undefined && item.end_date !== null ? item.start_date.substring(2) + ' ~ ' + item.end_date.substring(2) : item.start_date.substring(2) + ' ~ ' + '종료 날짜 미지정' : item.end_date !== undefined && item.end_date !== null ? '시작 날짜 미지정' + ' ~ ' + item.end_date.substring(2) : '날짜 미지정'}</span>
                                 </div>
                             </div>
                             <div class="btn-group dropright">
