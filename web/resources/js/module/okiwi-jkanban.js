@@ -140,6 +140,19 @@ function contextMenuClickEventListener(event) {
                             task_element.prepend(kanban_item_cover);
                             task.cover = image;
                         }
+                        KANBAN_WEBSOCKET.onSend({
+                            plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+                            action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name,
+                            data: {
+                                category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
+                                subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name,
+                                target: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.THUMBNAIL.name,
+                                data: {
+                                    id: taskId,
+                                    cover: image
+                                }
+                            },
+                        }, KANBAN_WEBSOCKET);
                     } else {
                         alert(result.data.error_message);
                     }
@@ -157,6 +170,18 @@ function contextMenuClickEventListener(event) {
                     task_element.querySelector('.kanban-item-cover').remove();
                     task.cover = null;
                     delete task.cover;
+                    KANBAN_WEBSOCKET.onSend({
+                        plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+                        action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name,
+                        data: {
+                            category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
+                            subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name,
+                            target: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.THUMBNAIL.name,
+                            data: {
+                                id: taskId
+                            }
+                        },
+                    }, KANBAN_WEBSOCKET);
                 } else {
                     alert(result.data.error_message);
                 }
@@ -238,8 +263,8 @@ function contextMenuClickEventListener(event) {
                     subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name,
                     target: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.TASK.name,
                     data: {
-                        task : _task,
-                        board_id : boardId
+                        task: _task,
+                        board_id: boardId
                     }
                 },
             }, KANBAN_WEBSOCKET);
@@ -260,7 +285,7 @@ function contextMenuClickEventListener(event) {
                     target: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.TASK.name,
                     data: {
                         id: taskId,
-                        board_id : boardId
+                        board_id: boardId
                     }
                 },
             }, KANBAN_WEBSOCKET);
@@ -290,18 +315,18 @@ const checkboxClickEventListener = (kanban, el) => {
             const board = kanban.findBoardJSON(boardId);
             updatePercent(kanban, board);
             KANBAN_WEBSOCKET.onSend({
-                    plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
-                    action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name,
+                plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+                action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name,
+                data: {
+                    category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
+                    subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name,
+                    target: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.CHECK.name,
                     data: {
-                        category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
-                        subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name,
-                        target: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.CHECK.name,
-                        data: {
-                            id: taskId,
-                            check: task.complete
-                        }
-                    },
-                }, KANBAN_WEBSOCKET);
+                        id: taskId,
+                        check: task.complete
+                    }
+                },
+            }, KANBAN_WEBSOCKET);
         });
     } else {
         apiUpdateTaskStatus(taskId).then((result) => {
@@ -311,18 +336,18 @@ const checkboxClickEventListener = (kanban, el) => {
             const board = kanban.findBoardJSON(boardId);
             updatePercent(kanban, board);
             KANBAN_WEBSOCKET.onSend({
-                    plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
-                    action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name,
+                plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+                action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name,
+                data: {
+                    category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
+                    subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name,
+                    target: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.CHECK.name,
                     data: {
-                        category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
-                        subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name,
-                        target: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.CHECK.name,
-                        data: {
-                            id: taskId,
-                            check: task.complete
-                        }
-                    },
-                }, KANBAN_WEBSOCKET);
+                        id: taskId,
+                        check: task.complete
+                    }
+                },
+            }, KANBAN_WEBSOCKET);
         });
     }
 }
@@ -340,12 +365,39 @@ const kanbanClickSubTaskEventListener = (el) => {
             console.log('apiChangeSubTaskStatus', result);
             subtask.complete = true;
             el.classList.add('active');
+            KANBAN_WEBSOCKET.onSend({
+                plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+                action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name,
+                data: {
+                    category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
+                    subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name,
+                    target: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.SUBTASK_CHECK.name,
+                    data: {
+                        id: taskId,
+                        subtask_id: subtask_id,
+                        check: subtask.complete
+                    }
+                },
+            }, KANBAN_WEBSOCKET);
         });
     } else {
         apiChangeSubTaskStatus(subtask_id).then((result) => {
             console.log('apiChangeSubTaskStatus', result);
             subtask.complete = false;
             el.classList.remove('active');
+            KANBAN_WEBSOCKET.onSend({
+                plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+                action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+                    category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
+                    subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name,
+                    target: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.SUBTASK_CHECK.name,
+                    data: {
+                        id: taskId,
+                        subtask_id: subtask_id,
+                        check: subtask.complete
+                    }
+                },
+            }, KANBAN_WEBSOCKET);
         });
     }
 }
@@ -603,8 +655,8 @@ const kanbanAddTaskEventListener = (el, boardId) => {
                         subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name,
                         target: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.TASK.name,
                         data: {
-                            task : task,
-                            board_id : boardId
+                            task: task,
+                            board_id: boardId
                         }
                     },
                 }, KANBAN_WEBSOCKET);
