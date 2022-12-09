@@ -692,7 +692,7 @@ const kanbanUpdateBoardEventListener = (selected_option, board, boardId) => {
 //TODO 20221102 - 16번 - 지우 O
 const kanbanAddTaskEventListener = (el, boardId) => {
     const task = {
-        board_id: boardId, id: tokenGenerator(8), title: tokenGenerator(8), complete: false, profiles: [], work: 0,
+        board_id: boardId, id: tokenGenerator(8), title: tokenGenerator(8), complete: false, profiles: [], work: 0, subtasks: []
     };
     createTask(task).then((result) => {
         console.log(result);
