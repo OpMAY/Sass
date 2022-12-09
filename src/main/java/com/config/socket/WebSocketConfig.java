@@ -19,7 +19,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(webSocketHandler, "socket")
-                .addHandler(crmWebSocketHandler, "socket/crm")
+                .addHandler(crmWebSocketHandler, "socket/crm/**")
                 .setAllowedOrigins("**")
                 .addInterceptors(handShakeInterceptor);
     }
