@@ -787,6 +787,12 @@
                                     case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name:
                                         break;
                                     case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.name:
+                                        console.log('addBoard', data);
+                                        kanban.addBoards(data.data.data, false, {
+                                            baseId: data.data.data[0].baseId, direction: data.data.data[0].direction
+                                        })
+                                        kanban.updateBoardsOrder(function (updated_board_orders) {
+                                        })
                                         break;
                                     case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.PROJECT.name:
                                         break;
@@ -822,6 +828,16 @@
                                         }
                                         break;
                                     case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.name:
+                                        switch (data.data.target) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.TARGET.TITLE.name : {
+                                                let board_element = kanban.findBoard(data.data.data.id);
+                                                let item_board = kanban.findBoardJSON(data.data.data.id);
+                                                item_board.title = data.data.data.title;
+                                                let title_element = board_element.querySelector('.kanban-board-header .kanban-title-board');
+                                                title_element.innerHTML = createBoardTitleElement(data.data.data.title);
+                                                break;
+                                            }
+                                        }
                                         break;
                                     case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.PROJECT.name:
                                         break;
@@ -1101,7 +1117,7 @@
                     apiGetProject(HASH_PARAM).then((result) => {
                         console.log('getProjects', result);
                         let boards = boardsTypeChanger(result.data.project.boardList);
-                        initializeKanban(boards);
+                        initializeKanban(boards, websocket);
                     });
                     break;
                 case 'list':
@@ -1173,7 +1189,7 @@
         apiGetProject(HASH_PARAM).then((result) => {
             console.log('getProjects', result);
             let boards = boardsTypeChanger(result.data.project.boardList);
-            initializeKanban(boards);
+            initializeKanban(boards, websocket);
         });
 
         //Context Menu Clear Event

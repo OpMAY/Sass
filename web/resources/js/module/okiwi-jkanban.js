@@ -1,6 +1,10 @@
 'use strict';
 let kanban;
-const initializeKanban = (boards) => {
+let KANBAN_WEBSOCKET;
+const initializeKanban = (boards, websocket) => {
+    if (!KANBAN_WEBSOCKET) {
+        KANBAN_WEBSOCKET = websocket;
+    }
     const taskAddOption = {
         enabled: true, content: '업무 추가하기', footer: true, class: 'kanban-add-task btn btn-block',
     };
@@ -34,6 +38,20 @@ const initializeKanban = (boards) => {
                         self.addBoards(boards, false, {
                             baseId: self.options.addBoardOption.id, direction: 'prepend'
                         });
+
+                        boards[0].baseId = self.options.addBoardOption.id;
+                        boards[0].direction = 'prepend';
+
+                        KANBAN_WEBSOCKET.onSend({
+                            plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+                            action_type: WEBSOCKET_ACTION_TYPE.CREATE.name,
+                            data: {
+                                category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
+                                subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.name,
+                                target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.BOARD.TARGET.BOARD.name,
+                                data: boards
+                            },
+                        }, KANBAN_WEBSOCKET);
                     } else {
                         alert(result.data.error_message);
                     }
@@ -580,6 +598,19 @@ function boardTitleUpdateClickEventListener(e, is_close) {
         $(board_option_container).show();
         const item_board = kanban.findBoardJSON(board.dataset.id);
         item_board.title = `${value}`;
+        KANBAN_WEBSOCKET.onSend({
+            plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+            action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name,
+            data: {
+                category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
+                subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.name,
+                target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.BOARD.TARGET.TITLE.name,
+                data: {
+                    id: board.dataset.id,
+                    title: value
+                }
+            },
+        }, KANBAN_WEBSOCKET);
     });
 }
 
@@ -649,6 +680,18 @@ const addBoards = (kanban, direction, boardId, boards) => {
                                     kanban.updateBoardsOrder(function (updated_order_boards) {
                                         //console.log('updated_boards', updated_order_boards);
                                     });
+                                    boards[0].baseId = boardId;
+                                    boards[0].direction = 'prepend';
+                                    KANBAN_WEBSOCKET.onSend({
+                                        plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+                                        action_type: WEBSOCKET_ACTION_TYPE.CREATE.name,
+                                        data: {
+                                            category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
+                                            subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.name,
+                                            target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.BOARD.TARGET.BOARD.name,
+                                            data: boards
+                                        },
+                                    }, KANBAN_WEBSOCKET);
                                 } else {
                                     alert(result.data.error_message);
                                 }
@@ -675,6 +718,19 @@ const addBoards = (kanban, direction, boardId, boards) => {
                                     kanban.updateBoardsOrder(function (updated_order_boards) {
                                         //console.log('updated_boards', updated_order_boards);
                                     });
+
+                                    boards[0].baseId = boardId;
+                                    boards[0].direction = 'append';
+                                    KANBAN_WEBSOCKET.onSend({
+                                        plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+                                        action_type: WEBSOCKET_ACTION_TYPE.CREATE.name,
+                                        data: {
+                                            category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
+                                            subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.name,
+                                            target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.BOARD.TARGET.BOARD.name,
+                                            data: boards
+                                        },
+                                    }, KANBAN_WEBSOCKET);
                                 } else {
                                     alert(result.data.error_message);
                                 }
@@ -693,6 +749,16 @@ const addBoards = (kanban, direction, boardId, boards) => {
                     if (result.data.status) {
                         boards[0] = boardTypeChanger(result.data.board);
                         kanban.addBoards(boards);
+                        KANBAN_WEBSOCKET.onSend({
+                            plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name,
+                            action_type: WEBSOCKET_ACTION_TYPE.CREATE.name,
+                            data: {
+                                category: WEBSOCKET_CATEGORY.CATEGORY.FEED.name,
+                                subcategory: WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.name,
+                                target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.BOARD.TARGET.BOARD.name,
+                                data: boards
+                            },
+                        }, KANBAN_WEBSOCKET);
                     } else {
                         alert(result.data.error_message);
                     }
