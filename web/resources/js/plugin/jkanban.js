@@ -553,6 +553,12 @@
                     }
                     return self
                 }
+                this.moveBoard = function (boardID, addOption = {baseId: undefined, direction: undefined}) {
+                    let findBoard = self.findBoard(boardID);
+                    findBoard.remove();
+                    let findBoardJson = self.findBoardJSON(boardID);
+                    self.addBoards([findBoardJson], false, addOption);
+                }
 
                 this.updateBoardsOrder = function (callback) {
                     let index = 1
