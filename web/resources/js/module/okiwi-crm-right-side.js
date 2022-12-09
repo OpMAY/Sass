@@ -295,6 +295,7 @@ const rightTaskCommentsInit = (comments) => {
 const rightTaskFilesInit = (files) => {
     let container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._files-container');
     files = filesChanger(files);
+    console.log(files);
     initializeFiles({container, files});
 }
 
@@ -1260,7 +1261,6 @@ function rightTaskMessageFileChangeEventListener(event) {
                         }
                     }
                 })
-
             }
 
             reader.readAsDataURL(input.files[0]);
@@ -1288,7 +1288,19 @@ function rightTaskMessageFileChangeEventListener(event) {
         // date: current_date
     };
     readURL(input, comment, (comment) => {
-        comments_container.appendChild(createRightTaskCommentItem(comment))
+        comments_container.appendChild(createRightTaskCommentItem(comment));
+        RIGHT_TASK_WEBSOCKET.onSend({
+            plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+                category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+                subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+                target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.FILE.name,
+                data: {
+                    id: task_id,
+                    comment,
+                    file: comment.file
+                }
+            },
+        }, RIGHT_TASK_WEBSOCKET);
     });
 }
 
@@ -1345,6 +1357,17 @@ function rightTaskPluginInputKeyInputEventListener(event) {
     apiChangeTaskPluginUrl(task_id, plugin_type, content.value).then((result) => {
         console.log('apiChangeTaskDescription', result);
     });
+    RIGHT_TASK_WEBSOCKET.onSend({
+        plugin_type: WEBSOCKET_PLUG_TYPE.CRM.name, action_type: WEBSOCKET_ACTION_TYPE.UPDATE.name, data: {
+            category: WEBSOCKET_CATEGORY.CATEGORY.SIDE.name,
+            subcategory: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.name,
+            target: plugin_type,
+            data: {
+                id: task_id,
+                url: content.value
+            }
+        },
+    }, RIGHT_TASK_WEBSOCKET);
 }
 
 function debounce(callback, limit = 100) {
