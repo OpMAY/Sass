@@ -300,7 +300,11 @@
                     if (self.options.itemHandleOptions.enabled) {
                         nodeItem.style.cursor = 'default'
                     }
-                    board.insertBefore(nodeItem, footerNode);
+                    if (position === -1) {
+                        board.insertBefore(nodeItem, footerNode);
+                    } else {
+                        board.insertBefore(nodeItem, refElement);
+                    }
                     return self
                 }
 
@@ -555,6 +559,7 @@
                 }
                 this.moveBoard = function (boardID, addOption = {baseId: undefined, direction: undefined}) {
                     let findBoard = self.findBoard(boardID);
+                    self.removeBoard(boardID);
                     findBoard.remove();
                     let findBoardJson = self.findBoardJSON(boardID);
                     self.addBoards([findBoardJson], false, addOption);
@@ -609,11 +614,18 @@
                     return el.parentNode.parentNode.dataset.id
                 }
 
+                this.moveTask = function (taskID, addOption = {boardId: undefined, position: undefined}) {
+                    let findTask = self.findElement(taskID);
+                    let findTaskJson = self.findTaskJSON(addOption.boardId, taskID);
+                    let baseBoardJson = self.findBoardJSON(addOption.boardId);
+                    self.removeTask(baseBoardJson, findTaskJson);
+                    findTask.remove();
+                    self.addElement(addOption.boardId, findTaskJson, addOption.position);
+                }
                 this.moveElement = function (targetBoardID, elementID, element) {
                     if (targetBoardID === this.getParentBoardID(elementID)) {
                         return
                     }
-
                     this.removeElement(elementID)
                     return this.addElement(targetBoardID, element)
                 }
