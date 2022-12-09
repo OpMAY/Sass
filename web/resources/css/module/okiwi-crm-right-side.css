@@ -284,7 +284,7 @@
     border-top: var(--border-1px) var(--gray-high-medium);
     padding-top: 24px;
     padding-bottom: 24px;
-    height: calc(100vh - 400px);
+    height: calc(100vh - 400px - 84px);
 }
 
 .right-side-inner ._tab .tab-content .tab-pane {
@@ -508,7 +508,7 @@
 
 .right-side-inner .tab-content ._comments {
     height: 100%;
-    max-height: calc(100vh - 558px - 24px);
+    max-height: calc(100vh - 558px - 24px - 84px);
     overflow-y: auto;
     padding-left: 24px;
     padding-right: 24px;
@@ -626,11 +626,8 @@
 }
 
 .right-side-inner .tab-content ._files-container {
-    padding-top: 0;
-    padding-bottom: 0;
-    padding-left: 24px;
-    padding-right: 24px;
-    max-height: 488px;
+    padding: 0 24px;
+    max-height: calc(488px - 84px);
     height: 100%;
     overflow: auto;
 }

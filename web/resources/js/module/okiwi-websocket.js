@@ -99,6 +99,12 @@ const WEBSOCKET_CATEGORY = {
                             name: 'SUBTASK_REMOVE',
                         }, COMMENT: {
                             name: 'COMMENT',
+                        }, FILE: {
+                            name: 'FILE',
+                        }, FIGMA: {
+                            name: 'FIGMA',
+                        }, QUERY: {
+                            name: 'QUERY',
                         }
                     }
                 },
@@ -159,6 +165,12 @@ const WEBSOCKET_CATEGORY = {
                             name: 'SUBTASK_REMOVE',
                         }, COMMENT: {
                             name: 'COMMENT',
+                        }, FILE: {
+                            name: 'FILE',
+                        }, FIGMA: {
+                            name: 'FIGMA',
+                        }, QUERY: {
+                            name: 'QUERY',
                         }
                     }
                 },
@@ -219,6 +231,12 @@ const WEBSOCKET_CATEGORY = {
                             name: 'SUBTASK_REMOVE',
                         }, COMMENT: {
                             name: 'COMMENT',
+                        }, FILE: {
+                            name: 'FILE',
+                        }, FIGMA: {
+                            name: 'FIGMA',
+                        }, QUERY: {
+                            name: 'QUERY',
                         }
                     }
                 },
@@ -279,6 +297,12 @@ const WEBSOCKET_CATEGORY = {
                             name: 'SUBTASK_REMOVE',
                         }, COMMENT: {
                             name: 'COMMENT',
+                        }, FILE: {
+                            name: 'FILE',
+                        }, FIGMA: {
+                            name: 'FIGMA',
+                        }, QUERY: {
+                            name: 'QUERY',
                         }
                     }
                 },

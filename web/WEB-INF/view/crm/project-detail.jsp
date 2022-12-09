@@ -973,6 +973,58 @@
                                                 /*TODO FEED TASK LOGIC*/
                                                 break;
                                             }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.FILE.name: {
+                                                console.log('FILE', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    let comments_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._comments');
+                                                    comments_container.appendChild(createRightTaskCommentItem(data.data.data.comment));
+                                                    let files_container = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._tab ._files-container');
+                                                    let dates = files_container.querySelectorAll('.date-item');
+                                                    let check = false;
+                                                    if (dates.length !== 0) {
+                                                        dates.forEach(function (date) {
+                                                            if (date.querySelector('._files[data-date]').dataset.date === data.data.data.comment.date) {
+                                                                let date_item_files_container = files_container.querySelector('._files[data-date="' + data.data.data.comment.date + '"]');
+                                                                date_item_files_container.appendChild(createFileItem(data.data.data.file));
+                                                                check = true;
+                                                            }
+                                                        });
+                                                        if (!check) {
+                                                            let first_element = files_container.querySelector('.date-item:first-child');
+                                                            first_element.insertBefore(createFileDateItem(data.data.data.comment.date));
+                                                            let date_item_files_container = files_container.querySelector('._files[data-date="' + data.data.data.comment.date + '"]');
+                                                            date_item_files_container.appendChild(createFileItem(data.data.data.file));
+                                                        }
+                                                    } else {
+                                                        files_container.appendChild(createFileDateItem(data.data.data.comment.date));
+                                                        let date_item_files_container = files_container.querySelector('._files[data-date="' + data.data.data.comment.date + '"]');
+                                                        date_item_files_container.appendChild(createFileItem(data.data.data.file));
+                                                    }
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.FIGMA.name: {
+                                                console.log('FIGMA', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    let plug_input = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._info ._plugin[data-type="FIGMA"] input');
+                                                    plug_input.value = data.data.data.url;
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.QUERY.name: {
+                                                console.log('QUERY', data.data.target);
+                                                /*TODO SIDE TASK LOGIC*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    let plug_input = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._info ._plugin[data-type="QUERY"] input');
+                                                    plug_input.value = data.data.data.url;
+                                                }
+                                                /*TODO FEED TASK LOGIC*/
+                                                break;
+                                            }
                                         }
                                         break;
                                     case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.BOARD.name:
