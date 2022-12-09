@@ -770,6 +770,7 @@ function rightTaskStartDatePickerChangeEventListener(event) {
         }
     }
     let start_date = this.value;
+    let end_time = undefined;
     apiChangeTaskStart(task_id, start_date).then((result) => {
         console.log('apiChangeTaskStart', result);
         let type = document.querySelector('#project-tab').querySelector('button.nav-link.active').dataset.target;
@@ -780,7 +781,8 @@ function rightTaskStartDatePickerChangeEventListener(event) {
                 let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
                 let task = kanban.findTaskJSON(board_id, task_id);
                 start_time = $('#start').val().trim().replaceAll(/\./g, '-').substring(2);
-                let end_time = $('#end').val().trim().replaceAll(/\./g, '-').substring(2);
+                end_time = $('#end').val().trim().replaceAll(/\./g, '-').substring(2);
+                task.start_date = $('#start').val().trim().replaceAll(/\./g, '-');
                 if (end_time.length !== 0) {
                     task_element.querySelector('.kanban-item-task-info .time').innerHTML = `${start_time} - ${end_time}`;
                 } else {
@@ -808,7 +810,8 @@ function rightTaskStartDatePickerChangeEventListener(event) {
             target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.DATE_START.name,
             data: {
                 id: task_id,
-                start_date
+                start_date: $('#start').val().trim().replaceAll(/\./g, '-'),
+                end_date: $('#end').val().trim().replaceAll(/\./g, '-')
             }
         },
     }, RIGHT_TASK_WEBSOCKET);
@@ -828,8 +831,11 @@ function rightTaskEndDatePickerChangeEventListener(event) {
         switch (type) {
             case '#feed':
                 task_element = kanban.findElement(task_id);
+                let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                let task = kanban.findTaskJSON(board_id, task_id);
                 let start_time = $('#start').val().trim().replaceAll(/\./g, '-').substring(2);
                 end_time = $('#end').val().trim().replaceAll(/\./g, '-').substring(2);
+                task.end_date = $('#end').val().trim().replaceAll(/\./g, '-');
                 console.log(start_time, end_time);
                 if (start_time.length !== 0) {
                     task_element.querySelector('.kanban-item-task-info .time').innerHTML = `${start_time} - ${end_time}`;
@@ -854,7 +860,8 @@ function rightTaskEndDatePickerChangeEventListener(event) {
             target: WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.DATE_END.name,
             data: {
                 id: task_id,
-                end_date
+                start_date: $('#start').val().trim().replaceAll(/\./g, '-'),
+                end_date: $('#end').val().trim().replaceAll(/\./g, '-')
             }
         },
     }, RIGHT_TASK_WEBSOCKET);

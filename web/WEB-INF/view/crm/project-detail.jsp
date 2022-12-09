@@ -785,6 +785,10 @@
                             case WEBSOCKET_CATEGORY.CATEGORY.FEED.name:
                                 switch (data.data.subcategory) {
                                     case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name:
+                                        console.log('addTask and copyTask : ', data);
+                                        kanban.addTaskAndElement(data.data.data.board_id, data.data.data.task);
+                                        const board = kanban.findBoardJSON(data.data.data.board_id);
+                                        updatePercent(kanban, board);
                                         break;
                                     case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.name:
                                         console.log('addBoard', data);
@@ -823,6 +827,34 @@
                                                 let task = kanban.findTaskJSON(boardId, task_element.dataset.eid);
                                                 task_element.querySelector('.kanban-item-title .title').innerHTML = task.title = data.data.data.name;
                                                 /*TODO SIDE 적용 로직 미적용*/
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._title input').value = data.data.data.name;
+                                                }
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.TARGET.CHECK.name : {
+                                                if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                                    let checkbox = RIGHT_TASK_CONTAINER.querySelector('.right-side-inner > ._title .checkbox');
+                                                    if (data.data.data.check) {
+                                                        checkbox.classList.add('is-checked');
+                                                    } else {
+                                                        checkbox.classList.remove('is-checked');
+                                                    }
+                                                }
+                                                console.log("category check")
+                                                let task_element = kanban.findElement(data.data.data.id);
+                                                let boardId = task_element.closest('.kanban-board[data-id]').dataset.id;
+                                                let task = kanban.findTaskJSON(boardId, data.data.data.id);
+                                                let checkbox = task_element.querySelector('.checkbox');
+                                                task.complete = data.data.data.check;
+                                                if(data.data.data.check) {
+                                                    checkbox.classList.add('active');
+                                                } else {
+                                                    checkbox.classList.remove('active');
+                                                }
+                                                let board_json = kanban.findBoardJSON(boardId);
+                                                console.log(boardId, board_json);
+                                                updatePercent(kanban, board_json);
                                                 break;
                                             }
                                         }
@@ -882,6 +914,18 @@
                                                     }
                                                 }
                                                 /*TODO FEED TASK LOGIC*/
+                                                let task_element = kanban.findElement(data.data.data.id);
+                                                let boardId = task_element.closest('.kanban-board[data-id]').dataset.id;
+                                                let task = kanban.findTaskJSON(boardId, data.data.data.id);
+                                                let checkbox = task_element.querySelector('.checkbox');
+                                                task.complete = data.data.data.check;
+                                                if(data.data.data.check) {
+                                                    checkbox.classList.add('active');
+                                                } else {
+                                                    checkbox.classList.remove('active');
+                                                }
+                                                let board_json = kanban.findBoardJSON(boardId);
+                                                updatePercent(kanban, board_json);
                                                 break;
                                             }
                                             case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.MEMBER_ADD.name: {
@@ -893,6 +937,14 @@
                                                     assign_user_add.before(createRightTaskAssignItem(data.data.data.profile));
                                                 }
                                                 /*TODO FEED TASK LOGIC*/
+                                                let task_element = kanban.findElement(data.data.data.id);
+                                                let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                                                let task = kanban.findTaskJSON(board_id, data.data.data.id);
+                                                task.profiles.push(data.data.data.profile);
+                                                task.profiles = duplicateProfilesRemover(task.profiles);
+                                                let profile_container = task_element.querySelector('.kanban-item-task-info .left');
+                                                deleteChild(profile_container);
+                                                profile_container.innerHTML = kanban.__createProfileHTML(task.profiles);
                                                 break;
                                             }
                                             case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.MEMBER_REMOVE.name: {
@@ -904,24 +956,57 @@
                                                     user_item.remove();
                                                 }
                                                 /*TODO FEED TASK LOGIC*/
+                                                let task_element = kanban.findElement(data.data.data.id);
+                                                let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                                                let task = kanban.findTaskJSON(board_id, data.data.data.id);
+                                                task.profiles = task.profiles.filter((_profile) => {
+                                                    if (_profile.no !== data.data.data.user_no) {
+                                                        return true;
+                                                    }
+                                                    return false;
+                                                });
+                                                task.profiles = duplicateProfilesRemover(task.profiles);
+                                                let profile_container = task_element.querySelector('.kanban-item-task-info .left');
+                                                deleteChild(profile_container);
+                                                profile_container.innerHTML = kanban.__createProfileHTML(task.profiles);
                                                 break;
                                             }
                                             case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.DATE_START.name: {
                                                 console.log('DATE_START', data.data.target);
                                                 /*TODO SIDE TASK LOGIC*/
                                                 if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
-                                                    $('#start').val(data.data.data.start_date);
+                                                    $('#start').val(data.data.data.start_date.replaceAll('-', '.'));
                                                 }
                                                 /*TODO FEED TASK LOGIC*/
+                                                let task_element = kanban.findElement(data.data.data.id);
+                                                let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                                                let task = kanban.findTaskJSON(board_id, data.data.data.id);
+                                                task.start_date = data.data.data.start_date;
+                                                let end_date = data.data.data.end_date;
+                                                if (end_date !== undefined && end_date.length !== 0) {
+                                                    task_element.querySelector('.kanban-item-task-info .time').innerHTML = data.data.data.start_date.substring(2) + ` - ` + data.data.data.end_date.substring(2);
+                                                } else {
+                                                    task_element.querySelector('.kanban-item-task-info .time').innerHTML = data.data.data.start_date.substring(2) + ` - 미설정`;
+                                                }
                                                 break;
                                             }
                                             case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.DATE_END.name: {
                                                 console.log('DATE_END', data.data.target);
                                                 /*TODO SIDE TASK LOGIC*/
                                                 if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
-                                                    $('#end').val(data.data.data.end_date);
+                                                    $('#end').val(data.data.data.end_date.replaceAll('-', '.'));
                                                 }
                                                 /*TODO FEED TASK LOGIC*/
+                                                let task_element = kanban.findElement(data.data.data.id);
+                                                let board_id = task_element.closest('.kanban-board[data-id]').dataset.id;
+                                                let task = kanban.findTaskJSON(board_id, data.data.data.id);
+                                                let start_date = data.data.data.start_date;
+                                                task.end_date = data.data.data.end_date;
+                                                if (start_date !== undefined && start_date.length !== 0) {
+                                                    task_element.querySelector('.kanban-item-task-info .time').innerHTML = start_date.substring(2) + ` - ` + data.data.data.end_date.substring(2);
+                                                } else {
+                                                    task_element.querySelector('.kanban-item-task-info .time').innerHTML = `미설정 - ` + data.data.data.end_date.substring(2);
+                                                }
                                                 break;
                                             }
                                             case WEBSOCKET_CATEGORY.CATEGORY.SIDE.SUBCATEGORY.TASK.TARGET.DESCRIPTION.name: {
@@ -1056,8 +1141,29 @@
                             case WEBSOCKET_CATEGORY.CATEGORY.FEED.name:
                                 switch (data.data.subcategory) {
                                     case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.TASK.name:
+                                        let board = kanban.findBoardJSON(data.data.data.board_id);
+                                        let task = kanban.findTaskJSON(data.data.data.board_id, data.data.data.id);
+                                        kanban.removeTask(board, task);
+                                        kanban.removeElement(data.data.data.id);
+                                        updatePercent(kanban, board);
+                                        if (RIGHT_TASK_CONTAINER.dataset.id === data.data.data.id) {
+                                            rightTaskClose();
+                                            viewAlert({content: '작업 중이던 업무가 삭제되었습니다.'});
+                                        }
                                         break;
                                     case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.BOARD.name:
+                                        let board_json = kanban.findBoardJSON(data.data.data.id);
+                                        let opened_task_id = RIGHT_TASK_CONTAINER.dataset.id;
+                                        let exist = board_json.item.filter(function (task) {
+                                            if(task.id === opened_task_id) {
+                                                return true;
+                                            }
+                                        }).length > 0;
+                                        if(exist) {
+                                            rightTaskClose();
+                                            viewAlert({content: '작업 중이던 업무가 삭제되었습니다.'});
+                                        }
+                                        removeBoard(kanban, data.data.data.id);
                                         break;
                                     case WEBSOCKET_CATEGORY.CATEGORY.FEED.SUBCATEGORY.PROJECT.name:
                                         break;
