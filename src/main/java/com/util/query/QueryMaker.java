@@ -138,11 +138,16 @@ public class QueryMaker {
     private List<String> reformatTableListOnRelation(Map<String, List<String>> relationMap) {
         log.info("relationMap : {}", relationMap);
 
+        // TODO 자기참조 예외
         for (int i = 0; i < tableList.size(); i++) {
             log.info("targetId : {}, i : {}", tableList.get(i), i);
             String tableId = tableList.get(i);
             if (relationMap.containsKey(tableId)) {
                 log.info("contained -> {}", tableId);
+                for(String key : relationMap.keySet()) {
+                    // 자기참조는 순서를 잡는 데에 영향을 미치지 않으므로 삭제
+                    relationMap.get(key).removeIf(value -> value.equals(key));
+                }
                 List<String> connectedTableList = relationMap.get(tableId);
                 int connected_table_list_size = connectedTableList.size();
                 int count = 0;
