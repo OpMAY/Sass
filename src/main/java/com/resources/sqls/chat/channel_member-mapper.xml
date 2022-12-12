@@ -3,4 +3,31 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.chat.ChannelMemberMapper">
+    <resultMap id="CompanyProfileMember" type="com.model.company.CompanyProfileMember">
+        <result column="profile_img" property="profile_img" javaType="com.model.common.MFile"
+                typeHandler="com.middleware.JsonObjectTypeHandler"/>
+    </resultMap>
+    <insert id="insertChannelMember">
+        insert into channel_member(channel_no, company_member_no, reg_datetime)
+        VALUES (#{channel_no}, #{company_member_no}, now())
+    </insert>
+    <delete id="deleteChannelMember">
+        delete
+        from channel_member
+        WHERE company_member_no = #{company_member_no}
+          AND channel_no = #{channel_no}
+    </delete>
+    <select id="getChannelMembers" resultType="CompanyProfileMember" resultMap="CompanyProfileMember">
+        select cm.no, u.name, u.profile_img
+        from channel_member
+                 left join company_member cm on channel_member.company_member_no = cm.no
+                 left join user u on cm.user_no = u.no
+        WHERE channel_no = #{channel_no}
+    </select>
+    <select id="isUserChannelMember" resultType="_boolean">
+        select EXISTS(select *
+                      from channel_member
+                      WHERE channel_no = #{channel_no}
+                        AND company_member_no = (select no from company_member WHERE user_no = #{user_no}))
+    </select>
 </mapper>

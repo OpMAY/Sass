@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class MessageSaveDao {
-    private MessageSaveMapper mapper;
+    private final MessageSaveMapper mapper;
     private MessageSaveDao(SqlSession sqlSession) {
         this.mapper = sqlSession.getMapper(MessageSaveMapper.class);
     }

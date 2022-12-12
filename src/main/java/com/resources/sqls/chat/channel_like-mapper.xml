@@ -3,4 +3,28 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.chat.ChannelLikeMapper">
+    <select id="isChannelLiked" resultType="_boolean">
+        select EXISTS(select *
+                      from channel_like
+                      WHERE channel_no = #{channel_no}
+                        AND company_member_no =
+                            (select company_member.no from company_member WHERE user_no = #{user_no}))
+    </select>
+    <select id="getLikedChannels" resultType="Channel">
+        select *
+        from channel
+        WHERE no in (select channel_no
+                     from channel_like
+                     WHERE company_member_no = (select no from company_member WHERE user_no = #{user_no}))
+    </select>
+    <insert id="insertChannelLike">
+        insert into channel_like(company_member_no, channel_no, reg_datetime)
+        VALUES (#{company_member_no}, #{channel_no}, now())
+    </insert>
+    <delete id="deleteChannelLike">
+        delete
+        from channel_like
+        where company_member_no = (select company_member.no from company_member WHERE user_no = #{user_no})
+          AND channel_no = #{channel_no};
+    </delete>
 </mapper>

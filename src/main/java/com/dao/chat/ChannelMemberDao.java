@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class ChannelMemberDao {
-    private ChannelMemberMapper mapper;
+    private final ChannelMemberMapper mapper;
     private ChannelMemberDao(SqlSession sqlSession) {
         this.mapper = sqlSession.getMapper(ChannelMemberMapper.class);
     }

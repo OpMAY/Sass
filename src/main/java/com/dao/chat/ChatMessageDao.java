@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class ChatMessageDao {
-    private ChatMessageMapper mapper;
+    private final ChatMessageMapper mapper;
     private ChatMessageDao(SqlSession sqlSession) {
         this.mapper = sqlSession.getMapper(ChatMessageMapper.class);
     }

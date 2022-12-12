@@ -3,4 +3,34 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.chat.ChannelMapper">
+    <select id="getMyChannels" resultType="Channel">
+        select *
+        from channel
+        WHERE company_no = (select company_no from company_member WHERE user_no = #{user_no})
+    </select>
+    <select id="getChannelsByCompanyNo" resultType="Channel">
+        select *
+        from channel
+        WHERE company_no = #{company_no}
+    </select>
+    <select id="getChannelByNo" resultType="Channel">
+        select *
+        from channel
+        WHERE no = #{no}
+    </select>
+    <insert id="createChannel" keyProperty="no" useGeneratedKeys="true">
+        insert into channel(company_no, name, type, reg_datetime, updated_datetime)
+        VALUES (#{company_no}, #{name}, #{type}, now(), now())
+    </insert>
+    <update id="updateChannel">
+        update channel
+        SET name             = #{name},
+            updated_datetime = now()
+        WHERE no = #{no}
+    </update>
+    <delete id="deleteChannel">
+        delete
+        from channel
+        WHERE no = #{no}
+    </delete>
 </mapper>

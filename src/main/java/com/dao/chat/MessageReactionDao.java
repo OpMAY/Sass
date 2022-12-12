@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class MessageReactionDao {
-    private MessageReactionMapper mapper;
+    private final MessageReactionMapper mapper;
     private MessageReactionDao(SqlSession sqlSession) {
         this.mapper = sqlSession.getMapper(MessageReactionMapper.class);
     }
