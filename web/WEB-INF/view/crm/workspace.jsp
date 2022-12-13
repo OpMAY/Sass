@@ -298,6 +298,7 @@
      * */
     $(document).ready(function () {
         console.log('Static JS is ready');
+
         new EmojiPicker({
             trigger: [
                 {
@@ -798,7 +799,7 @@
 
     function getDayDiff(date1, date2) {
         const one_day = 24 * 60 * 60 * 1000;
-        return Math.round((date2.getTime() - date1.getTime()) / one_day);
+        return Math.ceil((date2.getTime() - date1.getTime()) / one_day);
     }
 </script>
 </body>

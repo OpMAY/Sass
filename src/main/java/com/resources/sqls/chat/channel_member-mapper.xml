@@ -24,6 +24,11 @@
                  left join user u on cm.user_no = u.no
         WHERE channel_no = #{channel_no}
     </select>
+    <select id="getRawChannelMembers" resultType="ChannelMember">
+        select *
+        from channel_member
+        WHERE channel_no = #{channel_no}
+    </select>
     <select id="isUserChannelMember" resultType="_boolean">
         select EXISTS(select *
                       from channel_member

@@ -1,6 +1,7 @@
 package com.config;
 
 import com.model.queue.Token;
+import com.model.ws.chat.ChatSocketSessionModel;
 import com.model.ws.crm.CrmSocketSessionModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +34,11 @@ public class QueueConfig {
 
     @Bean
     public synchronized LinkedHashMap<String, CrmSocketSessionModel> crmSessionQueue() {
+        return new LinkedHashMap<>();
+    }
+
+    @Bean
+    public synchronized LinkedHashMap<String, ChatSocketSessionModel> chatSessionQueue() {
         return new LinkedHashMap<>();
     }
 }

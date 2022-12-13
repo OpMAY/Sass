@@ -1,6 +1,5 @@
 package com.dao.chat;
 
-import com.mapper.chat.ChatMessageMapper;
 import com.mapper.chat.MessageSaveMapper;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;

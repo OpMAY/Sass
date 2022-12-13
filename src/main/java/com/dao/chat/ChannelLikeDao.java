@@ -1,10 +1,8 @@
 package com.dao.chat;
 
 import com.mapper.chat.ChannelLikeMapper;
-import com.mapper.chat.ChatMessageMapper;
 import com.model.chat.channel.Channel;
 import com.model.chat.channel.ChannelLike;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
