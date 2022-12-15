@@ -44,6 +44,9 @@ const WEBSOCKET_ACTION_TYPE = {
     DELETE: {
         name: 'DELETE',
     },
+    SEND_MESSAGE: {
+        name: 'SEND_MESSAGE',
+    },
 }
 const WEBSOCKET_CATEGORY = {
     CATEGORY: {

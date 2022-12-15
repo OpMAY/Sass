@@ -64,8 +64,8 @@
 <header id="l-header"
         class="crm-theme">
     <img class="mr-12"
-         src="/resources/assets/images/icon/crm/white-theme-logo-24x24.png"/>
-    <span class="regular-h5 my-auto">CRM Plug - 업무 형상 관리 대시보드</span>
+         src="/resources/assets/images/icon/sample_chatplug.svg"/>
+    <span class="regular-h5 my-auto">CHAT Plug - 팀원 간 업무 커뮤니케이션</span>
     <div class="_option ml-auto my-auto">
         <div>
             <svg width="24"
@@ -216,12 +216,14 @@
                         <div class="col-6">
                             <div class="row">
                                 <div class="col-12" style="width: 100%; height: 700px">
+                                    <h3>Chat Test</h3>
                                     <div class="row row-cols-1 p-16" id="message-div"
                                          style="width: 100%; height: 90%; max-height: 90%; overflow-y: auto; background-color: var(--gray-high-light); align-content: flex-start">
 
                                     </div>
-                                    <div class="sample-input py-4" style="display: flex">
+                                    <div class="row sample-input py-4" style="display: flex">
                                         <textarea class="form-control" rows="3" id="message-content"
+                                                  placeholder="보낼 메세지를 입력하세요."
                                                   style="resize: none; width: 85%"></textarea>
                                         <button type="button" class="btn btn-sm" id="message-send">전송</button>
                                     </div>
@@ -319,16 +321,16 @@
         }, {plugin_type: 'chat', user_no: 1, hash: null})
 
         $('#message-send').on('click', function () {
-            let message = $('#message-content').val();
+            let message = $('#message-content').val().trim();
             if (message.length <= 0) {
                 viewAlert({content: '보낼 메세지 내용을 입력하세요.'});
                 return false;
             } else {
                 ws.onSend({
                     plugin_type: WEBSOCKET_PLUG_TYPE.CHAT.name,
-                    action_type: WEBSOCKET_ACTION_TYPE.CREATE.name,
+                    action_type: WEBSOCKET_ACTION_TYPE.SEND_MESSAGE.name,
                     data: {
-                        message: message
+                        message
                     },
                 }, ws);
                 const message_div = $('#message-div');
@@ -341,7 +343,9 @@
 
         $('#message-content').on('keypress', function (e) {
             if (e.keyCode === 13) {
+                e.preventDefault();
                 $('#message-send').click();
+                $(this).val('');
             }
         })
     });
