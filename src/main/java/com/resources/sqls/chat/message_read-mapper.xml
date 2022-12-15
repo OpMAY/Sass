@@ -3,4 +3,23 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.chat.MessageReadMapper">
+    <insert id="insertMessageRead">
+        insert into message_read(chat_message_no, company_member_no)
+        VALUES (#{chat_message_no}, #{company_member_no})
+    </insert>
+    <delete id="deleteMessageRead">
+        delete
+        from message_read
+        where chat_message_no = #{chat_message_no}
+          AND company_member_no = (select no from company_member WHERE user_no = #{user_no});
+    </delete>
+    <select id="checkChannelHasUnread" resultType="_boolean">
+        select EXISTS((select *
+                       from chat_message
+                                left join message_read mr on chat_message.no = mr.chat_message_no AND
+                                                             mr.company_member_no =
+                                                             (select no from company_member WHERE user_no = #{user_no})
+                       WHERE channel_no = #{channel_no}
+                         AND mr.chat_message_no is null))
+    </select>
 </mapper>

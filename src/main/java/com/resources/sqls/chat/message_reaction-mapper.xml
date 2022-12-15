@@ -3,4 +3,19 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.chat.MessageReactionMapper">
+    <insert id="insertMessageReaction" useGeneratedKeys="true" keyProperty="no">
+        insert into message_reaction(chat_message_no, company_member_no, reaction, reg_datetime)
+        VALUES (#{chat_message_no}, #{company_member_no}, #{reaction}, now())
+    </insert>
+    <delete id="deleteMessageReaction">
+        delete
+        from message_reaction
+        where chat_message_no = #{chat_message_no}
+          AND company_member_no = (select no from company_member WHERE user_no = #{user_no});
+    </delete>
+    <select id="getMessageReactionsByMessageNo" resultType="MessageReaction">
+        select *
+        from message_reaction
+        WHERE chat_message_no = #{chat_message_no}
+    </select>
 </mapper>
