@@ -216,7 +216,8 @@
                         <div class="col-6">
                             <div class="row">
                                 <div class="col-12" style="width: 100%; height: 700px">
-                                    <div class="row row-cols-1 p-16" id="message-div" style="width: 100%; height: 90%; max-height: 90%; overflow-y: auto; background-color: var(--gray-high-light); align-content: flex-start">
+                                    <div class="row row-cols-1 p-16" id="message-div"
+                                         style="width: 100%; height: 90%; max-height: 90%; overflow-y: auto; background-color: var(--gray-high-light); align-content: flex-start">
 
                                     </div>
                                     <div class="sample-input py-4" style="display: flex">
@@ -309,18 +310,18 @@
                 const message_div = $('#message-div');
                 let data = JSON.parse(event.data);
                 console.log('MESSAGE ', data);
-                if(data.data.message) {
+                if (data.data.message) {
                     message_div.append(`<div class="col" style="max-height: 30px">
-                                            <h5 class="c-basic-black regular-h5">received message: `+ data.data.message + `</h5>
+                                            <h5 class="c-basic-black regular-h5">received message: ` + data.data.message + `</h5>
                                         </div>`)
                 }
-            }
+            },
         }, {plugin_type: 'chat', user_no: 1, hash: null})
 
         $('#message-send').on('click', function () {
             let message = $('#message-content').val();
-            if(message.length <= 0) {
-                viewAlert({content : '보낼 메세지 내용을 입력하세요.'});
+            if (message.length <= 0) {
+                viewAlert({content: '보낼 메세지 내용을 입력하세요.'});
                 return false;
             } else {
                 ws.onSend({
@@ -332,12 +333,17 @@
                 }, ws);
                 const message_div = $('#message-div');
                 message_div.append(`<div class="col" style="max-height: 30px">
-                                            <h5 class="c-basic-black regular-h5">my message: `+ message + `</h5>
+                                            <h5 class="c-basic-black regular-h5">my message: ` + message + `</h5>
                                         </div>`)
                 $('#message-content').val('');
             }
         })
 
+        $('#message-content').on('keypress', function (e) {
+            if (e.keyCode === 13) {
+                $('#message-send').click();
+            }
+        })
     });
 
     function taskDdayCalculator(end_date) {

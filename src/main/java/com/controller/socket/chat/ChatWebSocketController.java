@@ -2,7 +2,6 @@ package com.controller.socket.chat;
 
 import com.model.chat.chatmessage.ChatMessage;
 import com.model.ws.chat.ChatWebSocketObject;
-import com.model.ws.crm.CrmWebSocketObject;
 import com.service.chat.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +26,6 @@ public class ChatWebSocketController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        log.info("message : {}", chatMessage);
+        log.info("ChatWebSocketController message : {}", chatMessage);
     }
 }
