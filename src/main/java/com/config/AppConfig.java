@@ -174,6 +174,7 @@ public class AppConfig implements WebApplicationInitializer, SchedulingConfigure
         registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
         registry.addResourceHandler("/files/**").addResourceLocations("/files/");
         registry.addResourceHandler("/favicon.ico").addResourceLocations("/resources/assets/meta/favicon.ico");
+        registry.addResourceHandler("/.well-known/**").addResourceLocations("/.well-known/");
         log.info("addResourceHandlers : initialized");
     }
 
