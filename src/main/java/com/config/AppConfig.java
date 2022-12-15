@@ -36,10 +36,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.BeanNameViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRegistration;
+import javax.servlet.*;
+import javax.servlet.annotation.ServletSecurity;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,9 +100,9 @@ public class AppConfig implements WebApplicationInitializer, SchedulingConfigure
          * @Prerequisites
          * Tomcat의 SSL 설정 및 SSL 인증 확인 또는 AWS의 LoadBalancer 활성화
          * */
-        /*HttpConstraintElement httpConstraintElement = new HttpConstraintElement(ServletSecurity.TransportGuarantee.CONFIDENTIAL);
+        HttpConstraintElement httpConstraintElement = new HttpConstraintElement(ServletSecurity.TransportGuarantee.CONFIDENTIAL);
         ServletSecurityElement servletSecurityElement = new ServletSecurityElement(httpConstraintElement);
-        dispatcher.setServletSecurity(servletSecurityElement);*/
+        dispatcher.setServletSecurity(servletSecurityElement);
         log.info("WebInitializer : finished");
     }
 
