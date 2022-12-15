@@ -9,4 +9,6 @@ public class Channel extends Time {
     private int company_no;
     private String name;
     private CHANNEL_TYPE type;
+
+    private boolean bookmark;
 }

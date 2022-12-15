@@ -9,7 +9,9 @@ import java.util.ArrayList;
 public interface MessageSaveMapper {
     void saveMessage(ChatMessageSave chatMessageSave);
 
-    void deleteSavedMessage(@Param("chat_message_no") int chat_message_no, @Param("user_no") int user_no);
+    void deleteSavedMessage(@Param("chat_message_id") String chat_message_id, @Param("user_no") int user_no);
 
     ArrayList<ChatMessage> getSavedMessages(int user_no);
+
+    boolean checkUserSavedMessage(@Param("id") String id, @Param("user_no") int user_no);
 }

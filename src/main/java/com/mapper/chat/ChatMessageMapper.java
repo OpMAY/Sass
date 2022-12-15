@@ -8,15 +8,19 @@ import java.util.ArrayList;
 public interface ChatMessageMapper {
     void sendMessage(ChatMessage chatMessage);
 
-    void deleteMessage(int no);
+    void deleteMessage(String id);
 
     void updateMessage(ChatMessage chatMessage);
 
     ArrayList<ChatMessage> getChannelMessages(int channel_no);
 
-    ArrayList<ChatMessage> getChannelNextMessages(@Param("channel_no") int channel_no, @Param("last_message_no") int last_message_no);
+    ArrayList<ChatMessage> getChannelNextMessages(@Param("channel_no") int channel_no, @Param("last_message_id") String last_message_id);
 
     ChatMessage getChannelLastMessage(int channel_no);
 
-    ChatMessage getChatMessageByNo(int no);
+    ChatMessage getChatMessageById(String id);
+
+    boolean checkIdDuplicated(String id);
+
+    int getMessageThreadCount(String id);
 }

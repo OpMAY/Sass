@@ -1,7 +1,10 @@
 package com.config.socket.plug.chat;
 
 import com.google.gson.Gson;
+import com.model.chat.chatmessage.ChatMessage;
 import com.model.company.Company;
+import com.model.company.CompanyMember;
+import com.model.ws.chat.CHAT_ACTION_TYPE;
 import com.model.ws.chat.ChatChannelSocketSessionModel;
 import com.model.ws.chat.ChatSocketSessionModel;
 import com.model.ws.chat.ChatWebSocketObject;
@@ -30,7 +33,6 @@ public class ChatChannelWebSocketHandler extends TextWebSocketHandler {
     private final LinkedHashMap<String, ChatChannelSocketSessionModel> chatChannelSessionQueue;
     private final ChatService chatService;
     private final CompanyService companyService;
-
     private final EncryptionService encryptionService;
 
     @Override
@@ -39,9 +41,35 @@ public class ChatChannelWebSocketHandler extends TextWebSocketHandler {
         String payload = message.getPayload();
         log.info("chatWebSocketHandler payload : {}", payload);
         ChatWebSocketObject object = gson.fromJson(payload, ChatWebSocketObject.class);
+        ChatMessage chatMessage = null;
+        HashMap<String, Object> hashMap = new EncryptionService().decryptJWT(session.getAttributes().get(JWTEnum.JWTToken.name()).toString());
+        Integer user_no = (Integer) hashMap.get(JWTEnum.NO.name());
+        Company company = companyService.getUserCompany(user_no);
+        CompanyMember companyMember = companyService.getUserCompanyMemberInfo(user_no, company.getNo());
+        switch (object.getAction_type()) {
+            case SEND_MESSAGE:
+                try {
+                    chatMessage = (ChatMessage) object.getData();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (chatMessage != null) {
+                    chatMessage.setCompany_member_no(companyMember.getNo());
+                    chatMessage = chatService.sendMessage(chatMessage);
+                    object.setData(chatMessage);
+                }
+                log.info("chatMessage : {}", chatMessage);
+                break;
+            case TYPING:
+            case TYPE_END:
+            case REACTION:
+            default:
+                break;
+        }
 
         log.info("sessions : {}", chatSessionQueue);
 
+        // TODO ACTION_TYPE 별 Send 기준 잡기
         for (String sess : chatSessionQueue.keySet()) {
             if (!sess.equals(session.getId())) {
                 // Sender 에겐 보내지 않음
@@ -50,19 +78,29 @@ public class ChatChannelWebSocketHandler extends TextWebSocketHandler {
                     // 같은 회사의 ChatPlug 수신 채널에만 전송
                     ChatChannelSocketSessionModel channelSenderModel = chatChannelSessionQueue.get(session.getId());
                     /**
+                     * ChatMessage의 경우
                      * 1. ChatSession, chatChannelSession 모두에 있으면 chatChannelSessionQueue 기준으로 전송
                      * 2. ChatSession 에만 있으면 chatSessionQueue 기준 채널로 전송
+                     * 그 외 (메세지 리액션, 메세지 입력 중, 메세지 입력 중 end 등의 interaction)
+                     * -> chatChannelSession 에만 전송
                      * */
                     TextMessage textMessage = new TextMessage(new Gson().toJson(object));
-                    if (channelSenderModel != null) {
-                        // case 1
+                    if(object.getAction_type().equals(CHAT_ACTION_TYPE.SEND_MESSAGE)) {
+                        if (channelSenderModel != null) {
+                            // case 1
+                            if (chatChannelSessionQueue.get(session.getId()).getChannel_no() == channelSenderModel.getChannel_no()) {
+                                // 같은 채널에 있는 session에만 전송
+                                chatChannelSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
+                            }
+                        } else {
+                            // case 2
+                            chatSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
+                        }
+                    } else {
                         if (chatChannelSessionQueue.get(session.getId()).getChannel_no() == channelSenderModel.getChannel_no()) {
                             // 같은 채널에 있는 session에만 전송
                             chatChannelSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
                         }
-                    } else {
-                        // case 2
-                        chatSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
                     }
                 }
             }
@@ -73,7 +111,7 @@ public class ChatChannelWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         URI uri = session.getUri();
         if (uri != null) {
-            if(chatSessionQueue.get(session.getId()) != null) {
+            if (chatSessionQueue.get(session.getId()) != null) {
                 Integer user_no = null;
                 log.info("jwt session : {}", session.getAttributes().get(JWTEnum.JWTToken.name()));
                 try {

@@ -2,6 +2,7 @@ package com.dao.chat;
 
 import com.mapper.chat.ChannelMapper;
 import com.model.chat.channel.Channel;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
@@ -41,5 +42,9 @@ public class ChannelDao {
 
     public boolean checkChannelBelongToCompany(int channel_no, int company_no) {
         return mapper.checkChannelBelongToCompany(channel_no, company_no);
+    }
+
+    public ArrayList<Channel> getChannelsByCompanyNoWithLikes(int user_no, int company_no) {
+        return mapper.getChannelsByCompanyNoWithLikes(user_no, company_no);
     }
 }

@@ -38,4 +38,14 @@
         from channel
         WHERE no = #{channel_no}
     </select>
+    <select id="getChannelsByCompanyNoWithLikes" resultType="Channel">
+        select *,
+               EXISTS((select *
+                       from channel_like
+                       WHERE channel_like.channel_no = channel.no
+                         AND company_member_no =
+                             (select no from company_member WHERE user_no = #{user_no}))) as bookmark
+        from channel
+        WHERE company_no = #{company_no}
+    </select>
 </mapper>

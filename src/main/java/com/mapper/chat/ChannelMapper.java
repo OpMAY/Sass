@@ -19,4 +19,6 @@ public interface ChannelMapper {
     void deleteChannel(int no);
 
     boolean checkChannelBelongToCompany(@Param("channel_no") int channel_no, @Param("company_no") int company_no);
+
+    ArrayList<Channel> getChannelsByCompanyNoWithLikes(@Param("user_no") int user_no, @Param("company_no") int company_no);
 }

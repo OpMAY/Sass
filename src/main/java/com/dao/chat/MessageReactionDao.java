@@ -2,6 +2,7 @@ package com.dao.chat;
 
 import com.mapper.chat.MessageReactionMapper;
 import com.model.chat.chatmessage.interactions.ChatMessageReaction;
+import com.model.chat.chatmessage.interactions.ChatMessageReactionSummary;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
@@ -22,11 +23,15 @@ public class MessageReactionDao {
         mapper.insertMessageReaction(messageReaction);
     }
 
-    public void deleteMessageReaction(int chat_message_no, int user_no) {
-        mapper.deleteMessageReaction(chat_message_no, user_no);
+    public void deleteMessageReaction(String chat_message_id, int user_no) {
+        mapper.deleteMessageReaction(chat_message_id, user_no);
     }
 
-    public ArrayList<ChatMessageReaction> getMessageReactionsByMessageNo(int chat_message_no) {
-        return mapper.getMessageReactionsByMessageNo(chat_message_no);
+    public ArrayList<ChatMessageReaction> getMessageReactionsByMessageId(String chat_message_id) {
+        return mapper.getMessageReactionsByMessageId(chat_message_id);
+    }
+
+    public ArrayList<ChatMessageReactionSummary> getMessageReactionSummary(String id) {
+        return mapper.getMessageReactionSummary(id);
     }
 }

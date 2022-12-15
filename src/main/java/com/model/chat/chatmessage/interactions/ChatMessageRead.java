@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ChatMessageRead {
-    private int chat_message_no;
+    private String chat_message_id;
     private int company_member_no;
 }

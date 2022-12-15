@@ -18,8 +18,8 @@ public class MessageReadDao {
         mapper.insertMessageRead(chatMessageRead);
     }
 
-    void deleteMessageRead(int chat_message_no, int user_no) {
-        mapper.deleteMessageRead(chat_message_no, user_no);
+    void deleteMessageRead(String chat_message_id, int user_no) {
+        mapper.deleteMessageRead(chat_message_id, user_no);
     }
 
     boolean checkChannelHasUnRead(int channel_no, int user_no) {

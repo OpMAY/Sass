@@ -19,11 +19,15 @@ public class MessageSaveDao {
         mapper.saveMessage(chatMessageSave);
     }
 
-    public void deleteSavedMessage(int chat_message_no, int user_no){
-        mapper.deleteSavedMessage(chat_message_no, user_no);
+    public void deleteSavedMessage(String chat_message_id, int user_no){
+        mapper.deleteSavedMessage(chat_message_id, user_no);
     }
 
     public ArrayList<ChatMessage> getSavedMessages(int user_no){
         return mapper.getSavedMessages(user_no);
+    }
+
+    public boolean checkUserSavedMessage(String id, int user_no) {
+        return mapper.checkUserSavedMessage(id, user_no);
     }
 }

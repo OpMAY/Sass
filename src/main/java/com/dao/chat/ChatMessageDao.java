@@ -18,8 +18,8 @@ public class ChatMessageDao {
         mapper.sendMessage(chatMessage);
     }
 
-    public void deleteMessage(int no) {
-        mapper.deleteMessage(no);
+    public void deleteMessage(String id) {
+        mapper.deleteMessage(id);
     }
 
     public void updateMessage(ChatMessage chatMessage) {
@@ -30,16 +30,23 @@ public class ChatMessageDao {
         return mapper.getChannelMessages(channel_no);
     }
 
-    public ArrayList<ChatMessage> getChannelNextMessages(int channel_no, int last_message_no) {
-        return mapper.getChannelNextMessages(channel_no, last_message_no);
+    public ArrayList<ChatMessage> getChannelNextMessages(int channel_no, String last_message_id) {
+        return mapper.getChannelNextMessages(channel_no, last_message_id);
     }
 
     public ChatMessage getChannelLastMessage(int channel_no) {
         return mapper.getChannelLastMessage(channel_no);
     }
 
-    public ChatMessage getChatMessageByNo(int no) {
-        return mapper.getChatMessageByNo(no);
+    public ChatMessage getChatMessageById(String id) {
+        return mapper.getChatMessageById(id);
     }
 
+    public boolean checkIdDuplicated(String id) {
+        return mapper.checkIdDuplicated(id);
+    }
+
+    public int getMessageThreadCount(String id) {
+        return mapper.getMessageThreadCount(id);
+    }
 }

@@ -7,20 +7,26 @@
         <result column="message_json" property="message_json" typeHandler="com.middleware.JsonObjectTypeHandler"/>
     </resultMap>
     <insert id="saveMessage">
-        insert into message_save(chat_message_no, company_member_no, reg_datetime)
-        VALUES (#{chat_message_no}, #{company_member_no}, now())
+        insert into message_save(chat_message_id, company_member_no, reg_datetime)
+        VALUES (#{chat_message_id}, #{company_member_no}, now())
     </insert>
     <delete id="deleteSavedMessage">
         delete
         from message_save
-        WHERE chat_message_no = #{chat_message_no}
+        WHERE chat_message_id = #{chat_message_id}
           AND company_member_no = (select no from company_member WHERE user_no = #{user_no})
     </delete>
     <select id="getSavedMessages" resultType="ChatMessage" resultMap="ChatMessage">
         select *
         from chat_message
-        WHERE no in (select chat_message_no
+        WHERE id in (select chat_message_id
                      from message_save
                      WHERE message_save.company_member_no = (select no from company_member WHERE user_no = #{user_no}))
+    </select>
+    <select id="checkUserSavedMessage" resultType="_boolean">
+        select EXISTS(select *
+                      from message_save
+                      WHERE chat_message_id = #{id}
+                        AND company_member_no = (select no from company_member WHERE user_no = #{user_no}))
     </select>
 </mapper>

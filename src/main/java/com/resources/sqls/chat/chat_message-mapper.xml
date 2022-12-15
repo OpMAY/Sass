@@ -7,52 +7,61 @@
         <result column="message_json" property="message_json" typeHandler="com.middleware.JsonObjectTypeHandler"/>
     </resultMap>
     <insert id="sendMessage" useGeneratedKeys="true" keyProperty="no">
-        insert into chat_message(channel_no, company_member_no, parent_message_no, type, content, is_edit, message_json,
+        insert into chat_message(id, channel_no, company_member_no, parent_message_id, type, content, edited,
+                                 message_json,
                                  reg_datetime, updated_datetime)
-        VALUES (#{channel_no}, #{company_member_no}, #{parent_message_no}, #{type}, #{content}, false,
+        VALUES (#{id}, #{channel_no}, #{company_member_no}, #{parent_message_id}, #{type}, #{content}, false,
                 #{message_json, typeHandler=com.middleware.JsonObjectTypeHandler},
                 now(), now())
     </insert>
     <delete id="deleteMessage">
         delete
         from chat_message
-        WHERE no = #{no}
+        WHERE id = #{id}
     </delete>
     <update id="updateMessage">
         update chat_message
         SET content          = #{content},
-            is_edit          = true,
+            edited           = true,
             updated_datetime = now()
-        WHERE no = #{no}
+        WHERE id = #{id}
     </update>
     <select id="getChannelMessages" resultType="ChatMessage" resultMap="ChatMessage">
         select *
         from chat_message
         WHERE channel_no = #{channel_no}
-        ORDER BY reg_datetime DESC, no
+        ORDER BY reg_datetime DESC, id
         LIMIT 50
     </select>
     <select id="getChannelNextMessages" resultType="ChatMessage" resultMap="ChatMessage">
         SET @LAST_REG_DATE = (select reg_datetime
                               from chat_message
-                              WHERE no = #{last_message_no});
+                              WHERE id = #{last_message_id});
         select *
         from chat_message
         WHERE channel_no = #{channel_no}
-          AND (reg_datetime <![CDATA[<]]> @LAST_REG_DATE OR (reg_datetime = @LAST_REG_DATE AND no <![CDATA[<]]> #{last_message_no}))
-        ORDER BY reg_datetime DESC, no
+          AND (reg_datetime <![CDATA[<]]> @LAST_REG_DATE OR (reg_datetime = @LAST_REG_DATE AND id <![CDATA[<]]> #{last_message_id}))
+        ORDER BY reg_datetime DESC, id
         LIMIT 50
     </select>
     <select id="getChannelLastMessage" resultType="ChatMessage" resultMap="ChatMessage">
         select *
         from chat_message
         WHERE channel_no = #{channel_no}
-        ORDER BY reg_datetime DESC, no DESC
+        ORDER BY reg_datetime DESC, id DESC
         LIMIT 1
     </select>
-    <select id="getChatMessageByNo" resultType="ChatMessage" resultMap="ChatMessage">
+    <select id="getChatMessageById" resultType="ChatMessage" resultMap="ChatMessage">
         select *
         from chat_message
-        WHERE no = #{no}
+        WHERE id = #{id}
+    </select>
+    <select id="checkIdDuplicated" resultType="_boolean">
+        select EXISTS(select * from chat_message WHERE id = #{id})
+    </select>
+    <select id="getMessageThreadCount" resultType="int">
+        select COUNT(*)
+        from chat_message
+        WHERE parent_message_id = #{id}
     </select>
 </mapper>
