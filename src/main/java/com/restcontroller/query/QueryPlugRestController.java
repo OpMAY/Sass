@@ -59,7 +59,7 @@ public class QueryPlugRestController {
         message.put("types", dataBaseTypes);
         message.put("dbType", dataBase.getDatabase_type().toString());
 
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     /**
@@ -102,7 +102,7 @@ public class QueryPlugRestController {
         int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.createTable(database_no, table);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     /**
@@ -136,7 +136,7 @@ public class QueryPlugRestController {
         int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.createTableRow(database_no, table_id, column);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     /**
@@ -167,7 +167,7 @@ public class QueryPlugRestController {
         int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.updateTableName(database_no, table_id, table);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     /**
@@ -201,7 +201,7 @@ public class QueryPlugRestController {
         int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.updateTableRow(database_no, table_id, column);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     /**
@@ -232,7 +232,7 @@ public class QueryPlugRestController {
         int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.updateTablePosition(database_no, table_id, position);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     /**
@@ -279,7 +279,7 @@ public class QueryPlugRestController {
         log.info(tables.toString());
         int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     /**
@@ -326,7 +326,7 @@ public class QueryPlugRestController {
         int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.updateTableRowsOrder(database_no, table_id, columns);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     /**
@@ -348,7 +348,7 @@ public class QueryPlugRestController {
         int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.deleteTable(database_no, table_id);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     /**
@@ -370,7 +370,7 @@ public class QueryPlugRestController {
         int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.deleteTableRow(database_no, table_id, row_id);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     /**
@@ -401,7 +401,7 @@ public class QueryPlugRestController {
         int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.connectLine(database_no, line);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     /**
@@ -441,7 +441,7 @@ public class QueryPlugRestController {
         int database_no = Integer.parseInt(encryptionService.decryptAESWithSlash(database_hash));
         Message message = new Message();
         queryPlugService.disconnectLine(database_no, lines);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/create/{database_no}/{type}/next/id", method = RequestMethod.POST)
@@ -457,7 +457,7 @@ public class QueryPlugRestController {
         } while (!queryPlugService.checkTokenValid(database_no, token));
         Message message = new Message();
         message.put("id", token);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/get/databases", method = RequestMethod.GET)
@@ -473,7 +473,7 @@ public class QueryPlugRestController {
         });
         Message message = new Message();
         message.put("databases", dataBases);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/create/databases", method = RequestMethod.POST)
@@ -485,14 +485,14 @@ public class QueryPlugRestController {
         dataBase.setHash_no(encryptionService.encryptAES(Integer.toString(dataBase.getNo()), true));
         message.put("status", status);
         message.put("database", dataBase);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/get/database/validation/{id}", method = RequestMethod.GET)
     public ResponseEntity<String> getDatabaseValidation(HttpServletRequest request, @PathVariable String id) throws Exception {
         int decryptedNo = Integer.parseInt(encryptionService.decryptAESWithSlash(id));
         Message message = queryPlugService.checkDatabaseValid(decryptedNo);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/delete/database/{hash}", method = RequestMethod.POST)

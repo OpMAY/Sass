@@ -34,7 +34,7 @@ public class GlobalRestController {
         ArrayList<Plugin> plugins = pluginService.getPlugs();
         Message message = new Message();
         message.put("plugins", plugins);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/get/myCorp", method = RequestMethod.GET)
@@ -45,7 +45,7 @@ public class GlobalRestController {
         if (userNo != null) {
             message = companyService.getUserCorpInfo(userNo);
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/get/plugin", method = RequestMethod.GET)
@@ -56,7 +56,7 @@ public class GlobalRestController {
         if (userNo != null) {
             message = companyService.getUserCorpPluginInfo(userNo);
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/get/plugin/ready_member", method = RequestMethod.GET)
@@ -69,7 +69,7 @@ public class GlobalRestController {
         if (userNo != null) {
             message =  companyService.getUserCorpPluginReadyMembers(companyNo, plugNo);
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/change/team/grant", method = RequestMethod.POST)
@@ -77,7 +77,7 @@ public class GlobalRestController {
         log.info(grant.toString());
         Message message = new Message();
         companyService.changeTeamGrant(grant);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/delete/team/grant", method = RequestMethod.POST)
@@ -85,7 +85,7 @@ public class GlobalRestController {
         log.info(grant.toString());
         Message message = new Message();
         companyService.deleteTeamGrant(grant);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/change/plug/grant", method = RequestMethod.POST)
@@ -93,7 +93,7 @@ public class GlobalRestController {
         log.info(grant.toString());
         Message message = new Message();
         companyService.changePlugGrant(grant);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/delete/plug/grant", method = RequestMethod.POST)
@@ -101,7 +101,7 @@ public class GlobalRestController {
         log.info(grant.toString());
         Message message = new Message();
         companyService.deletePlugGrant(grant);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/add/plug/grant", method = RequestMethod.POST)
@@ -109,6 +109,6 @@ public class GlobalRestController {
         log.info(grant.toString());
         Message message = new Message();
         companyService.addPlugGrant(grant);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 }

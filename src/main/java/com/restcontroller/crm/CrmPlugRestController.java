@@ -75,7 +75,7 @@ public class CrmPlugRestController {
             message.put("status", false);
             message.put("error_message", "데이터를 불러올 수 없습니다.");
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     // TODO 20221102 2번 - 우식, 지우
@@ -85,7 +85,7 @@ public class CrmPlugRestController {
         int project_no = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
         message.put("status", true);
         message.put("project", crmService.getProjectDashBoardData(project_no));
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     // TODO 20221102 3번 - 지우 O
@@ -108,7 +108,7 @@ public class CrmPlugRestController {
             message.put("status", false);
             message.put("error_message", "데이터를 불러올 수 없습니다.");
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     // TODO 20221102 4번 - 지우 O
@@ -132,7 +132,7 @@ public class CrmPlugRestController {
             message.put("status", false);
             message.put("error_message", "유저 데이터를 불러올 수 없습니다.");
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
 
     }
 
@@ -144,7 +144,7 @@ public class CrmPlugRestController {
         /*Message message = new Message();
         message.put("project_no", project_no);
         message.put("status", true);
-        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);*/
+        return new ResponseEntity(DefaultRes.res(OK, message, false), OK);*/
         //Test Only End
         return crmService.deleteProject(project_no);
     }
@@ -185,7 +185,7 @@ public class CrmPlugRestController {
             message.put("status", false);
             message.put("error_message", "복사할 대상 보드가 존재하지 않습니다.");
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     // TODO 20221102 10번 - 지우
@@ -241,7 +241,7 @@ public class CrmPlugRestController {
             message.put("status", false);
             message.put("error_message", "복사할 대상 업무가 존재하지 않습니다.");
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     // TODO 20221102 16번 - 지우
@@ -408,7 +408,7 @@ public class CrmPlugRestController {
             message.put("status", false);
             message.put("error_message", "유저 데이터를 불러올 수 없습니다.");
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     // TODO 20221102 35번 - 우식
@@ -430,7 +430,7 @@ public class CrmPlugRestController {
             message.put("status", false);
             message.put("error_message", "유저 데이터를 불러올 수 없습니다.");
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     // TODO 20221102 36번 - 지우
@@ -484,7 +484,7 @@ public class CrmPlugRestController {
             message.put("status", false);
             message.put("error_message", "유저 데이터를 불러올 수 없습니다.");
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/update/task/plug", method = POST)
@@ -495,6 +495,6 @@ public class CrmPlugRestController {
         String content = body.get("content").toString();
         crmService.updateTaskPlug(task_id, task_plugin_type, content);
         message.put("status", true);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 }

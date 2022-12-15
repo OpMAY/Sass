@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class CrmWebSocketDataObject extends WebSocketSimpleDataObject {
-    private CRM_CATEGORY_SAMPLE category;
-    private CRM_SUBCATEGORY_SAMPLE subcategory;
+    private CRM_CATEGORY category;
+    private CRM_SUBCATEGORY subcategory;
 }

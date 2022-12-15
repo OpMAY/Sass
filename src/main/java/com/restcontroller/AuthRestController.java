@@ -42,7 +42,7 @@ public class AuthRestController {
             request.getSession().setAttribute(JWTEnum.JWTToken.name(), encryptionService.encryptJWT(user));
             message.put("login_status", user.getLogin_status());
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
@@ -55,7 +55,7 @@ public class AuthRestController {
     public ResponseEntity<String> register(@RequestBody User user) {
         Message message = new Message();
         message.put("register_status", userService.registerUser(user));
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/find/email", method = RequestMethod.POST)
@@ -64,7 +64,7 @@ public class AuthRestController {
         String email = userService.findEmail(user);
         if (email != null) {
             message.put("email", email);
-            return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+            return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
         } else {
             return new ResponseEntity(DefaultRes.res(HttpStatus.BAD_REQUEST), HttpStatus.OK);
         }
@@ -83,7 +83,7 @@ public class AuthRestController {
     public ResponseEntity<String> changePassword(@RequestBody User user) {
         Message message = new Message();
         userService.changePassword(user);
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/code/send", method = RequestMethod.POST)
@@ -91,12 +91,12 @@ public class AuthRestController {
         Message message = new Message();
         if (Objects.nonNull(user.getEmail())) {
             if (userService.sendCode(user.getEmail(), request)) {
-                return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+                return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
             } else {
-                return new ResponseEntity(DefaultRes.res(HttpStatus.INTERNAL_SERVER_ERROR, message, true), HttpStatus.OK);
+                return new ResponseEntity(DefaultRes.res(HttpStatus.INTERNAL_SERVER_ERROR, message, false), HttpStatus.OK);
             }
         } else {
-            return new ResponseEntity(DefaultRes.res(HttpStatus.BAD_REQUEST, message, true), HttpStatus.OK);
+            return new ResponseEntity(DefaultRes.res(HttpStatus.BAD_REQUEST, message, false), HttpStatus.OK);
         }
     }
 
@@ -104,9 +104,9 @@ public class AuthRestController {
     public ResponseEntity<String> confirmCode(HttpServletRequest request, @RequestBody Map<String, Object> map) {
         Message message = new Message();
         if (request.getSession().getAttribute("code").equals(map.get("code").toString()) && request.getSession().getAttribute("email").equals(map.get("email").toString())) {
-            return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+            return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
         } else {
-            return new ResponseEntity(DefaultRes.res(HttpStatus.BAD_REQUEST, message, true), HttpStatus.OK);
+            return new ResponseEntity(DefaultRes.res(HttpStatus.BAD_REQUEST, message, false), HttpStatus.OK);
         }
     }
 
@@ -118,7 +118,7 @@ public class AuthRestController {
         if (userNo != null) {
             message.put("result", companyService.createCorporate(company, userNo));
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/find/corporate", method = RequestMethod.POST)
@@ -128,7 +128,7 @@ public class AuthRestController {
         Company company = companyService.getCompanyNameByCode(companyId);
         if (Objects.nonNull(company)) {
             message.put("company", company);
-            return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+            return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
         }
         return new ResponseEntity(DefaultRes.res(HttpStatus.BAD_REQUEST), HttpStatus.OK);
     }
@@ -141,7 +141,7 @@ public class AuthRestController {
         if (userNo != null) {
             message.put("result", companyService.joinCorporate(company, userNo));
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/get/myInfo", method = RequestMethod.GET)
@@ -152,7 +152,7 @@ public class AuthRestController {
         if (userNo != null) {
             message = userService.getModalMyInfo(userNo);
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/change/name", method = RequestMethod.POST)
@@ -164,7 +164,7 @@ public class AuthRestController {
             userService.changeUserName(userNo, map.get("name").toString());
             message.put("name", map.get("name").toString());
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/change/profile", method = RequestMethod.POST)
@@ -180,7 +180,7 @@ public class AuthRestController {
                 message.put("file", mFile);
             }
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/change/email", method = RequestMethod.POST)
@@ -193,7 +193,7 @@ public class AuthRestController {
             message.put("email", map.get("email").toString());
         }
         request.getSession().removeAttribute(JWTEnum.JWTToken.name());
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/change/phone", method = RequestMethod.POST)
@@ -205,7 +205,7 @@ public class AuthRestController {
             message.put("result", userService.changeUserPhone(userNo, map.get("phone").toString()));
             message.put("phone", map.get("phone").toString());
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/change/agree", method = RequestMethod.POST)
@@ -215,7 +215,7 @@ public class AuthRestController {
         Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
         if (Objects.nonNull(userNo)) {
             userService.changeMarketingAgree(userNo, Boolean.parseBoolean(map.get("agree").toString()));
-            return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+            return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
         }
         return new ResponseEntity(DefaultRes.res(HttpStatus.UNAUTHORIZED), HttpStatus.OK);
     }
@@ -232,6 +232,6 @@ public class AuthRestController {
                 request.getSession().removeAttribute(JWTEnum.JWTToken.name());
             }
         }
-        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, true), HttpStatus.OK);
+        return new ResponseEntity(DefaultRes.res(HttpStatus.OK, message, false), HttpStatus.OK);
     }
 }

@@ -5,5 +5,6 @@ import lombok.Data;
 
 @Data
 public class ChatWebSocketObject extends WebSocketSimpleObject {
-
+    private CHAT_ACTION_TYPE action_type;
+    private CHAT_CATEGORY category;
 }
