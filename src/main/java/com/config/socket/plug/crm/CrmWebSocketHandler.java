@@ -64,6 +64,8 @@ public class CrmWebSocketHandler extends TextWebSocketHandler {
         if(uri != null) {
             CrmSocketSessionModel model = new CrmSocketSessionModel();
             model.setWebSocketSession(session);
+            // TODO exception 예상 예외처리 : hash substring, project_no parse
+            // TODO project belong to company?
             String path = uri.getPath();
             String hash = path.substring(path.indexOf("crm/") + "crm/".length());
             log.info("hash : {}", hash);

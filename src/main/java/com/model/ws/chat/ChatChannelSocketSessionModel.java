@@ -4,7 +4,7 @@ import com.model.ws.SocketSessionModel;
 import lombok.Data;
 
 @Data
-public class ChatSocketSessionModel extends SocketSessionModel {
+public class ChatChannelSocketSessionModel extends SocketSessionModel {
     private String hash;
-    private int company_no;
+    private int channel_no;
 }

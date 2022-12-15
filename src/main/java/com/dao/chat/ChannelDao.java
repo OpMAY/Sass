@@ -38,4 +38,8 @@ public class ChannelDao {
     public void deleteChannel(int no) {
         mapper.deleteChannel(no);
     }
+
+    public boolean checkChannelBelongToCompany(int channel_no, int company_no) {
+        return mapper.checkChannelBelongToCompany(channel_no, company_no);
+    }
 }

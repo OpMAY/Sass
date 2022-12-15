@@ -1,6 +1,7 @@
 package com.model.chat.chatmessage;
 
 import com.model.common.Time;
+import com.model.company.CompanyProfileMember;
 import lombok.Data;
 
 @Data
@@ -13,4 +14,6 @@ public class ChatMessage extends Time {
     private String content;
     private boolean is_edit;
     private MessageContent message_json;
+
+    private CompanyProfileMember companyProfileMember;
 }

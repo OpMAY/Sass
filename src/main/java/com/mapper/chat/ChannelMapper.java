@@ -17,4 +17,6 @@ public interface ChannelMapper {
     void updateChannel(@Param("name") String name, @Param("no") int no);
 
     void deleteChannel(int no);
+
+    boolean checkChannelBelongToCompany(int channel_no, int company_no);
 }

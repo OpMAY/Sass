@@ -373,6 +373,7 @@ const initializeSocket = ({
 function getSocketWsURI(plugin_type, hash) {
     const protocol = window.location.protocol;
     const host = window.location.host;
-    if (protocol === 'http:') return `ws://${host}/socket/${plugin_type.toLowerCase()}/${hash}`;
-    if (protocol === 'https:') return `wss://${host}/socket/${plugin_type.toLowerCase()}/${hash}`;
+    const param = hash !== null ? `/${hash}` : '';
+    if (protocol === 'http:') return `ws://${host}/socket/${plugin_type.toLowerCase()}${param}`;
+    if (protocol === 'https:') return `wss://${host}/socket/${plugin_type.toLowerCase()}${param}`;
 }

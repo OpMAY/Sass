@@ -1,5 +1,7 @@
 package com.config.socket;
 
+import com.config.socket.plug.chat.ChatChannelWebSocketHandler;
+import com.config.socket.plug.chat.ChatWebSocketHandler;
 import com.config.socket.plug.crm.CrmWebSocketHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,10 +18,16 @@ public class WebSocketConfig implements WebSocketConfigurer {
     private final WebSocketHandler webSocketHandler;
     private final HandShakeInterceptor handShakeInterceptor;
 
+    private final ChatWebSocketHandler chatWebSocketHandler;
+
+    private final ChatChannelWebSocketHandler chatChannelWebSocketHandler;
+
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(webSocketHandler, "socket")
                 .addHandler(crmWebSocketHandler, "socket/crm/**")
+                .addHandler(chatWebSocketHandler, "socket/chat")
+                .addHandler(chatChannelWebSocketHandler, "socket/chat/**")
                 .setAllowedOrigins("**")
                 .addInterceptors(handShakeInterceptor);
     }

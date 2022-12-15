@@ -29,6 +29,30 @@
         select *
         from chat_message
         WHERE channel_no = #{channel_no}
-        ORDER BY reg_datetime DESC
+        ORDER BY reg_datetime DESC, no
+        LIMIT 50
+    </select>
+    <select id="getChannelNextMessages" resultType="ChatMessage" resultMap="ChatMessage">
+        SET @LAST_REG_DATE = (select reg_datetime
+                              from chat_message
+                              WHERE no = #{last_message_no});
+        select *
+        from chat_message
+        WHERE channel_no = #{channel_no}
+          AND (reg_datetime <![CDATA[<]]> @LAST_REG_DATE OR (reg_datetime = @LAST_REG_DATE AND no <![CDATA[<]]> #{last_message_no}))
+        ORDER BY reg_datetime DESC, no
+        LIMIT 50
+    </select>
+    <select id="getChannelLastMessage" resultType="ChatMessage" resultMap="ChatMessage">
+        select *
+        from chat_message
+        WHERE channel_no = #{channel_no}
+        ORDER BY reg_datetime DESC, no DESC
+        LIMIT 1
+    </select>
+    <select id="getChatMessageByNo" resultType="ChatMessage" resultMap="ChatMessage">
+        select *
+        from chat_message
+        WHERE no = #{no}
     </select>
 </mapper>

@@ -33,4 +33,9 @@
         from channel
         WHERE no = #{no}
     </delete>
+    <select id="checkChannelBelongToCompany" resultType="_boolean">
+        select company_no = #{company_no}
+        from channel
+        WHERE no = #{channel_no}
+    </select>
 </mapper>
