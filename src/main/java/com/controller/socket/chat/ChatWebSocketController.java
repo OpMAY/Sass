@@ -10,6 +10,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 @MessageMapping("/socket/chat")
 @Controller
 @Slf4j
@@ -18,14 +20,13 @@ public class ChatWebSocketController {
     private final ChatService chatService;
 
     @MessageMapping("/send")
-    public void send(@Payload ChatWebSocketObject message) {
+    public void send(HttpServletRequest request, @Payload ChatWebSocketObject message) {
         ChatMessage chatMessage = null;
         try {
             chatMessage = (ChatMessage) message.getData();
         } catch (Exception e) {
-            chatMessage = null;
             e.printStackTrace();
         }
-        log.info("message : {}", message);
+        log.info("message : {}", chatMessage);
     }
 }

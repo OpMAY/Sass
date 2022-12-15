@@ -13,7 +13,7 @@
         where chat_message_no = #{chat_message_no}
           AND company_member_no = (select no from company_member WHERE user_no = #{user_no});
     </delete>
-    <select id="getMessageReactionsByMessageNo" resultType="MessageReaction">
+    <select id="getMessageReactionsByMessageNo" resultType="ChatMessageReaction">
         select *
         from message_reaction
         WHERE chat_message_no = #{chat_message_no}
