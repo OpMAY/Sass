@@ -65,6 +65,7 @@ public class ChatService {
         channelDao.deleteChannel(channel_no);
     }
 
+    // TODO 4. 채널 좋아요 (Left) -> 우식
     @Transactional
     public void insertChannelLike(int channel_no, int user_no) {
         if (!channelLikeDao.isChannelLiked(channel_no, user_no)) {
@@ -72,6 +73,7 @@ public class ChatService {
         }
     }
 
+    // TODO 4. 채널 좋아요 삭제 (Left) -> 우식
     @Transactional
     public void deleteChannelLike(int user_no, int channel_no) {
         channelLikeDao.deleteChannelLike(user_no, channel_no);
@@ -93,6 +95,7 @@ public class ChatService {
         }
     }
 
+    // TODO 5. Emoji 추가하기 (Main,Right) -> 우식, 8. Emoji 반응 및 해제 (Main, Right) -> 우식
     @Transactional
     public boolean addReactionOnMessage(int user_no, ChatMessageReaction messageReaction) {
         messageReaction.setCompany_member_no(companyMemberDao.getUserMemberInfoByUserNo(user_no).getNo());
@@ -104,11 +107,13 @@ public class ChatService {
         }
     }
 
+    // TODO 6. Emoji 삭제하기 (Main,Right) -> 우식, 8. Emoji 반응 및 해제 (Main, Right) -> 우식
     @Transactional
     public void deleteReactionOnMessage(int user_no, ChatMessageReaction messageReaction) {
         messageReactionDao.deleteMessageReaction(messageReaction.getChat_message_id(), user_no, messageReaction.getReaction());
     }
 
+    // TODO 7. Bookmark 설정 및 해제 (Main, Right) -> 우식
     @Transactional
     public boolean saveMessage(String message_id, int user_no) {
         if (!messageSaveDao.checkUserSavedMessage(message_id, user_no)) {
@@ -119,6 +124,7 @@ public class ChatService {
         }
     }
 
+    // TODO 7. Bookmark 설정 및 해제 (Main, Right) -> 우식
     @Transactional
     public void deleteSavedMessage(String message_id, int user_no) {
         messageSaveDao.deleteSavedMessage(message_id, user_no);
@@ -191,6 +197,7 @@ public class ChatService {
         return channel;
     }
 
+    // TODO 3. Thread 가져오기 (Right) -> 지우씨
     public MessageThread getMessageThread(int user_no, String message_id) {
         MessageThread messageThread = new MessageThread();
         ChatMessage chatMessage = chatMessageDao.getChatMessageById(message_id);
@@ -204,6 +211,7 @@ public class ChatService {
         return messageThread;
     }
 
+    // TODO 2. channels, users 가져오기 (Left) -> 지우씨
     public ArrayList<Channel> getCompanyChannels(int user_no, int company_no) {
         ArrayList<Channel> channels = channelDao.getChannelsByCompanyNo(company_no);
         for (Channel channel : channels) {
@@ -212,6 +220,7 @@ public class ChatService {
         return channels;
     }
 
+    // TODO 2. channels, users 가져오기 (Left) -> 지우씨
     public ArrayList<ChatProfileMember> getChatMembers(int user_no, int company_no) {
         ArrayList<ChatProfileMember> chatProfileMembers = new ArrayList<>();
         ArrayList<CompanyMember> memberList = (ArrayList<CompanyMember>) companyMemberDao.getCompanyMemberList(company_no);
@@ -237,6 +246,7 @@ public class ChatService {
         return channelMemberDao.getChannelMembers(channel_no);
     }
 
+    // TODO 1. channel 메세지 가져오기 (Main) -> 지우씨
     @Transactional
     public ArrayList<ChatMessage> getChannelMessages(int channel_no, int user_no, String last_message_id) {
         // ChatMessage get Example
@@ -260,6 +270,7 @@ public class ChatService {
         return channelDao.checkChannelBelongToCompany(channel_no, company_no);
     }
 
+    // TODO 9. Message 보내기 (Main, Right) -> 지우씨, 10. File Message 보내기 (Main, Right) -> 지우씨
     @Transactional
     public ChatMessage sendMessage(ChatMessage chatMessage) {
         if (chatMessage.getParent_message_id() != null && chatMessageDao.checkParentIsThreadMessage(chatMessage.getParent_message_id())) {
