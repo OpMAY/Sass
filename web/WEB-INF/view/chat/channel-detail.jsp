@@ -36,7 +36,7 @@
     <link rel="stylesheet"
           href="/resources/css/plugin/sample.css">
     <link rel="stylesheet"
-          href="/resources/css/plugin/emoji/emojibuttonlistjs.scss"/>
+          href="/resources/css/plugin/emoji/emojibuttonlistjs.css"/>
     <!-- State -->
     <link rel="stylesheet"
           href="/resources/css/state/state.css">

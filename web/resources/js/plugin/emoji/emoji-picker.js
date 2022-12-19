@@ -7506,6 +7506,7 @@ const EmojiPicker = function (options) {
             emojiList = undefined;
             console.log('e', attr);
             const index = this.options.trigger.findIndex(item => item.selector === attr);
+            console.log('index',index);
             this.insertInto = this.options.trigger[index].insertInto;
 
             const position = functions.position();
@@ -7615,7 +7616,6 @@ const EmojiPicker = function (options) {
 
         insert: e => {
             e.preventDefault();
-
             const emoji = e.target.innerText.trim();
             const insertInto = this.insertInto;
             const myField = document.querySelectorAll(this.insertInto);
@@ -7634,7 +7634,6 @@ const EmojiPicker = function (options) {
             } else {
                 // Check if selector is an array
                 myField.forEach(myField => {
-
                     if (document.selection) {
                         myField.focus();
                         sel = document.selection.createRange();
@@ -7643,12 +7642,14 @@ const EmojiPicker = function (options) {
                         const startPos = myField.selectionStart;
                         const endPos = myField.selectionEnd;
                         myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos, myField.value.length);
-
                         functions.setCaretPosition(myField, startPos + 2)
-
                     } else {
-                        myField.value += myValue;
-                        myField.focus()
+                        if (myField.getAttribute('contenteditable') !== null && myField.getAttribute('contenteditable') !== undefined) {
+                            pasteHtmlAtCaret(`<span>${myValue}</span>`);
+                        } else {
+                            myField.value += myValue;
+                            myField.focus();
+                        }
                     }
 
                 })
@@ -7693,7 +7694,6 @@ const EmojiPicker = function (options) {
             })
         },
 
-
         mouseDown: e => {
             e.preventDefault();
             moseMove = true;
@@ -7726,6 +7726,39 @@ const EmojiPicker = function (options) {
         this.lib(document).on('mousedown', functions.mouseDown, '#fg-emoji-picker-move');
         this.lib(document).on('mouseup', functions.mouseUp, '#fg-emoji-picker-move');
         this.lib(document).on('mousemove', functions.mouseMove);
+    };
+
+    function pasteHtmlAtCaret(html) {
+        let sel, range;
+        if (window.getSelection) {
+            // IE9 and non-IE
+            sel = window.getSelection();
+            if (sel.getRangeAt && sel.rangeCount) {
+                range = sel.getRangeAt(0);
+                range.deleteContents();
+
+                // Range.createContextualFragment() would be useful here but is
+                // non-standard and not supported in all browsers (IE9, for one)
+                const el = document.createElement("div");
+                el.innerHTML = html;
+                let frag = document.createDocumentFragment(),
+                    node,
+                    lastNode;
+                while ((node = el.firstChild)) {
+                    lastNode = frag.appendChild(node);
+                }
+                range.insertNode(frag);
+
+                // Preserve the selection
+                if (lastNode) {
+                    range = range.cloneRange();
+                    range.setStartAfter(lastNode);
+                    range.collapse(true);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
+            }
+        }
     };
 
 
