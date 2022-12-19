@@ -77,7 +77,6 @@ const initializeRightThread = (is_picker_on = true) => {
             rightThreadClose();
         }
     });
-    rightThreadOpen(tokenGenerator(6));
 }
 
 /*TODO CONTAINER EVENT LISTENER*/
@@ -88,6 +87,7 @@ function rightThreadBackClickEventListener(event) {
     event.stopPropagation();
 }
 
+/*TODO 9. Message 보내기 (Main, Right) -> 지우씨*/
 function rightThreadSendContainerWriteClickEventListener(event) {
     console.log('rightThreadSendContainerWriteClickEventListener', this);
     let editor = this.closest('._input-inner').querySelector('._chat-input');
@@ -150,6 +150,7 @@ function rightThreadSendContainerControlOptionClickEventListener(event) {
     }
 }
 
+/*TODO 10. File Message 보내기 (Main, Right) -> 지우씨*/
 function rightThreadSendContainerControlFileChangeEventListener(event) {
     console.log('rightThreadSendContainerControlFileChangeEventListener', this, event);
     let input = this;
@@ -257,6 +258,7 @@ const rightThreadUpdateUI = (thread) => {
     });
 }
 
+/*TODO 3. Thread 가져오기 (Right) -> 지우씨*/
 const rightThreadReInitialize = (message_id) => {
     console.log('rightThreadReInitialize', message_id);
     fetch('../../../resources/assets/datas/thread_sample.json')

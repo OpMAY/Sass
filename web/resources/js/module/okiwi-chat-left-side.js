@@ -29,6 +29,7 @@ function channelClickEventListener(event) {
     event.stopPropagation();
 }
 
+/*TODO 4. 채널 좋아요 (Left) -> 우식*/
 function channelLikeEventListener(event) {
     console.log('channelLikeEventListener');
     let channel = this.closest('.channel-item');

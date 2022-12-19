@@ -168,6 +168,7 @@ function floaterMenuThreadClickEventListener(event) {
     event.stopPropagation();
 }
 
+/*TODO 5. Emoji 추가하기 (Main,Right) -> 우식*/
 function floaterMenuReactionClickEventListener(selected_emoji) {
     let message_id = FLOATER_MENU.dataset.id;
     let messages = findMessages(message_id);
@@ -219,6 +220,7 @@ function floaterMenuReactionClickEventListener(selected_emoji) {
     });
 }
 
+/*TODO 7. Bookmark 설정 및 해제 (Main, Right) -> 우식*/
 function floaterMenuBookmarkClickEventListener(event) {
     let menu = this.closest('#chat-floater-menu');
     let message_id = menu.dataset.id;
@@ -279,7 +281,8 @@ const messageElementEvent = (message, reaction, thread) => {
     let thread_elem = message.querySelector('._mores');
     thread_elem?.addEventListener('click', thread);
 }
-
+/*TODO 5. Emoji 추가하기 (Main,Right) -> 우식*/
+/*TODO 8. Emoji 반응 및 해제 (Main, Right) -> 우식*/
 function messageReactionClickEventListener(event) {
     let reaction = this;
     let message = this.closest('.chat-item[data-id]');
@@ -378,6 +381,7 @@ function sendContainerControlOptionClickEventListener(event) {
     }
 }
 
+/*TODO 10. File Message 보내기 (Main, Right) -> 지우씨*/
 function sendContainerControlFileChangeEventListener(event) {
     let input = this;
     let file = input.files[0];
@@ -465,6 +469,7 @@ function sendContainerEditorInputEventListener(event) {
     console.log('sendContainerEditorInputEventListener');
 }
 
+/*TODO 9. Message 보내기 (Main, Right) -> 지우씨*/
 function sendContainerWriteClickEventListener(event) {
     console.log('sendContainerWriteClickEventListener', this);
     let editor = this.closest('._input-inner').querySelector('._chat-input');

@@ -1224,24 +1224,21 @@
             }
         });
         /*TODO Chat Content Initialize*/
+        /*TODO 1. channel 메세지 가져오기 (Main) -> 지우씨*/
         fetch('/resources/assets/datas/message_sample.json')
             .then((response) => response.json())
             .then((messages) => {
                 initializeChat({container: '.chat-container', user: {name: '김우식'}, messages});
             });
         /*TODO Chat Left Initialize*/
+        /*TODO 2. channels, users 가져오기 (Left) -> 지우씨*/
         fetch('/resources/assets/datas/chat_info_sample.json')
             .then((response) => response.json())
             .then((info) => {
                 initializeLeftSide(info.channels, info.users);
             });
         /*TODO Chat Right Initialize*/
-        fetch('/resources/assets/datas/thread_sample.json')
-            .then((response) => response.json())
-            .then((thread) => {
-                console.log('thread', thread);
-                initializeRightThread();
-            });
+        initializeRightThread();
     });
 </script>
 </body>
