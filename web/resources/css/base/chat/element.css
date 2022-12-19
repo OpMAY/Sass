@@ -1,0 +1,192 @@
+#chat-left-sidebar ul.nav-second-level.level-type-dm .dm-item:hover {
+    background-color: var(--brand-green-opacity);
+}
+
+#chat-left-sidebar ul.nav-second-level.level-type-dm .dm-item ._profile {
+    width: 24px;
+    height: 24px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-right: 8px;
+    border-radius: var(--button-radius);
+    position: relative;
+}
+
+#chat-left-sidebar ul.nav-second-level.level-type-dm .dm-item a {
+    display: flex;
+}
+
+#chat-left-sidebar ul.nav-second-level.level-type-dm .dm-item a * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#chat-left-sidebar ul.nav-second-level.level-type-dm .dm-item ._live {
+    display: none;
+}
+
+#chat-left-sidebar ul.nav-second-level.level-type-dm .dm-item.is-live ._live {
+    width: 8px;
+    height: 8px;
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background-color: var(--brand-green);
+    border-radius: var(--button-radius);
+    display: block;
+}
+
+#chat-left-sidebar ul.nav-second-level .dm-item a ._alarms {
+    margin-left: auto;
+    background-color: var(--brand-green);
+    color: var(--basic-white);
+    font-size: var(--font-12);
+    line-height: var(--line-12);
+    padding: 4px 6px;
+    border-radius: 50%;
+}
+
+#chat-left-sidebar ul.nav-second-level.level-type-channel .channel-item:hover {
+    background-color: var(--brand-green-opacity);
+}
+
+#chat-left-sidebar ul.nav-second-level.level-type-channel .channel-item a {
+    display: flex;
+}
+
+#chat-left-sidebar ul.nav-second-level.level-type-channel .channel-item a * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#chat-left-sidebar ul.nav-second-level.level-type-channel .channel-item svg {
+    margin-right: 8px;
+}
+
+#chat-left-sidebar ul.nav-second-level.level-type-channel .channel-item svg._like path {
+    fill: var(--gray-high-medium);
+}
+
+#chat-left-sidebar ul.nav-second-level.level-type-channel .channel-item:hover svg._like path,
+#chat-left-sidebar ul.nav-second-level.level-type-channel .channel-item.is-like svg._like path {
+    fill: var(--brand-yellow);
+}
+
+#chat-left-sidebar ul.nav-second-level.level-type-dm .dm-item.is-active a,
+#chat-left-sidebar ul.nav-second-level.level-type-channel .channel-item.is-active a {
+    color: var(--brand-green);
+}
+
+#chat-left-sidebar ul.nav-second-level .channel-item a ._alarms {
+    margin-left: auto;
+    background-color: var(--brand-green);
+    color: var(--basic-white);
+    font-size: var(--font-12);
+    line-height: var(--line-12);
+    padding: 4px 6px;
+    border-radius: 30px;
+}
+
+.nav-tabs .nav-item .nav-link {
+    color: var(--gray-high-medium);
+    border: none;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: var(--gray-dark-low);
+}
+
+.nav-tabs .nav-item .nav-link {
+    padding: 15px;
+}
+
+.chat-tab {
+    height: 61px;
+    display: flex;
+    padding-left: 0;
+    padding-right: 0;
+    border-bottom: var(--border-1px) var(--gray-high-medium);
+}
+
+.chat-tab * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.chat-tab .nav-tabs {
+    border-bottom: none;
+    margin-left: auto;
+}
+
+.chat-tab .nav-tabs .nav-link {
+    margin-bottom: 0;
+    font-size: var(--font-16);
+    line-height: var(--line-24);
+    color: var(--gray-high-medium);
+}
+
+.chat-tab .nav-tabs .nav-link.active {
+    font-weight: bold;
+    color: var(--gray-dark-low);
+}
+
+#l-content-wrapper.left-sidebar-type.sidebar-is-open .chat-tab ._title {
+    display: flex;
+    margin-left: 32px;
+}
+
+#l-content-wrapper.left-sidebar-type .chat-tab ._title {
+    display: flex;
+    margin-left: 64px;
+}
+
+.chat-tab ._title * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.chat-tab ._title ._icon {
+    margin-right: 16px;
+}
+
+.callout {
+    border: var(--border-1px) var(--gray-high-medium);
+    border-radius: var(--input-radius);
+    background-color: var(--basic-white);
+}
+
+.list-group-item{
+    border: 0 0 0 0 var(--gray-high-light);
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active{
+    background-color: transparent;
+}
+
+.workspace-channel{
+    position: static !important;
+    top: 52px;
+    left: 92px;
+    background-color: var(--basic-white);
+    z-index: 9997;
+    display: flex;
+    opacity: 1;
+    width: 240px;
+    height: 100% !important;
+    border-radius: 5px;
+    border-right: none !important;
+    transition: all 1s;
+}
+
+.chat-item.workspace{
+    padding: 16px 0px 0px 0px !important;
+}
+
+.list-group-item.border-bold{
+    border-bottom: 8px solid #F8F8F8 !important;
+}
+
+.chat-item.direct{
+    padding: 0px 0px 0px 0px !important;
+}

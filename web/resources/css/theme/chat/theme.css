@@ -1,0 +1,30 @@
+/*변수 지정*/
+:root {
+    /* Sample Theme Color */
+    --brand-green: #00C473;
+    --brand-green-dusky: #007d43;
+    --brand-green-opacity: rgba(0, 196, 115, 0.13);
+    --brand-yellow: #FFCB00;
+    --layout-background: #FFFFFF;
+    --layout-border: 10px;
+}
+
+/* Color Class */
+/* Suffix c- */
+.c-brand-green {
+    color: var(--brand-green);
+}
+
+.c-brand-yellow {
+    color: var(--brand-yellow);
+}
+
+/* Background Color Class */
+/* Suffix bg- */
+.bg-brand-green {
+    background-color: var(--brand-green);
+}
+
+.bg-brand-yellow {
+    background-color: var(--brand-yellow);
+}

@@ -1,0 +1,433 @@
+.chat-container {
+    background-color: var(--gray-high-light);
+    width: 100%;
+    height: calc(100vh - 62px - 52px);
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-container > * {
+    width: 100%;
+}
+
+.chat-container ._bookmark-container {
+    padding: 8px 16px;
+    display: flex;
+    border-bottom: var(--border-1px) var(--gray-high-light);
+    background-color: var(--basic-white);
+}
+
+.chat-container ._bookmark-container * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.chat-container ._bookmark-container ._bookmark {
+    display: flex;
+    padding: 2px 4px;
+    border-radius: var(--button-radius);
+    cursor: pointer;
+}
+
+.chat-container ._bookmark-container ._bookmark:hover {
+    background-color: var(--brand-green-opacity);
+}
+
+.chat-container ._bookmark-container ._bookmark:not(:last-child) {
+    margin-right: 8px;
+}
+
+.chat-container ._bookmark-container ._bookmark ._favicon {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 18px;
+    height: 18px;
+    margin-right: 4px;
+}
+
+.chat-container ._bookmark-container ._bookmark a {
+    text-decoration: none;
+    color: var(--gray-dark-low);
+}
+
+.chat-container ._bookmark-container ._bookmark * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+._bookmark-container ._bookmark svg {
+    margin-right: 2px;
+}
+
+._bookmark-container ._bookmark.add ._link {
+    font-weight: bold;
+}
+
+.chat-container ._chat-container {
+    background-color: var(--gray-high-light);
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 100%;
+    padding: 16px;
+}
+
+.chat-container ._chat-container::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent; /* 또는 트랙에 추가한다 */
+}
+
+/* 썸(thumb) 추가 */
+.chat-container ._chat-container::-webkit-scrollbar-thumb {
+    background: var(--brand-green);
+}
+
+.chat-container ._send-container {
+    background-color: var(--basic-white);
+    border-top-right-radius: var(--button-radius);
+    border-top-left-radius: var(--button-radius);
+    background-color: var(--basic-white);
+    margin-top: auto;
+    padding: 8px;
+    border-top: var(--border-1px) var(--gray-high-medium);
+}
+
+._send-container ._edit-panel {
+    display: flex;
+}
+
+._send-container ._edit-panel > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+._send-container ._input-inner {
+    display: flex;
+}
+
+._send-container ._control-panel {
+    display: flex;
+    padding-top: 16px;
+}
+
+._send-container ._input-inner ._chat-input {
+    border: none;
+    margin: 0;
+    outline: none;
+    max-height: 120px;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 4px 8px;
+}
+
+._send-container ._input-inner ._chat-input::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent; /* 또는 트랙에 추가한다 */
+}
+
+/* 썸(thumb) 추가 */
+._send-container ._input-inner ._chat-input::-webkit-scrollbar-thumb {
+    background: var(--brand-green);
+}
+
+._send-container ._write {
+    margin-left: 16px;
+    margin-bottom: auto;
+    cursor: pointer;
+}
+
+._send-container ._control-panel ul {
+    list-style: none;
+    display: flex;
+    padding-inline-start: 0;
+    margin-block: initial;
+}
+
+._send-container ._control-panel ul li {
+    display: flex;
+    cursor: pointer;
+    padding: 4px;
+}
+
+._send-container ._control-panel ul li:hover svg * {
+    fill: var(--brand-green);
+}
+
+._send-container ._control-panel ul li:not(:last-child) {
+    margin-right: 8px;
+}
+
+._send-container ._control-panel ul li * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+._send-container ._control-panel ._emoji {
+    position: relative;
+}
+
+._send-container ._control-panel ._emoji button {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+._send-container ._edit-panel {
+    padding-bottom: 16px;
+}
+
+._send-container ._edit-panel ._option {
+    cursor: pointer;
+    padding: 4px;
+    border-radius: var(--button-radius);
+}
+
+._send-container ._edit-panel ._option:hover {
+    background-color: var(--brand-green-opacity);
+}
+
+._send-container ._edit-panel ._option:hover svg * {
+    fill: var(--brand-green);
+}
+
+._send-container ._edit-panel ._option:not(:last-child) {
+    margin-right: 8px;
+}
+
+.chat-item {
+    padding: 8px;
+    border-radius: var(--button-radius);
+}
+
+.chat-item:hover {
+    background-color: var(--basic-white);
+}
+
+.chat-item ._profile {
+    width: 48px;
+    height: 48px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    border-radius: var(--button-radius);
+}
+
+.chat-item .media-title {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.chat-item .media-title ._name {
+    font-weight: bold;
+    font-size: var(--font-16);
+    line-height: var(--line-20);
+}
+
+.chat-item .media-title * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.chat-item ._date {
+    font-size: var(--font-12);
+    line-height: var(--line-16);
+    font-weight: 400;
+    color: var(--gray-medium);
+    margin-bottom: 0;
+    margin-left: 8px;
+}
+
+.chat-item .__meridian {
+
+}
+
+.chat-item .__time {
+
+}
+
+.chat-item ._content {
+    font-size: var(--font-14);
+    line-height: var(--line-20);
+}
+
+.chat-item ._edited {
+    font-size: var(--font-12);
+    line-height: var(--line-16);
+    color: var(--gray-medium);
+    margin-left: 4px;
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+.chat-item ._reactions {
+    margin-top: 4px;
+    display: flex;
+}
+
+
+.chat-item ._reactions ._reaction {
+    border-radius: var(--button-radius);
+    display: flex;
+    padding: 4px 8px;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.chat-item ._reactions ._reaction:hover,
+.chat-item ._reactions ._reaction.is-active {
+    background-color: var(--brand-green-opacity);
+}
+
+.chat-item ._reactions ._reaction:not(:last-child) {
+    margin-right: 4px;
+}
+
+.chat-item ._reactions ._reaction ._count {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 4px;
+    color: var(--gray-dark-low);
+    font-size: var(--font-14);
+    line-height: var(--line-20);
+}
+
+.chat-item ._reactions ._reaction:hover ._count,
+.chat-item ._reactions ._reaction.is-active ._count {
+    margin-left: 4px;
+    color: var(--brand-green-dusky);
+}
+
+#chat-floater-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    z-index: 9999;
+    display: flex;
+    padding: 4px;
+    background-color: var(--basic-white);
+    border-radius: var(--button-radius);
+    border: var(--border-1px) var(--brand-green);
+}
+
+#chat-floater-menu * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#chat-floater-menu .floater-option {
+    padding: 4px;
+    cursor: pointer;
+    border-radius: var(--button-radius);
+}
+
+#chat-floater-menu .floater-option:not(:last-child) {
+    margin-right: 4px;
+}
+
+#chat-floater-menu .floater-option:hover {
+    background-color: var(--brand-green-opacity);
+}
+
+#chat-floater-menu .floater-option.is-active svg *,
+#chat-floater-menu .floater-option:hover svg * {
+    fill: var(--brand-green-dusky);
+}
+
+.chat-item ._mores {
+    cursor: pointer;
+    display: inline-flex;
+    margin-top: 4px;
+    padding: 4px;
+    border-radius: var(--button-radius);
+    background-color: transparent;
+}
+
+.chat-item ._mores:hover {
+    background-color: var(--brand-green-opacity);
+}
+
+.chat-item ._mores > div {
+    margin-left: 2px;
+    font-weight: 600;
+    font-size: var(--font-14);
+    line-height: var(--line-20);
+}
+
+.chat-item ._mores:hover svg * {
+    fill: var(--brand-green-dusky);
+}
+
+.chat-item ._mores:hover div {
+    color: var(--brand-green-dusky);
+}
+
+
+.chat-item ._comment-file {
+    display: inline-block;
+    padding: 4px;
+}
+
+.chat-item ._comment-file:not(:last-of-type) {
+    margin-right: 4px;
+}
+
+.chat-item ._comment-file._file {
+    display: flex;
+}
+
+.chat-item ._comment-file ._image {
+    width: 100%;
+    padding-top: 60%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: var(--input-radius);
+    border: var(--border-1px) var(--gray-high-medium);
+}
+
+.chat-item ._comment-file._file ._file {
+    width: 30px;
+    padding-top: 30px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url('../../../resources/assets/images/sample/file-image.png');
+}
+
+.chat-item ._comment-file._file ._file-info {
+    margin-left: 8px;
+    margin-top: 0;
+}
+
+.chat-item ._comment-file ._file-info {
+    display: flex;
+    margin-top: 4px;
+}
+
+.chat-item ._comment-file ._file-info * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.chat-item ._comment-file ._file-info ._name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 24px;
+}
+
+.chat-item ._comment-file ._file-info ._download {
+    margin-left: auto;
+    color: var(--brand-green-dusky);
+    cursor: pointer;
+}
+

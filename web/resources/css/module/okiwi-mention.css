@@ -1,0 +1,40 @@
+:root {
+    /* Sample Theme Color */
+    --mention-border-color: #1c86b1;
+    --mention-color: #183ff8;
+}
+
+.mention-container {
+
+}
+
+.mention-container .__mention {
+    font-size: var(--font-14);
+    font-weight: 600;
+    line-height: var(--line-20);
+    color: var(--mention-color);
+}
+
+.list_mention {
+    z-index: 1;
+    background-color: var(--basic-white);
+    position: absolute;
+    left: 0;
+    top: 0;
+    border: var(--border-1px) var(--mention-border-color);
+    border-radius: var(--button-radius);
+    padding-inline: 0;
+    margin-bottom: 0;
+}
+
+.list_mention li {
+    padding: 4px 8px;
+    font-size: var(--font-14);
+    font-weight: 600;
+    line-height: var(--line-20);
+    list-style: none;
+}
+
+.list_mention li.is-active {
+    background-color: #F06A6A;
+}
