@@ -100,9 +100,9 @@ public class AppConfig implements WebApplicationInitializer, SchedulingConfigure
          * @Prerequisites
          * Tomcat의 SSL 설정 및 SSL 인증 확인 또는 AWS의 LoadBalancer 활성화
          * */
-        HttpConstraintElement httpConstraintElement = new HttpConstraintElement(ServletSecurity.TransportGuarantee.CONFIDENTIAL);
+        /*HttpConstraintElement httpConstraintElement = new HttpConstraintElement(ServletSecurity.TransportGuarantee.CONFIDENTIAL);
         ServletSecurityElement servletSecurityElement = new ServletSecurityElement(httpConstraintElement);
-        dispatcher.setServletSecurity(servletSecurityElement);
+        dispatcher.setServletSecurity(servletSecurityElement);*/
         log.info("WebInitializer : finished");
     }
 

@@ -56,6 +56,11 @@ public class TestController {
     @Value("${UPLOAD_PATH}")
     private String UPLOAD_PATH;
 
+    @RequestMapping(value = "/test/chat", method = RequestMethod.GET)
+    public ModelAndView chatTest(HttpServletResponse response) {
+        return new ModelAndView("chat/channel-detail");
+    }
+
     @RequestMapping(value = "/test/download.do", method = RequestMethod.GET)
     public void downloadTest(HttpServletResponse response, String file_name) {
         /**

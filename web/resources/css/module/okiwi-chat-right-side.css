@@ -1,0 +1,117 @@
+.right-side-container {
+    position: fixed;
+    z-index: 9998;
+    width: 100%;
+    top: 50px;
+    right: 0;
+    height: calc(100vh - 50px);
+    background-color: rgba(34, 34, 34, 0.3);
+    display: flex;
+    opacity: 1;
+    transition: all 0.4s;
+}
+
+.right-side-container.is-close {
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+
+.right-side-container.is-close.is-closed {
+    display: none;
+}
+
+.right-side-container.is-close .right-side-inner {
+    right: -100%;
+    opacity: 0;
+    transition: all 0.4s;
+}
+
+.right-side-container .right-side-inner {
+    opacity: 1;
+    position: relative;
+    width: 360px;
+    background-color: var(--basic-white);
+    margin-left: auto;
+    height: 100%;
+    right: 0;
+    transition: all 0.4s;
+}
+
+.right-side-inner ._title, .right-side-inner ._header {
+    display: flex;
+    padding: 16px 24px;
+    border-bottom: var(--border-1px) var(--gray-high-medium);
+}
+
+.right-side-inner ._header ._back {
+    cursor: pointer;
+}
+
+.right-side-inner ._title *, .right-side-inner ._header * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.right-side-inner ._body {
+    height: auto;
+    overflow-y: auto;
+    max-height: calc(100% - 58px);
+    background-color: var(--basic-white);
+}
+
+.right-side-inner ._body::-webkit-scrollbar {
+    width: 5px;
+    background-color: transparent; /* 또는 트랙에 추가한다 */
+}
+
+/* 썸(thumb) 추가 */
+.right-side-inner ._body::-webkit-scrollbar-thumb {
+    background: var(--brand-green);
+}
+
+.right-side-inner ._body ._main_thread .chat-item:hover {
+    background-color: var(--gray-high-light);
+}
+
+.right-side-inner ._body ._sub_threads .chat-item:hover {
+    background-color: var(--gray-high-light);
+}
+
+.text-divider {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    display: flex;
+    width: 100%;
+}
+
+.text-divider * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.text-divider ._divider {
+    width: 100%;
+    height: 1px;
+    background-color: var(--gray-high-light);
+}
+
+.text-divider ._divider-text {
+    width: auto;
+    white-space: nowrap;
+    font-size: var(--font-14);
+    line-height: var(--line-20);
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.right-side-inner ._body ._send-container {
+    position: sticky;
+    bottom: 0;
+    background-color: var(--basic-white);
+    border-top-right-radius: var(--button-radius);
+    border-top-left-radius: var(--button-radius);
+    background-color: var(--basic-white);
+    margin-top: auto;
+    padding: 8px;
+    border-top: var(--border-1px) var(--gray-high-medium);
+}

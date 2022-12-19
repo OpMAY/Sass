@@ -1,0 +1,78 @@
+{
+  "channels": [
+    {
+      "id": "sadfidfndf",
+      "like": true,
+      "name": "Plugin PipeLine123",
+      "alarms": 999
+    },
+    {
+      "id": "sadfidfndf",
+      "like": false,
+      "name": "Plugin CRM",
+      "alarms": 3
+    },
+    {
+      "id": "sadfidfndf",
+      "like": false,
+      "name": "Plugin Chat",
+      "alarms": 1
+    },
+    {
+      "id": "sadfidfndf",
+      "like": true,
+      "name": "Plugin Querys",
+      "alarms": 0
+    }
+  ],
+  "users": [
+    {
+      "id": "asdfkjnvdf",
+      "name": "김우식",
+      "profile": {
+        "name": "test.png",
+        "url": "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&type=a340",
+        "size": 9999,
+        "type": "image/png"
+      },
+      "alarms": 0,
+      "is_live": true
+    },
+    {
+      "id": "asdfkjnvdf",
+      "name": "유병준",
+      "profile": {
+        "name": "test.png",
+        "url": "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&type=a340",
+        "size": 9999,
+        "type": "image/png"
+      },
+      "alarms": 1,
+      "is_live": true
+    },
+    {
+      "id": "asdfkjnvdf",
+      "name": "홍스님123",
+      "profile": {
+        "name": "test.png",
+        "url": "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&type=a340",
+        "size": 9999,
+        "type": "image/png"
+      },
+      "alarms": 1,
+      "is_live": false
+    },
+    {
+      "id": "asdfkjnvdf",
+      "name": "장택성",
+      "profile": {
+        "name": "test.png",
+        "url": "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&type=a340",
+        "size": 9999,
+        "type": "image/png"
+      },
+      "alarms": 1,
+      "is_live": false
+    }
+  ]
+}
