@@ -70,5 +70,6 @@ public class Constant {
         public static final String USER_PROFILE = "avouch/user/profile";
         public static final String TASK_THUMBNAIL = "avouch/crm/task/thumbnail/";
         public static final String TASK_FILE = "avouch/crm/task/file/";
+        public static final String CHAT_FILE = "avouch/chat/file/";
     }
 }

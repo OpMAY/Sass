@@ -108,4 +108,9 @@
         WHERE user_no = #{user_no}
           AND company_no = #{company_no}
     </select>
+    <select id="getUserMemberInfoByUserNo" resultType="CompanyMember">
+        select *
+        from company_member
+        WHERE user_no = #{user_no}
+    </select>
 </mapper>

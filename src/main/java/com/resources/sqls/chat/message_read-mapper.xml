@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.chat.MessageReadMapper">
+    <insert id="insertMessageRead">
+        insert into message_read(chat_message_id, company_member_no)
+        VALUES (#{chat_message_id}, #{company_member_no})
+    </insert>
+    <delete id="deleteMessageRead">
+        delete
+        from message_read
+        where chat_message_id = #{chat_message_id}
+          AND company_member_no = (select no from company_member WHERE user_no = #{user_no});
+    </delete>
+    <select id="checkChannelHasUnread" resultType="_boolean">
+        select EXISTS((select *
+                       from chat_message
+                                left join message_read mr on chat_message.id = mr.chat_message_id AND
+                                                             mr.company_member_no =
+                                                             (select no from company_member WHERE user_no = #{user_no})
+                       WHERE channel_no = #{channel_no}
+                         AND mr.chat_message_id is null))
+    </select>
+    <select id="getChannelUnreadCount" resultType="int">
+        select COUNT(*)
+        from chat_message
+                 left join message_read mr
+                           on chat_message.id = mr.chat_message_id AND
+                              mr.company_member_no =
+                              (select no from company_member WHERE user_no = #{user_no})
+        WHERE channel_no = #{channel_no}
+          AND mr.chat_message_id is null
+    </select>
+    <insert id="setAllChannelMessageRead">
+        # DB 내 전체 메세지 중 읽지 않은 메세지들 모두 읽음 처리
+        insert into message_read(company_member_no,
+                                 chat_message_id)
+        VALUES ((select no from company_member WHERE user_no = #{user_no}), # company_member_no
+                (select id
+                 from chat_message
+                          left join message_read mr on chat_message.id = mr.chat_message_id
+                 WHERE channel_no = #{channel_no}
+                   AND mr.chat_message_id is null)) # chat_message_id
+    </insert>
+</mapper>

@@ -135,4 +135,8 @@ public class CompanyService {
     public Company getUserCompany(int user_no) {
         return companyMemberDao.getUserCompany(user_no);
     }
+
+    public CompanyMember getUserCompanyMemberInfo(int user_no, int company_no) {
+        return companyMemberDao.getUserMemberInfo(user_no, company_no);
+    }
 }

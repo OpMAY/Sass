@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.chat.ChannelMapper">
+    <select id="getMyChannels" resultType="Channel">
+        select *
+        from channel
+        WHERE company_no = (select company_no from company_member WHERE user_no = #{user_no})
+    </select>
+    <select id="getChannelsByCompanyNo" resultType="Channel">
+        select *
+        from channel
+        WHERE company_no = #{company_no}
+    </select>
+    <select id="getChannelByNo" resultType="Channel">
+        select *
+        from channel
+        WHERE no = #{no}
+    </select>
+    <insert id="createChannel" keyProperty="no" useGeneratedKeys="true">
+        insert into channel(company_no, name, type, reg_datetime, updated_datetime)
+        VALUES (#{company_no}, #{name}, #{type}, now(), now())
+    </insert>
+    <update id="updateChannel">
+        update channel
+        SET name             = #{name},
+            updated_datetime = now()
+        WHERE no = #{no}
+    </update>
+    <delete id="deleteChannel">
+        delete
+        from channel
+        WHERE no = #{no}
+    </delete>
+    <select id="checkChannelBelongToCompany" resultType="_boolean">
+        select company_no = #{company_no}
+        from channel
+        WHERE no = #{channel_no}
+    </select>
+    <select id="getChannelsByCompanyNoWithLikes" resultType="Channel">
+        select *,
+               EXISTS((select *
+                       from channel_like
+                       WHERE channel_like.channel_no = channel.no
+                         AND company_member_no =
+                             (select no from company_member WHERE user_no = #{user_no}))) as bookmark
+        from channel
+        WHERE company_no = #{company_no}
+    </select>
+    <select id="getTwoUserDirectChannel" resultType="Channel">
+        select *
+        from channel
+                 left join channel_member cm on channel.no = cm.channel_no
+        WHERE channel.type = 'DIRECT'
+          AND cm.company_member_no IN
+              (select company_member.no from company_member WHERE user_no in (#{user1_no}, #{user2_no}))
+    </select>
+    <select id="getMyPrivateChannel" resultType="Channel">
+        select *
+        from channel
+                 left join channel_member cm on channel.no = cm.channel_no
+        WHERE channel.type = 'MY'
+          AND cm.company_member_no = #{user_no}
+    </select>
+    <select id="checkChannelNameDuplicateInCompany" resultType="boolean">
+        select EXISTS(select * from channel WHERE name = #{name} AND company_no = #{company_no})
+    </select>
+</mapper>

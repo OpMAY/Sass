@@ -23,5 +23,10 @@
                  height="36"
                  src="/resources/assets/images/icon/crm-plug-logo.png"/>
         </div>
+        <div class="_left-plugin" data-href="/chat/workspace">
+            <img width="36"
+                 height="36"
+                 src="/resources/assets/images/icon/sample_chatplug.svg"/>
+        </div>
     </div>
 </div>
