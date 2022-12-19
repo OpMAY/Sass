@@ -34,7 +34,7 @@ public class ChatPlugController {
 
     @RequestMapping(value = "/channel/my", method = RequestMethod.GET)
     public ModelAndView MyChatRoom(HttpServletRequest request) {
-        VIEW = new ModelAndView("chat/workspace");
+        VIEW = new ModelAndView("chat/channel-detail");
         HashMap<String, Object> hashMap = encryptionService.decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
         Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
         Channel channel = chatService.getMyPrivateChannel(userNo);
@@ -47,7 +47,7 @@ public class ChatPlugController {
 
     @RequestMapping(value = "/channel/direct/{member_hash}", method = RequestMethod.GET)
     public ModelAndView DirectChatRoom(HttpServletRequest request, @PathVariable String member_hash) throws Exception {
-        VIEW = new ModelAndView("chat/workspace");
+        VIEW = new ModelAndView("chat/channel-detail");
         HashMap<String, Object> hashMap = encryptionService.decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
         Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
         int target_member_no = Integer.parseInt(encryptionService.decryptAESWithSlash(member_hash));
@@ -61,10 +61,11 @@ public class ChatPlugController {
 
     @RequestMapping(value = "/channel/{channel_hash}", method = RequestMethod.GET)
     public ModelAndView ChatRoom(HttpServletRequest request, @PathVariable String channel_hash) throws Exception {
-        VIEW = new ModelAndView("chat/workspace");
+        VIEW = new ModelAndView("chat/channel-detail");
         HashMap<String, Object> hashMap = encryptionService.decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
         Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
-        int channel_no = Integer.parseInt(encryptionService.decryptAESWithSlash(channel_hash));
+        String hash = "SRTOSoKrZ0q79uyoFX5N1A=="; // channel_no = 2
+        int channel_no = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
         Channel channel = chatService.getChannelDetail(userNo, channel_no);
         VIEW.addObject("channel", channel);
         // TODO MESSAGE 는 FETCH 로
