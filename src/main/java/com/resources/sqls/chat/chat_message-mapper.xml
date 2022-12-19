@@ -82,7 +82,7 @@
         ORDER BY reg_datetime DESC, id
         LIMIT 50
     </select>
-    <select id="checkParentIsThreadMessage" resultMap="boolean">
+    <select id="checkParentIsThreadMessage" resultType="_boolean">
         select EXISTS(select * from chat_message WHERE id = #{parent_message_id} AND parent_message_id is not null)
     </select>
 </mapper>

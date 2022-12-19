@@ -13,7 +13,7 @@
         where chat_message_id = #{chat_message_id}
           AND company_member_no = (select no from company_member WHERE user_no = #{user_no});
     </delete>
-    <select id="checkChannelHasUnread" resultType="_boolean">
+    <select id="checkChannelHasUnRead" resultType="_boolean">
         select EXISTS((select *
                        from chat_message
                                 left join message_read mr on chat_message.id = mr.chat_message_id AND

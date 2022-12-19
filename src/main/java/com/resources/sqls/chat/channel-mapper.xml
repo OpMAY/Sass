@@ -63,7 +63,7 @@
         WHERE channel.type = 'MY'
           AND cm.company_member_no = #{user_no}
     </select>
-    <select id="checkChannelNameDuplicateInCompany" resultType="boolean">
+    <select id="checkChannelNameDuplicateInCompany" resultType="_boolean">
         select EXISTS(select * from channel WHERE name = #{name} AND company_no = #{company_no})
     </select>
 </mapper>
