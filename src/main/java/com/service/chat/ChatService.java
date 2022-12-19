@@ -238,6 +238,7 @@ public class ChatService {
             } else {
                 chatProfileMember.setAlarms(messageReadDao.getChannelUnreadCount(direct.getNo(), user_no));
             }
+            chatProfileMember.set_my(user.getNo() == user_no);
         }
         return chatProfileMembers;
     }

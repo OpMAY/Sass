@@ -11,4 +11,6 @@ public class ChatProfileMember {
     private MFile profile;
     private int alarms;
     private boolean is_live;
+
+    private boolean is_my;
 }
