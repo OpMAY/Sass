@@ -39,7 +39,11 @@
         VALUES ((select no from company_member WHERE user_no = #{user_no}), # company_member_no
                 (select id
                  from chat_message
-                          left join message_read mr on chat_message.id = mr.chat_message_id
+                          left join message_read mr on chat_message.id = mr.chat_message_id AND
+                                                       mr.company_member_no =
+                                                       (select no
+                                                        from company_member
+                                                        WHERE user_no = #{user_no})
                  WHERE channel_no = #{channel_no}
                    AND mr.chat_message_id is null)) # chat_message_id
     </insert>
