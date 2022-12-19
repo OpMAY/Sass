@@ -23,4 +23,10 @@ public interface ChatMessageMapper {
     boolean checkIdDuplicated(String id);
 
     int getMessageThreadCount(String id);
+
+    ArrayList<ChatMessage> getThreadMessages(String message_id);
+
+    ArrayList<ChatMessage> getNextThreadMessages(@Param("message_id") String message_id, @Param("last_message_id") String last_message_id);
+
+    boolean checkParentIsThreadMessage(String parent_message_id);
 }

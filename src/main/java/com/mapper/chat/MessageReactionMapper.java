@@ -9,9 +9,11 @@ import java.util.ArrayList;
 public interface MessageReactionMapper {
     void insertMessageReaction(ChatMessageReaction messageReaction);
 
-    void deleteMessageReaction(@Param("chat_message_id") String chat_message_id, @Param("user_no") int user_no);
+    void deleteMessageReaction(@Param("chat_message_id") String chat_message_id, @Param("user_no") int user_no, @Param("reaction") String reaction);
 
     ArrayList<ChatMessageReaction> getMessageReactionsByMessageId(String chat_message_id);
 
-    ArrayList<ChatMessageReactionSummary> getMessageReactionSummary(String id);
+    ArrayList<ChatMessageReactionSummary> getMessageReactionSummary(@Param("id") String id, @Param("user_no") int user_no);
+
+    boolean checkUserMessageReacted(ChatMessageReaction messageReaction);
 }

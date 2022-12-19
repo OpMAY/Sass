@@ -49,4 +49,16 @@ public class ChatMessageDao {
     public int getMessageThreadCount(String id) {
         return mapper.getMessageThreadCount(id);
     }
+
+    public ArrayList<ChatMessage> getThreadMessages(String message_id) {
+        return mapper.getThreadMessages(message_id);
+    }
+
+    public ArrayList<ChatMessage> getNextThreadMessages(String message_id, String last_message_id) {
+        return mapper.getNextThreadMessages(message_id, last_message_id);
+    }
+
+    public boolean checkParentIsThreadMessage(String parent_message_id) {
+        return mapper.checkParentIsThreadMessage(parent_message_id);
+    }
 }

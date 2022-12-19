@@ -39,6 +39,7 @@ public class ChatChannelWebSocketHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         Gson gson = new Gson();
         String payload = message.getPayload();
+        boolean pass = false;
         log.info("chatWebSocketHandler payload : {}", payload);
         ChatWebSocketObject object = gson.fromJson(payload, ChatWebSocketObject.class);
         ChatMessage chatMessage = null;
@@ -57,6 +58,7 @@ public class ChatChannelWebSocketHandler extends TextWebSocketHandler {
                     chatMessage.setCompany_member_no(companyMember.getNo());
                     chatMessage = chatService.sendMessage(chatMessage);
                     object.setData(chatMessage);
+                    pass = true;
                 }
                 log.info("chatMessage : {}", chatMessage);
                 break;
@@ -69,37 +71,40 @@ public class ChatChannelWebSocketHandler extends TextWebSocketHandler {
 
         log.info("sessions : {}", chatSessionQueue);
 
-        // TODO ACTION_TYPE 별 Send 기준 잡기
-        for (String sess : chatSessionQueue.keySet()) {
-            if (!sess.equals(session.getId())) {
-                // Sender 에겐 보내지 않음
-                ChatSocketSessionModel senderModel = chatSessionQueue.get(session.getId());
-                if (chatSessionQueue.get(session.getId()).getCompany_no() == senderModel.getCompany_no()) {
-                    // 같은 회사의 ChatPlug 수신 채널에만 전송
-                    ChatChannelSocketSessionModel channelSenderModel = chatChannelSessionQueue.get(session.getId());
-                    /**
-                     * ChatMessage의 경우
-                     * 1. ChatSession, chatChannelSession 모두에 있으면 chatChannelSessionQueue 기준으로 전송
-                     * 2. ChatSession 에만 있으면 chatSessionQueue 기준 채널로 전송
-                     * 그 외 (메세지 리액션, 메세지 입력 중, 메세지 입력 중 end 등의 interaction)
-                     * -> chatChannelSession 에만 전송
-                     * */
-                    TextMessage textMessage = new TextMessage(new Gson().toJson(object));
-                    if(object.getAction_type().equals(CHAT_ACTION_TYPE.SEND_MESSAGE)) {
-                        if (channelSenderModel != null) {
-                            // case 1
+        if (pass) {
+            // TODO ACTION_TYPE 별 Send 기준 잡기
+            for (String sess : chatSessionQueue.keySet()) {
+                if (!sess.equals(session.getId())) {
+                    // Sender 에겐 보내지 않음
+                    ChatSocketSessionModel senderModel = chatSessionQueue.get(session.getId());
+                    if (chatSessionQueue.get(session.getId()).getCompany_no() == senderModel.getCompany_no()) {
+                        // 같은 회사의 ChatPlug 수신 채널에만 전송
+                        ChatChannelSocketSessionModel channelSenderModel = chatChannelSessionQueue.get(session.getId());
+                        /**
+                         * ChatMessage의 경우
+                         * 1. ChatSession, chatChannelSession 모두에 있으면 chatChannelSessionQueue 기준으로 전송
+                         * 2. ChatSession 에만 있으면 chatSessionQueue 기준 채널로 전송
+                         * 그 외 (메세지 리액션, 메세지 입력 중, 메세지 입력 중 end 등의 interaction)
+                         * -> chatChannelSession 에만 전송
+                         * */
+                        TextMessage textMessage = new TextMessage(new Gson().toJson(object));
+                        if (object.getAction_type().equals(CHAT_ACTION_TYPE.SEND_MESSAGE)) {
+                            if (channelSenderModel != null) {
+                                // case 1
+                                if (chatChannelSessionQueue.get(session.getId()).getChannel_no() == channelSenderModel.getChannel_no()) {
+                                    // 같은 채널에 있는 session에만 전송
+                                    chatChannelSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
+                                    // TODO READ 처리
+                                }
+                            } else {
+                                // case 2
+                                chatSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
+                            }
+                        } else {
                             if (chatChannelSessionQueue.get(session.getId()).getChannel_no() == channelSenderModel.getChannel_no()) {
                                 // 같은 채널에 있는 session에만 전송
                                 chatChannelSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
                             }
-                        } else {
-                            // case 2
-                            chatSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
-                        }
-                    } else {
-                        if (chatChannelSessionQueue.get(session.getId()).getChannel_no() == channelSenderModel.getChannel_no()) {
-                            // 같은 채널에 있는 session에만 전송
-                            chatChannelSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
                         }
                     }
                 }

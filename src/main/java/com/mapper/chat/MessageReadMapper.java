@@ -9,4 +9,8 @@ public interface MessageReadMapper {
     void deleteMessageRead(@Param("chat_message_id") String chat_message_id, @Param("user_no") int user_no);
 
     boolean checkChannelHasUnRead(@Param("channel_no") int channel_no, @Param("user_no") int user_no);
+
+    int getChannelUnreadCount(@Param("channel_no") int channel_no, @Param("user_no") int user_no);
+
+    void setAllChannelMessageRead(@Param("channel_no") int channel_no, @Param("user_no") int user_no);
 }

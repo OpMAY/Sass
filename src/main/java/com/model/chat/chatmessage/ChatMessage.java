@@ -15,7 +15,7 @@ public class ChatMessage extends Time {
     private String id;
     private int channel_no;
     private int company_member_no;
-    private int parent_message_no;
+    private String parent_message_id;
     private CHAT_MESSAGE_TYPE type;
     private String content;
     private boolean edited;

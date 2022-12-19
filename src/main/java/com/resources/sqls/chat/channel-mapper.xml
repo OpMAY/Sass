@@ -48,4 +48,22 @@
         from channel
         WHERE company_no = #{company_no}
     </select>
+    <select id="getTwoUserDirectChannel" resultType="Channel">
+        select *
+        from channel
+                 left join channel_member cm on channel.no = cm.channel_no
+        WHERE channel.type = 'DIRECT'
+          AND cm.company_member_no IN
+              (select company_member.no from company_member WHERE user_no in (#{user1_no}, #{user2_no}))
+    </select>
+    <select id="getMyPrivateChannel" resultType="Channel">
+        select *
+        from channel
+                 left join channel_member cm on channel.no = cm.channel_no
+        WHERE channel.type = 'MY'
+          AND cm.company_member_no = #{user_no}
+    </select>
+    <select id="checkChannelNameDuplicateInCompany" resultType="boolean">
+        select EXISTS(select * from channel WHERE name = #{name} AND company_no = #{company_no})
+    </select>
 </mapper>

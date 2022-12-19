@@ -11,7 +11,8 @@
         delete
         from message_reaction
         where chat_message_id = #{chat_message_id}
-          AND company_member_no = (select no from company_member WHERE user_no = #{user_no});
+          AND company_member_no = (select no from company_member WHERE user_no = #{user_no})
+          AND reaction = #{reaction};
     </delete>
     <select id="getMessageReactionsByMessageId" resultType="ChatMessageReaction">
         select *
@@ -19,9 +20,22 @@
         WHERE chat_message_id = #{chat_message_id}
     </select>
     <select id="getMessageReactionSummary" resultType="ChatMessageReactionSummary">
-        select reaction as emoji, COUNT(reaction) as count
+        select reaction                                                       as emoji,
+               COUNT(reaction)                                                as count,
+               (select EXISTS(select *
+                              from message_reaction mr
+                              WHERE mr.company_member_no =
+                                    (select no from company_member WHERE user_no = #{user_no})
+                                AND mr.reaction = message_reaction.reaction)) as active
         from message_reaction
         WHERE chat_message_id = #{id}
         GROUP BY emoji
+    </select>
+    <select id="checkUserMessageReacted" resultType="boolean">
+        select EXISTS(select *
+                      from message_reaction
+                      WHERE chat_message_id = #{chat_message_id}
+                        AND company_member_no = #{company_member_no}
+                        AND reaction = #{reaction})
     </select>
 </mapper>

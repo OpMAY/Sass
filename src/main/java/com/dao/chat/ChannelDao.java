@@ -47,4 +47,16 @@ public class ChannelDao {
     public ArrayList<Channel> getChannelsByCompanyNoWithLikes(int user_no, int company_no) {
         return mapper.getChannelsByCompanyNoWithLikes(user_no, company_no);
     }
+
+    public Channel getTwoUserDirectChannel(int user1_no, int user2_no) {
+       return mapper.getTwoUserDirectChannel(user1_no, user2_no);
+    }
+
+    public Channel getMyPrivateChannel(int user_no) {
+        return mapper.getMyPrivateChannel(user_no);
+    }
+
+    public boolean checkChannelNameDuplicateInCompany(int company_no, String name) {
+        return mapper.checkChannelNameDuplicateInCompany(company_no, name);
+    }
 }

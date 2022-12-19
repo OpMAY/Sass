@@ -14,15 +14,23 @@ public class MessageReadDao {
         this.mapper = sqlSession.getMapper(MessageReadMapper.class);
     }
 
-    void insertMessageRead(ChatMessageRead chatMessageRead) {
+    public void insertMessageRead(ChatMessageRead chatMessageRead) {
         mapper.insertMessageRead(chatMessageRead);
     }
 
-    void deleteMessageRead(String chat_message_id, int user_no) {
+    public void deleteMessageRead(String chat_message_id, int user_no) {
         mapper.deleteMessageRead(chat_message_id, user_no);
     }
 
-    boolean checkChannelHasUnRead(int channel_no, int user_no) {
+    public boolean checkChannelHasUnRead(int channel_no, int user_no) {
         return mapper.checkChannelHasUnRead(channel_no, user_no);
+    }
+
+    public int getChannelUnreadCount(int channel_no, int user_no) {
+        return mapper.getChannelUnreadCount(channel_no, user_no);
+    }
+
+    public void setAllChannelMessageRead(int channel_no, int user_no) {
+        mapper.setAllChannelMessageRead(channel_no, user_no);
     }
 }

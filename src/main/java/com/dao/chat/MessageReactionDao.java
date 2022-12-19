@@ -23,15 +23,19 @@ public class MessageReactionDao {
         mapper.insertMessageReaction(messageReaction);
     }
 
-    public void deleteMessageReaction(String chat_message_id, int user_no) {
-        mapper.deleteMessageReaction(chat_message_id, user_no);
+    public void deleteMessageReaction(String chat_message_id, int user_no, String reaction) {
+        mapper.deleteMessageReaction(chat_message_id, user_no, reaction);
     }
 
     public ArrayList<ChatMessageReaction> getMessageReactionsByMessageId(String chat_message_id) {
         return mapper.getMessageReactionsByMessageId(chat_message_id);
     }
 
-    public ArrayList<ChatMessageReactionSummary> getMessageReactionSummary(String id) {
-        return mapper.getMessageReactionSummary(id);
+    public ArrayList<ChatMessageReactionSummary> getMessageReactionSummary(String id, int user_no) {
+        return mapper.getMessageReactionSummary(id, user_no);
+    }
+
+    public boolean checkUserMessageReacted(ChatMessageReaction messageReaction) {
+        return mapper.checkUserMessageReacted(messageReaction);
     }
 }

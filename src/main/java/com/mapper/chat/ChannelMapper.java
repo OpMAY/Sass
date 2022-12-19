@@ -21,4 +21,10 @@ public interface ChannelMapper {
     boolean checkChannelBelongToCompany(@Param("channel_no") int channel_no, @Param("company_no") int company_no);
 
     ArrayList<Channel> getChannelsByCompanyNoWithLikes(@Param("user_no") int user_no, @Param("company_no") int company_no);
+
+    Channel getTwoUserDirectChannel(@Param("user1_no") int user1_no, @Param("user2_no") int user2_no);
+
+    Channel getMyPrivateChannel(int user_no);
+
+    boolean checkChannelNameDuplicateInCompany(@Param("company_no") int company_no, @Param("name") String name);
 }

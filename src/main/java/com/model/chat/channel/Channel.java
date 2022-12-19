@@ -10,5 +10,7 @@ public class Channel extends Time {
     private String name;
     private CHANNEL_TYPE type;
 
+    private int alarms;
     private boolean bookmark;
+    private boolean is_member;
 }

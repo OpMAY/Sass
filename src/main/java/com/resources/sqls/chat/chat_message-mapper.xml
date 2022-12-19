@@ -30,7 +30,7 @@
         select *
         from chat_message
         WHERE channel_no = #{channel_no}
-        ORDER BY reg_datetime DESC, id
+        ORDER BY reg_datetime DESC
         LIMIT 50
     </select>
     <select id="getChannelNextMessages" resultType="ChatMessage" resultMap="ChatMessage">
@@ -40,15 +40,15 @@
         select *
         from chat_message
         WHERE channel_no = #{channel_no}
-          AND (reg_datetime <![CDATA[<]]> @LAST_REG_DATE OR (reg_datetime = @LAST_REG_DATE AND id <![CDATA[<]]> #{last_message_id}))
-        ORDER BY reg_datetime DESC, id
+          AND (reg_datetime <![CDATA[<]]> @LAST_REG_DATE)
+        ORDER BY reg_datetime DESC
         LIMIT 50
     </select>
     <select id="getChannelLastMessage" resultType="ChatMessage" resultMap="ChatMessage">
         select *
         from chat_message
         WHERE channel_no = #{channel_no}
-        ORDER BY reg_datetime DESC, id DESC
+        ORDER BY reg_datetime DESC
         LIMIT 1
     </select>
     <select id="getChatMessageById" resultType="ChatMessage" resultMap="ChatMessage">
@@ -63,5 +63,26 @@
         select COUNT(*)
         from chat_message
         WHERE parent_message_id = #{id}
+    </select>
+    <select id="getThreadMessages" resultType="ChatMessage" resultMap="ChatMessage">
+        select *
+        from chat_message
+        WHERE parent_message_id = #{message_id}
+        ORDER BY reg_datetime DESC, id
+        LIMIT 50
+    </select>
+    <select id="getNextThreadMessages" resultType="ChatMessage" resultMap="ChatMessage">
+        SET @LAST_REG_DATE = (select reg_datetime
+                              from chat_message
+                              WHERE id = #{last_message_id});
+        select *
+        from chat_message
+        WHERE parent_message_id = #{message_id}
+          AND (reg_datetime <![CDATA[<]]> @LAST_REG_DATE)
+        ORDER BY reg_datetime DESC, id
+        LIMIT 50
+    </select>
+    <select id="checkParentIsThreadMessage" resultMap="boolean">
+        select EXISTS(select * from chat_message WHERE id = #{parent_message_id} AND parent_message_id is not null)
     </select>
 </mapper>
