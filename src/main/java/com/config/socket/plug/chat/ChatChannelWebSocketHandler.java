@@ -22,6 +22,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -91,7 +92,7 @@ public class ChatChannelWebSocketHandler extends TextWebSocketHandler {
                         if (object.getAction_type().equals(CHAT_ACTION_TYPE.SEND_MESSAGE)) {
                             if (channelSenderModel != null) {
                                 // case 1
-                                if (chatChannelSessionQueue.get(session.getId()).getChannel_no() == channelSenderModel.getChannel_no()) {
+                                if (chatChannelSessionQueue.get(session.getId()).getChannels().contains(channelSenderModel.getChannel_no())) {
                                     // 같은 채널에 있는 session에만 전송
                                     chatChannelSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
                                     // TODO READ 처리
@@ -101,7 +102,7 @@ public class ChatChannelWebSocketHandler extends TextWebSocketHandler {
                                 chatSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
                             }
                         } else {
-                            if (chatChannelSessionQueue.get(session.getId()).getChannel_no() == channelSenderModel.getChannel_no()) {
+                            if (chatChannelSessionQueue.get(session.getId()).getChannels().contains(channelSenderModel.getChannel_no())) {
                                 // 같은 채널에 있는 session에만 전송
                                 chatChannelSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
                             }
@@ -134,15 +135,29 @@ public class ChatChannelWebSocketHandler extends TextWebSocketHandler {
                     String hash = path.substring(path.indexOf("chat/") + "chat/".length());
                     int channel_no = Integer.parseInt(encryptionService.decryptAESWithSlash(hash));
                     if (chatService.checkChannelBelongToCompany(channel_no, company.getNo())) {
-                        ChatChannelSocketSessionModel model = new ChatChannelSocketSessionModel();
-                        model.setHash(hash);
-                        model.setChannel_no(channel_no);
-                        model.setWebSocketSession(session);
-                        model.setUser_no(user_no);
-                        model.setReg_datetime(LocalDateTime.now());
-                        model.setExpired_datetime(LocalDateTime.now().plusDays(1));
-                        log.info("model : {}", model);
-                        chatChannelSessionQueue.put(session.getId(), model);
+                        if(chatChannelSessionQueue.containsKey(session.getId())) {
+                            // 기존 세션에 채널 추가
+                            ChatChannelSocketSessionModel model = chatChannelSessionQueue.get(session.getId());
+                            ArrayList<Integer> channels = model.getChannels();
+                            if(!channels.contains(channel_no)) {
+                                channels.add(channel_no);
+                            }
+                            model.setChannels(channels);
+                            chatChannelSessionQueue.replace(session.getId(), model);
+                        } else {
+                            // 세션 추가
+                            ChatChannelSocketSessionModel model = new ChatChannelSocketSessionModel();
+                            ArrayList<Integer> channels = new ArrayList<>();
+                            model.setHash(hash);
+                            channels.add(channel_no);
+                            model.setChannels(channels);
+                            model.setWebSocketSession(session);
+                            model.setUser_no(user_no);
+                            model.setReg_datetime(LocalDateTime.now());
+                            model.setExpired_datetime(LocalDateTime.now().plusDays(1));
+                            log.info("model : {}", model);
+                            chatChannelSessionQueue.put(session.getId(), model);
+                        }
                         log.info("afterConnectionEstablished : {}", chatChannelSessionQueue);
                         log.info("{} Client Connection Established", session);
                     } else {
