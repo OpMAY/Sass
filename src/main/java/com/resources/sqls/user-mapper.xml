@@ -79,7 +79,7 @@
         from user
         WHERE no = #{userNo}
     </delete>
-    <select id="getUser" resultType="User">
+    <select id="getUser" resultType="User" resultMap="User">
         select *
         from user
         where no = #{user_no};

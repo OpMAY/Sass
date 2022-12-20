@@ -11,6 +11,7 @@ import com.model.chat.channel.CHANNEL_TYPE;
 import com.model.chat.channel.Channel;
 import com.model.chat.channel.ChannelLike;
 import com.model.chat.channel.ChannelMember;
+import com.model.chat.chatmessage.CHAT_MESSAGE_TYPE;
 import com.model.chat.chatmessage.ChatMessage;
 import com.model.chat.chatmessage.MessageThread;
 import com.model.chat.chatmessage.interactions.ChatMessageReaction;
@@ -18,6 +19,7 @@ import com.model.chat.chatmessage.interactions.ChatMessageRead;
 import com.model.chat.chatmessage.interactions.ChatMessageSave;
 import com.model.company.Company;
 import com.model.company.CompanyMember;
+import com.model.company.CompanyMemberListData;
 import com.model.company.CompanyProfileMember;
 import com.util.TokenGenerator;
 import lombok.RequiredArgsConstructor;
@@ -190,19 +192,24 @@ public class ChatService {
         channel.setType(CHANNEL_TYPE.GROUP);
         channelDao.createChannel(channel);
         // TODO 임시로 해당 멤버들 모두 멤버로 추가, 이후 멤버 개별 추가 구현 시 삭제
-        List<CompanyMember> companyMembers = companyMemberDao.getCompanyMemberList(company_no);
-        for (CompanyMember companyMember : companyMembers) {
-            channelMemberDao.insertChannelMember(new ChannelMember(channel.getNo(), companyMember.getNo()));
+        List<CompanyMemberListData> companyMembers = companyMemberDao.getCompanyMemberList(company_no);
+        for (CompanyMemberListData companyMember : companyMembers) {
+            channelMemberDao.insertChannelMember(new ChannelMember(channel.getNo(), companyMember.getMember_no()));
         }
         return channel;
     }
 
     // TODO 3. Thread 가져오기 (Right) -> 지우씨
-    public MessageThread getMessageThread(int user_no, String message_id) {
+    public MessageThread getMessageThread(int user_no, String message_id, String last_message_id) {
         MessageThread messageThread = new MessageThread();
         ChatMessage chatMessage = chatMessageDao.getChatMessageById(message_id);
         formatChatMessage(user_no, chatMessage);
-        ArrayList<ChatMessage> threadMessages = chatMessageDao.getThreadMessages(message_id);
+        ArrayList<ChatMessage> threadMessages;
+        if (last_message_id != null) {
+            threadMessages = chatMessageDao.getNextThreadMessages(message_id, last_message_id);
+        } else {
+            threadMessages = chatMessageDao.getThreadMessages(message_id);
+        }
         for (ChatMessage message : threadMessages) {
             formatChatMessage(user_no, message);
         }
@@ -213,6 +220,7 @@ public class ChatService {
 
     // TODO 2. channels, users 가져오기 (Left) -> 지우씨
     public ArrayList<Channel> getCompanyChannels(int user_no, int company_no) {
+        // GROUP CHANNEL 만 가져옴
         ArrayList<Channel> channels = channelDao.getChannelsByCompanyNo(company_no);
         for (Channel channel : channels) {
             formatChannel(user_no, channel);
@@ -223,11 +231,11 @@ public class ChatService {
     // TODO 2. channels, users 가져오기 (Left) -> 지우씨
     public ArrayList<ChatProfileMember> getChatMembers(int user_no, int company_no) {
         ArrayList<ChatProfileMember> chatProfileMembers = new ArrayList<>();
-        ArrayList<CompanyMember> memberList = (ArrayList<CompanyMember>) companyMemberDao.getCompanyMemberList(company_no);
-        for (CompanyMember companyMember : memberList) {
+        List<CompanyMemberListData> memberList = companyMemberDao.getCompanyMemberList(company_no);
+        for (CompanyMemberListData companyMember : memberList) {
             User user = userDao.getUser(companyMember.getUser_no());
             ChatProfileMember chatProfileMember = new ChatProfileMember();
-            chatProfileMember.setMember_no(companyMember.getNo());
+            chatProfileMember.setMember_no(companyMember.getMember_no());
             chatProfileMember.setName(user.getName());
             chatProfileMember.setProfile(user.getProfile_img());
             chatProfileMember.set_live(chatOnlineService.isUserOnline(user.getNo()));
@@ -237,6 +245,12 @@ public class ChatService {
                 chatProfileMember.setAlarms(0);
             } else {
                 chatProfileMember.setAlarms(messageReadDao.getChannelUnreadCount(direct.getNo(), user_no));
+            }
+            chatProfileMember.set_my(user.getNo() == user_no);
+            if (chatProfileMember.is_my()) {
+                chatProfileMembers.add(0, chatProfileMember);
+            } else {
+                chatProfileMembers.add(chatProfileMember);
             }
         }
         return chatProfileMembers;
@@ -285,7 +299,9 @@ public class ChatService {
         chatMessageDao.sendMessage(chatMessage);
         // Set my message read
         messageReadDao.insertMessageRead(new ChatMessageRead(chatMessage.getId(), chatMessage.getCompany_member_no()));
-        return chatMessageDao.getChatMessageById(chatMessage.getId());
+        ChatMessage result = chatMessageDao.getChatMessageById(chatMessage.getId());
+        formatChatMessage(companyMemberDao.getCompanyMemberInfoByMemberNo(chatMessage.getCompany_member_no()).getUser_no(), result);
+        return result;
     }
 
     public Channel getChannelDetail(int user_no, int channel_no) {
@@ -318,5 +334,8 @@ public class ChatService {
         chatMessage.setThreads(chatMessageDao.getMessageThreadCount(chatMessage.getId()));
         chatMessage.setReaction_detail(messageReactionDao.getMessageReactionsByMessageId(chatMessage.getId()));
         chatMessage.setReactions(messageReactionDao.getMessageReactionSummary(chatMessage.getId(), user_no));
+        if(chatMessage.getType().equals(CHAT_MESSAGE_TYPE.FILE)) {
+            chatMessage.setFiles(chatMessage.getMessage_json().getFiles());
+        }
     }
 }

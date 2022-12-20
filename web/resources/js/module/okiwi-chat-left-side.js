@@ -118,3 +118,13 @@ const createDMElement = (user, click) => {
     }
     return dm_elem;
 }
+
+function userConverter(user) {
+    user.is_live = user._live;
+}
+
+function usersConverter(users) {
+    users.forEach(function (user) {
+        userConverter(user);
+    })
+}

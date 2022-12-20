@@ -69,8 +69,6 @@ public class ChatPlugController {
         Channel channel = chatService.getChannelDetail(userNo, channel_no);
         VIEW.addObject("channel", channel);
         // TODO MESSAGE 는 FETCH 로
-        ArrayList<ChatMessage> chatMessages = chatService.getChannelMessages(channel.getNo(), userNo, null);
-        VIEW.addObject("messages", chatMessages);
         return VIEW;
     }
 }

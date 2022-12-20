@@ -1204,6 +1204,7 @@
 <script src="/resources/js/validation.js"></script>
 <script src="/resources/js/chat/api.js"></script>
 <script src="/resources/js/chat/api1.js"></script>
+<script src="/resources/js/module/modal.js"></script>
 <!--Font Awesome-->
 <script src="https://kit.fontawesome.com/3581631c82.js"
         crossorigin="anonymous"></script>
@@ -1228,20 +1229,42 @@
                 content_wrapper.classList.remove('sidebar-is-open');
             }
         });
+        
         /*TODO Chat Content Initialize*/
         /*TODO 1. channel 메세지 가져오기 (Main) -> 지우씨*/
-        fetch('/resources/assets/datas/message_sample.json')
-            .then((response) => response.json())
-            .then((messages) => {
-                initializeChat({container: '.chat-container', messages});
-            });
+        const info = getTypeAndValue();
+        getChannelMessages(info.type, info.value, null)
+            .then((result) => {
+                console.log(result);
+                if (result.status === 'OK') {
+                    if (result.data.status) {
+                        initializeChat({
+                            container: '.chat-container',
+                            messages: result.data.messages.reverse()
+                        });
+                    } else {
+                        viewAlert({content: '메세지를 불러오지 못했습니다.'});
+                    }
+                } else {
+                    viewAlert({content: '메세지를 불러오지 못했습니다.'});
+                }
+            })
+        
         /*TODO Chat Left Initialize*/
         /*TODO 2. channels, users 가져오기 (Left) -> 지우씨*/
-        fetch('/resources/assets/datas/chat_info_sample.json')
-            .then((response) => response.json())
-            .then((info) => {
-                initializeLeftSide(info.channels, info.users);
-            });
+        getCompanyChannelsAndMembers().then((result) => {
+            console.log(result);
+            if (result.status === 'OK') {
+                if (result.data.status) {
+                    usersConverter(result.data.users);
+                    initializeLeftSide(result.data.channels, result.data.users);
+                } else {
+                    viewAlert({content: '유저 정보를 불러오지 못했습니다.'});
+                }
+            } else {
+                viewAlert({content: '유저 정보를 불러오지 못했습니다.'});
+            }
+        })
         /*TODO Chat Right Initialize*/
         initializeRightThread();
     });

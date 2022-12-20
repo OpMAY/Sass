@@ -11,7 +11,7 @@
     <select id="getChannelsByCompanyNo" resultType="Channel">
         select *
         from channel
-        WHERE company_no = #{company_no}
+        WHERE company_no = #{company_no} AND type = 'GROUP'
     </select>
     <select id="getChannelByNo" resultType="Channel">
         select *

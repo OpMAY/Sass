@@ -70,7 +70,7 @@ public class CompanyService {
     public Message getUserCorpInfo(int userNo) {
         Message message = new Message();
         Company company = companyMemberDao.getUserCompany(userNo);
-        List<CompanyMember> members = companyMemberDao.getCompanyMemberList(company.getNo());
+        List<CompanyMemberListData> members = companyMemberDao.getCompanyMemberList(company.getNo());
         message.put("company", company);
         message.put("members", members);
         message.put("userRole", companyMemberDao.getUserRoleOfCompany(userNo, company.getNo()));
@@ -138,5 +138,9 @@ public class CompanyService {
 
     public CompanyMember getUserCompanyMemberInfo(int user_no, int company_no) {
         return companyMemberDao.getUserMemberInfo(user_no, company_no);
+    }
+
+    public CompanyMember getUserCompanyMemberInfoByUserNo(int user_no) {
+        return companyMemberDao.getUserMemberInfoByUserNo(user_no);
     }
 }
