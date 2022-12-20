@@ -5,6 +5,9 @@
 <mapper namespace="com.mapper.chat.ChatMessageMapper">
     <resultMap id="ChatMessage" type="com.model.chat.chatmessage.ChatMessage">
         <result column="message_json" property="message_json" typeHandler="com.middleware.JsonObjectTypeHandler"/>
+        <result column="mentions" property="mentions"
+                javaType="com.model.chat.chatmessage.interactions.ChatMessageMention"
+                typeHandler="com.middleware.JsonArrayObjectTypeHandler"/>
     </resultMap>
     <insert id="sendMessage" useGeneratedKeys="true" keyProperty="no">
         insert into chat_message(id, channel_no, company_member_no, parent_message_id, type, content, edited,
@@ -27,7 +30,13 @@
         WHERE id = #{id}
     </update>
     <select id="getChannelMessages" resultType="ChatMessage" resultMap="ChatMessage">
-        select *
+        select *,
+               (select JSON_ARRAYAGG(JSON_OBJECT(
+                       'no', m.no,
+                       'chat_message_id', chat_message_id,
+                       'company_member_no', m.company_member_no))
+                from message_mention m
+                WHERE m.chat_message_id = chat_message.id) as mentions
         from chat_message
         WHERE channel_no = #{channel_no}
           AND parent_message_id is null
@@ -38,7 +47,13 @@
         SET @LAST_REG_DATE = (select reg_datetime
                               from chat_message
                               WHERE id = #{last_message_id});
-        select *
+        select *,
+               (select JSON_ARRAYAGG(JSON_OBJECT(
+                       'no', m.no,
+                       'chat_message_id', chat_message_id,
+                       'company_member_no', m.company_member_no))
+                from message_mention m
+                WHERE m.chat_message_id = chat_message.id) as mentions
         from chat_message
         WHERE channel_no = #{channel_no}
           AND parent_message_id is null
@@ -47,14 +62,27 @@
         LIMIT 50
     </select>
     <select id="getChannelLastMessage" resultType="ChatMessage" resultMap="ChatMessage">
-        select *
+        select *,
+               (select JSON_ARRAYAGG(JSON_OBJECT(
+                       'no', m.no,
+                       'chat_message_id', chat_message_id,
+                       'company_member_no', m.company_member_no))
+                from message_mention m
+                WHERE m.chat_message_id = chat_message.id) as mentions
         from chat_message
-        WHERE channel_no = #{channel_no} AND parent_message_id is null
+        WHERE channel_no = #{channel_no}
+          AND parent_message_id is null
         ORDER BY reg_datetime DESC
         LIMIT 1
     </select>
     <select id="getChatMessageById" resultType="ChatMessage" resultMap="ChatMessage">
-        select *
+        select *,
+               (select JSON_ARRAYAGG(JSON_OBJECT(
+                       'no', m.no,
+                       'chat_message_id', chat_message_id,
+                       'company_member_no', m.company_member_no))
+                from message_mention m
+                WHERE m.chat_message_id = chat_message.id) as mentions
         from chat_message
         WHERE id = #{id}
     </select>
@@ -67,7 +95,13 @@
         WHERE parent_message_id = #{id}
     </select>
     <select id="getThreadMessages" resultType="ChatMessage" resultMap="ChatMessage">
-        select *
+        select *,
+               (select JSON_ARRAYAGG(JSON_OBJECT(
+                       'no', m.no,
+                       'chat_message_id', chat_message_id,
+                       'company_member_no', m.company_member_no))
+                from message_mention m
+                WHERE m.chat_message_id = chat_message.id) as mentions
         from chat_message
         WHERE parent_message_id = #{message_id}
         ORDER BY reg_datetime DESC, id
@@ -77,7 +111,13 @@
         SET @LAST_REG_DATE = (select reg_datetime
                               from chat_message
                               WHERE id = #{last_message_id});
-        select *
+        select *,
+               (select JSON_ARRAYAGG(JSON_OBJECT(
+                       'no', m.no,
+                       'chat_message_id', chat_message_id,
+                       'company_member_no', m.company_member_no))
+                from message_mention m
+                WHERE m.chat_message_id = chat_message.id) as mentions
         from chat_message
         WHERE parent_message_id = #{message_id}
           AND (reg_datetime <![CDATA[<]]> @LAST_REG_DATE)

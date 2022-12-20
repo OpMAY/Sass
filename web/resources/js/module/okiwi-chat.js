@@ -579,7 +579,7 @@ function sendContainerWriteClickEventListener(event) {
     let message = {
         type: 'TEXT',
         content: value,
-        mentions: CHAT_MENTION.options.mentions
+        mentions: CHAT_MENTION.options.mention_users
     }
     sendMessage(message, getTypeAndValue()).then((result) => {
         console.log(result);
@@ -588,6 +588,7 @@ function sendContainerWriteClickEventListener(event) {
                 _CHAT_CONTAINER.append(createMessageElement(result.data.message));
                 editor.innerHTML = ``;
                 updateChatContainerScroll(_CHAT_CONTAINER);
+                CHAT_MENTION.clearMentionUsers();
                 // TODO WEBSOCKET SEND
             } else {
                 viewAlert({content: '메세지 전송에 실패했습니다.'});

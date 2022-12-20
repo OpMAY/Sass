@@ -1,5 +1,6 @@
 package com.model.chat.chatmessage;
 
+import com.model.chat.chatmessage.interactions.ChatMessageMention;
 import com.model.chat.chatmessage.interactions.ChatMessageReaction;
 import com.model.chat.chatmessage.interactions.ChatMessageReactionSummary;
 import com.model.common.MFile;
@@ -30,4 +31,5 @@ public class ChatMessage extends Time {
     private boolean bookmark;
     private int threads;
     private ArrayList<MFile> files;
+    private ArrayList<ChatMessageMention> mentions;
 }

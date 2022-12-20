@@ -14,6 +14,7 @@ import com.model.chat.channel.ChannelMember;
 import com.model.chat.chatmessage.CHAT_MESSAGE_TYPE;
 import com.model.chat.chatmessage.ChatMessage;
 import com.model.chat.chatmessage.MessageThread;
+import com.model.chat.chatmessage.interactions.ChatMessageMention;
 import com.model.chat.chatmessage.interactions.ChatMessageReaction;
 import com.model.chat.chatmessage.interactions.ChatMessageRead;
 import com.model.chat.chatmessage.interactions.ChatMessageSave;
@@ -338,8 +339,17 @@ public class ChatService {
         chatMessage.setThreads(chatMessageDao.getMessageThreadCount(chatMessage.getId()));
         chatMessage.setReaction_detail(messageReactionDao.getMessageReactionsByMessageId(chatMessage.getId()));
         chatMessage.setReactions(messageReactionDao.getMessageReactionSummary(chatMessage.getId(), user_no));
-        if(chatMessage.getType().equals(CHAT_MESSAGE_TYPE.FILE)) {
+        if (chatMessage.getType().equals(CHAT_MESSAGE_TYPE.FILE)) {
             chatMessage.setFiles(chatMessage.getMessage_json().getFiles());
+        }
+        if (chatMessage.getMentions() != null && !chatMessage.getMentions().isEmpty()) {
+            for (ChatMessageMention messageMention : chatMessage.getMentions()) {
+                try {
+                    messageMention.setMember_hash(encryptionService.encryptAES(Integer.toString(messageMention.getCompany_member_no()), true));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

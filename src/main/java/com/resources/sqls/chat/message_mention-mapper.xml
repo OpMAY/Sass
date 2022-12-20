@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.chat.MessageMentionMapper">
+    <resultMap id="ChatMessage" type="com.model.chat.chatmessage.ChatMessage">
+        <result column="message_json" property="message_json" typeHandler="com.middleware.JsonObjectTypeHandler"/>
+        <result column="mentions" property="mentions"
+                javaType="com.model.chat.chatmessage.interactions.ChatMessageMention"
+                typeHandler="com.middleware.JsonArrayObjectTypeHandler"/>
+    </resultMap>
+    <insert id="insertMessageMention" useGeneratedKeys="true" keyProperty="no">
+        insert into message_mention(chat_message_id, company_member_no)
+        VALUES (#{chat_message_id}, #{company_member_no})
+    </insert>
+    <delete id="deleteMessageMention">
+        delete
+        from message_mention
+        WHERE company_member_no = #{company_member_no}
+          AND chat_message_id = #{chat_message_id}
+    </delete>
+    <select id="getMessageMentionsByMessageId" resultType="ChatMessageMention">
+        select *
+        from message_mention
+        WHERE chat_message_id = #{chat_message_id}
+    </select>
+    <select id="getUserMentionedMessages" resultType="ChatMessage" resultMap="ChatMessage">
+        select cm.*,
+               JSON_ARRAYAGG(JSON_OBJECT(
+                       'no', message_mention.no,
+                       'chat_message_id', chat_message_id,
+                       'company_member_no', message_mention.company_member_no))
+        from message_mention
+                 left join chat_message cm on message_mention.chat_message_id = cm.id
+        WHERE message_mention.company_member_no = (select no from company_member WHERE user_no = #{user_no})
+    </select>
+</mapper>
