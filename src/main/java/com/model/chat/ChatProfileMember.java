@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class ChatProfileMember {
     private int member_no;
+    private String id;
     private String name;
     private MFile profile;
     private int alarms;

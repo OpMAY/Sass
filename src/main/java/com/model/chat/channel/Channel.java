@@ -14,4 +14,5 @@ public class Channel extends Time {
     private int alarms;
     private boolean bookmark;
     private boolean is_member;
+    private boolean is_direct;
 }

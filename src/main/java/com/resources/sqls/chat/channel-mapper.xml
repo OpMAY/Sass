@@ -11,7 +11,8 @@
     <select id="getChannelsByCompanyNo" resultType="Channel">
         select *
         from channel
-        WHERE company_no = #{company_no} AND type = 'GROUP'
+        WHERE company_no = #{company_no}
+          AND type = 'GROUP'
     </select>
     <select id="getChannelByNo" resultType="Channel">
         select *
@@ -49,12 +50,14 @@
         WHERE company_no = #{company_no}
     </select>
     <select id="getTwoUserDirectChannel" resultType="Channel">
-        select *
+        select *, JSON_ARRAYAGG(cm.company_member_no) as users
         from channel
                  left join channel_member cm on channel.no = cm.channel_no
         WHERE channel.type = 'DIRECT'
-          AND cm.company_member_no IN
+          AND cm.company_member_no in
               (select company_member.no from company_member WHERE user_no in (#{user1_no}, #{user2_no}))
+        GROUP BY no
+        HAVING JSON_LENGTH(users) = 2
     </select>
     <select id="getMyPrivateChannel" resultType="Channel">
         select *

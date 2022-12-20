@@ -25,6 +25,8 @@ const initializeLeftSide = (channels, users) => {
 /*TODO Event*/
 function channelClickEventListener(event) {
     console.log('channelClickEventListener');
+    let id = this.dataset.id;
+    window.location.href = `/chat/channel/${id}`
     event.preventDefault();
     event.stopPropagation();
 }
@@ -59,6 +61,11 @@ function channelLikeEventListener(event) {
 
 function dmClickEventListener(event) {
     console.log('dmClickEventListener');
+    if(this.classList.contains('is-my')) {
+        window.location.href = '/chat/channel/my';
+    } else {
+        window.location.href = `/chat/channel/direct/${this.dataset.id}`
+    }
     event.preventDefault();
     event.stopPropagation();
 }
@@ -101,7 +108,7 @@ const createDMElement = (user, click) => {
                   <div class="_profile" style="background-image: url('${user.profile.url}')">
                     <div class="_live"></div>
                   </div>
-                  <div>${user.name}</div>
+                  <div>${user.name} ${user.is_my ? '(나)' : ''}</div>
                   <div class="_alarms" style="display: ${user.alarms !== 0 ? 'block' : 'none'};">${user.alarms <= 9 ? user.alarms : '9+'}</div>
                 </a>`;
     }
@@ -110,6 +117,9 @@ const createDMElement = (user, click) => {
     dm_elem.setAttribute('data-id', user.id);
     if (user.is_live) {
         dm_elem.classList.add('is-live');
+    }
+    if (user.is_my) {
+        dm_elem.classList.add('is-my');
     }
     dm_elem.innerHTML = __buildDMInnerElement(user);
     /*TODO Add Event*/
@@ -121,6 +131,7 @@ const createDMElement = (user, click) => {
 
 function userConverter(user) {
     user.is_live = user._live;
+    user.is_my = user._my;
 }
 
 function usersConverter(users) {

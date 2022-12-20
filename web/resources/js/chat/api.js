@@ -32,7 +32,7 @@ async function getChannelMessages(type, value, last_message_id) {
             headers: myHeaders,
         };
         console.log(`/chat/channel/messages?type=${type}${value !== null ? '&value=' + value : ''}${last_message_id !== null ? '&last_message_id=' + last_message_id : ''}`);
-        const response = fetch(`/chat/channel/messages?type=${type}${value !== null ? '&value=' + value : ''}${last_message_id !== null ? '&last_message_id=' + last_message_id : ''}`, requestOptions);
+        const response = fetch(`/chat/channel/messages?type=${type}${value !== null ? '&value=' + encodeURIComponent(value) : ''}${last_message_id !== null ? '&last_message_id=' + last_message_id : ''}`, requestOptions);
         return response.then(res => res.json());
     }
 
@@ -105,7 +105,7 @@ async function sendMessage(chatMessage, info) {
             headers: myHeaders,
             body: JSON.stringify(chatMessage),
         };
-        const response = fetch(`/chat/send/message?type=${info.type}${info.value ? '&value=' + info.value : ''}`, requestOptions);
+        const response = fetch(`/chat/send/message?type=${info.type}${info.value ? '&value=' + encodeURIComponent(info.value) : ''}`, requestOptions);
         return response.then(res => res.json());
     }
 

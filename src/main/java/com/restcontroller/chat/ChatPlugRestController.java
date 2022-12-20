@@ -147,7 +147,7 @@ public class ChatPlugRestController {
 
     // TODO 2. channels, users 가져오기 (Left) -> 지우씨
     @RequestMapping(value = "/info", method = RequestMethod.GET)
-    public ResponseEntity GetCompanyChannelsAndMembers(HttpServletRequest request) {
+    public ResponseEntity GetCompanyChannelsAndMembers(HttpServletRequest request) throws Exception {
         Message message = new Message();
         HashMap<String, Object> hashMap = encryptionService.decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
         Integer user_no = (Integer) hashMap.get(JWTEnum.NO.name());

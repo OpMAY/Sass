@@ -33,7 +33,7 @@ public class ChatPlugController {
     }
 
     @RequestMapping(value = "/channel/my", method = RequestMethod.GET)
-    public ModelAndView MyChatRoom(HttpServletRequest request) {
+    public ModelAndView MyChatRoom(HttpServletRequest request) throws Exception {
         VIEW = new ModelAndView("chat/channel-detail");
         HashMap<String, Object> hashMap = encryptionService.decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
         Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());

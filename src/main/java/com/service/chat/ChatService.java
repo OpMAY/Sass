@@ -21,6 +21,7 @@ import com.model.company.Company;
 import com.model.company.CompanyMember;
 import com.model.company.CompanyMemberListData;
 import com.model.company.CompanyProfileMember;
+import com.util.Encryption.EncryptionService;
 import com.util.TokenGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +56,7 @@ public class ChatService {
      * Chat (WebSocket) Related Services
      */
     private final ChatOnlineService chatOnlineService;
+    private final EncryptionService encryptionService;
 
 
     @Transactional
@@ -133,7 +135,7 @@ public class ChatService {
     }
 
     @Transactional
-    public Channel getMyPrivateChannel(int user_no) {
+    public Channel getMyPrivateChannel(int user_no) throws Exception {
         Channel channel = channelDao.getMyPrivateChannel(user_no);
         if (channel == null) {
             // CREATE
@@ -153,7 +155,7 @@ public class ChatService {
     }
 
     @Transactional
-    public Channel getDirectChannel(int user_no, int target_member_no) {
+    public Channel getDirectChannel(int user_no, int target_member_no) throws Exception {
         // TODO 유저 검증?
         Company company = companyMemberDao.getUserCompany(user_no);
         CompanyMember myMemberInfo = companyMemberDao.getUserMemberInfo(user_no, company.getNo());
@@ -219,7 +221,7 @@ public class ChatService {
     }
 
     // TODO 2. channels, users 가져오기 (Left) -> 지우씨
-    public ArrayList<Channel> getCompanyChannels(int user_no, int company_no) {
+    public ArrayList<Channel> getCompanyChannels(int user_no, int company_no) throws Exception {
         // GROUP CHANNEL 만 가져옴
         ArrayList<Channel> channels = channelDao.getChannelsByCompanyNo(company_no);
         for (Channel channel : channels) {
@@ -229,13 +231,14 @@ public class ChatService {
     }
 
     // TODO 2. channels, users 가져오기 (Left) -> 지우씨
-    public ArrayList<ChatProfileMember> getChatMembers(int user_no, int company_no) {
+    public ArrayList<ChatProfileMember> getChatMembers(int user_no, int company_no) throws Exception {
         ArrayList<ChatProfileMember> chatProfileMembers = new ArrayList<>();
         List<CompanyMemberListData> memberList = companyMemberDao.getCompanyMemberList(company_no);
         for (CompanyMemberListData companyMember : memberList) {
             User user = userDao.getUser(companyMember.getUser_no());
             ChatProfileMember chatProfileMember = new ChatProfileMember();
             chatProfileMember.setMember_no(companyMember.getMember_no());
+            chatProfileMember.setId(encryptionService.encryptAES(Integer.toString(companyMember.getMember_no()), true));
             chatProfileMember.setName(user.getName());
             chatProfileMember.setProfile(user.getProfile_img());
             chatProfileMember.set_live(chatOnlineService.isUserOnline(user.getNo()));
@@ -304,7 +307,7 @@ public class ChatService {
         return result;
     }
 
-    public Channel getChannelDetail(int user_no, int channel_no) {
+    public Channel getChannelDetail(int user_no, int channel_no) throws Exception {
         Channel channel = channelDao.getChannelByNo(channel_no);
         formatChannel(user_no, channel);
         return channel;
@@ -319,7 +322,8 @@ public class ChatService {
         }
     }
 
-    private void formatChannel(int user_no, Channel channel) {
+    private void formatChannel(int user_no, Channel channel) throws Exception {
+        channel.setId(encryptionService.encryptAES(Integer.toString(channel.getNo()), true));
         channel.setAlarms(messageReadDao.getChannelUnreadCount(channel.getNo(), user_no));
         channel.setBookmark(channelLikeDao.isChannelLiked(channel.getNo(), user_no));
         channel.set_member(channelMemberDao.isUserChannelMember(channel.getNo(), user_no));
