@@ -99,46 +99,7 @@
         </div>
     </div>
 </header>
-<div id="plugin-left-sidebar">
-    <div class="_plugin-container">
-        <div class="_left-plugin"
-             data-type="query">
-            <img width="36"
-                 height="36"
-                 src="/resources/assets/images/sample/plugin-sample-1.png"/>
-        </div>
-        <div class="_left-plugin"
-             data-type="query">
-            <img width="36"
-                 height="36"
-                 src="/resources/assets/images/sample/plugin-sample-2.png"/>
-        </div>
-        <div class="_left-plugin"
-             data-type="query">
-            <img width="36"
-                 height="36"
-                 src="/resources/assets/images/sample/plugin-sample-3.png"/>
-        </div>
-        <div class="_left-plugin"
-             data-type="query">
-            <img width="36"
-                 height="36"
-                 src="/resources/assets/images/sample/plugin-sample-1.png"/>
-        </div>
-        <div class="_left-plugin"
-             data-type="query">
-            <img width="36"
-                 height="36"
-                 src="/resources/assets/images/sample/plugin-sample-2.png"/>
-        </div>
-        <div class="_left-plugin"
-             data-type="query">
-            <img width="36"
-                 height="36"
-                 src="/resources/assets/images/sample/plugin-sample-3.png"/>
-        </div>
-    </div>
-</div>
+<jsp:include page="../common/plugin-left-sidebar.jsp"/>
 <div id="l-content-wrapper"
      class="left-sidebar-type sidebar-is-open">
     <div class="content-wrapper">
