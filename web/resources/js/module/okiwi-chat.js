@@ -185,8 +185,10 @@ function floaterMenuReactionClickEventListener(selected_emoji) {
         }
         if (selected_reaction) {
             /*TODO 해당되는 Reaction이 있을 때*/
+            console.log('1');
             if (selected_reaction.classList.contains('is-active')) {
                 /*TODO 해당되는 Reaction을 이미 했을 때 -> 제거*/
+                console.log('2');
                 if (!duplicate_checker) {
                     removeReaction(reaction).then((result) => {
                         if (result.status === 'OK') {
@@ -195,7 +197,8 @@ function floaterMenuReactionClickEventListener(selected_emoji) {
                             let integer_count = count.dataset.count * 1;
                             integer_count -= 1;
                             count.setAttribute('data-count', integer_count);
-                            if (integer_count - 1 > 0) {
+                            console.log('integer_count', integer_count);
+                            if (integer_count > 0) {
                                 count.innerHTML = integer_count <= 99 ? integer_count : '99+';
                             } else {
                                 selected_reaction.remove();
@@ -211,7 +214,8 @@ function floaterMenuReactionClickEventListener(selected_emoji) {
                     let integer_count = count.dataset.count * 1;
                     integer_count -= 1;
                     count.setAttribute('data-count', integer_count);
-                    if (integer_count - 1 > 0) {
+                    console.log('integer_count', integer_count);
+                    if (integer_count > 0) {
                         count.innerHTML = integer_count <= 99 ? integer_count : '99+';
                     } else {
                         selected_reaction.remove();
@@ -219,6 +223,7 @@ function floaterMenuReactionClickEventListener(selected_emoji) {
                 }
             } else {
                 /*TODO 해당되는 Reaction을 않했을 때 -> 생성*/
+                console.log('3');
                 reaction.count = 1;
                 reaction.active = true;
                 if (!duplicate_checker) {
@@ -229,7 +234,8 @@ function floaterMenuReactionClickEventListener(selected_emoji) {
                             let integer_count = count.dataset.count * 1;
                             integer_count += 1;
                             count.setAttribute('data-count', integer_count);
-                            if (integer_count - 1 > 0) {
+                            console.log('integer_count', integer_count);
+                            if (integer_count > 0) {
                                 count.innerHTML = integer_count <= 99 ? integer_count : '99+';
                             }
                         } else {
@@ -243,7 +249,8 @@ function floaterMenuReactionClickEventListener(selected_emoji) {
                     let integer_count = count.dataset.count * 1;
                     integer_count += 1;
                     count.setAttribute('data-count', integer_count);
-                    if (integer_count - 1 > 0) {
+                    console.log('integer_count', integer_count);
+                    if (integer_count > 0) {
                         count.innerHTML = integer_count <= 99 ? integer_count : '99+';
                     }
                 }
@@ -384,7 +391,7 @@ function messageReactionClickEventListener(event) {
                 let integer_count = count.dataset.count * 1;
                 integer_count -= 1;
                 count.setAttribute('data-count', integer_count);
-                if (integer_count - 1 > 0) {
+                if (integer_count > 0) {
                     count.innerHTML = integer_count <= 99 ? integer_count : '99+';
                 } else {
                     reaction.remove();
@@ -402,7 +409,7 @@ function messageReactionClickEventListener(event) {
                 let integer_count = count.dataset.count * 1;
                 integer_count += 1;
                 count.setAttribute('data-count', integer_count);
-                if (integer_count - 1 > 0) {
+                if (integer_count > 0) {
                     count.innerHTML = integer_count <= 99 ? integer_count : '99+';
                 }
             } else {
