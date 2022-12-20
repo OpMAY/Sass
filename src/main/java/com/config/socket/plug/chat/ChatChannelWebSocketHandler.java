@@ -87,7 +87,7 @@ public class ChatChannelWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         URI uri = session.getUri();
         if (uri != null) {
-            if (chatSessionQueue.get(session.getId()) != null) {
+//            if (chatSessionQueue.get(session.getId()) != null) {
                 Integer user_no = null;
                 log.info("jwt session : {}", session.getAttributes().get(JWTEnum.JWTToken.name()));
                 try {
@@ -140,11 +140,11 @@ public class ChatChannelWebSocketHandler extends TextWebSocketHandler {
                     session.close(CloseStatus.SESSION_NOT_RELIABLE);
                     log.info("afterConnectionEstablished SessionClose : user_no null or user no company : {}", user_no);
                 }
-            } else {
-                // 메인 WebSocket을 먼저 연결하지 않았을 때
-                session.close(CloseStatus.SESSION_NOT_RELIABLE);
-                log.info("afterConnectionEstablished SessionClose : session must connect chatWebsocketHandler First");
-            }
+//            } else {
+//                // 메인 WebSocket을 먼저 연결하지 않았을 때
+//                session.close(CloseStatus.SESSION_NOT_RELIABLE);
+//                log.info("afterConnectionEstablished SessionClose : session must connect chatWebsocketHandler First");
+//            }
         } else {
             // 잘못된 요청
             session.close(CloseStatus.SESSION_NOT_RELIABLE);
