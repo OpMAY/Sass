@@ -185,22 +185,26 @@ public class ChatService {
     }
 
     @Transactional
-    public Channel createGroupChannel(int company_no, String name) {
+    public Channel createGroupChannel(int user_no, int company_no, String name) {
         if (channelDao.checkChannelNameDuplicateInCompany(company_no, name)) {
             // TODO Send on message?
             // message.put("status", false);
             log.info("name duplicated : {}", name);
             return null;
         }
+        // CREATE CHANNEL
         Channel channel = new Channel();
         channel.setName(name);
         channel.setCompany_no(company_no);
         channel.setType(CHANNEL_TYPE.GROUP);
         channelDao.createChannel(channel);
+        // ADD CHANNEL CREATOR AS CHANNEL MEMBER
+        channelMemberDao.insertChannelMember(new ChannelMember(channel.getNo(), companyMemberDao.getUserMemberInfoByUserNo(user_no).getNo()));
         // TODO 임시로 해당 멤버들 모두 멤버로 추가, 이후 멤버 개별 추가 구현 시 삭제
         List<CompanyMemberListData> companyMembers = companyMemberDao.getCompanyMemberList(company_no);
         for (CompanyMemberListData companyMember : companyMembers) {
-            channelMemberDao.insertChannelMember(new ChannelMember(channel.getNo(), companyMember.getMember_no()));
+            if (companyMember.getUser_no() != user_no)
+                channelMemberDao.insertChannelMember(new ChannelMember(channel.getNo(), companyMember.getMember_no()));
         }
         return channel;
     }
@@ -264,8 +268,8 @@ public class ChatService {
     }
 
     public ArrayList<CompanyProfileMember> getChannelMembers(int channel_no) throws Exception {
-        ArrayList<CompanyProfileMember> members =  channelMemberDao.getChannelMembers(channel_no);
-        for(CompanyProfileMember member : members){
+        ArrayList<CompanyProfileMember> members = channelMemberDao.getChannelMembers(channel_no);
+        for (CompanyProfileMember member : members) {
             member.setId(encryptionService.encryptAES(Integer.toString(member.getNo()), true));
         }
         return members;
@@ -311,8 +315,8 @@ public class ChatService {
         // Set my message read
         messageReadDao.insertMessageRead(new ChatMessageRead(chatMessage.getId(), chatMessage.getCompany_member_no()));
         // mentions
-        if(chatMessage.getMentions() != null && !chatMessage.getMentions().isEmpty()) {
-            for(ChatMessageMention messageMention : chatMessage.getMentions()) {
+        if (chatMessage.getMentions() != null && !chatMessage.getMentions().isEmpty()) {
+            for (ChatMessageMention messageMention : chatMessage.getMentions()) {
                 messageMention.setChat_message_id(chatMessage.getId());
                 messageMention.setCompany_member_no(Integer.parseInt(encryptionService.decryptAESWithSlash(messageMention.getId())));
                 messageMentionDao.insertMessageMention(messageMention);
