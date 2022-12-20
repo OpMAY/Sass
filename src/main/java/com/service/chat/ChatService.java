@@ -163,7 +163,9 @@ public class ChatService {
         CompanyMember myMemberInfo = companyMemberDao.getUserMemberInfo(user_no, company.getNo());
         CompanyMember targetMember = companyMemberDao.getCompanyMemberInfoByMemberNo(target_member_no);
         if (channelDao.getTwoUserDirectChannel(user_no, targetMember.getUser_no()) != null) {
-            return channelDao.getTwoUserDirectChannel(user_no, targetMember.getUser_no());
+            Channel channel = channelDao.getTwoUserDirectChannel(user_no, targetMember.getUser_no());
+            formatChannel(user_no, channel);
+            return channel;
         }
         Channel channel = new Channel();
         // CHANNEL SET

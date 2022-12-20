@@ -39,10 +39,7 @@ public class ChatPlugController {
         Integer userNo = (Integer) hashMap.get(JWTEnum.NO.name());
         Channel channel = chatService.getMyPrivateChannel(userNo);
         VIEW.addObject("channel", channel);
-        // TODO MESSAGE 는 FETCH 로
-        ArrayList<ChatMessage> chatMessages = chatService.getChannelMessages(channel.getNo(), userNo, null);
-        VIEW.addObject("messages", chatMessages);
-        VIEW.addObject("channel_hash",channel.getId());
+        VIEW.addObject("channel_hash", channel.getId());
         return VIEW;
     }
 
@@ -54,10 +51,7 @@ public class ChatPlugController {
         int target_member_no = Integer.parseInt(encryptionService.decryptAESWithSlash(member_hash));
         Channel channel = chatService.getDirectChannel(userNo, target_member_no);
         VIEW.addObject("channel", channel);
-        // TODO MESSAGE 는 FETCH 로
-        ArrayList<ChatMessage> chatMessages = chatService.getChannelMessages(channel.getNo(), userNo, null);
-        VIEW.addObject("messages", chatMessages);
-        VIEW.addObject("channel_hash",channel.getId());
+        VIEW.addObject("channel_hash", channel.getId());
         return VIEW;
     }
 
