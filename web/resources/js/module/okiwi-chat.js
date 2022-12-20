@@ -26,12 +26,10 @@ let CHAT_CONTAINER;
 let _CHAT_CONTAINER;
 let _CHAT_SEND_CONTAINER;
 let EMOJI_PICKER;
-let USER;
 
 /*TODO Initialize */
 //is_picker_on is chat page init false forced, true is module acceptable, setting ready in okiwi-chat-right-side.js
-const initializeChat = ({container, user, messages, is_picker_on = false}) => {
-    USER = user;
+const initializeChat = ({container, messages, is_picker_on = false}) => {
     FLOATER_MENU = document.querySelector('#chat-floater-menu');
     floaterMenuEvent(FLOATER_MENU, floaterMenuThreadClickEventListener, floaterMenuBookmarkClickEventListener);
     CHAT_CONTAINER = typeof (container) === "object" ? container : documentSelector(container);
@@ -172,49 +170,111 @@ function floaterMenuThreadClickEventListener(event) {
 function floaterMenuReactionClickEventListener(selected_emoji) {
     let message_id = FLOATER_MENU.dataset.id;
     let messages = findMessages(message_id);
+    let duplicate_checker = false;
     messages.forEach(function (message) {
         let reaction_container = message.querySelector('._reactions');
+        console.log('selected_emoji', selected_emoji);
         let selected_reaction = findReaction(message, selected_emoji);
+        let reaction = {
+            chat_message_id: message_id,
+            title: tokenGenerator(8),
+            reaction: selected_emoji,
+        }
         if (selected_reaction) {
             /*TODO 해당되는 Reaction이 있을 때*/
             if (selected_reaction.classList.contains('is-active')) {
-                /*TODO 해당되는 Reaction을 이미 했을 때*/
-                selected_reaction.classList.remove('is-active');
-                let count = selected_reaction.querySelector('._count');
-                let integer_count = count.dataset.count * 1;
-                integer_count -= 1;
-                count.setAttribute('data-count', integer_count);
-                if (integer_count - 1 > 0) {
-                    count.innerHTML = integer_count <= 99 ? integer_count : '99+';
+                /*TODO 해당되는 Reaction을 이미 했을 때 -> 제거*/
+                if (!duplicate_checker) {
+                    removeReaction(reaction).then((result) => {
+                        if (result.status === 'OK') {
+                            selected_reaction.classList.remove('is-active');
+                            let count = selected_reaction.querySelector('._count');
+                            let integer_count = count.dataset.count * 1;
+                            integer_count -= 1;
+                            count.setAttribute('data-count', integer_count);
+                            if (integer_count - 1 > 0) {
+                                count.innerHTML = integer_count <= 99 ? integer_count : '99+';
+                            } else {
+                                selected_reaction.remove();
+                            }
+                        } else {
+                            viewAlert({content: '리액션을 제거할 수 없습니다.'});
+                        }
+                    });
+                    duplicate_checker = true;
                 } else {
-                    selected_reaction.remove();
+                    selected_reaction.classList.remove('is-active');
+                    let count = selected_reaction.querySelector('._count');
+                    let integer_count = count.dataset.count * 1;
+                    integer_count -= 1;
+                    count.setAttribute('data-count', integer_count);
+                    if (integer_count - 1 > 0) {
+                        count.innerHTML = integer_count <= 99 ? integer_count : '99+';
+                    } else {
+                        selected_reaction.remove();
+                    }
                 }
             } else {
-                /*TODO 해당되는 Reaction을 않했을 때*/
-                selected_reaction.classList.add('is-active');
-                let count = selected_reaction.querySelector('._count');
-                let integer_count = count.dataset.count * 1;
-                integer_count += 1;
-                count.setAttribute('data-count', integer_count);
-                if (integer_count - 1 > 0) {
-                    count.innerHTML = integer_count <= 99 ? integer_count : '99+';
+                /*TODO 해당되는 Reaction을 않했을 때 -> 생성*/
+                reaction.count = 1;
+                reaction.active = true;
+                if (!duplicate_checker) {
+                    createReaction(reaction).then((result) => {
+                        if (result.status === 'OK') {
+                            selected_reaction.classList.add('is-active');
+                            let count = selected_reaction.querySelector('._count');
+                            let integer_count = count.dataset.count * 1;
+                            integer_count += 1;
+                            count.setAttribute('data-count', integer_count);
+                            if (integer_count - 1 > 0) {
+                                count.innerHTML = integer_count <= 99 ? integer_count : '99+';
+                            }
+                        } else {
+                            viewAlert({content: '리액션을 추가할 수 없습니다.'});
+                        }
+                    });
+                    duplicate_checker = true;
+                } else {
+                    selected_reaction.classList.add('is-active');
+                    let count = selected_reaction.querySelector('._count');
+                    let integer_count = count.dataset.count * 1;
+                    integer_count += 1;
+                    count.setAttribute('data-count', integer_count);
+                    if (integer_count - 1 > 0) {
+                        count.innerHTML = integer_count <= 99 ? integer_count : '99+';
+                    }
                 }
             }
         } else {
-            /*TODO 해당하는 Reaction이 현재 없을 때*/
-            let reaction = {
-                title: `${USER.name}님이 반응 했습니다.`,
-                emoji: selected_emoji,
-                count: 1,
-                active: true,
-            }
-            let reaction_elem = createMessageReactionElement(reaction);
-            reaction_elem.addEventListener('click', messageReactionClickEventListener);
-            if (reaction_container) {
-                reaction_container.appendChild(reaction_elem);
+            /*TODO 해당하는 Reaction이 현재 없을 때 -> 생성*/
+            reaction.count = 1;
+            reaction.active = true;
+            if (!duplicate_checker) {
+                createReaction(reaction).then((result) => {
+                    if (result.status === 'OK') {
+                        reaction.emoji = reaction.reaction;
+                        let reaction_elem = createMessageReactionElement(reaction);
+                        reaction_elem.addEventListener('click', messageReactionClickEventListener);
+                        if (reaction_container) {
+                            reaction_container.appendChild(reaction_elem);
+                        } else {
+                            reaction_container = createMessageReactionsElement([reaction], false);
+                            insertAfter(message.querySelector('._content'), reaction_container);
+                        }
+                    } else {
+                        viewAlert({content: '리액션을 추가할 수 없습니다.'});
+                    }
+                });
+                duplicate_checker = true;
             } else {
-                reaction_container = createMessageReactionsElement([reaction], false);
-                insertAfter(message.querySelector('._content'), reaction_container);
+                let reaction_elem = createMessageReactionElement(reaction);
+                reaction_elem.addEventListener('click', messageReactionClickEventListener);
+                if (reaction_container) {
+                    reaction_container.appendChild(reaction_elem);
+                } else {
+                    reaction_container = createMessageReactionsElement([reaction], false);
+                    insertAfter(message.querySelector('._content'), reaction_container);
+                }
             }
         }
     });
@@ -229,10 +289,28 @@ function floaterMenuBookmarkClickEventListener(event) {
     messages.forEach(function (message) {
         check = updateFloaterBookmarkMenu(menu, message);
     });
+    let message = {
+        id: message_id,
+        bookmark: check,
+    }
     if (check) {
         /*TODO API Bookmark Register*/
+        updateMessageBookmark(message).then((result) => {
+            if (result.status === 'OK') {
+
+            } else {
+                viewAlert({content: '북마크를 추가할 수 없습니다.'});
+            }
+        });
     } else {
         /*TODO API Bookmark UnRegister*/
+        updateMessageBookmark(message).then((result) => {
+            if (result.status === 'OK') {
+
+            } else {
+                viewAlert({content: '북마크를 추가할 수 없습니다.'});
+            }
+        });
     }
     event.preventDefault();
     event.stopPropagation();
@@ -288,28 +366,46 @@ function messageReactionClickEventListener(event) {
     let reaction = this;
     let message = this.closest('.chat-item[data-id]');
     let message_id = message.dataset.id;
+    let selected_emoji = reaction.querySelector('._emoji').innerHTML.trim();
+    let reaction_obj = {
+        chat_message_id: message_id,
+        title: tokenGenerator(8),
+        reaction: selected_emoji,
+    }
     if (reaction.classList.contains('is-active')) {
-        /*TODO 해당되는 Reaction을 이미 했을 때*/
-        reaction.classList.remove('is-active');
-        let count = reaction.querySelector('._count');
-        let integer_count = count.dataset.count * 1;
-        integer_count -= 1;
-        count.setAttribute('data-count', integer_count);
-        if (integer_count - 1 > 0) {
-            count.innerHTML = integer_count <= 99 ? integer_count : '99+';
-        } else {
-            reaction.remove();
-        }
+        /*TODO 해당되는 Reaction을 이미 했을 때 -> 제거*/
+        removeReaction(reaction_obj).then((result) => {
+            if (result.status === 'OK') {
+                reaction.classList.remove('is-active');
+                let count = reaction.querySelector('._count');
+                let integer_count = count.dataset.count * 1;
+                integer_count -= 1;
+                count.setAttribute('data-count', integer_count);
+                if (integer_count - 1 > 0) {
+                    count.innerHTML = integer_count <= 99 ? integer_count : '99+';
+                } else {
+                    reaction.remove();
+                }
+            } else {
+                viewAlert({content: '리액션을 제거할 수 없습니다.'});
+            }
+        });
     } else {
-        /*TODO 해당되는 Reaction을 않했을 때*/
-        reaction.classList.add('is-active');
-        let count = reaction.querySelector('._count');
-        let integer_count = count.dataset.count * 1;
-        integer_count += 1;
-        count.setAttribute('data-count', integer_count);
-        if (integer_count - 1 > 0) {
-            count.innerHTML = integer_count <= 99 ? integer_count : '99+';
-        }
+        /*TODO 해당되는 Reaction을 않했을 때 -> 생성*/
+        createReaction(reaction_obj).then((result) => {
+            if (result.status === 'OK') {
+                reaction.classList.add('is-active');
+                let count = reaction.querySelector('._count');
+                let integer_count = count.dataset.count * 1;
+                integer_count += 1;
+                count.setAttribute('data-count', integer_count);
+                if (integer_count - 1 > 0) {
+                    count.innerHTML = integer_count <= 99 ? integer_count : '99+';
+                }
+            } else {
+                viewAlert({content: '리액션을 추가할 수 없습니다.'});
+            }
+        });
     }
     event.stopPropagation();
     event.preventDefault();

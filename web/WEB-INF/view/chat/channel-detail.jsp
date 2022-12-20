@@ -58,6 +58,8 @@
           href="/resources/css/base/element.css">
     <link rel="stylesheet"
           href="/resources/css/base/chat/element.css">
+    <link rel="stylesheet"
+          href="/resources/css/module/modal.css">
     <title>Okiwi Chat Channel</title>
 </head>
 <body>
@@ -1194,12 +1196,14 @@
      Selector (선택자)의 Length 및 Empty 여부를 예외처리로 해줘야한다.
      (선택자가 없으면 또는 선택자의 Length가 0이면 에러가 터질 수 있기 때문에) -->
 <script src="/resources/js/module/sample.js"></script>
+<script src="/resources/js/module/modal.js"></script>
 <script src="/resources/js/module/okiwi-chat.js"></script>
 <script src="/resources/js/module/okiwi-chat-left-side.js"></script>
 <script src="/resources/js/module/okiwi-chat-right-side.js"></script>
 <script src="/resources/js/module/okiwi-mention.js"></script>
 <script src="/resources/js/validation.js"></script>
 <script src="/resources/js/chat/api.js"></script>
+<script src="/resources/js/chat/api1.js"></script>
 <script src="/resources/js/module/modal.js"></script>
 <!--Font Awesome-->
 <script src="https://kit.fontawesome.com/3581631c82.js"
@@ -1225,6 +1229,7 @@
                 content_wrapper.classList.remove('sidebar-is-open');
             }
         });
+        
         /*TODO Chat Content Initialize*/
         /*TODO 1. channel 메세지 가져오기 (Main) -> 지우씨*/
         const info = getTypeAndValue();
@@ -1235,7 +1240,6 @@
                     if (result.data.status) {
                         initializeChat({
                             container: '.chat-container',
-                            user: {name: '김우식'},
                             messages: result.data.messages.reverse()
                         });
                     } else {
@@ -1245,11 +1249,7 @@
                     viewAlert({content: '메세지를 불러오지 못했습니다.'});
                 }
             })
-        // fetch('/resources/assets/datas/message_sample.json')
-        //     .then((response) => response.json())
-        //     .then((messages) => {
-        //         initializeChat({container: '.chat-container', user: {name: '김우식'}, messages});
-        //     });
+        
         /*TODO Chat Left Initialize*/
         /*TODO 2. channels, users 가져오기 (Left) -> 지우씨*/
         getCompanyChannelsAndMembers().then((result) => {

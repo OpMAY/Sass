@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class Channel extends Time {
     private int no;
+    private String id;
     private int company_no;
     private String name;
     private CHANNEL_TYPE type;

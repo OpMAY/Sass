@@ -1,6 +1,7 @@
 package com.restcontroller.chat;
 
 import com.aws.file.FileUploadUtility;
+import com.model.chat.chatmessage.interactions.ChatMessageReaction;
 import com.model.chat.channel.CHANNEL_TYPE;
 import com.model.chat.channel.Channel;
 import com.model.chat.chatmessage.ChatMessage;
@@ -16,19 +17,16 @@ import com.util.Encryption.EncryptionService;
 import com.util.Encryption.JWTEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
@@ -50,6 +48,61 @@ public class ChatPlugRestController {
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
 
+    @RequestMapping(value = "/update/channel/like", method = POST)
+    public ResponseEntity updateChannelLike(HttpServletRequest request, @RequestBody Channel channel) throws Exception {
+        Message message = new Message();
+        HashMap<String, Object> hashMap = encryptionService.decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer user_no = (Integer) hashMap.get(JWTEnum.NO.name());
+        channel.setNo(Integer.parseInt(encryptionService.decryptAESWithSlash(channel.getId())));
+        if (channel.isBookmark()) {
+            log.info("channel insert");
+            chatService.insertChannelLike(channel.getNo(), user_no);
+        } else {
+            log.info("channel delete");
+            chatService.deleteChannelLike(channel.getNo(), user_no);
+        }
+        message.put("channel", channel);
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    @RequestMapping(value = "/create/message/reaction", method = POST)
+    public ResponseEntity createChatMessageReaction(HttpServletRequest request, @RequestBody ChatMessageReaction reaction) throws Exception {
+        Message message = new Message();
+        HashMap<String, Object> hashMap = encryptionService.decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer user_no = (Integer) hashMap.get(JWTEnum.NO.name());
+        log.info("ChatMessageReaction -> {}", reaction);
+        chatService.addReactionOnMessage(user_no, reaction);
+        message.put("reaction", reaction);
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    @RequestMapping(value = "/delete/message/reaction", method = POST)
+    public ResponseEntity deleteChatMessageReaction(HttpServletRequest request, @RequestBody ChatMessageReaction reaction) throws Exception {
+        Message message = new Message();
+        HashMap<String, Object> hashMap = encryptionService.decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer user_no = (Integer) hashMap.get(JWTEnum.NO.name());
+        log.info("ChatMessageReaction -> {}", reaction);
+        chatService.deleteReactionOnMessage(user_no, reaction);
+        message.put("reaction", reaction);
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+
+    @RequestMapping(value = "/update/message/bookmark", method = POST)
+    public ResponseEntity updateMessageBookmark(HttpServletRequest request, @RequestBody ChatMessage chatMessage) throws Exception {
+        Message message = new Message();
+        HashMap<String, Object> hashMap = encryptionService.decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer user_no = (Integer) hashMap.get(JWTEnum.NO.name());
+        if (chatMessage.isBookmark()) {
+            log.info("message bookmark insert");
+            chatService.saveMessage(chatMessage.getId(), user_no);
+        } else {
+            log.info("message bookmark delete");
+            chatService.deleteSavedMessage(chatMessage.getId(), user_no);
+        }
+        message.put("message", chatMessage);
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
+    
     // TODO 1. channel 메세지 가져오기 (Main) -> 지우씨
     @RequestMapping(value = "/channel/messages", method = GET)
     public ResponseEntity GetChannelMessages(HttpServletRequest request,
