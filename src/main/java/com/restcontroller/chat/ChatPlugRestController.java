@@ -207,4 +207,29 @@ public class ChatPlugRestController {
         }
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
+
+    @RequestMapping(value = "/channel/members", method = RequestMethod.GET)
+    public ResponseEntity getChannelMembers(HttpServletRequest request,
+                                            @RequestParam("type") String type,
+                                            @RequestParam(value = "value", required = false) String value) throws Exception {
+        Message message = new Message();
+        HashMap<String, Object> hashMap = encryptionService.decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
+        Integer user_no = (Integer) hashMap.get(JWTEnum.NO.name());
+        String upper = type.toUpperCase();
+        int channel_no;
+        if (upper.equals(CHANNEL_TYPE.DIRECT.name())) {
+            int target_member_no = Integer.parseInt(encryptionService.decryptAESWithSlash(value));
+            Channel channel = chatService.getDirectChannel(user_no, target_member_no);
+            channel_no = channel.getNo();
+        } else if (upper.equals(CHANNEL_TYPE.MY.name())) {
+            Channel channel = chatService.getMyPrivateChannel(user_no);
+            channel_no = channel.getNo();
+        } else if (upper.equals(CHANNEL_TYPE.GROUP.name())) {
+            channel_no = Integer.parseInt(encryptionService.decryptAESWithSlash(value));
+        } else {
+            return new ResponseEntity(DefaultRes.res(BAD_REQUEST), OK);
+        }
+        message.put("users", chatService.getChannelMembers(channel_no));
+        return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
+    }
 }

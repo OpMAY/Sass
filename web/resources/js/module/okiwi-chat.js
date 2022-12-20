@@ -48,6 +48,10 @@ const initializeChat = ({container, messages, is_picker_on = false, websocket}) 
         mention = new OkiwiMention({container: CHAT_CONTAINER.querySelector('._chat-input')});
         if (!CHAT_MENTION) {
             CHAT_MENTION = mention;
+            const obj = getTypeAndValue();
+            let url = `/chat/channel/members?type=${obj.type}${obj.value ? '&value=' + obj.value : ''}`;
+            console.log('mention url : ',url);
+            mention.setURL(`/chat/channel/members?type=${obj.type}${obj.value ? '&value=' + obj.value : ''}`);
         }
         console.log('mention', mention);
     } catch (e) {
@@ -579,7 +583,7 @@ function sendContainerWriteClickEventListener(event) {
     let message = {
         type: 'TEXT',
         content: value,
-        mentions: CHAT_MENTION.options.mentions
+        mentions: CHAT_MENTION.options.mention_users
     }
     sendMessage(message, getTypeAndValue()).then((result) => {
         console.log(result);
@@ -588,6 +592,7 @@ function sendContainerWriteClickEventListener(event) {
                 _CHAT_CONTAINER.append(createMessageElement(result.data.message));
                 editor.innerHTML = ``;
                 updateChatContainerScroll(_CHAT_CONTAINER);
+                CHAT_MENTION.clearMentionUsers();
                 // TODO WEBSOCKET SEND
             } else {
                 viewAlert({content: '메세지 전송에 실패했습니다.'});

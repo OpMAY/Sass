@@ -5,6 +5,9 @@
 <mapper namespace="com.mapper.chat.MessageSaveMapper">
     <resultMap id="ChatMessage" type="com.model.chat.chatmessage.ChatMessage">
         <result column="message_json" property="message_json" typeHandler="com.middleware.JsonObjectTypeHandler"/>
+        <result column="mentions" property="mentions"
+                javaType="com.model.chat.chatmessage.interactions.ChatMessageMention"
+                typeHandler="com.middleware.JsonArrayObjectTypeHandler"/>
     </resultMap>
     <insert id="saveMessage">
         insert into message_save(chat_message_id, company_member_no, reg_datetime)
@@ -17,7 +20,13 @@
           AND company_member_no = (select no from company_member WHERE user_no = #{user_no})
     </delete>
     <select id="getSavedMessages" resultType="ChatMessage" resultMap="ChatMessage">
-        select *
+        select *,
+               (select JSON_ARRAYAGG(JSON_OBJECT(
+                       'no', m.no,
+                       'chat_message_id', chat_message_id,
+                       'company_member_no', m.company_member_no))
+                from message_mention m
+                WHERE m.chat_message_id = chat_message.id) as mentions
         from chat_message
         WHERE id in (select chat_message_id
                      from message_save

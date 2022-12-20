@@ -62,6 +62,9 @@ const OkiwiMention = function (options = {
     this.clearUsers = () => {
         _options.users = [];
     }
+    this.setURL = (url) => {
+        _options.get_users_url = url;
+    }
 
     const removeMentionUser = ({id, name}) => {
         let filtered = _options.mention_users.filter(function (e) {
@@ -190,9 +193,11 @@ const OkiwiMention = function (options = {
             startOffset = sel.focusOffset;
             list_loading = true;
             fetch(_options.get_users_url).then((response) => {
-                return response.json()
-            }).then((users) => {
-                _options.users = users;
+                return response.json();
+            }).then((result) => {
+                // TODO response.json().data.users 안됨
+                console.log('mention users fetch', result)
+                _options.users = result.data.users;
                 let list = createListElement(getCaretCoordinates(), _options.users);
                 _options.list = list;
                 _options.parentContainer.append(list);
