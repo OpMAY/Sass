@@ -93,41 +93,28 @@ function rightThreadSendContainerWriteClickEventListener(event) {
     let editor = this.closest('._input-inner').querySelector('._chat-input');
     let value = editor.innerHTML;
     value = value.replace(/<br\s*\/?>/gi, '');
+    const info = getTypeAndValue();
     let message = {
-        id: tokenGenerator(6),
-        bookmark: false,
-        profile: {
-            name: 'test.png',
-            url: 'https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&type=a340',
-            size: 9999,
-            type: 'image/png'
-        },
-        name: '김우식',
         type: 'TEXT',
         content: value,
-        date: {
-            "year": 2022,
-            "month": "NOVEMBER",
-            "monthValue": 11,
-            "dayOfMonth": 7,
-            "hour": 21,
-            "minute": 58,
-            "second": 49,
-            "nano": 0,
-            "dayOfWeek": "MONDAY",
-            "dayOfYear": 311,
-            "chronology": {
-                "calendarType": "iso8601",
-                "id": "ISO"
-            }
-        },
-        reactions: [],
-        edited: false,
-        threads: 0
+        parent_message_id: RIGHT_THREAD_CONTAINER.dataset.id
     }
-    RIGHT_SUB_THREADS_CONTAINER.append(createMessageElement(message, true));
-    editor.innerHTML = ``;
-    updateChatContainerScroll(RIGHT_THREAD_SCROLL_CONTAINER);
+    console.log(message);
+    sendMessage(message, info).then((result) => {
+        console.log(result);
+        if(result.status === 'OK') {
+            if(result.data.status) {
+                RIGHT_SUB_THREADS_CONTAINER.append(createMessageElement(result.data.message, true));
+                editor.innerHTML = ``;
+                updateChatContainerScroll(RIGHT_THREAD_SCROLL_CONTAINER);
+                // TODO WEBSOCKET SEND
+            } else {
+                viewAlert({content: '메세지 전송에 실패했습니다.'});
+            }
+        } else {
+            viewAlert({content: '메세지 전송에 실패했습니다. 네트워크를 확인하세요.'});
+        }
+    })
     event.preventDefault();
     event.stopPropagation();
 }
@@ -161,44 +148,17 @@ function rightThreadSendContainerControlFileChangeEventListener(event) {
             var reader = new FileReader();
             reader.onload = function (e) {
                 console.log('e', e);
-                let message = {
-                    id: tokenGenerator(6),
-                    bookmark: false,
-                    profile: {
-                        name: 'test.png',
-                        url: 'https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&type=a340',
-                        size: 9999,
-                        type: 'image/png'
-                    },
-                    name: '김우식',
-                    type: 'FILE',
-                    files: [{
-                        name: file.name,
-                        url: e.target.result,
-                        size: file.size,
-                        type: file.type
-                    }],
-                    date: {
-                        "year": 2022,
-                        "month": "NOVEMBER",
-                        "monthValue": 11,
-                        "dayOfMonth": 7,
-                        "hour": 21,
-                        "minute": 58,
-                        "second": 49,
-                        "nano": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 311,
-                        "chronology": {
-                            "calendarType": "iso8601",
-                            "id": "ISO"
-                        }
-                    },
-                    reactions: [],
-                    edited: false,
-                    threads: 0
-                };
-                callback(message);
+                uploadChatFile(file).then((result) => {
+                    if(result.status === 'OK') {
+                        let files = [{
+                            name: result.data.file.name,
+                            url: result.data.file.url,
+                            size: result.data.file.size,
+                            type: result.data.file.type
+                        }]
+                        callback(files);
+                    }
+                })
             }
             reader.readAsDataURL(input.files[0]);
             reader.onloadend = function (e) {
@@ -206,9 +166,25 @@ function rightThreadSendContainerControlFileChangeEventListener(event) {
         }
     }
 
-    readURL(input, (message) => {
-        RIGHT_SUB_THREADS_CONTAINER.append(createMessageElement(message));
-        updateChatContainerScroll(RIGHT_THREAD_SCROLL_CONTAINER);
+    readURL(input, (files) => {
+        let message = {
+            type: 'FILE',
+            message_json : {files},
+            parent_message_id: RIGHT_THREAD_CONTAINER.dataset.id
+        }
+        sendMessage(message, getTypeAndValue()).then((result) => {
+            console.log(result);
+            if(result.status === 'OK') {
+                if(result.data.status) {
+                    RIGHT_SUB_THREADS_CONTAINER.append(createMessageElement(result.data.message));
+                    updateChatContainerScroll(RIGHT_THREAD_SCROLL_CONTAINER);
+                } else {
+
+                }
+            } else {
+
+            }
+        })
     });
 }
 
@@ -261,10 +237,18 @@ const rightThreadUpdateUI = (thread) => {
 /*TODO 3. Thread 가져오기 (Right) -> 지우씨*/
 const rightThreadReInitialize = (message_id) => {
     console.log('rightThreadReInitialize', message_id);
-    fetch('../../../resources/assets/datas/thread_sample.json')
-        .then((response) => response.json())
-        .then((thread) => {
-            console.log('thread', thread);
-            rightThreadUpdateUI(thread);
+    getThreadMessages(message_id, null)
+        .then((result) => {
+            console.log('result', result);
+            if(result.status === 'OK') {
+                if(result.data.status) {
+                    result.data.thread.messages.reverse();
+                    rightThreadUpdateUI(result.data.thread);
+                } else {
+                    viewAlert({content: '스레드 내역을 불러올 수 없습니다.'});
+                }
+            } else {
+                viewAlert({content: '스레드 내역을 불러올 수 없습니다.'});
+            }
         });
 }

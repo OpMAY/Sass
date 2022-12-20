@@ -1,9 +1,6 @@
 package com.mapper;
 
-import com.model.company.Company;
-import com.model.company.CompanyMember;
-import com.model.company.CompanyProfileMember;
-import com.model.company.CompanyRole;
+import com.model.company.*;
 import com.model.grant.ROLE;
 import org.apache.ibatis.annotations.Param;
 
@@ -32,7 +29,7 @@ public interface CompanyMemberMapper {
 
     void registerCompanyMaster(@Param("companyNo") int companyNo, @Param("userNo") int userNo);
 
-    List<CompanyMember> getCompanyMemberList(int companyNo);
+    List<CompanyMemberListData> getCompanyMemberList(int companyNo);
 
     List<CompanyProfileMember> getCompanyMemberTagList(int company_no);
 
