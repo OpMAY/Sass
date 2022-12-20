@@ -38,8 +38,8 @@
                                  chat_message_id) # company_member_no
             (select (select no
                      from company_member
-                     WHERE user_no = #{user_no}),
-                    id
+                     WHERE user_no = #{user_no}) as company_member_no,
+                    id                           as chat_message_id
              from chat_message
                       left join message_read mr on chat_message.id = mr.chat_message_id AND
                                                    mr.company_member_no =
