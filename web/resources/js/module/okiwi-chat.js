@@ -27,9 +27,14 @@ let _CHAT_CONTAINER;
 let _CHAT_SEND_CONTAINER;
 let EMOJI_PICKER;
 let CHAT_MENTION;
+let CHAT_WEBSOCKET;
 /*TODO Initialize */
 //is_picker_on is chat page init false forced, true is module acceptable, setting ready in okiwi-chat-right-side.js
-const initializeChat = ({container, messages, is_picker_on = false}) => {
+const initializeChat = ({container, messages, is_picker_on = false, websocket}) => {
+    if (!CHAT_WEBSOCKET) {
+        CHAT_WEBSOCKET = websocket;
+        console.log('CHAT_WEBSOCKET', CHAT_WEBSOCKET);
+    }
     FLOATER_MENU = document.querySelector('#chat-floater-menu');
     floaterMenuEvent(FLOATER_MENU, floaterMenuThreadClickEventListener, floaterMenuBookmarkClickEventListener);
     CHAT_CONTAINER = typeof (container) === "object" ? container : documentSelector(container);
@@ -1112,4 +1117,12 @@ function getTypeAndValue() {
         obj.value = getURLLastParameter();
     }
     return obj;
+}
+
+function getWebsocketParameter(channel_hash) {
+    let object = getTypeAndValue();
+    if (object.type !== 'GROUP') {
+        object.value = channel_hash;
+    }
+    return object.value;
 }
