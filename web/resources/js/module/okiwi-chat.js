@@ -48,6 +48,10 @@ const initializeChat = ({container, messages, is_picker_on = false, websocket}) 
         mention = new OkiwiMention({container: CHAT_CONTAINER.querySelector('._chat-input')});
         if (!CHAT_MENTION) {
             CHAT_MENTION = mention;
+            const obj = getTypeAndValue();
+            let url = `/chat/channel/members?type=${obj.type}${obj.value ? '&value=' + obj.value : ''}`;
+            console.log('mention url : ',url);
+            mention.setURL(`/chat/channel/members?type=${obj.type}${obj.value ? '&value=' + obj.value : ''}`);
         }
         console.log('mention', mention);
     } catch (e) {

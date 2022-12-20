@@ -53,6 +53,7 @@ public class ChatService {
     private final MessageReactionDao messageReactionDao;
     private final MessageSaveDao messageSaveDao;
     private final MessageReadDao messageReadDao;
+    private final MessageMentionDao messageMentionDao;
     /**
      * Chat (WebSocket) Related Services
      */
@@ -260,8 +261,12 @@ public class ChatService {
         return chatProfileMembers;
     }
 
-    public ArrayList<CompanyProfileMember> getChannelMembers(int channel_no) {
-        return channelMemberDao.getChannelMembers(channel_no);
+    public ArrayList<CompanyProfileMember> getChannelMembers(int channel_no) throws Exception {
+        ArrayList<CompanyProfileMember> members =  channelMemberDao.getChannelMembers(channel_no);
+        for(CompanyProfileMember member : members){
+            member.setId(encryptionService.encryptAES(Integer.toString(member.getNo()), true));
+        }
+        return members;
     }
 
     // TODO 1. channel 메세지 가져오기 (Main) -> 지우씨
@@ -290,7 +295,7 @@ public class ChatService {
 
     // TODO 9. Message 보내기 (Main, Right) -> 지우씨, 10. File Message 보내기 (Main, Right) -> 지우씨
     @Transactional
-    public ChatMessage sendMessage(ChatMessage chatMessage) {
+    public ChatMessage sendMessage(ChatMessage chatMessage) throws Exception {
         if (chatMessage.getParent_message_id() != null && chatMessageDao.checkParentIsThreadMessage(chatMessage.getParent_message_id())) {
             // Thread 내의 메세지에 추가 thread 생성 불가
             return null;
@@ -303,6 +308,14 @@ public class ChatService {
         chatMessageDao.sendMessage(chatMessage);
         // Set my message read
         messageReadDao.insertMessageRead(new ChatMessageRead(chatMessage.getId(), chatMessage.getCompany_member_no()));
+        // mentions
+        if(chatMessage.getMentions() != null && !chatMessage.getMentions().isEmpty()) {
+            for(ChatMessageMention messageMention : chatMessage.getMentions()) {
+                messageMention.setChat_message_id(chatMessage.getId());
+                messageMention.setCompany_member_no(Integer.parseInt(encryptionService.decryptAESWithSlash(messageMention.getId())));
+                messageMentionDao.insertMessageMention(messageMention);
+            }
+        }
         ChatMessage result = chatMessageDao.getChatMessageById(chatMessage.getId());
         formatChatMessage(companyMemberDao.getCompanyMemberInfoByMemberNo(chatMessage.getCompany_member_no()).getUser_no(), result);
         return result;
@@ -345,7 +358,7 @@ public class ChatService {
         if (chatMessage.getMentions() != null && !chatMessage.getMentions().isEmpty()) {
             for (ChatMessageMention messageMention : chatMessage.getMentions()) {
                 try {
-                    messageMention.setMember_hash(encryptionService.encryptAES(Integer.toString(messageMention.getCompany_member_no()), true));
+                    messageMention.setId(encryptionService.encryptAES(Integer.toString(messageMention.getCompany_member_no()), true));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
