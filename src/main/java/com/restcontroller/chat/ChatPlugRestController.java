@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @Slf4j
@@ -39,7 +38,7 @@ public class ChatPlugRestController {
     private final EncryptionService encryptionService;
     private final CompanyService companyService;
 
-    @RequestMapping(value = "/upload/file", method = POST)
+    @RequestMapping(value = "/upload/file", method = RequestMethod.POST)
     public ResponseEntity uploadFile(HttpServletRequest request, @RequestBody MultipartFile file) {
         Message message = new Message();
         log.info("{},{},{},{}", file.getName(), file.getSize(), file.getOriginalFilename(), file.getContentType());
@@ -48,7 +47,7 @@ public class ChatPlugRestController {
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
 
-    @RequestMapping(value = "/update/channel/like", method = POST)
+    @RequestMapping(value = "/update/channel/like", method = RequestMethod.POST)
     public ResponseEntity updateChannelLike(HttpServletRequest request, @RequestBody Channel channel) throws Exception {
         Message message = new Message();
         HashMap<String, Object> hashMap = encryptionService.decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
@@ -65,7 +64,7 @@ public class ChatPlugRestController {
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
 
-    @RequestMapping(value = "/create/message/reaction", method = POST)
+    @RequestMapping(value = "/create/message/reaction", method = RequestMethod.POST)
     public ResponseEntity createChatMessageReaction(HttpServletRequest request, @RequestBody ChatMessageReaction reaction) throws Exception {
         Message message = new Message();
         HashMap<String, Object> hashMap = encryptionService.decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
@@ -76,7 +75,7 @@ public class ChatPlugRestController {
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
 
-    @RequestMapping(value = "/delete/message/reaction", method = POST)
+    @RequestMapping(value = "/delete/message/reaction", method = RequestMethod.POST)
     public ResponseEntity deleteChatMessageReaction(HttpServletRequest request, @RequestBody ChatMessageReaction reaction) throws Exception {
         Message message = new Message();
         HashMap<String, Object> hashMap = encryptionService.decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
@@ -87,7 +86,7 @@ public class ChatPlugRestController {
         return new ResponseEntity(DefaultRes.res(OK, message, true), OK);
     }
 
-    @RequestMapping(value = "/update/message/bookmark", method = POST)
+    @RequestMapping(value = "/update/message/bookmark", method = RequestMethod.POST)
     public ResponseEntity updateMessageBookmark(HttpServletRequest request, @RequestBody ChatMessage chatMessage) throws Exception {
         Message message = new Message();
         HashMap<String, Object> hashMap = encryptionService.decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
@@ -104,7 +103,7 @@ public class ChatPlugRestController {
     }
     
     // TODO 1. channel 메세지 가져오기 (Main) -> 지우씨
-    @RequestMapping(value = "/channel/messages", method = GET)
+    @RequestMapping(value = "/channel/messages", method = RequestMethod.GET)
     public ResponseEntity GetChannelMessages(HttpServletRequest request,
                                              @RequestParam("type") String type,
                                              @RequestParam(value = "value", required = false) String value,
@@ -147,7 +146,7 @@ public class ChatPlugRestController {
     }
 
     // TODO 2. channels, users 가져오기 (Left) -> 지우씨
-    @RequestMapping(value = "/info", method = GET)
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
     public ResponseEntity GetCompanyChannelsAndMembers(HttpServletRequest request) {
         Message message = new Message();
         HashMap<String, Object> hashMap = encryptionService.decryptJWT(request.getSession().getAttribute(JWTEnum.JWTToken.name()).toString());
@@ -160,7 +159,7 @@ public class ChatPlugRestController {
     }
 
     // TODO 3. Thread 가져오기 (Right) -> 지우씨
-    @RequestMapping(value = "/channel/thread/messages", method = GET)
+    @RequestMapping(value = "/channel/thread/messages", method = RequestMethod.GET)
     public ResponseEntity GetThreadMessages(HttpServletRequest request,
                                             @RequestParam(value = "message_id") String message_id,
                                             @RequestParam(value = "last_message_id", required = false) String last_message_id) throws Exception {
@@ -175,7 +174,7 @@ public class ChatPlugRestController {
     }
 
     // TODO 9. Message 보내기 (Main, Right), 10. File Message 보내기 (Main, Right) -> 지우씨
-    @RequestMapping(value = "/send/message", method = POST)
+    @RequestMapping(value = "/send/message", method = RequestMethod.POST)
     public ResponseEntity SendMessage(HttpServletRequest request,
                                       @RequestParam("type") String type,
                                       @RequestParam(value = "value", required = false) String value,
