@@ -42,6 +42,7 @@ public class ChatPlugController {
         // TODO MESSAGE 는 FETCH 로
         ArrayList<ChatMessage> chatMessages = chatService.getChannelMessages(channel.getNo(), userNo, null);
         VIEW.addObject("messages", chatMessages);
+        VIEW.addObject("channel_hash",channel.getId());
         return VIEW;
     }
 
@@ -56,6 +57,7 @@ public class ChatPlugController {
         // TODO MESSAGE 는 FETCH 로
         ArrayList<ChatMessage> chatMessages = chatService.getChannelMessages(channel.getNo(), userNo, null);
         VIEW.addObject("messages", chatMessages);
+        VIEW.addObject("channel_hash",channel.getId());
         return VIEW;
     }
 

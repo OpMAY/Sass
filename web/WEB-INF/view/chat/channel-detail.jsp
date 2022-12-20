@@ -1164,6 +1164,7 @@
 <script src="/resources/js/validation.js"></script>
 <script src="/resources/js/chat/api.js"></script>
 <script src="/resources/js/chat/api1.js"></script>
+<script src="/resources/js/module/okiwi-websocket.js"></script>
 <!--Font Awesome-->
 <script src="https://kit.fontawesome.com/3581631c82.js"
         crossorigin="anonymous"></script>
@@ -1188,7 +1189,63 @@
                 content_wrapper.classList.remove('sidebar-is-open');
             }
         });
-        
+
+        //Initialize WebSocket
+        let chat_websocket = initializeSocket({
+            onOpen: (event, self) => {
+                console.log('open', 'event', event, 'self', self);
+            },
+            onMessage: (event, self) => {
+                console.log('message', 'event', event, 'self', self, 'data', event.data);
+                let data = JSON.parse(event.data);
+                console.log('MESSAGE', data);
+            },
+            onClose: (event, self) => {
+                console.log('close code', event.code, 'close reason', event.reason, 'self', self);
+            },
+            onError: (event, self) => {
+                console.log('error', event, 'self', self);
+            },
+            onSend: (data, self) => {
+                console.log('send', JSON.stringify(data), 'self', self);
+                self.send(JSON.stringify(data));
+            },
+            disconnect: () => {
+                this.close();
+            },
+        }, {
+            plugin_type: WEBSOCKET_PLUG_TYPE.CHAT.name,
+            user_no: 9999999,
+        });
+
+        let channel_websocket = initializeSocket({
+            onOpen: (event, self) => {
+                console.log('open', 'event', event, 'self', self);
+            },
+            onMessage: (event, self) => {
+                console.log('message', 'event', event, 'self', self, 'data', event.data);
+                let data = JSON.parse(event.data);
+                console.log('MESSAGE', data);
+            },
+            onClose: (event, self) => {
+                console.log('close code', event.code, 'close reason', event.reason, 'self', self);
+            },
+            onError: (event, self) => {
+                console.log('error', event, 'self', self);
+            },
+            onSend: (data, self) => {
+                console.log('send', JSON.stringify(data), 'self', self);
+                self.send(JSON.stringify(data));
+            },
+            disconnect: () => {
+                this.close();
+            },
+        }, {
+            plugin_type: WEBSOCKET_PLUG_TYPE.CHAT.name,
+            user_no: 9999999,
+            hash: getWebsocketParameter('${channel_hash}')
+        });
+
         /*TODO Chat Content Initialize*/
         /*TODO 1. channel 메세지 가져오기 (Main) -> 지우씨*/
         const info = getTypeAndValue();
@@ -1199,7 +1256,11 @@
                     if (result.data.status) {
                         initializeChat({
                             container: '.chat-container',
-                            messages: result.data.messages.reverse()
+                            messages: result.data.messages.reverse(),
+                            websocket: {
+                                chat_websocket,
+                                channel_websocket
+                            }
                         });
                     } else {
                         viewAlert({content: '메세지를 불러오지 못했습니다.'});
@@ -1208,7 +1269,7 @@
                     viewAlert({content: '메세지를 불러오지 못했습니다.'});
                 }
             })
-        
+
         /*TODO Chat Left Initialize*/
         /*TODO 2. channels, users 가져오기 (Left) -> 지우씨*/
         getCompanyChannelsAndMembers().then((result) => {
@@ -1225,7 +1286,12 @@
             }
         })
         /*TODO Chat Right Initialize*/
-        initializeRightThread();
+        initializeRightThread(true, {
+            websocket: {
+                chat_websocket,
+                channel_websocket
+            }
+        });
     });
 </script>
 </body>

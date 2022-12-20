@@ -27,9 +27,14 @@ let _CHAT_CONTAINER;
 let _CHAT_SEND_CONTAINER;
 let EMOJI_PICKER;
 let CHAT_MENTION;
+let CHAT_WEBSOCKET;
 /*TODO Initialize */
 //is_picker_on is chat page init false forced, true is module acceptable, setting ready in okiwi-chat-right-side.js
-const initializeChat = ({container, messages, is_picker_on = false}) => {
+const initializeChat = ({container, messages, is_picker_on = false, websocket}) => {
+    if (!CHAT_WEBSOCKET) {
+        CHAT_WEBSOCKET = websocket;
+        console.log('CHAT_WEBSOCKET', CHAT_WEBSOCKET);
+    }
     FLOATER_MENU = document.querySelector('#chat-floater-menu');
     floaterMenuEvent(FLOATER_MENU, floaterMenuThreadClickEventListener, floaterMenuBookmarkClickEventListener);
     CHAT_CONTAINER = typeof (container) === "object" ? container : documentSelector(container);
@@ -185,8 +190,10 @@ function floaterMenuReactionClickEventListener(selected_emoji) {
         }
         if (selected_reaction) {
             /*TODO 해당되는 Reaction이 있을 때*/
+            console.log('1');
             if (selected_reaction.classList.contains('is-active')) {
                 /*TODO 해당되는 Reaction을 이미 했을 때 -> 제거*/
+                console.log('2');
                 if (!duplicate_checker) {
                     removeReaction(reaction).then((result) => {
                         if (result.status === 'OK') {
@@ -195,7 +202,8 @@ function floaterMenuReactionClickEventListener(selected_emoji) {
                             let integer_count = count.dataset.count * 1;
                             integer_count -= 1;
                             count.setAttribute('data-count', integer_count);
-                            if (integer_count - 1 > 0) {
+                            console.log('integer_count', integer_count);
+                            if (integer_count > 0) {
                                 count.innerHTML = integer_count <= 99 ? integer_count : '99+';
                             } else {
                                 selected_reaction.remove();
@@ -211,7 +219,8 @@ function floaterMenuReactionClickEventListener(selected_emoji) {
                     let integer_count = count.dataset.count * 1;
                     integer_count -= 1;
                     count.setAttribute('data-count', integer_count);
-                    if (integer_count - 1 > 0) {
+                    console.log('integer_count', integer_count);
+                    if (integer_count > 0) {
                         count.innerHTML = integer_count <= 99 ? integer_count : '99+';
                     } else {
                         selected_reaction.remove();
@@ -219,6 +228,7 @@ function floaterMenuReactionClickEventListener(selected_emoji) {
                 }
             } else {
                 /*TODO 해당되는 Reaction을 않했을 때 -> 생성*/
+                console.log('3');
                 reaction.count = 1;
                 reaction.active = true;
                 if (!duplicate_checker) {
@@ -229,7 +239,8 @@ function floaterMenuReactionClickEventListener(selected_emoji) {
                             let integer_count = count.dataset.count * 1;
                             integer_count += 1;
                             count.setAttribute('data-count', integer_count);
-                            if (integer_count - 1 > 0) {
+                            console.log('integer_count', integer_count);
+                            if (integer_count > 0) {
                                 count.innerHTML = integer_count <= 99 ? integer_count : '99+';
                             }
                         } else {
@@ -243,7 +254,8 @@ function floaterMenuReactionClickEventListener(selected_emoji) {
                     let integer_count = count.dataset.count * 1;
                     integer_count += 1;
                     count.setAttribute('data-count', integer_count);
-                    if (integer_count - 1 > 0) {
+                    console.log('integer_count', integer_count);
+                    if (integer_count > 0) {
                         count.innerHTML = integer_count <= 99 ? integer_count : '99+';
                     }
                 }
@@ -384,7 +396,7 @@ function messageReactionClickEventListener(event) {
                 let integer_count = count.dataset.count * 1;
                 integer_count -= 1;
                 count.setAttribute('data-count', integer_count);
-                if (integer_count - 1 > 0) {
+                if (integer_count > 0) {
                     count.innerHTML = integer_count <= 99 ? integer_count : '99+';
                 } else {
                     reaction.remove();
@@ -402,7 +414,7 @@ function messageReactionClickEventListener(event) {
                 let integer_count = count.dataset.count * 1;
                 integer_count += 1;
                 count.setAttribute('data-count', integer_count);
-                if (integer_count - 1 > 0) {
+                if (integer_count > 0) {
                     count.innerHTML = integer_count <= 99 ? integer_count : '99+';
                 }
             } else {
@@ -1105,4 +1117,12 @@ function getTypeAndValue() {
         obj.value = getURLLastParameter();
     }
     return obj;
+}
+
+function getWebsocketParameter(channel_hash) {
+    let object = getTypeAndValue();
+    if (object.type !== 'GROUP') {
+        object.value = channel_hash;
+    }
+    return object.value;
 }

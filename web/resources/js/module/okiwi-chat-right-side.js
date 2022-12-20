@@ -4,8 +4,13 @@ let RIGHT_THREAD_SCROLL_CONTAINER;
 let RIGHT_MAIN_THREAD_CONTAINER;
 let RIGHT_SUB_THREADS_CONTAINER;
 let RIGHT_SEND_CONTAINER;
+let RIGHT_THREAD_WEBSOCKET;
 /*TODO Initialize*/
-const initializeRightThread = (is_picker_on = true) => {
+const initializeRightThread = (is_picker_on = true, websocket) => {
+    if (!RIGHT_THREAD_WEBSOCKET) {
+        RIGHT_THREAD_WEBSOCKET = websocket;
+        console.log('RIGHT_THREAD_WEBSOCKET', RIGHT_THREAD_WEBSOCKET);
+    }
     if (!RIGHT_THREAD_CONTAINER) {
         RIGHT_THREAD_CONTAINER = document.querySelector('#chat-right-side');
         /*TODO THREAD_CONTAINER EVENT*/
@@ -102,8 +107,8 @@ function rightThreadSendContainerWriteClickEventListener(event) {
     console.log(message);
     sendMessage(message, info).then((result) => {
         console.log(result);
-        if(result.status === 'OK') {
-            if(result.data.status) {
+        if (result.status === 'OK') {
+            if (result.data.status) {
                 RIGHT_SUB_THREADS_CONTAINER.append(createMessageElement(result.data.message, true));
                 editor.innerHTML = ``;
                 updateChatContainerScroll(RIGHT_THREAD_SCROLL_CONTAINER);
@@ -149,7 +154,7 @@ function rightThreadSendContainerControlFileChangeEventListener(event) {
             reader.onload = function (e) {
                 console.log('e', e);
                 uploadChatFile(file).then((result) => {
-                    if(result.status === 'OK') {
+                    if (result.status === 'OK') {
                         let files = [{
                             name: result.data.file.name,
                             url: result.data.file.url,
@@ -169,13 +174,13 @@ function rightThreadSendContainerControlFileChangeEventListener(event) {
     readURL(input, (files) => {
         let message = {
             type: 'FILE',
-            message_json : {files},
+            message_json: {files},
             parent_message_id: RIGHT_THREAD_CONTAINER.dataset.id
         }
         sendMessage(message, getTypeAndValue()).then((result) => {
             console.log(result);
-            if(result.status === 'OK') {
-                if(result.data.status) {
+            if (result.status === 'OK') {
+                if (result.data.status) {
                     RIGHT_SUB_THREADS_CONTAINER.append(createMessageElement(result.data.message));
                     updateChatContainerScroll(RIGHT_THREAD_SCROLL_CONTAINER);
                 } else {
@@ -240,8 +245,8 @@ const rightThreadReInitialize = (message_id) => {
     getThreadMessages(message_id, null)
         .then((result) => {
             console.log('result', result);
-            if(result.status === 'OK') {
-                if(result.data.status) {
+            if (result.status === 'OK') {
+                if (result.data.status) {
                     result.data.thread.messages.reverse();
                     rightThreadUpdateUI(result.data.thread);
                 } else {
