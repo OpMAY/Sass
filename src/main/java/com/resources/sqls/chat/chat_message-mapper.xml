@@ -30,6 +30,7 @@
         select *
         from chat_message
         WHERE channel_no = #{channel_no}
+          AND parent_message_id is null
         ORDER BY reg_datetime DESC
         LIMIT 50
     </select>
@@ -40,6 +41,7 @@
         select *
         from chat_message
         WHERE channel_no = #{channel_no}
+          AND parent_message_id is null
           AND (reg_datetime <![CDATA[<]]> @LAST_REG_DATE)
         ORDER BY reg_datetime DESC
         LIMIT 50
@@ -47,7 +49,7 @@
     <select id="getChannelLastMessage" resultType="ChatMessage" resultMap="ChatMessage">
         select *
         from chat_message
-        WHERE channel_no = #{channel_no}
+        WHERE channel_no = #{channel_no} AND parent_message_id is null
         ORDER BY reg_datetime DESC
         LIMIT 1
     </select>

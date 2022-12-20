@@ -282,6 +282,7 @@ const messageElementEvent = (message, reaction, thread) => {
     thread_elem?.addEventListener('click', thread);
 }
 /*TODO 5. Emoji 추가하기 (Main,Right) -> 우식*/
+
 /*TODO 8. Emoji 반응 및 해제 (Main, Right) -> 우식*/
 function messageReactionClickEventListener(event) {
     let reaction = this;
@@ -390,44 +391,17 @@ function sendContainerControlFileChangeEventListener(event) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function (e) {
-                let message = {
-                    id: tokenGenerator(6),
-                    bookmark: false,
-                    profile: {
-                        name: 'test.png',
-                        url: 'https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&type=a340',
-                        size: 9999,
-                        type: 'image/png'
-                    },
-                    name: '김우식',
-                    type: 'FILE',
-                    files: [{
-                        name: file.name,
-                        url: e.target.result,
-                        size: file.size,
-                        type: file.type
-                    }],
-                    date: {
-                        "year": 2022,
-                        "month": "NOVEMBER",
-                        "monthValue": 11,
-                        "dayOfMonth": 7,
-                        "hour": 21,
-                        "minute": 58,
-                        "second": 49,
-                        "nano": 0,
-                        "dayOfWeek": "MONDAY",
-                        "dayOfYear": 311,
-                        "chronology": {
-                            "calendarType": "iso8601",
-                            "id": "ISO"
-                        }
-                    },
-                    reactions: [],
-                    edited: false,
-                    threads: 0
-                };
-                callback(message);
+                uploadChatFile(file).then((result) => {
+                    if (result.status === 'OK') {
+                        let files = [{
+                            name: result.data.file.name,
+                            url: result.data.file.url,
+                            size: result.data.file.size,
+                            type: result.data.file.type
+                        }]
+                        callback(files);
+                    }
+                })
             }
             reader.readAsDataURL(input.files[0]);
             reader.onloadend = function (e) {
@@ -435,9 +409,25 @@ function sendContainerControlFileChangeEventListener(event) {
         }
     }
 
-    readURL(input, (message) => {
-        _CHAT_CONTAINER.append(createMessageElement(message));
-        updateChatContainerScroll(_CHAT_CONTAINER);
+    readURL(input, (files) => {
+        let message = {
+            type: 'FILE',
+            message_json: {files}
+        }
+        sendMessage(message, getTypeAndValue()).then((result) => {
+            console.log(result);
+            if (result.status === 'OK') {
+                if (result.data.status) {
+                    _CHAT_CONTAINER.append(createMessageElement(result.data.message));
+                    updateChatContainerScroll(_CHAT_CONTAINER);
+                } else {
+
+                }
+            } else {
+
+            }
+        })
+
     });
 }
 
@@ -476,40 +466,24 @@ function sendContainerWriteClickEventListener(event) {
     let value = editor.innerHTML;
     value = value.replace(/<br\s*\/?>/gi, '');
     let message = {
-        id: tokenGenerator(6),
-        bookmark: false,
-        profile: {
-            name: 'test.png',
-            url: 'https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&type=a340',
-            size: 9999,
-            type: 'image/png'
-        },
-        name: '김우식',
         type: 'TEXT',
         content: value,
-        date: {
-            "year": 2022,
-            "month": "NOVEMBER",
-            "monthValue": 11,
-            "dayOfMonth": 7,
-            "hour": 21,
-            "minute": 58,
-            "second": 49,
-            "nano": 0,
-            "dayOfWeek": "MONDAY",
-            "dayOfYear": 311,
-            "chronology": {
-                "calendarType": "iso8601",
-                "id": "ISO"
-            }
-        },
-        reactions: [],
-        edited: false,
-        threads: 0
     }
-    _CHAT_CONTAINER.append(createMessageElement(message));
-    editor.innerHTML = ``;
-    updateChatContainerScroll(_CHAT_CONTAINER);
+    sendMessage(message, getTypeAndValue()).then((result) => {
+        console.log(result);
+        if (result.status === 'OK') {
+            if (result.data.status) {
+                _CHAT_CONTAINER.append(createMessageElement(result.data.message));
+                editor.innerHTML = ``;
+                updateChatContainerScroll(_CHAT_CONTAINER);
+                // TODO WEBSOCKET SEND
+            } else {
+                viewAlert({content: '메세지 전송에 실패했습니다.'});
+            }
+        } else {
+            viewAlert({content: '메세지 전송에 실패했습니다. 네트워크를 확인하세요.'});
+        }
+    })
     event.preventDefault();
     event.stopPropagation();
 }
@@ -1015,4 +989,20 @@ const createMessageMoresElement = (threads, is_outer) => {
     } else {
         return threads !== 0 ? container : undefined;
     }
+}
+
+function getTypeAndValue() {
+    const path = window.location.pathname;
+    const obj = {};
+    if (path.includes('/chat/channel/my')) {
+        obj.type = 'MY';
+    } else {
+        if (path.includes('/chat/channel/direct')) {
+            obj.type = 'DIRECT';
+        } else {
+            obj.type = 'GROUP';
+        }
+        obj.value = getURLLastParameter();
+    }
+    return obj;
 }

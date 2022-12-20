@@ -1,10 +1,7 @@
 package com.dao;
 
 import com.mapper.CompanyMemberMapper;
-import com.model.company.Company;
-import com.model.company.CompanyMember;
-import com.model.company.CompanyProfileMember;
-import com.model.company.CompanyRole;
+import com.model.company.*;
 import com.model.grant.ROLE;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
@@ -63,7 +60,7 @@ public class CompanyMemberDao {
         mapper.registerCompanyMaster(companyNo, userNo);
     }
 
-    public List<CompanyMember> getCompanyMemberList(int companyNo) {
+    public List<CompanyMemberListData> getCompanyMemberList(int companyNo) {
         return mapper.getCompanyMemberList(companyNo);
     }
 

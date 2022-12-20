@@ -279,3 +279,13 @@ function downloadFileFromUrl(url, filename) {
         })
         .catch(console.error);
 }
+
+const getURLLastParameter = () => {
+    const path_name = location.pathname;
+    const last_sub = path_name.substring(location.pathname.lastIndexOf('/') + 1);
+    if (last_sub.indexOf('?') > 0) {
+        return last_sub;
+    } else {
+        return last_sub.substring(last_sub.indexOf('?') + 1);
+    }
+}

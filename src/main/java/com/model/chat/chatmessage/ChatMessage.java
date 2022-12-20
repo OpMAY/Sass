@@ -29,4 +29,5 @@ public class ChatMessage extends Time {
     private ArrayList<ChatMessageReaction> reaction_detail;
     private boolean bookmark;
     private int threads;
+    private ArrayList<MFile> files;
 }
