@@ -1,5 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8"
-         language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -24,19 +23,19 @@
     <link rel="stylesheet"
           href="/resources/css/theme/theme.css">
     <link rel="stylesheet"
-          href="/resources/css/theme/crm/theme.css">
+          href="/resources/css/theme/chat/theme.css">
     <!-- Layout -->
     <link rel="stylesheet"
           href="/resources/css/layout/layout.css">
     <link rel="stylesheet"
           href="/resources/css/layout/res-layout.css">
     <link rel="stylesheet"
-          href="/resources/css/layout/crm/layout.css">
+          href="/resources/css/layout/chat/layout.css">
     <!-- Plugin -->
     <link rel="stylesheet"
           href="/resources/css/plugin/sample.css">
     <link rel="stylesheet"
-          href="/resources/css/plugin/bootstrap-datepicker3.css">
+          href="/resources/css/plugin/emoji/emojibuttonlistjs.css"/>
     <!-- State -->
     <link rel="stylesheet"
           href="/resources/css/state/state.css">
@@ -48,24 +47,20 @@
     <link rel="stylesheet"
           href="/resources/css/module/res-module.css">
     <link rel="stylesheet"
-          href="/resources/css/module/okiwi-crm-right-side.css">
-    <link rel="stylesheet"
-          href="/resources/css/module/okiwi-file.css">
+          href="/resources/css/module/okiwi-chat.css">
     <!-- Element -->
     <link rel="stylesheet"
           href="/resources/css/base/element.css">
     <link rel="stylesheet"
-          href="/resources/css/base/crm/element.css">
-    <link rel="stylesheet"
-          href="/resources/css/module/modal.css">
+          href="/resources/css/base/chat/element.css">
     <title>Okiwi CRM Workspace</title>
 </head>
 <body>
 <header id="l-header"
-        class="crm-theme">
+        class="chat-theme">
     <img class="mr-12"
          src="/resources/assets/images/icon/sample_chatplug.svg"/>
-    <span class="regular-h5 my-auto">CHAT Plug - 팀원 간 업무 커뮤니케이션</span>
+    <span class="regular-h5 my-auto">chatPlug - 팀원 간 업무 커뮤니케이션</span>
     <div class="_option ml-auto my-auto">
         <div>
             <svg width="24"
@@ -119,48 +114,33 @@
                 </div>
                 <div class="col-12 mt-32">
                     <div class="row">
-                        <div class="col-6 d-none">
-                            <div class="recent-status-container pr-24 pl-24 pb-24 pt-12">
+                        <div class="col-9 ">
+                            <div class="recent-status-container px-0 py-24 bg-basic-white callout">
                                 <ul class="nav nav-tabs mt-8"
                                     id="recent-tab"
                                     role="tablist">
                                     <li class="nav-item"
                                         role="presentation">
                                         <button class="nav-link bold-h5 active"
-                                                id="remain-tab"
+                                                id="channel-list-tab"
                                                 data-toggle="tab"
-                                                data-target="#remain"
+                                                data-target="#channel-list"
                                                 type="button"
                                                 role="tab"
-                                                data-type="TODO"
-                                                aria-controls="remain"
-                                                aria-selected="true">남은 업무
+                                                aria-controls="channel-list"
+                                                aria-selected="true">채널
                                         </button>
                                     </li>
                                     <li class="nav-item"
                                         role="presentation">
                                         <button class="nav-link bold-h5"
-                                                id="latest-tab"
+                                                id="thread-tab"
                                                 data-toggle="tab"
-                                                data-target="#latest"
+                                                data-target="#thread"
                                                 type="button"
                                                 role="tab"
-                                                data-type="EXPIRED"
-                                                aria-controls="latest"
-                                                aria-selected="false">지난 업무
-                                        </button>
-                                    </li>
-                                    <li class="nav-item"
-                                        role="presentation">
-                                        <button class="nav-link bold-h5"
-                                                id="complete-tab"
-                                                data-toggle="tab"
-                                                data-target="#complete"
-                                                type="button"
-                                                role="tab"
-                                                data-type="COMPLETED"
-                                                aria-controls="complete"
-                                                aria-selected="false">완료 업무
+                                                aria-controls="thread"
+                                                aria-selected="false">스레드
                                         </button>
                                     </li>
                                     <li class="nav-item"
@@ -171,62 +151,1114 @@
                                                 data-target="#mention"
                                                 type="button"
                                                 role="tab"
-                                                disabled
                                                 aria-controls="mention"
                                                 aria-selected="false">@나를 멘션
+                                        </button>
+                                    </li>
+                                    <li class="nav-item"
+                                        role="presentation">
+                                        <button class="nav-link bold-h5"
+                                                id="direct-tab"
+                                                data-toggle="tab"
+                                                data-target="#direct"
+                                                type="button"
+                                                role="tab"
+                                                aria-controls="direct"
+                                                aria-selected="false">다이렉트 메시지
+                                        </button>
+                                    </li>
+                                    <li class="nav-item"
+                                        role="presentation">
+                                        <button class="nav-link bold-h5"
+                                                id="store-tab"
+                                                data-toggle="tab"
+                                                data-target="#store"
+                                                type="button"
+                                                role="tab"
+                                                aria-controls="store"
+                                                aria-selected="false">저장된 항목
                                         </button>
                                     </li>
                                 </ul>
                                 <div class="tab-content"
                                      id="myTabContent">
                                     <div class="tab-pane fade show active"
-                                         id="remain"
+                                         id="channel-list"
                                          role="tabpanel"
-                                         data-type="TODO"
-                                         aria-labelledby="remain-tab">
-                                        <ul class="list-group">
+                                         aria-labelledby="channel-list-tab">
+                                        <ul class="list-group level-workspace-list-chat">
+                                            <li class="py-3 list-group-item border-bold " data-id="task_id">
+                                                <div class="_name bold-h5"># 채널 명</div>
+                                                <div class="_body"
+                                                     style="width: 100% !important; min-height: auto !important;">
+                                                    <div class="_main_thread">
+                                                        <div class="chat-item workspace"
+                                                             data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3"
+                                                                   href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count"
+                                                                                 data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count"
+                                                                                 data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="chat-item workspace" data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3" href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count" data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction" data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count" data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class=" pt-16">
+                                                <span class="medium-h5 c-brand-green">
+                                                    + 메시지 보내기
+                                                </span>
+                                                </div>
+                                            </li>
+                                            <li class="py-3 list-group-item border-bold" data-id="task_id">
+                                                <div class="_name bold-h5"># 채널 명</div>
+                                                <div class="_body"
+                                                     style="width: 100% !important; min-height: auto !important;">
+                                                    <div class="_main_thread">
+                                                        <div class="chat-item workspace"
+                                                             data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3"
+                                                                   href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count"
+                                                                                 data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count"
+                                                                                 data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="chat-item workspace" data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3" href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count" data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction" data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count" data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class=" pt-16">
+                                                <span class="medium-h5 c-brand-green">
+                                                    + 메시지 보내기
+                                                </span>
+                                                </div>
+                                            </li>
+                                            <li class="py-3 list-group-item border-bold" data-id="task_id">
+                                                <div class="_name bold-h5"># 채널 명</div>
+                                                <div class="_body"
+                                                     style="width: 100% !important; min-height: auto !important;">
+                                                    <div class="_main_thread">
+                                                        <div class="chat-item workspace"
+                                                             data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3"
+                                                                   href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count"
+                                                                                 data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count"
+                                                                                 data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="chat-item workspace" data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3" href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count" data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction" data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count" data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class=" pt-16">
+                                                <span class="medium-h5 c-brand-green">
+                                                    + 메시지 보내기
+                                                </span>
+                                                </div>
+                                            </li>
                                         </ul>
                                     </div>
+
                                     <div class="tab-pane fade"
-                                         id="latest"
+                                         id="thread"
                                          role="tabpanel"
-                                         data-type="EXPIRED"
-                                         aria-labelledby="latest-tab">
+                                         aria-labelledby="thread-tab">
                                         <ul class="list-group">
+                                            <li class="py-3 list-group-item border-bold" data-id="task_id">
+                                                <div class="_name bold-h5"># 채널 명</div>
+                                                <div class="_body"
+                                                     style="width: 100% !important; min-height: auto !important;">
+                                                    <div class="_main_thread">
+                                                        <div class="chat-item workspace"
+                                                             data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3"
+                                                                   href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count"
+                                                                                 data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count"
+                                                                                 data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="chat-item workspace" data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3" href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count" data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction" data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count" data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class=" pt-16">
+                                                <span class="medium-h5 c-brand-green">
+                                                    + 메시지 보내기
+                                                </span>
+                                                </div>
+                                            </li>
+                                            <li class="py-3 list-group-item border-bold" data-id="task_id">
+                                                <div class="_name bold-h5"># 채널 명</div>
+                                                <div class="_body"
+                                                     style="width: 100% !important; min-height: auto !important;">
+                                                    <div class="_main_thread">
+                                                        <div class="chat-item workspace"
+                                                             data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3"
+                                                                   href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count"
+                                                                                 data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count"
+                                                                                 data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="chat-item workspace" data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3" href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count" data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction" data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count" data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class=" pt-16">
+                                                <span class="medium-h5 c-brand-green">
+                                                    + 메시지 보내기
+                                                </span>
+                                                </div>
+                                            </li>
+                                            <li class="py-3 list-group-item border-bold" data-id="task_id">
+                                                <div class="_name bold-h5"># 채널 명</div>
+                                                <div class="_body"
+                                                     style="width: 100% !important; min-height: auto !important;">
+                                                    <div class="_main_thread">
+                                                        <div class="chat-item workspace"
+                                                             data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3"
+                                                                   href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count"
+                                                                                 data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count"
+                                                                                 data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="chat-item workspace" data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3" href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count" data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction" data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count" data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class=" pt-16">
+                                                <span class="medium-h5 c-brand-green">
+                                                    + 메시지 보내기
+                                                </span>
+                                                </div>
+                                            </li>
                                         </ul>
                                     </div>
-                                    <div class="tab-pane fade"
-                                         id="complete"
-                                         role="tabpanel"
-                                         data-type="COMPLETED"
-                                         aria-labelledby="complete-tab">
-                                        <ul class="list-group">
-                                        </ul>
-                                    </div>
+
+
                                     <div class="tab-pane fade"
                                          id="mention"
                                          role="tabpanel"
                                          aria-labelledby="mention-tab">
                                         <ul class="list-group">
+                                            <li class="py-3 list-group-item border-bold" data-id="task_id">
+                                                <div class="_name bold-h5"># 채널 명</div>
+                                                <div class="_body"
+                                                     style="width: 100% !important; min-height: auto !important;">
+                                                    <div class="_main_thread">
+                                                        <div class="chat-item workspace"
+                                                             data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3"
+                                                                   href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count"
+                                                                                 data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count"
+                                                                                 data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="chat-item workspace" data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3" href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count" data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction" data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count" data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class=" pt-16">
+                                                <span class="medium-h5 c-brand-green">
+                                                    + 메시지 보내기
+                                                </span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade"
+                                         id="direct"
+                                         role="tabpanel"
+                                         aria-labelledby="direct-tab">
+                                        <ul class="list-group">
+                                            <li class="py-3 list-group-item border-bold" data-id="task_id">
+                                                <div class="_body"
+                                                     style="width: 100% !important; min-height: auto !important;">
+                                                    <div class="_main_thread">
+                                                        <div class="chat-item direct"
+                                                             data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3"
+                                                                   href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count"
+                                                                                 data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count"
+                                                                                 data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class=" pt-16">
+                                                <span class="medium-h5 c-brand-green">
+                                                    + 메시지 보내기
+                                                </span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade"
+                                         id="store"
+                                         role="tabpanel"
+                                         aria-labelledby="store-tab">
+                                        <ul class="list-group">
+                                            <li class="py-3 list-group-item border-bold" data-id="task_id">
+                                                <div class="_name bold-h5"># 채널 명</div>
+                                                <div class="_body"
+                                                     style="width: 100% !important; min-height: auto !important;">
+                                                    <div class="_main_thread">
+                                                        <div class="chat-item workspace"
+                                                             data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3"
+                                                                   href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count"
+                                                                                 data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count"
+                                                                                 data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="chat-item workspace" data-id="az1848"
+                                                             data-bookmark="false">
+                                                            <div class="media">
+                                                                <a class="mr-3" href="#">
+                                                                    <div class="_profile"
+                                                                         style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')"></div>
+                                                                </a>
+                                                                <div class="media-body">
+                                                                    <div class="mt-0 media-title">
+                                                                        <div class="_name">
+                                                                            김우식
+                                                                        </div>
+                                                                        <div class="_date">
+                                                                            <span class="__meridian">오후</span>
+                                                                            <span class="__time">9:58</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="_content">
+                                                                        Lorem ipsum dolor sit amet, consectetur
+                                                                        adipisicing elit. Accusantium alias delectus eum
+                                                                        fugiat iure
+                                                                        libero maxime nam nemo odio omnis porro quae
+                                                                        quia, quos ratione, tenetur totam ut voluptate
+                                                                        voluptatum?<span class="_edited">(편집됨)</span>
+                                                                    </div>
+                                                                    <div class="_reactions">
+                                                                        <div class="_reaction is-active"
+                                                                             data-title="test">
+                                                                            <div class="_emoji">😂</div>
+                                                                            <div class="_count" data-count="101">99+
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="_reaction" data-title="test">
+                                                                            <div class="_emoji">✅</div>
+                                                                            <div class="_count" data-count="99">99
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class=" pt-16">
+                                                <span class="medium-h5 c-brand-green">
+                                                    + 메시지 보내기
+                                                </span>
+                                                </div>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-12" style="width: 100%; height: 700px">
-                                    <h3>Chat Test</h3>
-                                    <div class="row row-cols-1 p-16" id="message-div"
-                                         style="width: 100%; height: 90%; max-height: 90%; overflow-y: auto; background-color: var(--gray-high-light); align-content: flex-start">
+                        <div class="col-3">
 
-                                    </div>
-                                    <div class="row sample-input py-4" style="display: flex">
-                                        <textarea class="form-control" rows="3" id="message-content"
-                                                  placeholder="보낼 메세지를 입력하세요."
-                                                  style="resize: none; width: 85%"></textarea>
-                                        <button type="button" class="btn btn-sm" id="message-send">전송</button>
-                                    </div>
+
+                            <div class="project-container  bg-basic-white callout bold-h5">
+
+                                <div id="chat-left-sidebar" class="workspace-channel">
+                                    <ul class="list-group">
+                                        <ul class="list-group">
+                                            <li class="list-group-item mt-16">
+                                                <div class="_collapsable">
+                                                    <a href="#channel" data-toggle="collapse" role="button"
+                                                       aria-expanded="true" aria-controls="channel">
+                                                        <span>채널</span>
+                                                    </a>
+                                                    <div class="collapse show" id="channel">
+                                                        <ul class="nav-second-level level-type-channel pt-1">
+                                                            <li class="channel-item is-like"
+                                                                data-id="SRTOSoKrZ0q79uyoFX5N1A==">
+                                                                <a href="#">
+                                                                    <svg class="_like" width="16" height="16"
+                                                                         viewBox="0 0 16 16" fill="none"
+                                                                         xmlns="http://www.w3.org/2000/svg">
+                                                                        <g clip-path="url(#clip0_338_5123)">
+                                                                            <path d="M8.00027 12.174L3.29827 14.806L4.34827 9.52065L0.391602 5.86198L5.74293 5.22732L8.00027 0.333984L10.2576 5.22732L15.6089 5.86198L11.6523 9.52065L12.7023 14.806L8.00027 12.174Z"></path>
+                                                                        </g>
+                                                                        <defs>
+                                                                            <clipPath id="clip0_338_5123">
+                                                                                <rect width="16" height="16"
+                                                                                      fill="white"></rect>
+                                                                            </clipPath>
+                                                                        </defs>
+                                                                    </svg>
+                                                                    <div>Plugin PipeLine</div>
+                                                                    <div class="_alarms" style="display: block;">9+
+                                                                    </div>
+                                                                </a>
+                                                            </li>
+                                                            <li class="channel-item" data-id="SRTOSoKrZ0q79uyoFX5N1A==">
+                                                                <a href="#">
+                                                                    <svg class="_like" width="16" height="16"
+                                                                         viewBox="0 0 16 16" fill="none"
+                                                                         xmlns="http://www.w3.org/2000/svg">
+                                                                        <g clip-path="url(#clip0_338_5123)">
+                                                                            <path d="M8.00027 12.174L3.29827 14.806L4.34827 9.52065L0.391602 5.86198L5.74293 5.22732L8.00027 0.333984L10.2576 5.22732L15.6089 5.86198L11.6523 9.52065L12.7023 14.806L8.00027 12.174Z"></path>
+                                                                        </g>
+                                                                        <defs>
+                                                                            <clipPath id="clip0_338_5123">
+                                                                                <rect width="16" height="16"
+                                                                                      fill="white"></rect>
+                                                                            </clipPath>
+                                                                        </defs>
+                                                                    </svg>
+                                                                    <div>Plugin CRM</div>
+                                                                    <div class="_alarms" style="display: block;">3</div>
+                                                                </a></li>
+                                                            <li class="channel-item" data-id="SRTOSoKrZ0q79uyoFX5N1A==">
+                                                                <a href="#">
+                                                                    <svg class="_like" width="16" height="16"
+                                                                         viewBox="0 0 16 16" fill="none"
+                                                                         xmlns="http://www.w3.org/2000/svg">
+                                                                        <g clip-path="url(#clip0_338_5123)">
+                                                                            <path d="M8.00027 12.174L3.29827 14.806L4.34827 9.52065L0.391602 5.86198L5.74293 5.22732L8.00027 0.333984L10.2576 5.22732L15.6089 5.86198L11.6523 9.52065L12.7023 14.806L8.00027 12.174Z"></path>
+                                                                        </g>
+                                                                        <defs>
+                                                                            <clipPath id="clip0_338_5123">
+                                                                                <rect width="16" height="16"
+                                                                                      fill="white"></rect>
+                                                                            </clipPath>
+                                                                        </defs>
+                                                                    </svg>
+                                                                    <div>Plugin Chat</div>
+                                                                    <div class="_alarms" style="display: block;">1</div>
+                                                                </a></li>
+                                                            <li class="channel-item is-like"
+                                                                data-id="SRTOSoKrZ0q79uyoFX5N1A==">
+                                                                <a href="#">
+                                                                    <svg class="_like" width="16" height="16"
+                                                                         viewBox="0 0 16 16" fill="none"
+                                                                         xmlns="http://www.w3.org/2000/svg">
+                                                                        <g clip-path="url(#clip0_338_5123)">
+                                                                            <path d="M8.00027 12.174L3.29827 14.806L4.34827 9.52065L0.391602 5.86198L5.74293 5.22732L8.00027 0.333984L10.2576 5.22732L15.6089 5.86198L11.6523 9.52065L12.7023 14.806L8.00027 12.174Z"></path>
+                                                                        </g>
+                                                                        <defs>
+                                                                            <clipPath id="clip0_338_5123">
+                                                                                <rect width="16" height="16"
+                                                                                      fill="white"></rect>
+                                                                            </clipPath>
+                                                                        </defs>
+                                                                    </svg>
+                                                                    <div>Plugin Querys</div>
+                                                                    <div class="_alarms" style="display: none;">0</div>
+                                                                </a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <div class="_collapsable">
+                                                    <a href="#message" data-toggle="collapse" role="button"
+                                                       aria-expanded="true" aria-controls="message">
+                                                        <span>다이렉트 메세지</span>
+                                                        <span class="menu-arrow"></span>
+                                                    </a>
+                                                    <div class="collapse show" id="message">
+                                                        <ul class="nav-second-level level-type-dm">
+                                                            <li class="dm-item is-live" data-id="asdfkjnvdf"><a
+                                                                    href="#">
+                                                                <div class="_profile"
+                                                                     style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')">
+                                                                    <div class="_live"></div>
+                                                                </div>
+                                                                <div>김우식</div>
+                                                                <div class="_alarms" style="display: none;">0</div>
+                                                            </a></li>
+                                                            <li class="dm-item is-live" data-id="asdfkjnvdf"><a
+                                                                    href="#">
+                                                                <div class="_profile"
+                                                                     style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')">
+                                                                    <div class="_live"></div>
+                                                                </div>
+                                                                <div>유병준</div>
+                                                                <div class="_alarms" style="display: block;">1</div>
+                                                            </a></li>
+                                                            <li class="dm-item" data-id="asdfkjnvdf"><a href="#">
+                                                                <div class="_profile"
+                                                                     style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')">
+                                                                    <div class="_live"></div>
+                                                                </div>
+                                                                <div>홍스님</div>
+                                                                <div class="_alarms" style="display: block;">1</div>
+                                                            </a></li>
+                                                            <li class="dm-item" data-id="asdfkjnvdf"><a href="#">
+                                                                <div class="_profile"
+                                                                     style="background-image: url('https://search.pstatic.net/sunny/?src=https%3A%2F%2Fthumb2.gettyimageskorea.com%2Fimage_preview%2F700%2F201709%2FEYM%2F752194037.jpg&amp;type=a340')">
+                                                                    <div class="_live"></div>
+                                                                </div>
+                                                                <div>장택성</div>
+                                                                <div class="_alarms" style="display: block;">1</div>
+                                                            </a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -236,7 +1268,10 @@
         </div>
     </div>
 </div>
-<div id="alert-container"></div>
+<div id="okiwi-crm-right-side"
+     class="right-side-container is-close is-closed">
+</div>
+
 <!-- Optional JavaScript; choose one of the two! -->
 
 <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
@@ -258,26 +1293,21 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
 -->
 
+
 <script src="/resources/js/utility.js"></script>
 <script src="/resources/js/common.js"></script>
 <script src="/resources/js/app.js"></script>
 <script src="/resources/js/plugin/library-sample.js"></script>
 <script src="/resources/js/plugin/emoji/emoji-picker.js"></script>
-<script src="/resources/js/plugin/bootstrap-datepicker.js"></script>
-<script src="/resources/js/plugin/bootstrap-datepicker.ko.min.js"></script>
+<script src="/resources/js/plugin/emoji/emojibuttonlistjs.js"></script>
 <!-- Module JS -->
 <!-- Module JS 는 특정 페이지가 아니라 다양한 페이지에서 작동하는 부분으로 Event 및 Element 생성 및 다양한 화면에 진입했을 때
      공통적으로 로직을 수행하는 Javascript를 Module JS라고 한다.
      Selector (선택자)의 Length 및 Empty 여부를 예외처리로 해줘야한다.
      (선택자가 없으면 또는 선택자의 Length가 0이면 에러가 터질 수 있기 때문에) -->
 <script src="/resources/js/module/sample.js"></script>
-<script src="/resources/js/module/okiwi-websocket.js"></script>
+
 <script src="/resources/js/validation.js"></script>
-<script src="/resources/js/global-modal.js"></script>
-<script src="/resources/js/api.js"></script>
-<script src="/resources/js/crm/api.js"></script>
-<script src="/resources/js/crm/api1.js"></script>
-<script src="/resources/js/module/modal.js"></script>
 <!--Font Awesome-->
 <script src="https://kit.fontawesome.com/3581631c82.js"
         crossorigin="anonymous"></script>
@@ -288,102 +1318,22 @@
      * 해당 화면만의 특정 로직을 수행하는 Javascript를 Static JS라고 한다.
      * */
     $(document).ready(function () {
-        console.log('Static JS is ready');
-
-        new EmojiPicker({
-            trigger: [
-                {
-                    selector: '#_emoji-picker',
-                    insertInto: ['#emoji-container'], // '.selector' can be used without array
-                    clear: true
-                },
-                {
-                    selector: '#control-emoji-button',
-                    insertInto: ['#comment-input'], // '.selector' can be used without array
-                    clear: false
-                },
-            ],
-            closeButton: true,
+        /*TODO Chat Content Initialize*/
+        $('.channel-item').click(function (event) {
+            location.href = '/chat/channel/SRTOSoKrZ0q79uyoFX5N1A==';
         });
+        /*fetch('/resources/assets/datas/chat_workspace.json')
+            .then((response) => response.json())
+            .then((list) => {
+                initializeChatWorkSpace(list.channels, list.users);
+            });
 
-        let ws = initializeSocket({
-            onMessage: (event, self) => {
-                console.log('message', 'event', event, 'self', self, 'data', event.data);
-                const message_div = $('#message-div');
-                let data = JSON.parse(event.data);
-                console.log('MESSAGE ', data);
-                if (data.data.message) {
-                    message_div.append(`<div class="col" style="max-height: 30px">
-                                            <h5 class="c-basic-black regular-h5">received message: ` + data.data.message + `</h5>
-                                        </div>`)
-                }
-            },
-        }, {plugin_type: 'chat', user_no: 1, hash: null})
-
-        $('#message-send').on('click', function () {
-            let message = $('#message-content').val().trim();
-            if (message.length <= 0) {
-                viewAlert({content: '보낼 메세지 내용을 입력하세요.'});
-                return false;
-            } else {
-                ws.onSend({
-                    plugin_type: WEBSOCKET_PLUG_TYPE.CHAT.name,
-                    action_type: WEBSOCKET_ACTION_TYPE.SEND_MESSAGE.name,
-                    data: {
-                        message
-                    },
-                }, ws);
-                const message_div = $('#message-div');
-                message_div.append(`<div class="col" style="max-height: 30px">
-                                            <h5 class="c-basic-black regular-h5">my message: ` + message + `</h5>
-                                        </div>`)
-                $('#message-content').val('');
-            }
-        })
-
-        $('#message-content').on('keypress', function (e) {
-            if (e.keyCode === 13) {
-                e.preventDefault();
-                $('#message-send').click();
-                $(this).val('');
-            }
-        })
+        fetch('/resources/assets/datas/chat_workspace_info.json')
+            .then((response) => response.json())
+            .then((list) => {
+                initializeChatWorkSpaceInfo(list.channels,list.threads,list.mentions,list.directs,list.stored);
+            });*/
     });
-
-    function taskDdayCalculator(end_date) {
-        let result;
-        if (end_date === null || end_date === undefined) {
-            result = '-';
-        } else {
-            let now = new Date();
-            let end = to_date2(end_date);
-            let calc = getDayDiff(now, end);
-            if (calc < 0) {
-                calc = calc * -1;
-                result = 'D+' + calc;
-            } else if (calc === 0) {
-                result = 'D-DAY';
-            } else {
-                result = 'D-' + calc;
-            }
-        }
-        return result;
-    }
-
-    function to_date2(date_str) {
-        var yyyyMMdd = String(date_str);
-        var sYear = yyyyMMdd.substring(0, 4);
-        var sMonth = yyyyMMdd.substring(5, 7);
-        var sDate = yyyyMMdd.substring(8, 10);
-
-        //alert("sYear :"+sYear +"   sMonth :"+sMonth + "   sDate :"+sDate);
-        return new Date(Number(sYear), Number(sMonth) - 1, Number(sDate));
-    }
-
-    function getDayDiff(date1, date2) {
-        const one_day = 24 * 60 * 60 * 1000;
-        return Math.ceil((date2.getTime() - date1.getTime()) / one_day);
-    }
 </script>
 </body>
 </html>
