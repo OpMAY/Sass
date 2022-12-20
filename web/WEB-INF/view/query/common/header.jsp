@@ -7,7 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <header id="l-header" class="query-theme">
-    <img data-href="/query/workspace" class="cursor-pointer mr-12" src="/resources/assets/images/icon/query/white-theme-logo-24x24.png"/>
+    <img data-href="/query/workspace" class="cursor-pointer mr-12" height="24" src="/resources/assets/images/icon/query_plug_logo.svg"/>
     <span class="regular-h5 my-auto">queryPlug - 데이터베이스 ERD 및 SQL 자동 생성</span>
     <div class="_option ml-auto my-auto">
         <div>

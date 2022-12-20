@@ -9,24 +9,24 @@
 <div id="plugin-left-sidebar">
     <div class="_plugin-container">
         <div class="_left-plugin" data-href="/">
-            <img class="bg-basic-black rounded-circle" width="36"
+            <img width="36"
                  height="36"
-                 src="/resources/assets/images/icon/black-theme-logo-80x40.svg"/>
+                 src="/resources/assets/images/icon/avouch_logo.svg"/>
         </div>
         <div class="_left-plugin" data-href="/query/workspace">
             <img width="36"
                  height="36"
-                 src="/resources/assets/images/icon/query/query-plug-logo.png"/>
+                 src="/resources/assets/images/icon/query_plug_logo.svg"/>
         </div>
         <div class="_left-plugin" data-href="/crm/workspace">
             <img width="36"
                  height="36"
-                 src="/resources/assets/images/icon/crm-plug-logo.png"/>
+                 src="/resources/assets/images/icon/crm_plug_logo.svg"/>
         </div>
         <div class="_left-plugin" data-href="/chat/workspace">
             <img width="36"
                  height="36"
-                 src="/resources/assets/images/icon/sample_chatplug.svg"/>
+                 src="/resources/assets/images/icon/chat_plug_logo.svg"/>
         </div>
     </div>
 </div>

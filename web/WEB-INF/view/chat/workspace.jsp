@@ -58,8 +58,8 @@
 <body>
 <header id="l-header"
         class="chat-theme">
-    <img class="mr-12"
-         src="/resources/assets/images/icon/sample_chatplug.svg"/>
+    <img class="mr-12" height="24"
+         src="/resources/assets/images/icon/chat_plug_logo.svg"/>
     <span class="regular-h5 my-auto">chatPlug - 팀원 간 업무 커뮤니케이션</span>
     <div class="_option ml-auto my-auto">
         <div>

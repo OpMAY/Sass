@@ -64,9 +64,9 @@
 <body>
 <header id="l-header"
         class="chat-theme">
-    <img class="mr-12"
-         src="/resources/assets/images/icon/crm/white-theme-logo-24x24.png"/>
-    <span class="regular-h5 my-auto">CRM Plug - 업무 형상 관리 대시보드</span>
+    <img class="mr-12" height="24"
+         src="/resources/assets/images/icon/chat_plug_logo.svg"/>
+    <span class="regular-h5 my-auto">CHAT Plug - 팀원 간 업무 커뮤니케이션</span>
     <div class="_option ml-auto my-auto">
         <div>
             <svg width="24"

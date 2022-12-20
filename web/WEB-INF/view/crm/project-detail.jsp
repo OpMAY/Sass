@@ -130,8 +130,8 @@
 <div class="d-none cover-input-file-container"></div>
 <header id="l-header"
         class="crm-theme">
-    <img class="mr-12"
-         src="/resources/assets/images/icon/crm/white-theme-logo-24x24.png"/>
+    <img class="mr-12" height="24"
+         src="/resources/assets/images/icon/crm_plug_logo.svg"/>
     <span class="regular-h5 my-auto">CRM Plug - 업무 형상 관리 대시보드</span>
     <div class="_option ml-auto my-auto">
         <div>
