@@ -1198,6 +1198,14 @@
             onMessage: (event, self) => {
                 console.log('message', 'event', event, 'self', self, 'data', event.data);
                 let data = JSON.parse(event.data);
+                let item = $('.dm-item[data-id="' + data.data.map.id + '"]');
+                if(data.data.map.is_live) {
+                    console.log('live', data.data.map.id);
+                    item.addClass('is-live');
+                } else {
+                    console.log('disconnected', data.data.map.id);
+                    item.removeClass('is-live');
+                }
                 console.log('MESSAGE', data);
             },
             onClose: (event, self) => {
