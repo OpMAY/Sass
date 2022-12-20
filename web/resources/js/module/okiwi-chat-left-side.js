@@ -33,10 +33,25 @@ function channelClickEventListener(event) {
 function channelLikeEventListener(event) {
     console.log('channelLikeEventListener');
     let channel = this.closest('.channel-item');
+    console.log(channel);
     if (channel.classList.contains('is-like')) {
-        channel.classList.remove('is-like');
+        updateChannelLike({id: channel.dataset.id, bookmark: false}).then((result) => {
+            console.log('updateChannelLike', result);
+            if (result.status === 'OK') {
+                channel.classList.remove('is-like');
+            } else {
+                viewAlert({content: '채널 즐겨찾기를 취소할 수 없습니다.'});
+            }
+        });
     } else {
-        channel.classList.add('is-like');
+        updateChannelLike({id: channel.dataset.id, bookmark: true}).then((result) => {
+            console.log('updateChannelLike', result);
+            if (result.status === 'OK') {
+                channel.classList.add('is-like');
+            } else {
+                viewAlert({content: '채널 즐겨찾기를 할 수 없습니다.'});
+            }
+        });
     }
     event.preventDefault();
     event.stopPropagation();

@@ -75,7 +75,7 @@ public class ChatService {
 
     // TODO 4. 채널 좋아요 삭제 (Left) -> 우식
     @Transactional
-    public void deleteChannelLike(int user_no, int channel_no) {
+    public void deleteChannelLike(int channel_no, int user_no) {
         channelLikeDao.deleteChannelLike(user_no, channel_no);
     }
 

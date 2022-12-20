@@ -58,6 +58,8 @@
           href="/resources/css/base/element.css">
     <link rel="stylesheet"
           href="/resources/css/base/chat/element.css">
+    <link rel="stylesheet"
+          href="/resources/css/module/modal.css">
     <title>Okiwi Chat Channel</title>
 </head>
 <body>
@@ -1194,11 +1196,14 @@
      Selector (선택자)의 Length 및 Empty 여부를 예외처리로 해줘야한다.
      (선택자가 없으면 또는 선택자의 Length가 0이면 에러가 터질 수 있기 때문에) -->
 <script src="/resources/js/module/sample.js"></script>
+<script src="/resources/js/module/modal.js"></script>
 <script src="/resources/js/module/okiwi-chat.js"></script>
 <script src="/resources/js/module/okiwi-chat-left-side.js"></script>
 <script src="/resources/js/module/okiwi-chat-right-side.js"></script>
 <script src="/resources/js/module/okiwi-mention.js"></script>
 <script src="/resources/js/validation.js"></script>
+<script src="/resources/js/chat/api.js"></script>
+<script src="/resources/js/chat/api1.js"></script>
 <!--Font Awesome-->
 <script src="https://kit.fontawesome.com/3581631c82.js"
         crossorigin="anonymous"></script>
@@ -1228,7 +1233,7 @@
         fetch('/resources/assets/datas/message_sample.json')
             .then((response) => response.json())
             .then((messages) => {
-                initializeChat({container: '.chat-container', user: {name: '김우식'}, messages});
+                initializeChat({container: '.chat-container', messages});
             });
         /*TODO Chat Left Initialize*/
         /*TODO 2. channels, users 가져오기 (Left) -> 지우씨*/
