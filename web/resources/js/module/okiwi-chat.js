@@ -26,7 +26,7 @@ let CHAT_CONTAINER;
 let _CHAT_CONTAINER;
 let _CHAT_SEND_CONTAINER;
 let EMOJI_PICKER;
-
+let CHAT_MENTION;
 /*TODO Initialize */
 //is_picker_on is chat page init false forced, true is module acceptable, setting ready in okiwi-chat-right-side.js
 const initializeChat = ({container, messages, is_picker_on = false}) => {
@@ -41,6 +41,9 @@ const initializeChat = ({container, messages, is_picker_on = false}) => {
     let mention;
     try {
         mention = new OkiwiMention({container: CHAT_CONTAINER.querySelector('._chat-input')});
+        if (!CHAT_MENTION) {
+            CHAT_MENTION = mention;
+        }
         console.log('mention', mention);
     } catch (e) {
         throw new Error(`${e}`);
@@ -564,6 +567,7 @@ function sendContainerWriteClickEventListener(event) {
     let message = {
         type: 'TEXT',
         content: value,
+        mentions: CHAT_MENTION.options.mentions
     }
     sendMessage(message, getTypeAndValue()).then((result) => {
         console.log(result);

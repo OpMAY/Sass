@@ -113,8 +113,8 @@ const WEBSOCKET_CATEGORY = {
                 },
                 PROJECT: {
                     name: 'PROJECT'
-                }
-            }
+                },
+            },
         },
         FEED: {
             name: 'FEED',
@@ -319,6 +319,219 @@ const WEBSOCKET_CATEGORY = {
         },
         PROJECT: {
             name: 'PROJECT',
+        },
+        CHAT: {
+            name: 'CHAT',
+            SUBCATEGORY: {
+                CHANNEL: {
+                    name: 'CHANNEL',
+                    THIRDCATEGORY: {
+                        CHANNEL: {
+                            name: 'CHANNEL',
+                            TARGET: {
+                                COUNT: {
+                                    name: 'COUNT',
+                                },
+                                NAME: {
+                                    name: 'NAME',
+                                },
+                                LIKE: {
+                                    name: 'LIKE',
+                                }
+                            }
+                        },
+                        DIRECT: {
+                            name: 'DIRECT',
+                            TARGET: {
+                                LIVE: {
+                                    name: 'LIVE',
+                                },
+                                COUNT: {
+                                    name: 'COUNT',
+                                },
+                                NAME: {
+                                    name: 'NAME',
+                                },
+                                PROFILE: {
+                                    name: 'PROFILE',
+                                },
+                            }
+                        },
+                        THREAD: {
+                            name: 'THREAD',
+                            TARGET: {
+                                COUNT: {
+                                    name: 'COUNT',
+                                },
+                            }
+                        },
+                        MENTION: {
+                            name: 'MENTION',
+                            TARGET: {
+                                COUNT: {
+                                    name: 'COUNT',
+                                },
+                            }
+                        }
+                    }
+                },
+                MAIN: {
+                    name: 'MAIN',
+                    THIRDCATEGORY: {
+                        MESSAGE: {
+                            name: 'MESSAGE',
+                            TARGET: {
+                                BOOKMARK: {
+                                    name: 'BOOKMARK',
+                                },
+                                EMOJI: {
+                                    name: 'EMOJI'
+                                },
+                                THREAD: {
+                                    name: 'THREAD',
+                                },
+                            }
+                        },
+                        CHANNEL: {
+                            name: 'CHANNEL',
+                            TARGET: {
+                                NAME: {
+                                    name: 'NAME',
+                                },
+                            }
+                        }
+                    }
+                },
+                THREAD: {
+                    name: 'THREAD',
+                    THIRDCATEGORY: {
+                        MESSAGE: {
+                            name: 'MESSAGE',
+                            TARGET: {
+                                BOOKMARK: {
+                                    name: 'BOOKMARK',
+                                },
+                                EMOJI: {
+                                    name: 'EMOJI'
+                                },
+                            }
+                        },
+                    }
+                },
+            }
+        },
+        WORKSPACE: {
+            name: 'WORKSPACE',
+            SUBCATEGORY: {
+                SIDE: {
+                    name: 'SIDE',
+                    THIRDCATEGORY: {
+                        CHANNEL: {
+                            name: 'CHANNEL',
+                            TARGET: {
+                                COUNT: {
+                                    name: 'COUNT',
+                                },
+                                NAME: {
+                                    name: 'NAME',
+                                },
+                                LIKE: {
+                                    name: 'LIKE',
+                                }
+                            }
+                        },
+                        DIRECT: {
+                            name: 'DIRECT',
+                            TARGET: {
+                                LIVE: {
+                                    name: 'LIVE',
+                                },
+                                COUNT: {
+                                    name: 'COUNT',
+                                },
+                                NAME: {
+                                    name: 'NAME',
+                                },
+                                PROFILE: {
+                                    name: 'PROFILE',
+                                },
+                            }
+                        },
+                    }
+                },
+                CHANNEL: {
+                    name: 'CHANNEL',
+                    THIRDCATEGORY: {
+                        CHANNEL: {
+                            name: 'CHANNEL',
+                            TARGET: {
+                                NAME: {
+                                    name: 'NAME',
+                                },
+                            }
+                        },
+                        MESSAGE: {
+                            name: 'MESSAGE',
+                        }
+                    }
+                },
+                THREAD: {
+                    name: 'THREAD',
+                    THIRDCATEGORY: {
+                        CHANNEL: {
+                            name: 'CHANNEL',
+                            TARGET: {
+                                NAME: {
+                                    name: 'NAME',
+                                },
+                            }
+                        },
+                        MESSAGE: {
+                            name: 'MESSAGE',
+                        }
+                    }
+                },
+                MENTION: {
+                    name: 'MENTION',
+                    THIRDCATEGORY: {
+                        CHANNEL: {
+                            name: 'CHANNEL',
+                            TARGET: {
+                                NAME: {
+                                    name: 'NAME',
+                                },
+                            }
+                        },
+                        MESSAGE: {
+                            name: 'MESSAGE',
+                        }
+                    }
+                },
+                DIRECT: {
+                    name: 'DIRECT',
+                    THIRDCATEGORY: {
+                        MESSAGE: {
+                            name: 'MESSAGE',
+                        }
+                    }
+                },
+                BOOKMARK: {
+                    name: 'BOOKMARK',
+                    THIRDCATEGORY: {
+                        CHANNEL: {
+                            name: 'CHANNEL',
+                            TARGET: {
+                                NAME: {
+                                    name: 'NAME',
+                                },
+                            }
+                        },
+                        MESSAGE: {
+                            name: 'MESSAGE',
+                        }
+                    }
+                },
+            }
         }
     }
 }
