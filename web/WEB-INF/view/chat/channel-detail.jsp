@@ -1204,7 +1204,6 @@
 <script src="/resources/js/validation.js"></script>
 <script src="/resources/js/chat/api.js"></script>
 <script src="/resources/js/chat/api1.js"></script>
-<script src="/resources/js/module/modal.js"></script>
 <!--Font Awesome-->
 <script src="https://kit.fontawesome.com/3581631c82.js"
         crossorigin="anonymous"></script>
