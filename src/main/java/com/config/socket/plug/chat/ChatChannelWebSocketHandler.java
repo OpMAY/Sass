@@ -50,7 +50,7 @@ public class ChatChannelWebSocketHandler extends TextWebSocketHandler {
             if (!sess.equals(session.getId())) {
                 // Sender 에겐 보내지 않음
                 ChatSocketSessionModel senderModel = chatSessionQueue.get(session.getId());
-                if (chatSessionQueue.get(session.getId()).getCompany_no() == senderModel.getCompany_no()) {
+                if (chatSessionQueue.get(sess).getCompany_no() == senderModel.getCompany_no()) {
                     // 같은 회사의 ChatPlug 수신 채널에만 전송
                     ChatChannelSocketSessionModel channelSenderModel = chatChannelSessionQueue.get(session.getId());
                     /**
