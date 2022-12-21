@@ -1,11 +1,16 @@
-/*TODO Global Variable*/
+/**
+ * Global Variable
+ * */
 let RIGHT_THREAD_CONTAINER;
 let RIGHT_THREAD_SCROLL_CONTAINER;
 let RIGHT_MAIN_THREAD_CONTAINER;
 let RIGHT_SUB_THREADS_CONTAINER;
 let RIGHT_SEND_CONTAINER;
 let RIGHT_THREAD_WEBSOCKET;
-/*TODO Initialize*/
+
+/**
+ * Thread Initialize
+ * */
 const initializeRightThread = (is_picker_on = true, websocket) => {
     if (!RIGHT_THREAD_WEBSOCKET) {
         RIGHT_THREAD_WEBSOCKET = websocket;
@@ -13,7 +18,9 @@ const initializeRightThread = (is_picker_on = true, websocket) => {
     }
     if (!RIGHT_THREAD_CONTAINER) {
         RIGHT_THREAD_CONTAINER = document.querySelector('#chat-right-side');
-        /*TODO THREAD_CONTAINER EVENT*/
+        /**
+         * 쓰레드 뒤로가기 버튼 이벤트 등록
+         * */
         RIGHT_THREAD_CONTAINER.querySelector('._back').addEventListener('click', rightThreadBackClickEventListener);
     }
 
@@ -30,7 +37,9 @@ const initializeRightThread = (is_picker_on = true, websocket) => {
 
     if (!RIGHT_SEND_CONTAINER) {
         RIGHT_SEND_CONTAINER = document.querySelector('#chat-right-side ._send-container');
-        /*TODO SEND_CONTAINER EVENT*/
+        /**
+         * 이모티콘 설정
+         * */
         if (is_picker_on) {
             new EmojiPicker({
                 trigger: [
@@ -58,25 +67,41 @@ const initializeRightThread = (is_picker_on = true, websocket) => {
                 closeButton: true,
             });
         }
+
+        /**
+         * 에디터의 글 수정 이벤트 등록
+         * */
         let edit_buttons = RIGHT_SEND_CONTAINER.querySelector('._edit-panel').querySelectorAll('._option');
         edit_buttons.forEach(function (edit_button) {
             edit_button.addEventListener('click', sendContainerEditOptionClickEventListener);
         });
-        /*TODO Add Mention Module*/
+        /**
+         * 멘션 모듈 설정
+         * */
         let mention;
         try {
-            mention = new OkiwiMention({container: RIGHT_SEND_CONTAINER.querySelector('._input-inner').querySelector('._chat-input')});
-            console.log('mention', mention);
+            const obj = getTypeAndValue();
+            mention = new OkiwiMention({
+                container: RIGHT_SEND_CONTAINER.querySelector('._input-inner').querySelector('._chat-input'),
+                get_users_url: `/chat/channel/members?type=${obj.type}${obj.value ? '&value=' + encodeURIComponent(obj.value) : ''}`
+            });
         } catch (e) {
             throw new Error(`${e}`);
         }
+
+        /**
+         * 쓰레드의 보내는 에디터 이벤트 설정
+         * */
         sendContainerInputEvent(RIGHT_SEND_CONTAINER.querySelector('._input-inner').querySelector('._chat-input'), sendContainerEditorKeydownEventListener, sendContainerEditorKeyupEventListener, sendContainerEditorInputEventListener, rightThreadSendContainerWriteClickEventListener);
         let control_buttons = RIGHT_SEND_CONTAINER.querySelector('._control-panel').querySelectorAll('ul li');
         control_buttons.forEach(function (control_button) {
             control_button.addEventListener('click', rightThreadSendContainerControlOptionClickEventListener);
         });
     }
-    //TODO Click OutSide Close Event
+
+    /**
+     * 바깥쪽 영역 클릭시 닫히는 이벤트 설정
+     * */
     $(document).on('click', '#chat-right-side', function (event) {
         if (event.target.closest('.right-side-inner') === null || event.target.closest('.right-side-inner') === undefined) {
             rightThreadClose();
@@ -84,7 +109,9 @@ const initializeRightThread = (is_picker_on = true, websocket) => {
     });
 }
 
-/*TODO CONTAINER EVENT LISTENER*/
+/**
+ * 쓰레드 뒤로가기 버튼 이벤트
+ * */
 function rightThreadBackClickEventListener(event) {
     console.log('rightThreadBackClickEventListener');
     rightThreadClose();
@@ -92,7 +119,9 @@ function rightThreadBackClickEventListener(event) {
     event.stopPropagation();
 }
 
-/*TODO 9. Message 보내기 (Main, Right) -> 지우씨*/
+/**
+ * 쓰레드의 에디터 글 보내기 버튼 이벤트
+ * */
 function rightThreadSendContainerWriteClickEventListener(event) {
     console.log('rightThreadSendContainerWriteClickEventListener', this);
     let editor = this.closest('._input-inner').querySelector('._chat-input');
@@ -124,6 +153,9 @@ function rightThreadSendContainerWriteClickEventListener(event) {
     event.stopPropagation();
 }
 
+/**
+ * 쓰레드의 에디터 파일, 멘션, 이모티콘 클릭 이벤트
+ * */
 function rightThreadSendContainerControlOptionClickEventListener(event) {
     console.log('rightThreadSendContainerControlOptionClickEventListener', this);
     if (this.classList.contains('_file')) {
@@ -142,7 +174,9 @@ function rightThreadSendContainerControlOptionClickEventListener(event) {
     }
 }
 
-/*TODO 10. File Message 보내기 (Main, Right) -> 지우씨*/
+/**
+ * 쓰레드의 에디터 파일 보내기 이벤트
+ * */
 function rightThreadSendContainerControlFileChangeEventListener(event) {
     console.log('rightThreadSendContainerControlFileChangeEventListener', this, event);
     let input = this;
@@ -193,7 +227,12 @@ function rightThreadSendContainerControlFileChangeEventListener(event) {
     });
 }
 
-/*TODO Utility*/
+/**
+ * Utility
+ * */
+/**
+ * 쓰레드 닫기
+ * */
 const rightThreadClose = () => {
     console.log('rightThreadClose');
     if (!RIGHT_THREAD_CONTAINER.classList.contains('is-close')) {
@@ -203,11 +242,13 @@ const rightThreadClose = () => {
         if (!RIGHT_THREAD_CONTAINER.classList.contains('is-closed')) {
             RIGHT_THREAD_CONTAINER.classList.add('is-closed');
         }
-        /*TODO Clear*/
         rightThreadClear();
     }, 100);
 }
 
+/**
+ * 쓰레드 오픈
+ * */
 const rightThreadOpen = (message_id = tokenGenerator(6)) => {
     console.log('rightThreadOpen');
     if (RIGHT_THREAD_CONTAINER.classList.contains('is-closed')) {
@@ -224,12 +265,18 @@ const rightThreadOpen = (message_id = tokenGenerator(6)) => {
     }, 100);
 }
 
+/**
+ * 쓰레드 정리
+ * */
 const rightThreadClear = () => {
     deleteChild(RIGHT_MAIN_THREAD_CONTAINER);
     deleteChild(RIGHT_SUB_THREADS_CONTAINER);
     RIGHT_THREAD_CONTAINER.removeAttribute('data-id');
 }
 
+/**
+ * 쓰레드의 엘리먼트 삽입 및 설정
+ * */
 const rightThreadUpdateUI = (thread) => {
     console.log('rightThreadUpdateUI', thread);
     RIGHT_THREAD_CONTAINER.setAttribute('data-id', thread.message.id);
@@ -239,7 +286,9 @@ const rightThreadUpdateUI = (thread) => {
     });
 }
 
-/*TODO 3. Thread 가져오기 (Right) -> 지우씨*/
+/**
+ * 쓰레드의 재설정
+ * */
 const rightThreadReInitialize = (message_id) => {
     console.log('rightThreadReInitialize', message_id);
     getThreadMessages(message_id, null)

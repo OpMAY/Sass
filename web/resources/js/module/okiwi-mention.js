@@ -1,3 +1,14 @@
+/**
+ * mention = new OkiwiMention({
+ *     container: CHAT_CONTAINER.querySelector('._chat-input'),
+ *     get_users_url: '/resources/assets/datas/users_sample.json',
+ *     mention_users: [],
+ *     mention_key: 50,
+ *     escape_key: 27,
+ *     shiftKey: true,
+ *     users: [],
+ *     list: undefined});
+ * */
 const OkiwiMention = function (options = {
     container,
     mention_key: 50,
@@ -33,7 +44,6 @@ const OkiwiMention = function (options = {
             this.options.container = options.container;
         }
     }
-    console.log('this.options.container', this.options.container);
     this.options.shiftKey = options.hasOwnProperty('escape_key') ? options.shiftKey : true;
     this.options.parentContainer = this.options.container.parentElement;
     this.options.parentContainer.style.position = 'relative';
@@ -56,16 +66,27 @@ const OkiwiMention = function (options = {
     this.options.list = options.hasOwnProperty('list') ? options.list : undefined;
     let _options = this.options;
 
+    /**
+     * 해당 에디터의 멘션된 유저의 정보를 삭제
+     * */
     this.clearMentionUsers = () => {
         _options.mention_users = [];
     }
+
+    /**
+     * 해당 에디터의 멘션될 유저의 정보를 삭제
+     * */
     this.clearUsers = () => {
         _options.users = [];
     }
+
     this.setURL = (url) => {
         _options.get_users_url = url;
     }
 
+    /**
+     * 해당 에디터의 멘션된 유저의 정보를 삭제
+     * */
     const removeMentionUser = ({id, name}) => {
         let filtered = _options.mention_users.filter(function (e) {
             if (id) {
@@ -77,6 +98,9 @@ const OkiwiMention = function (options = {
         return _options.mention_users = filtered;
     }
 
+    /**
+     * 멘션을 선택할 리스트를 삭제
+     * */
     const removeListElement = () => {
         if (_options.list) {
             _options.list.remove();
@@ -85,8 +109,10 @@ const OkiwiMention = function (options = {
         _this.clearUsers();
     }
 
+    /**
+     * 멘션을 선택할 리스트를 생성
+     * */
     const createListElement = (position, users) => {
-        console.log('origin_position', position);
         let parentPosition = _options.parentContainer.getBoundingClientRect();
         let list = d.createElement('ul');
         list.style.position = 'absolute';
@@ -105,7 +131,13 @@ const OkiwiMention = function (options = {
         return list;
     }
 
+    /**
+     *  에디터에 들어갈 멘션 엘리먼트 생성
+     * */
     const createMentionElement = ({id, name}) => {
+        const __buildCreateMentionElement = (name) => {
+            return `@${name}`;
+        }
         let created_mention_elm = d.createElement('a');
         created_mention_elm.classList.add('__mention');
         created_mention_elm.innerHTML = __buildCreateMentionElement(name);
@@ -114,16 +146,19 @@ const OkiwiMention = function (options = {
         return created_mention_elm;
     }
 
-    const __buildCreateMentionElement = (name) => {
-        return `@${name}`;
-    }
-
+    /**
+     * 위치된 캐럿에 멘션 노드 삽입 후 다음 포커스 캐럿의 엘리먼트 생성
+     * 없을시 에디터의 멘션 노드를 수정할 수 있음
+     * */
     const createMentionNextElement = (html) => {
         let next_elem = d.createElement('span');
         next_elem.innerHTML = html;
         return next_elem;
     }
 
+    /**
+     * 위치된 캐럿에 멘션 노드 삽입
+     * */
     const insertNodeAtCaret = (node) => {
         if (typeof window.getSelection != "undefined") {
             let sel = window.getSelection();
@@ -154,6 +189,9 @@ const OkiwiMention = function (options = {
         if (mention && key == 13) {
             event.preventDefault();
         } else if (!list_loading && mention && (key == 38 || key == 40)) {
+            /**
+             * 멘션 리스트의 이동
+             * */
             let active_li = _options.list.querySelector('li.is-active');
             if (key == 38) { //Up Button
                 if (active_li.previousElementSibling) {
@@ -169,6 +207,9 @@ const OkiwiMention = function (options = {
             event.preventDefault();
             event.stopPropagation();
         } else if (key == 8) {
+            /**
+             * 에디터에서 mention을 Backspace했을 때, Mention Node 자체를 지우기
+             * */
             let sel = window.getSelection();
             let range = sel.getRangeAt(0);
             if (range.startContainer.parentElement == range.endContainer.parentElement) {
@@ -192,11 +233,12 @@ const OkiwiMention = function (options = {
             node = sel.focusNode;
             startOffset = sel.focusOffset;
             list_loading = true;
+            /**
+             * 멘션 사용자 리스트 가져오기
+             * */
             fetch(_options.get_users_url).then((response) => {
                 return response.json();
             }).then((result) => {
-                // TODO response.json().data.users 안됨
-                console.log('mention users fetch', result)
                 _options.users = result.data.users;
                 let list = createListElement(getCaretCoordinates(), _options.users);
                 _options.list = list;
@@ -205,6 +247,9 @@ const OkiwiMention = function (options = {
                 list_loading = false;
             });
         } else if (mention && key == 13) {
+            /**
+             * 멘션 사용자 리스트 선택
+             * */
             let sel = window.getSelection();
             endOffset = sel.focusOffset;
             mention = false;
@@ -221,10 +266,16 @@ const OkiwiMention = function (options = {
             event.preventDefault();
             event.stopImmediatePropagation();
         } else if (mention && key == _options.escape) {
+            /**
+             * 멘션 사용자 리스트 해제
+             * */
             mention = false;
             _options.escapeCallback(event);
             removeListElement();
         } else if (mention) {
+            /**
+             * 멘션 리스트 이동 중
+             * */
             endOffset = sel.focusOffset;
             let range = sel.getRangeAt(0);
             if (endOffset < startOffset) {
@@ -238,6 +289,9 @@ const OkiwiMention = function (options = {
         }
     }
 
+    /**
+     * 포커스된 캐럿의 위치 잡기
+     * */
     function getCaretCoordinates() {
         let x = 0,
             y = 0;

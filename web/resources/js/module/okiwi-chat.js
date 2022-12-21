@@ -1,5 +1,7 @@
 'use strict'
-/*TODO Chat Message Type*/
+/**
+ * Chat Message Type
+ * */
 const CHAT_MESSAGE_TYPE = {
     TEXT: {
         name: 'TEXT',
@@ -20,7 +22,9 @@ const findChatMessageType = (type) => {
     }
 }
 
-/*TODO Global Variable*/
+/**
+ * Global Variable
+ * */
 let FLOATER_MENU;
 let CHAT_CONTAINER;
 let _CHAT_CONTAINER;
@@ -28,36 +32,64 @@ let _CHAT_SEND_CONTAINER;
 let EMOJI_PICKER;
 let CHAT_MENTION;
 let CHAT_WEBSOCKET;
-/*TODO Initialize */
-//is_picker_on is chat page init false forced, true is module acceptable, setting ready in okiwi-chat-right-side.js
+
+/**
+ * Initialize
+ * is_picker_on is chat page init false forced, true is module acceptable, setting ready in okiwi-chat-right-side.js
+ * initializeChat({
+ *                         container: '.chat-container',
+ *                         messages: result.data.messages.reverse(),
+ *                         websocket: {
+ *                             chat_websocket,
+ *                             channel_websocket
+ *                         }
+ *                     });
+ * */
 const initializeChat = ({container, messages, is_picker_on = false, websocket}) => {
     if (!CHAT_WEBSOCKET) {
         CHAT_WEBSOCKET = websocket;
         console.log('CHAT_WEBSOCKET', CHAT_WEBSOCKET);
     }
     FLOATER_MENU = document.querySelector('#chat-floater-menu');
+    /**
+     * Floater Menu 이벤트 생성
+     * */
     floaterMenuEvent(FLOATER_MENU, floaterMenuThreadClickEventListener, floaterMenuBookmarkClickEventListener);
     CHAT_CONTAINER = typeof (container) === "object" ? container : documentSelector(container);
+    /**
+     * 채팅 내역 컨테이너 생성
+     * */
     CHAT_CONTAINER.prepend(createChatContainerElement());
     _CHAT_CONTAINER = document.querySelector('._chat-container');
+    /**
+     * 채팅 보내는 부분 컨테이너 생성
+     * */
     CHAT_CONTAINER.append(createChatSendContainerElement());
 
-    /*TODO Add Mention Module*/
+    /**
+     * 멘션 모듈 설정
+     * */
     let mention;
     try {
-        mention = new OkiwiMention({container: CHAT_CONTAINER.querySelector('._chat-input')});
+        const obj = getTypeAndValue();
+        mention = new OkiwiMention({
+            container: CHAT_CONTAINER.querySelector('._chat-input'),
+            get_users_url: `/chat/channel/members?type=${obj.type}${obj.value ? '&value=' + encodeURIComponent(obj.value) : ''}`
+        });
         if (!CHAT_MENTION) {
             CHAT_MENTION = mention;
-            const obj = getTypeAndValue();
-            mention.setURL(`/chat/channel/members?type=${obj.type}${obj.value ? '&value=' + encodeURIComponent(obj.value) : ''}`);
         }
-        console.log('mention', mention);
     } catch (e) {
         throw new Error(`${e}`);
     }
-    /*TODO Add Event*/
+    /**
+     * 보내는 에디터 이벤트 설정
+     * */
     sendContainerInputEvent(CHAT_CONTAINER.querySelector('._chat-input'), sendContainerEditorKeydownEventListener, sendContainerEditorKeyupEventListener, sendContainerEditorInputEventListener, sendContainerWriteClickEventListener)
 
+    /**
+     * 이모지 피커 설정
+     * */
     if (is_picker_on) {
         new EmojiPicker({
             trigger: [
@@ -71,18 +103,29 @@ const initializeChat = ({container, messages, is_picker_on = false, websocket}) 
         });
     }
     _CHAT_SEND_CONTAINER = document.querySelector('._send-container');
-    /*TODO Message Element Create*/
+
+    /**
+     * 메세지 엘리먼트 생성
+     * */
     messages.forEach(function (message) {
         let message_elem = createMessageElement(message);
         _CHAT_CONTAINER.append(message_elem);
     });
-    /*TODO Initialize Document Event*/
+
+    /**
+     * Mouse Over Event 설정 (Document)
+     * */
     $(document).on('mouseover', documentMouseoverEventListener);
-    /*TODO Update UI*/
+
+    /**
+     * 스크롤 최하단까지 내리기
+     * */
     updateChatContainerScroll(_CHAT_CONTAINER);
 }
 
-/*TODO Floater Menu Event*/
+/**
+ * Floater Menu 이벤트 설정
+ * */
 const floaterMenuEvent = function (menu, thread, bookmark) {
     menu.querySelector('.floater-option.thread').addEventListener('click', thread);
     menu.querySelector('.floater-option.bookmark').addEventListener('click', bookmark);
@@ -96,6 +139,9 @@ const floaterMenuEvent = function (menu, thread, bookmark) {
     });
 }
 
+/**
+ * Floater Menu 보여주기
+ * */
 const showFloaterMenu = (menu, message, is_thread = false, is_sub_thread = false) => {
     let rect = message.getBoundingClientRect();
     menu.setAttribute('data-id', message.dataset.id);
@@ -158,6 +204,9 @@ const showFloaterMenu = (menu, message, is_thread = false, is_sub_thread = false
     menu.style.opacity = 1;
 }
 
+/**
+ * Floater Menu 가리기
+ * */
 const hideFloaterMenu = () => {
     $(FLOATER_MENU).hide().after(function () {
         FLOATER_MENU.style.opacity = 0;
@@ -165,6 +214,9 @@ const hideFloaterMenu = () => {
     FLOATER_MENU.removeAttribute('data-hover');
 }
 
+/**
+ * Floater Menu 쓰레드 버튼 클릭 이벤트
+ * */
 function floaterMenuThreadClickEventListener(event) {
     let menu = this.closest('#chat-floater-menu');
     let message_id = menu.dataset.id;
@@ -176,7 +228,9 @@ function floaterMenuThreadClickEventListener(event) {
     event.stopPropagation();
 }
 
-/*TODO 5. Emoji 추가하기 (Main,Right) -> 우식*/
+/**
+ * Floater Menu 리액션 버튼 클릭 이벤트
+ * */
 function floaterMenuReactionClickEventListener(selected_emoji) {
     let message_id = FLOATER_MENU.dataset.id;
     let messages = findMessages(message_id);
@@ -297,7 +351,9 @@ function floaterMenuReactionClickEventListener(selected_emoji) {
     });
 }
 
-/*TODO 7. Bookmark 설정 및 해제 (Main, Right) -> 우식*/
+/**
+ * Floater Menu 북마크(저장) 클릭 이벤트
+ * */
 function floaterMenuBookmarkClickEventListener(event) {
     let menu = this.closest('#chat-floater-menu');
     let message_id = menu.dataset.id;
@@ -333,7 +389,9 @@ function floaterMenuBookmarkClickEventListener(event) {
     event.stopPropagation();
 }
 
-/*TODO Message Item Event*/
+/**
+ * 메세지 엘리먼트에 마우스 진입 이벤트
+ * */
 function messageMenuEnterEvent(message) {
     /*TODO 길이를 구할 수 없어 미리 Display Block을 해줘야함 */
     $(FLOATER_MENU).show().after(function () {
@@ -344,6 +402,9 @@ function messageMenuEnterEvent(message) {
     showFloaterMenu(FLOATER_MENU, message, is_thread, is_sub_thread);
 }
 
+/**
+ * 메세지 엘리먼트에 마우스 아웃 이벤트
+ * */
 function messageMenuLeaveEvent() {
     if (FLOATER_MENU.getAttribute('data-hover') === null ||
         FLOATER_MENU.getAttribute('data-hover') === undefined) {
@@ -351,6 +412,9 @@ function messageMenuLeaveEvent() {
     }
 }
 
+/**
+ * 메세지 마우스에 관련된 이벤트 설정
+ * */
 const messageMenuEvent = function (elem, enter, leave) {
     let timeout = null;
     elem.onmouseenter = function (event) {
@@ -367,7 +431,9 @@ const messageMenuEvent = function (elem, enter, leave) {
     }
 };
 
-/*TODO Message Element Reaction Event*/
+/**
+ * 메세지 이벤트 설정
+ * */
 const messageElementEvent = (message, reaction, thread) => {
     let reaction_elems = message.querySelectorAll('._reactions ._reaction');
     reaction_elems.forEach(function (reaction_elem) {
@@ -376,9 +442,10 @@ const messageElementEvent = (message, reaction, thread) => {
     let thread_elem = message.querySelector('._mores');
     thread_elem?.addEventListener('click', thread);
 }
-/*TODO 5. Emoji 추가하기 (Main,Right) -> 우식*/
 
-/*TODO 8. Emoji 반응 및 해제 (Main, Right) -> 우식*/
+/**
+ * 메세지 리액션  이벤트
+ * */
 function messageReactionClickEventListener(event) {
     let reaction = this;
     let message = this.closest('.chat-item[data-id]');
@@ -428,6 +495,9 @@ function messageReactionClickEventListener(event) {
     event.preventDefault();
 }
 
+/**
+ * 메세지 쓰레드 클릭  이벤트
+ * */
 function messageThreadClickEventListener(event) {
     let message = this.closest('.chat-item[data-id]');
     let message_id = message.dataset.id;
@@ -438,6 +508,9 @@ function messageThreadClickEventListener(event) {
     event.preventDefault();
 }
 
+/**
+ * 파일 메세지 이벤트 설정
+ * */
 const messageFileElementEvent = (message, file) => {
     let file_elems = message.querySelectorAll('._content ._comment-file');
     file_elems.forEach(function (file_elem) {
@@ -445,6 +518,9 @@ const messageFileElementEvent = (message, file) => {
     });
 }
 
+/**
+ * 파일 메세지 다운로드 클릭 이벤트
+ * */
 function messageFileDownloadClickEvent(event) {
     // For Comment
     downloadFileFromUrl($(this).data().url, $(this).data().name);
@@ -452,9 +528,9 @@ function messageFileDownloadClickEvent(event) {
     event.stopPropagation();
 }
 
-/*TODO SendContainer Event*/
-
-/*TODO Edit Panel Event*/
+/**
+ * 에디터의 글 수정 이벤트
+ * */
 function sendContainerEditOptionClickEventListener(event) {
     let input = this.closest('._send-container').querySelector('._input-inner');
     if (this.classList.contains('bold')) {
@@ -478,7 +554,9 @@ function sendContainerEditOptionClickEventListener(event) {
     event.preventDefault();
 }
 
-/*TODO Control Panel Event*/
+/**
+ * 에디터의  파일 삽입 버튼 및 멘션 버튼 이벤트
+ * */
 function sendContainerControlOptionClickEventListener(event) {
     if (this.classList.contains('_file')) {
         let input = document.createElement('input');
@@ -495,7 +573,9 @@ function sendContainerControlOptionClickEventListener(event) {
     }
 }
 
-/*TODO 10. File Message 보내기 (Main, Right) -> 지우씨*/
+/**
+ * 에디터의  파일 삽입했을 때 이벤트
+ * */
 function sendContainerControlFileChangeEventListener(event) {
     let input = this;
     let file = input.files[0];
@@ -544,7 +624,9 @@ function sendContainerControlFileChangeEventListener(event) {
     });
 }
 
-/*TODO Input Panel Event*/
+/**
+ * 에디터의  글 부분 이벤트 설정
+ * */
 const sendContainerInputEvent = (editor, keydown, keyup, input, send) => {
     editor.addEventListener('keydown', keydown);
     editor.addEventListener('input', input);
@@ -552,10 +634,16 @@ const sendContainerInputEvent = (editor, keydown, keyup, input, send) => {
     editor.closest('._input-inner').querySelector('._write').addEventListener('click', send);
 }
 
+/**
+ * 에디터의  글 부분 키다운 이벤트
+ * */
 function sendContainerEditorKeydownEventListener(event) {
     console.log('sendContainerEditorKeydownEventListener');
 }
 
+/**
+ * 에디터의  글 부분 키업 이벤트
+ * */
 function sendContainerEditorKeyupEventListener(event) {
     console.log('sendContainerEditorKeyupEventListener');
     if ((event.key === 'Enter'.toLowerCase() || event.code === 'Enter'.toLowerCase() || event.keyCode === 13) && !(event.altKey || event.shiftKey || event.ctrlKey)) {
@@ -568,11 +656,16 @@ function sendContainerEditorKeyupEventListener(event) {
     }
 }
 
+/**
+ * 에디터의  글 부분 인풋 이벤트
+ * */
 function sendContainerEditorInputEventListener(event) {
     console.log('sendContainerEditorInputEventListener');
 }
 
-/*TODO 9. Message 보내기 (Main, Right) -> 지우씨*/
+/**
+ * 에디터의  글 전송 버튼 이벤트
+ * */
 function sendContainerWriteClickEventListener(event) {
     console.log('sendContainerWriteClickEventListener', this);
     let editor = this.closest('._input-inner').querySelector('._chat-input');
@@ -603,7 +696,9 @@ function sendContainerWriteClickEventListener(event) {
     event.stopPropagation();
 }
 
-/*TODO Document Event*/
+/**
+ * Mouse Over Event (Document)
+ * */
 function documentMouseoverEventListener(event) {
     let chat_item_hovering = event.target.classList.contains('chat-item') ||
     event.target.closest('.chat-item') ? event.target.closest('.chat-item').classList.contains('chat-item') : false;
@@ -615,7 +710,9 @@ function documentMouseoverEventListener(event) {
     }
 }
 
-/*TODO Utility*/
+/**
+ * Utility
+ * */
 const documentSelector = (selector) => {
     return document.querySelector(selector);
 }
@@ -624,10 +721,17 @@ const documentSelectorAll = (selector) => {
     return document.querySelectorAll(selector);
 }
 
+/**
+ * Message id로 메세지 찾기
+ * */
 const findMessage = (message_id) => {
     return CHAT_CONTAINER.querySelector(`._chat-container .chat-item[data-id="${message_id}"]`);
 }
 
+/**
+ * Message id로 메세지들 찾기
+ * Thread Open 되있을 경우 사용
+ * */
 const findMessages = (message_id) => {
     let messages = new Array();
     if (RIGHT_MAIN_THREAD_CONTAINER && RIGHT_THREAD_CONTAINER.dataset.id) {
@@ -651,6 +755,9 @@ const findMessages = (message_id) => {
     return messages;
 }
 
+/**
+ * 이모티콘으로 해당 메세지의 이모지 찾기
+ * */
 const findReaction = (message, selected_emoji) => {
     let reactions = [...message.querySelectorAll('._reactions ._reaction')];
     let selected_reaction = reactions.find(function (reaction) {
@@ -659,6 +766,9 @@ const findReaction = (message, selected_emoji) => {
     return selected_reaction;
 }
 
+/**
+ * Floater Menu 북마크 표시 업데이트
+ * */
 const updateFloaterBookmarkMenu = (menu, message) => {
     let bookmark = menu.querySelector('.floater-option.bookmark');
     let is_bookmark = message.dataset.bookmark === 'true' || message.dataset.bookmark === true ? true : false;
@@ -711,13 +821,17 @@ const updateFloaterBookmarkMenu = (menu, message) => {
     }
 }
 
-/*TODO Need Time Utility*/
+/**
+ * 오전 오후 추출
+ * */
 const changeLocalDateTimeToMeridian = (date) => {
     let hours = date.hour;
     let ampm = hours >= 12 ? '오후' : '오전';
     return ampm;
 }
-
+/**
+ * MM:SS 부분으로 추출
+ * */
 const changeLocalDateTimeToMm_ss = (date) => {
     let hours = date.hour;
     let minutes = date.minute;
@@ -728,6 +842,9 @@ const changeLocalDateTimeToMm_ss = (date) => {
     return strTime;
 }
 
+/**
+ * URL과 파일 이름으로 파일 다운로드
+ * */
 function downloadFileFromUrl(url, filename) {
     fetch(url)
         .then(response => response.blob())
@@ -740,10 +857,19 @@ function downloadFileFromUrl(url, filename) {
         .catch(console.error);
 }
 
+/**
+ * 해당 엘리먼트의 스크롤을 제일 아래로 내리기
+ * */
 const updateChatContainerScroll = (element) => {
-    element.scrollTop = element.scrollHeight;
+    element.scrollTo({top: element.scrollHeight, behavior: 'smooth'});
 }
 
+/**
+ * 해당 노드의 앞쪽에 새로운 노드 삽입
+ * New Nod
+ * -----------------------
+ * ReferenceNode
+ * */
 function insertAfter(referenceNode, newNode) {
     if (!!referenceNode.nextSibling) {
         referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
@@ -752,8 +878,10 @@ function insertAfter(referenceNode, newNode) {
     }
 }
 
-/*TODO Create Element*/
-/*TODO Create Container Element*/
+/**
+ * 엘리먼트 생성
+ * Container 생성
+ * */
 const createChatContainerElement = () => {
     let container = document.createElement('div');
     container.classList.add('_chat-container');
@@ -943,7 +1071,11 @@ const createControlPanelElement = () => {
     });
     return panel;
 }
-/*TODO Create Message Element*/
+
+/**
+ * 엘리먼트 생성
+ * Item 생성
+ * */
 const createMessageElement = (message, is_side = false) => {
     const __buildMessageInnerElement = (message, is_side) => {
         if (findChatMessageType(message.type) === CHAT_MESSAGE_TYPE.TEXT) {
@@ -1122,7 +1254,7 @@ function getTypeAndValue() {
     return obj;
 }
 
-function getWebsocketParameter(channel_hash) {
+function getChatWebsocketParameter(channel_hash) {
     let object = getTypeAndValue();
     if (object.type !== 'GROUP') {
         object.value = channel_hash;

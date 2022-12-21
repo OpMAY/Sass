@@ -1176,7 +1176,9 @@
      * */
     $(document).ready(function () {
         console.log('Static JS is ready');
-        /*TODO COMMON OPTIONS*/
+        /**
+         * COMMON OPTIONS
+         * */
         document.querySelector('#chat-left-sidebar ._back').addEventListener('click', function (event) {
             console.log(this);
             let project_left_sidebar = this.closest('#chat-left-sidebar');
@@ -1190,7 +1192,9 @@
             }
         });
 
-        //Initialize WebSocket
+        /**
+         * Initialize WebSocket
+         * */
         let chat_websocket = initializeSocket({
             onOpen: (event, self) => {
                 console.log('open', 'event', event, 'self', self);
@@ -1199,7 +1203,7 @@
                 console.log('message', 'event', event, 'self', self, 'data', event.data);
                 let data = JSON.parse(event.data);
                 let item = $('.dm-item[data-id="' + data.data.map.id + '"]');
-                if(data.data.map.is_live) {
+                if (data.data.map.is_live) {
                     console.log('live', data.data.map.id);
                     item.addClass('is-live');
                 } else {
@@ -1225,7 +1229,6 @@
             plugin_type: WEBSOCKET_PLUG_TYPE.CHAT.name,
             user_no: 9999999,
         });
-
         let channel_websocket = initializeSocket({
             onOpen: (event, self) => {
                 console.log('open', 'event', event, 'self', self);
@@ -1234,6 +1237,467 @@
                 console.log('message', 'event', event, 'self', self, 'data', event.data);
                 let data = JSON.parse(event.data);
                 console.log('MESSAGE', data);
+                console.log('action_type', data.action_type, 'category', data.data.category, 'subcategory', data.data.subcategory, 'thirdcategory', data.data.thirdcategory);
+                switch (data.action_type) {
+                    case WEBSOCKET_ACTION_TYPE.CREATE.name: {
+                        switch (data.data.category) {
+                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.name: {
+                                switch (data.data.subcategory) {
+                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.DIRECT.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.MENTION.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.THREAD.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.THREAD: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.THREAD.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.name: {
+                                switch (data.data.subcategory) {
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.CHANNEL.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.CHANNEL.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.CHANNEL.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.DIRECT.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.DIRECT.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.MENTION.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.MENTION.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.MENTION.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.THREAD.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.THREAD.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.THREAD.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.SIDE.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.SIDE.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.SIDE.THIRDCATEGORY.DIRECT.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.BOOKMARK.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.BOOKMARK.THIRDCATEGORY.CHANNEL: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.BOOKMARK.THIRDCATEGORY.MESSAGE: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case WEBSOCKET_ACTION_TYPE.UPDATE.name: {
+                        switch (data.data.category) {
+                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.name: {
+                                switch (data.data.subcategory) {
+                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.DIRECT.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.MENTION.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.THREAD.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.THREAD: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.THREAD.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.name: {
+                                switch (data.data.subcategory) {
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.CHANNEL.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.CHANNEL.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.CHANNEL.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.DIRECT.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.DIRECT.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.MENTION.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.MENTION.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.MENTION.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.THREAD.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.THREAD.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.THREAD.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.SIDE.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.SIDE.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.SIDE.THIRDCATEGORY.DIRECT.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.BOOKMARK.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.BOOKMARK.THIRDCATEGORY.CHANNEL: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.BOOKMARK.THIRDCATEGORY.MESSAGE: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case WEBSOCKET_ACTION_TYPE.READ.name: {
+                        switch (data.data.category) {
+                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.name: {
+                                switch (data.data.subcategory) {
+                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.DIRECT.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.MENTION.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.THREAD.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.THREAD: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.THREAD.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.name: {
+                                switch (data.data.subcategory) {
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.CHANNEL.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.CHANNEL.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.CHANNEL.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.DIRECT.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.DIRECT.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.MENTION.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.MENTION.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.MENTION.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.THREAD.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.THREAD.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.THREAD.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.SIDE.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.SIDE.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.SIDE.THIRDCATEGORY.DIRECT.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.BOOKMARK.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.BOOKMARK.THIRDCATEGORY.CHANNEL: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.BOOKMARK.THIRDCATEGORY.MESSAGE: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case WEBSOCKET_ACTION_TYPE.DELETE.name: {
+                        switch (data.data.category) {
+                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.name: {
+                                switch (data.data.subcategory) {
+                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.DIRECT.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.MENTION.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.THREAD.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.THREAD: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.THREAD.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.name: {
+                                switch (data.data.subcategory) {
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.CHANNEL.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.CHANNEL.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.CHANNEL.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.DIRECT.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.DIRECT.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.MENTION.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.MENTION.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.MENTION.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.THREAD.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.THREAD.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.THREAD.THIRDCATEGORY.MESSAGE.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.SIDE.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.SIDE.THIRDCATEGORY.CHANNEL.name: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.SIDE.THIRDCATEGORY.DIRECT.name: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.BOOKMARK.name: {
+                                        switch (data.data.thirdcategory) {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.BOOKMARK.THIRDCATEGORY.CHANNEL: {
+                                                break;
+                                            }
+                                            case WEBSOCKET_CATEGORY.CATEGORY.WORKSPACE.SUBCATEGORY.BOOKMARK.THIRDCATEGORY.MESSAGE: {
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    default:
+                        throw new Error('data action type is not found in onMessage');
+                }
             },
             onClose: (event, self) => {
                 console.log('close code', event.code, 'close reason', event.reason, 'self', self);
@@ -1251,35 +1715,36 @@
         }, {
             plugin_type: WEBSOCKET_PLUG_TYPE.CHAT.name,
             user_no: 9999999,
-            hash: getWebsocketParameter('${channel_hash}')
+            hash: getChatWebsocketParameter('${channel_hash}')
         });
 
-        /*TODO Chat Content Initialize*/
-        /*TODO 1. channel 메세지 가져오기 (Main) -> 지우씨*/
+        /**
+         *  Chat Content Initialize
+         * */
         const info = getTypeAndValue();
-        getChannelMessages(info.type, info.value, null)
-            .then((result) => {
-                console.log(result);
-                if (result.status === 'OK') {
-                    if (result.data.status) {
-                        initializeChat({
-                            container: '.chat-container',
-                            messages: result.data.messages.reverse(),
-                            websocket: {
-                                chat_websocket,
-                                channel_websocket
-                            }
-                        });
-                    } else {
-                        viewAlert({content: '메세지를 불러오지 못했습니다.'});
-                    }
+        getChannelMessages(info.type, info.value, null).then((result) => {
+            console.log(result);
+            if (result.status === 'OK') {
+                if (result.data.status) {
+                    initializeChat({
+                        container: '.chat-container',
+                        messages: result.data.messages.reverse(),
+                        websocket: {
+                            chat_websocket,
+                            channel_websocket
+                        }
+                    });
                 } else {
                     viewAlert({content: '메세지를 불러오지 못했습니다.'});
                 }
-            })
+            } else {
+                viewAlert({content: '메세지를 불러오지 못했습니다.'});
+            }
+        })
 
-        /*TODO Chat Left Initialize*/
-        /*TODO 2. channels, users 가져오기 (Left) -> 지우씨*/
+        /**
+         *  Chat Left Initialize
+         *  */
         getCompanyChannelsAndMembers().then((result) => {
             console.log(result);
             if (result.status === 'OK') {
@@ -1293,7 +1758,10 @@
                 viewAlert({content: '유저 정보를 불러오지 못했습니다.'});
             }
         })
-        /*TODO Chat Right Initialize*/
+
+        /**
+         * Chat Right Initialize
+         *  */
         initializeRightThread(true, {
             websocket: {
                 chat_websocket,
