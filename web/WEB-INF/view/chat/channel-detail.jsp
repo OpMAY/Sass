@@ -1165,6 +1165,7 @@
 <script src="/resources/js/chat/api.js"></script>
 <script src="/resources/js/chat/api1.js"></script>
 <script src="/resources/js/module/okiwi-websocket.js"></script>
+<script src="/resources/js/chat/okiwi-chat-websocket.js"></script>
 <!--Font Awesome-->
 <script src="https://kit.fontawesome.com/3581631c82.js"
         crossorigin="anonymous"></script>
@@ -1202,12 +1203,12 @@
             onMessage: (event, self) => {
                 console.log('message', 'event', event, 'self', self, 'data', event.data);
                 let data = JSON.parse(event.data);
-                let item = $('.dm-item[data-id="' + data.data.map.id + '"]');
-                if (data.data.map.is_live) {
-                    console.log('live', data.data.map.id);
+                let item = $('.dm-item[data-id="' + data.data.data.map.id + '"]');
+                if (data.data.data.map.is_live) {
+                    console.log('live', data.data.data.map.id);
                     item.addClass('is-live');
                 } else {
-                    console.log('disconnected', data.data.map.id);
+                    console.log('disconnected', data.data.data.map.id);
                     item.removeClass('is-live');
                 }
                 console.log('MESSAGE', data);
@@ -1237,13 +1238,15 @@
                 console.log('message', 'event', event, 'self', self, 'data', event.data);
                 let data = JSON.parse(event.data);
                 console.log('MESSAGE', data);
-                console.log('action_type', data.action_type, 'category', data.data.category, 'subcategory', data.data.subcategory, 'thirdcategory', data.data.thirdcategory);
+                console.log('action_type', data.action_type, 'category', data.data.category, 'subcategory', data.data.subcategory, 'thirdcategory', data.data.thirdcategory, 'target', data.data.target);
                 switch (data.action_type) {
                     case WEBSOCKET_ACTION_TYPE.CREATE.name: {
+                        console.log(1);
                         switch (data.data.category) {
                             case WEBSOCKET_CATEGORY.CATEGORY.CHAT.name: {
+                                console.log(2);
                                 switch (data.data.subcategory) {
-                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL: {
+                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.name: {
                                         switch (data.data.thirdcategory) {
                                             case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.CHANNEL.THIRDCATEGORY.CHANNEL.name: {
                                                 break;
@@ -1260,18 +1263,36 @@
                                         }
                                         break;
                                     }
-                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN: {
+                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.name: {
+                                        console.log(3);
                                         switch (data.data.thirdcategory) {
                                             case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.CHANNEL.name: {
                                                 break;
                                             }
-                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.CHANNEL.name: {
+                                            case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.MESSAGE.name: {
+                                                console.log('in');
+                                                switch (data.data.target) {
+                                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.MESSAGE.TARGET.BOOKMARK.name:{
+                                                        break;
+                                                    }
+                                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.MESSAGE.TARGET.THREAD.name:{
+                                                        break;
+                                                    }
+                                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.MESSAGE.TARGET.EMOJI.name:{
+                                                        break;
+                                                    }
+                                                    case undefined : {
+                                                        console.log('receive message : ', data.data);
+                                                        receiveNewMessage(data.data.data);
+                                                        break;
+                                                    }
+                                                }
                                                 break;
                                             }
                                         }
                                         break;
                                     }
-                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.THREAD: {
+                                    case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.THREAD.name: {
                                         switch (data.data.thirdcategory) {
                                             case WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.THREAD.THIRDCATEGORY.MESSAGE.name: {
                                                 break;
@@ -1707,7 +1728,7 @@
             },
             onSend: (data, self) => {
                 console.log('send', JSON.stringify(data), 'self', self);
-                self.send(JSON.stringify(data));
+                self.channel_websocket.send(JSON.stringify(data));
             },
             disconnect: () => {
                 this.close();

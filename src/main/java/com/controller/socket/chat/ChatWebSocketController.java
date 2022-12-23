@@ -21,11 +21,5 @@ public class ChatWebSocketController {
     @MessageMapping("/send")
     public void send(HttpServletRequest request, @Payload ChatWebSocketObject message) {
         ChatMessage chatMessage = null;
-        try {
-            chatMessage = (ChatMessage) message.getData();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        log.info("ChatWebSocketController message : {}", chatMessage);
     }
 }
