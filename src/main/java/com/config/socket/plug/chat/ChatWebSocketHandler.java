@@ -6,7 +6,6 @@ import com.model.company.Company;
 import com.model.company.CompanyMember;
 import com.model.grant.PLUGIN_TYPE;
 import com.model.ws.chat.*;
-import com.model.ws.crm.CrmSocketSessionModel;
 import com.service.CompanyService;
 import com.service.chat.ChatService;
 import com.util.Encryption.EncryptionService;
@@ -50,7 +49,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             if (!sess.equals(session.getId())) {
                 // Sender 에겐 보내지 않음
                 ChatSocketSessionModel senderModel = chatSessionQueue.get(session.getId());
-                if (chatSessionQueue.get(session.getId()).getCompany_no() == senderModel.getCompany_no()) {
+                if (chatSessionQueue.get(sess).getCompany_no() == senderModel.getCompany_no()) {
                     // 같은 회사의 ChatPlug 수신 채널에만 전송
                     TextMessage textMessage = new TextMessage(new Gson().toJson(object));
                     chatSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
@@ -93,13 +92,14 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 object.setPlugin_type(PLUGIN_TYPE.CHAT);
                 object.setUser_no(user_no);
                 object.setAction_type(CHAT_ACTION_TYPE.UPDATE);
-                object.setCategory(CHAT_CATEGORY.WORKSPACE);
-                object.setSubcategory(CHAT_SUBCATEGORY.SIDE);
-                object.setThirdcategory(CHAT_THIRDCATEGORY.DIRECT);
+                ChatWebSocketDataObject dataModel = new ChatWebSocketDataObject();
+                dataModel.setCategory(CHAT_CATEGORY.WORKSPACE);
+                dataModel.setSubcategory(CHAT_SUBCATEGORY.SIDE);
+                dataModel.setThirdcategory(CHAT_THIRDCATEGORY.DIRECT);
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("id", encryptionService.encryptAES(Integer.toString(companyMember.getNo()), true));
                 jsonObject.put("is_live", true);
-                object.setData(jsonObject);
+                dataModel.setData(jsonObject);
                 for (String sess : chatSessionQueue.keySet()) {
                     if (!sess.equals(session.getId())) {
                         // Sender 에겐 보내지 않음
@@ -107,11 +107,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                         if (chatSessionQueue.get(session.getId()).getCompany_no() == senderModel.getCompany_no()) {
                             // 같은 회사의 ChatPlug 수신 채널에만 전송
                             if (IsSessionUserListeningChannel(sess)) {
-                                object.setCategory(CHAT_CATEGORY.CHAT);
-                                object.setSubcategory(CHAT_SUBCATEGORY.CHANNEL);
-                                object.setThirdcategory(CHAT_THIRDCATEGORY.DIRECT);
-                                object.setTarget(CHAT_TARGET.LIVE);
+                                dataModel.setCategory(CHAT_CATEGORY.CHAT);
+                                dataModel.setSubcategory(CHAT_SUBCATEGORY.CHANNEL);
+                                dataModel.setThirdcategory(CHAT_THIRDCATEGORY.DIRECT);
+                                dataModel.setTarget(CHAT_TARGET.LIVE);
                             }
+                            object.setData(dataModel);
                             TextMessage textMessage = new TextMessage(new Gson().toJson(object));
                             chatSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
                         }
@@ -138,14 +139,15 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         object.setPlugin_type(PLUGIN_TYPE.CHAT);
         object.setUser_no(user_no);
         object.setAction_type(CHAT_ACTION_TYPE.UPDATE);
-        object.setCategory(CHAT_CATEGORY.WORKSPACE);
-        object.setSubcategory(CHAT_SUBCATEGORY.SIDE);
-        object.setThirdcategory(CHAT_THIRDCATEGORY.DIRECT);
-        object.setTarget(CHAT_TARGET.LIVE);
+        ChatWebSocketDataObject dataModel = new ChatWebSocketDataObject();
+        dataModel.setCategory(CHAT_CATEGORY.WORKSPACE);
+        dataModel.setSubcategory(CHAT_SUBCATEGORY.SIDE);
+        dataModel.setThirdcategory(CHAT_THIRDCATEGORY.DIRECT);
+        dataModel.setTarget(CHAT_TARGET.LIVE);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", encryptionService.encryptAES(Integer.toString(companyMemberDao.getUserMemberInfoByUserNo(user_no).getNo()), true));
         jsonObject.put("is_live", false);
-        object.setData(jsonObject);
+        dataModel.setData(jsonObject);
         for (String sess : chatSessionQueue.keySet()) {
             if (!sess.equals(session.getId())) {
                 // Sender 에겐 보내지 않음
@@ -153,11 +155,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 if (chatSessionQueue.get(session.getId()).getCompany_no() == senderModel.getCompany_no()) {
                     // 같은 회사의 ChatPlug 수신 채널에만 전송
                     if (IsSessionUserListeningChannel(sess)) {
-                        object.setCategory(CHAT_CATEGORY.CHAT);
-                        object.setSubcategory(CHAT_SUBCATEGORY.CHANNEL);
-                        object.setThirdcategory(CHAT_THIRDCATEGORY.DIRECT);
-                        object.setTarget(CHAT_TARGET.LIVE);
+                        dataModel.setCategory(CHAT_CATEGORY.CHAT);
+                        dataModel.setSubcategory(CHAT_SUBCATEGORY.CHANNEL);
+                        dataModel.setThirdcategory(CHAT_THIRDCATEGORY.DIRECT);
+                        dataModel.setTarget(CHAT_TARGET.LIVE);
                     }
+                    object.setData(dataModel);
                     TextMessage textMessage = new TextMessage(new Gson().toJson(object));
                     chatSessionQueue.get(sess).getWebSocketSession().sendMessage(textMessage);
                 }

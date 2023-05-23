@@ -142,6 +142,15 @@ function rightThreadSendContainerWriteClickEventListener(event) {
                 editor.innerHTML = ``;
                 updateChatContainerScroll(RIGHT_THREAD_SCROLL_CONTAINER);
                 // TODO WEBSOCKET SEND
+                CHAT_WEBSOCKET.channel_websocket.onSend({
+                    plugin_type: WEBSOCKET_PLUG_TYPE.CHAT.name,
+                    action_type: WEBSOCKET_ACTION_TYPE.CREATE.name, data: {
+                        category: WEBSOCKET_CATEGORY.CATEGORY.CHAT.name,
+                        subcategory: WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.name,
+                        thirdcategory : WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.MESSAGE.name,
+                        data: result.data.message
+                    },
+                }, CHAT_WEBSOCKET);
             } else {
                 viewAlert({content: '메세지 전송에 실패했습니다.'});
             }
@@ -217,6 +226,16 @@ function rightThreadSendContainerControlFileChangeEventListener(event) {
                 if (result.data.status) {
                     RIGHT_SUB_THREADS_CONTAINER.append(createMessageElement(result.data.message));
                     updateChatContainerScroll(RIGHT_THREAD_SCROLL_CONTAINER);
+                    CHAT_WEBSOCKET.channel_websocket.onSend({
+                        plugin_type: WEBSOCKET_PLUG_TYPE.CHAT.name,
+                        action_type: WEBSOCKET_ACTION_TYPE.CREATE.name,
+                        data: {
+                            category: WEBSOCKET_CATEGORY.CATEGORY.CHAT.name,
+                            subcategory: WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.name,
+                            thirdcategory : WEBSOCKET_CATEGORY.CATEGORY.CHAT.SUBCATEGORY.MAIN.THIRDCATEGORY.MESSAGE.name,
+                            data: result.data.message
+                        },
+                    }, CHAT_WEBSOCKET);
                 } else {
 
                 }

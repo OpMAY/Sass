@@ -371,4 +371,14 @@ public class ChatService {
             }
         }
     }
+
+    public ChatMessage getChatMessageById(String id) {
+        ChatMessage chatMessage = chatMessageDao.getChatMessageById(id);
+        if (chatMessage != null) {
+            formatChatMessage(0, chatMessage);
+            return chatMessage;
+        }
+        return null;
+
+    }
 }
